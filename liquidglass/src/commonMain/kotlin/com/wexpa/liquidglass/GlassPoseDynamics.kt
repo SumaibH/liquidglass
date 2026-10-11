@@ -26,7 +26,8 @@ import kotlin.math.tanh
 @Immutable
 internal data class GlassPoseSpec(
     /**
-     * Centre response. One law for every distance: a longer tap simply develops more speed.
+     * Base centre response. Coupled taps may scale it with [tapShortTripRate]. That scaling
+     * does not change held/released paths; at a fixed rate a longer trip develops more speed.
      *
      * Authored critical response, retained for stable navigation. JGEY2190 n176–182 was
      * previously cited as a tap fit, but its complete episode continues through Contacts to
@@ -277,6 +278,9 @@ internal data class GlassPoseSpec(
     /** Coupled landing recovery only; zero retains the preceding spine response. */
     val releaseRecoveryOmega: Float = 0f,
     val releaseRecoveryZeta: Float = 1f,
+    /** Opt-in coupled-tap clock ratio for adjacent trips, blending back to the existing
+     * rate by two slots. Authored output calibration; not an identified Apple spring. */
+    val tapShortTripRate: Float = 1f,
 ) {
     internal val spineLimitSlots: Float get() = max(elongationSlots, tapSpineLimitSlots)
 
@@ -319,7 +323,7 @@ internal data class GlassPoseSpec(
         )
         val CalmEndpoint = CalmVolume.copy(releaseImpactGain = 2.25f)
         val Calm = CalmEndpoint.copy(releaseImpactGain = 4f, releaseEdgeAnchor = true,
-            releaseRecoveryOmega = 14f)
+            releaseRecoveryOmega = 14f, tapShortTripRate = .75f)
     }
 }
 
@@ -884,6 +888,17 @@ internal class GlassPoseController(
             (mode != GlassPoseMode.Released || spec.releaseTravel)
         val coupleTapArea = motionEnabled && spec.tapAreaGain > 0f && tapDistance > .25f &&
             (mode == GlassPoseMode.TapTransit || mode == GlassPoseMode.PressPending)
+        // Consecutive Phone adjacent taps evolve more slowly than the old single-frame
+        // calibration implied. Blend only this coupled tap path; held/throw and two-slot
+        // travel keep their previous clock. Frequencies and speed-driven shape demand
+        // share the ratio so slowing travel does not erase its verified jelly-like shape.
+        val tapClock = if (coupleTapArea) {
+            val phase = (tapDistance / slot - 1f).coerceIn(0f, 1f)
+            val blend = phase * phase * (3f - 2f * phase)
+            val shortRate = spec.tapShortTripRate.coerceIn(.5f, 1f)
+            shortRate + (1f - shortRate) * blend
+        } else 1f
+        val tapShapeVx = vx / tapClock
         val coupleReleaseArea = motionEnabled && releaseImpactActive && mode == GlassPoseMode.Released
         // This coordinate is exact for the horizontal, unstrained Calm capsule. Historical
         // rotated/tapered/strain models keep their existing centre/contact law.
@@ -1048,7 +1063,7 @@ internal class GlassPoseController(
         if (coupleTapArea) {
             // Bounded eighth-power response: shorter trips remain rounder, while a longer
             // trip puts more area into its spine. Normalize by body width, not item count.
-            val speedFraction = abs(vx) / (abs(vx) + spec.tapAreaBodySpeed * reference.width).coerceAtLeast(1f)
+            val speedFraction = abs(tapShapeVx) / (abs(tapShapeVx) + spec.tapAreaBodySpeed * reference.width).coerceAtLeast(1f)
             fun eighth(value: Float): Float { val square=value*value; val fourth=square*square; return fourth*fourth }
             val moving=eighth(speedFraction)
             val still=eighth(1f-speedFraction)
@@ -1093,8 +1108,8 @@ internal class GlassPoseController(
         stepState(dt, pose.acc, velocity.acc, equilibrium.acc, spec.accommodationOmega, 1f).let { pose.acc = it[0]; velocity.acc = it[1] }
         val spo = when {
             coupleReleaseArea && spec.releaseRecoveryOmega > 0f -> spec.releaseRecoveryOmega
-            coupleTapArea && equilibrium.dx < pose.dx -> spec.tapSpineFallOmega
-            coupleTapArea -> spec.tapAreaSpineOmega
+            coupleTapArea && equilibrium.dx < pose.dx -> spec.tapSpineFallOmega * tapClock
+            coupleTapArea -> spec.tapAreaSpineOmega * tapClock
             mode == GlassPoseMode.Released -> spec.spineReleaseOmega
             tapMotion -> spec.tapSpineOmega
             else -> spec.spineOmega
@@ -1120,12 +1135,12 @@ internal class GlassPoseController(
             // independent radius spring would break the coupling and delay the flattening.
             val r0 = reference.r
             val restArea = kotlin.math.PI.toFloat() * r0 * r0 + 4f * reference.a * r0
-            val phaseSpeed = abs(vx) / max(tapDistance, reference.width * .9f)
+            val phaseSpeed = abs(tapShapeVx) / max(tapDistance, reference.width * .9f)
             val q = phaseSpeed / (phaseSpeed + spec.tapAreaReferenceSpeed).coerceAtLeast(1e-5f)
             val excitation = q*q / (q*q + (1f-q)*(1f-q)).coerceAtLeast(1e-8f)
             tapArea.target = if (coupleReleaseArea) restArea else
                 restArea * (1f + spec.tapAreaGain * (1f + longTapDrive) * excitation)
-            tapArea.step(dt, if (coupleReleaseArea) spec.pressureFallOmega else spec.tapAreaOmega, 1f)
+            tapArea.step(dt, if (coupleReleaseArea) spec.pressureFallOmega else spec.tapAreaOmega * tapClock, 1f)
             val area = tapArea.value.coerceAtLeast(restArea * .5f)
             val spine = kotlin.math.hypot(pose.dx, pose.dy)
             val spineVelocity = if (spine > 1e-5f)
@@ -1171,7 +1186,7 @@ internal class GlassPoseController(
                 pose.cx = targetX; pose.cy = targetY
                 velocity.cx = 0f; velocity.cy = 0f
             } else {
-                val co = spec.centreOmega
+                val co = spec.centreOmega * tapClock
                 val cz = spec.centreZeta
                 stepState(dt, pose.cx, velocity.cx, targetX, co, cz).let { pose.cx = it[0]; velocity.cx = it[1] }
                 stepState(dt, pose.cy, velocity.cy, targetY, co, cz).let { pose.cy = it[0]; velocity.cy = it[1] }
@@ -1255,7 +1270,15 @@ internal class GlassPoseController(
                 abs(pose.cx - bar.centreOf(restIndex)) < .125f &&
                 abs(pose.cy - bar.centreY) < .125f && form.value < .01f &&
                 abs(spineLength - restHalfSpine + radiusError) < .125f && abs(radiusError) < .125f
-            if (settled || visuallySettledArea) {
+            // A slower short tap can have small velocity while its coupled radius/spine
+            // still leave a visible contour error. Do not let the older separate-state
+            // threshold snap this path early at small sizes or a different frame cadence.
+            val radiusVelocity = reference.r * exp(pose.p) * velocity.p
+            val slowTapQuiet = maxOf(abs(velocity.cx), abs(radiusVelocity),
+                abs(velocity.dx + radiusVelocity)) < reference.width * .002f
+            val canFinish = if (coupleTapArea && tapClock < 1f)
+                visuallySettledArea && slowTapQuiet else settled || visuallySettledArea
+            if (canFinish) {
                 if (coupleArea) {
                     // Finish coupled motion at exact rest after the velocity criteria or
                     // quiet subpixel contour criteria pass. Otherwise the independent rest path

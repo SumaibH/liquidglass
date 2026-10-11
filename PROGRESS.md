@@ -1,12 +1,24 @@
 # LiquidGlass / Atlas progress and recovery
 
-Updated 2026-10-10. **Goal active: full 1:1 iOS parity is not established.**
+Updated 2026-10-11. **Goal active: full 1:1 iOS parity is not established.**
 Read this first after an interruption. Detailed history lives in the
 [review](review/ATLAS-STABILIZATION.md) and [verification ledger](review/atlas/verification.json).
 
 ## Current state
 
-**Latest verified local checkpoint, 10 October:** endpoint recovery follows the leading edge
+**Latest verified local short-tap checkpoint:** two consecutive adjacent-tap episodes expose a timing
+error hidden by the previous single-frame shape gate. An authored0.75 adjacent-trip rate reduces
+globally aligned centre RMS12.82/15.67px to2.55/2.54px, while long trips retain their previous
+rate. Coupled shape rates/drives share the clock, and slower-tap settling now requires actual
+contour velocity to be quiet. **333 library cases passed,27 optional skips,zero failures; both Atlas tests passed and Android
+assembled.** The interrupted run supplied322 recovered passes; the exact unfinished cases passed
+in a3m15s follow-up. The33-phase native replay and a separate10-phase adjacent-tap replay passed
+and were inspected, along with the static studio. All local queues are terminal. This verifies a
+checkpoint, not full iOS parity or owner acceptance. Read the
+[short-tap evidence and failure history](review/atlas/short-tap-timing-2026-10-10/README.md).
+Previously completed full/native results below belong to the preceding runtime.
+
+**Earlier endpoint/material checkpoint, 10 October:** endpoint recovery follows the leading edge
 while the body changes width, and the resting inset tint is limited to the actual bar shape.
 The owner rejected the preceding dark-disc images; that visual sign-off remains withdrawn.
 The corrected native images preserve the resting inset exactly and remove the dark exterior
@@ -38,6 +50,8 @@ caps on both backgrounds. A thin glass rim remains during recovery.
   guarded by a visible-text check. CanvasKit NOTICE drift is repaired and its check passes.
 - Canonical checkout: `D:/Work/AndroidStudioProjects/SideProjects/kmp/liquidglass`.
 - Branch: `codex/atlas-stabilization`; [draft PR #6](https://github.com/shayann07/liquidglass/pull/6).
+- Previous baseline **e597b59** has all ten required checks passing. Hosted verification for the
+  new short-tap checkpoint is recorded separately after its push.
 - Commit/push/final merge authorized; no releases, tags or blanket PR6 review bypass.
 
 The improved width/edge trajectory does not establish complete optical parity. Right/left width
@@ -92,7 +106,7 @@ the historical spring's source comment is corrected, without changing its value.
 
 | ID | Requested outcome | Verified work / remaining gap |
 | --- | --- | --- |
-| M1 | Distance-dependent tap, hold and throw | Consecutive endpoint width/edge recovery improved and dark exterior tint corrected. Full contour/optical timing across all supplied gestures remains open. |
+| M1 | Distance-dependent tap, hold and throw | Adjacent-tap timing improves across two episodes; endpoint width/edge recovery and inset tint corrected. Repeated short-tap width still misses by up to20.64px under nominal input. Full contour/optical timing across all gestures remains open. |
 | M2 | Whole-bar squeeze, subtle corner extremes | Shared bounded transform and all eight native window-boundary snapshots; fixed layout/hit targets. Exact iOS envelope/optical behavior across directions remains incomplete. |
 | M3 | Calm generic controls | Existing card limits, accessibility and gesture ownership verified. Preserve them through further changes. |
 | O1 | Continuous glass without a split rim | Standalone continuous lens and endpoint regressions passed. Full Apple optics and Android endpoint precision remain unproven. |

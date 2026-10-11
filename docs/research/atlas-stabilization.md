@@ -20,6 +20,14 @@ springs projected area and derives radius from the actual spine. This improves t
 shapes without adding application-side tuning. The rates are authored; a remaining early-frame width
 mismatch and unknown original input timing are recorded. Green regression tests do not prove full parity.
 
+The [consecutive short-tap audit](https://github.com/shayann07/liquidglass/blob/main/review/atlas/short-tap-timing-2026-10-10/README.md)
+then exposes a temporal error hidden by those still comparisons. The local candidate slows adjacent
+coupled taps to an authored0.75 rate, smoothly returning to the prior rate at two slots. Shape
+springs and speed demands share the ratio; actual velocities retain their physical time units.
+Two partial recorded trips improve to about2.5px centre RMS with a single fitted time offset each.
+The repeated episode still has a nominal width mismatch up to20.6px. It is not a complete matched
+trajectory or recovery of pointer timing; follow the packet for full/native verification status.
+
 ## Release attribution correction
 
 The inherited LOLL8185 release calibration is not reliable. Exact native-time crops at

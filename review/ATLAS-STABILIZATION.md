@@ -1356,3 +1356,21 @@ on49c217f. Linux artifact review caught blank labels missed by the first numeric
 setup and an actual-text-pixels gate now pass, and the corrected CI images are inspected. These
 three new checks join the original seven required checks. Other native hosts, .NET selector dynamics and arbitrary-widget capture remain
 open; Compose plus these bindings is not declared universal-stack completion.
+
+## Consecutive short-tap timing candidate — 10 October 2026
+
+The [new timing packet](atlas/short-tap-timing-2026-10-10/README.md) preserves14 first-episode source
+frames and nine inspected repeated-episode edge tracks. A single matched shape had concealed an
+early centre error up to41.6px. Allowing one best time translation for each complete partial trip,
+the previous centre response still has RMS12.82/15.67px; the local adjacent-only candidate reaches
+2.55/2.54px. Original input timestamps remain unknown, and rates are authored.
+
+Area/spine rates and shape-speed demand share the slower clock. Long trips, held/released motion,
+ordinary growth and whole-bar interaction retain their previous paths. A new scaled replay caught
+a premature settling snap; the slowed tap now requires actual contour/centre velocity to be quiet.
+28focused tests pass, including cadence/scale/reversal, real-time re-grab velocity, original paired
+shapes and endpoint recovery. Complete verification covers333library passes/27optional skips,
+2Atlas passes and Android assembly. An interrupted run supplied322recovered passes; exact missing
+cases passed in a3m15s follow-up. Both the33-phase full replay and10-phase adjacent-only replay
+passed and were visually inspected, as was the static studio. Nominal repeated width still has
+a20.64px maximum error; no full parity or renewed owner acceptance is claimed.

@@ -45,7 +45,8 @@ fun main() = application {
                         }
                         delay(3000)
                         val readback = System.getProperty("atlas.motionReadback")?.toBooleanStrict() ?: true
-                        captureAtlasMotion(window, motionProbe, File(path), readback)
+                        val shortTaps = System.getProperty("atlas.motionShortTaps")?.toBooleanStrict() ?: false
+                        captureAtlasMotion(window, motionProbe, File(path), readback, shortTaps)
                         exitApplication()
                         return@withContext
                     }

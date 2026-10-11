@@ -1,0 +1,6106 @@
+{
+  "measurementsSha256": "c1464bd90b4ef230bd50dc83c01069a996ff11d78096c8e6ef9b2ae4ea694e24",
+  "traceSha256": "81072e5656d444b526cf88efaec40a2128ede8357cead048610765054c1d0344",
+  "nativeSourceSha256": "186e1eb34e6baf896b16bffe839176fc298b2b7a6823d11cb39204ed960ebc06",
+  "sourceSamples": 14,
+  "modelSamples": 7215,
+  "method": "One translation of time at frame013 centre for each authored alternative. No time scaling. Horizontal polygon intersections use the original scanline rows, y origin125.5. Middle target x479 is inherited provisional geometry. Vertical central-spine cuts use five offsets -16..16px about model centre. No production parameters fitted.",
+  "score": "Frames006..014, excluding previously calibrated anchor013 and unresolved axes. Phase-only metrics independently match each centre and therefore are NOT temporal evidence.",
+  "limits": "Observed optical gradients versus production geometric contour, not rendered colour/refraction. A14-frame partial trip is not a complete gesture or iOS parity proof. Three resting geometries and five contact durations are authored alternatives; one alignment cannot recover original pointer-down/up timestamps. Ambiguous source heights remain unresolved and are omitted from scores.",
+  "nominal": {
+    "restWidth": 278,
+    "pressSeconds": 0.04
+  },
+  "alternatives": [
+    {
+      "restWidth": 285,
+      "pressSeconds": 0.04,
+      "anchorModelSeconds": 0.11296195911875248,
+      "authoredPointerDownOnSourceClock": 3.4337050408812475,
+      "trajectoryMetrics": {
+        "centre": {
+          "samples": 8,
+          "rms": 25.094198599423244,
+          "maxAbsolute": 41.58106284876669
+        },
+        "width": {
+          "samples": 8,
+          "rms": 8.39403863551951,
+          "maxAbsolute": 15.65563613341942
+        },
+        "height": {
+          "samples": 6,
+          "rms": 5.1665499182916435,
+          "maxAbsolute": 9.0
+        }
+      },
+      "phaseOnlyMetrics": {
+        "centre": {
+          "samples": 8,
+          "rms": 0.0,
+          "maxAbsolute": 0.0
+        },
+        "width": {
+          "samples": 8,
+          "rms": 3.0099315656627335,
+          "maxAbsolute": 5.501087727623144
+        },
+        "height": {
+          "samples": 6,
+          "rms": 3.2082725838414254,
+          "maxAbsolute": 6.856030291240614
+        }
+      },
+      "rows": [
+        {
+          "file": "frame-001.png",
+          "pts": 1988,
+          "seconds": 3.313333,
+          "modelSeconds": -0.12037204088124742,
+          "usable": {
+            "centre": true,
+            "width": true,
+            "height": true
+          },
+          "observed": {
+            "centre": 746.5,
+            "width": 272.0,
+            "height": 170.0
+          },
+          "aligned": {
+            "centre": 742.500095,
+            "width": 284.11041,
+            "height": 163.0
+          },
+          "phaseOnly": {
+            "centre": 742.500095,
+            "width": 284.11041,
+            "height": 163.0
+          }
+        },
+        {
+          "file": "frame-002.png",
+          "pts": 1998,
+          "seconds": 3.33,
+          "modelSeconds": -0.10370504088124743,
+          "usable": {
+            "centre": true,
+            "width": true,
+            "height": false
+          },
+          "observed": {
+            "centre": 745.5,
+            "width": 274.0,
+            "height": 175.0
+          },
+          "aligned": {
+            "centre": 742.500095,
+            "width": 284.11041,
+            "height": 163.0
+          },
+          "phaseOnly": {
+            "centre": 742.500095,
+            "width": 284.11041,
+            "height": 163.0
+          }
+        },
+        {
+          "file": "frame-003.png",
+          "pts": 2008,
+          "seconds": 3.346667,
+          "modelSeconds": -0.08703804088124745,
+          "usable": {
+            "centre": true,
+            "width": true,
+            "height": true
+          },
+          "observed": {
+            "centre": 745.0,
+            "width": 277.0,
+            "height": 168.0
+          },
+          "aligned": {
+            "centre": 742.500095,
+            "width": 284.11041,
+            "height": 163.0
+          },
+          "phaseOnly": {
+            "centre": 742.500095,
+            "width": 284.11041,
+            "height": 163.0
+          }
+        },
+        {
+          "file": "frame-004.png",
+          "pts": 2018,
+          "seconds": 3.363333,
+          "modelSeconds": -0.0703720408812476,
+          "usable": {
+            "centre": true,
+            "width": true,
+            "height": true
+          },
+          "observed": {
+            "centre": 744.0,
+            "width": 279.0,
+            "height": 166.0
+          },
+          "aligned": {
+            "centre": 742.500095,
+            "width": 284.11041,
+            "height": 163.0
+          },
+          "phaseOnly": {
+            "centre": 742.500095,
+            "width": 284.11041,
+            "height": 163.0
+          }
+        },
+        {
+          "file": "frame-005.png",
+          "pts": 2038,
+          "seconds": 3.396667,
+          "modelSeconds": -0.037038040881247625,
+          "usable": {
+            "centre": true,
+            "width": true,
+            "height": true
+          },
+          "observed": {
+            "centre": 743.0,
+            "width": 281.0,
+            "height": 164.0
+          },
+          "aligned": {
+            "centre": 742.500095,
+            "width": 284.11041,
+            "height": 163.0
+          },
+          "phaseOnly": {
+            "centre": 742.500095,
+            "width": 284.11041,
+            "height": 163.0
+          }
+        },
+        {
+          "file": "frame-006.png",
+          "pts": 2048,
+          "seconds": 3.413333,
+          "modelSeconds": -0.020372040881247333,
+          "usable": {
+            "centre": true,
+            "width": true,
+            "height": true
+          },
+          "observed": {
+            "centre": 735.0,
+            "width": 285.0,
+            "height": 166.0
+          },
+          "aligned": {
+            "centre": 742.500095,
+            "width": 284.11041,
+            "height": 163.0
+          },
+          "phaseOnly": {
+            "centre": 735.0,
+            "width": 285.49204186716605,
+            "height": 164.37389866202494
+          }
+        },
+        {
+          "file": "frame-007.png",
+          "pts": 2058,
+          "seconds": 3.43,
+          "modelSeconds": -0.0037050408812473457,
+          "usable": {
+            "centre": true,
+            "width": true,
+            "height": true
+          },
+          "observed": {
+            "centre": 715.5,
+            "width": 294.0,
+            "height": 172.0
+          },
+          "aligned": {
+            "centre": 742.500095,
+            "width": 284.11041,
+            "height": 163.0
+          },
+          "phaseOnly": {
+            "centre": 715.5,
+            "width": 291.89849548586545,
+            "height": 170.67604284460157
+          }
+        },
+        {
+          "file": "frame-008.png",
+          "pts": 2068,
+          "seconds": 3.446667,
+          "modelSeconds": 0.012961959118752642,
+          "usable": {
+            "centre": true,
+            "width": true,
+            "height": false
+          },
+          "observed": {
+            "centre": 690.5,
+            "width": 302.0,
+            "height": 186.0
+          },
+          "aligned": {
+            "centre": 732.0810628487667,
+            "width": 286.3443638665806,
+            "height": 165.22072379045198
+          },
+          "phaseOnly": {
+            "centre": 690.5,
+            "width": 300.58680932976966,
+            "height": 178.54945204895532
+          }
+        },
+        {
+          "file": "frame-009.png",
+          "pts": 2078,
+          "seconds": 3.463333,
+          "modelSeconds": 0.02962795911875249,
+          "usable": {
+            "centre": true,
+            "width": true,
+            "height": false
+          },
+          "observed": {
+            "centre": 662.5,
+            "width": 310.0,
+            "height": 186.0
+          },
+          "aligned": {
+            "centre": 700.4211485920453,
+            "width": 297.1564521158706,
+            "height": 175.57909610984012
+          },
+          "phaseOnly": {
+            "centre": 662.5,
+            "width": 309.9640253798288,
+            "height": 185.57207054028777
+          }
+        },
+        {
+          "file": "frame-010.png",
+          "pts": 2088,
+          "seconds": 3.48,
+          "modelSeconds": 0.04629495911875248,
+          "usable": {
+            "centre": true,
+            "width": true,
+            "height": true
+          },
+          "observed": {
+            "centre": 635.0,
+            "width": 311.0,
+            "height": 188.0
+          },
+          "aligned": {
+            "centre": 662.1275742291823,
+            "width": 305.32723528746186,
+            "height": 185.65066414793625
+          },
+          "phaseOnly": {
+            "centre": 635.0,
+            "width": 313.69880015292256,
+            "height": 190.68978124511608
+          }
+        },
+        {
+          "file": "frame-011.png",
+          "pts": 2098,
+          "seconds": 3.496667,
+          "modelSeconds": 0.06296195911875246,
+          "usable": {
+            "centre": true,
+            "width": true,
+            "height": true
+          },
+          "observed": {
+            "centre": 608.5,
+            "width": 316.0,
+            "height": 196.0
+          },
+          "aligned": {
+            "centre": 625.0169484504974,
+            "width": 316.412578956318,
+            "height": 192.22795977091303
+          },
+          "phaseOnly": {
+            "centre": 608.5,
+            "width": 320.4760503800769,
+            "height": 194.4175748725421
+          }
+        },
+        {
+          "file": "frame-012.png",
+          "pts": 2108,
+          "seconds": 3.513333,
+          "modelSeconds": 0.07962795911875231,
+          "usable": {
+            "centre": true,
+            "width": true,
+            "height": true
+          },
+          "observed": {
+            "centre": 584.0,
+            "width": 320.0,
+            "height": 196.0
+          },
+          "aligned": {
+            "centre": 592.4735050159746,
+            "width": 323.9061892893635,
+            "height": 196.0877985420426
+          },
+          "phaseOnly": {
+            "centre": 584.0,
+            "width": 325.50108772762314,
+            "height": 196.78540813446196
+          }
+        },
+        {
+          "file": "frame-013.png",
+          "pts": 2128,
+          "seconds": 3.546667,
+          "modelSeconds": 0.11296195911875229,
+          "usable": {
+            "centre": true,
+            "width": true,
+            "height": true
+          },
+          "observed": {
+            "centre": 544.0,
+            "width": 329.0,
+            "height": 204.0
+          },
+          "aligned": {
+            "centre": 544.0000000000002,
+            "width": 335.2628857600217,
+            "height": 198.00231076740516
+          },
+          "phaseOnly": {
+            "centre": 544.0,
+            "width": 335.26288576002173,
+            "height": 198.00231076740513
+          }
+        },
+        {
+          "file": "frame-014.png",
+          "pts": 2138,
+          "seconds": 3.563333,
+          "modelSeconds": 0.12962795911875258,
+          "usable": {
+            "centre": true,
+            "width": true,
+            "height": true
+          },
+          "observed": {
+            "centre": 529.5,
+            "width": 332.0,
+            "height": 204.0
+          },
+          "aligned": {
+            "centre": 527.2683152876532,
+            "width": 334.7238310416119,
+            "height": 196.900418791959
+          },
+          "phaseOnly": {
+            "centre": 529.5,
+            "width": 334.8705679432268,
+            "height": 197.14396970875939
+          }
+        }
+      ]
+    },
+    {
+      "restWidth": 285,
+      "pressSeconds": 0.08,
+      "anchorModelSeconds": 0.11296194583948614,
+      "authoredPointerDownOnSourceClock": 3.4337050541605136,
+      "trajectoryMetrics": {
+        "centre": {
+          "samples": 8,
+          "rms": 25.09421659353335,
+          "maxAbsolute": 41.581082558498224
+        },
+        "width": {
+          "samples": 8,
+          "rms": 8.394006450431867,
+          "maxAbsolute": 15.655642256618876
+        },
+        "height": {
+          "samples": 6,
+          "rms": 5.1664981127559075,
+          "maxAbsolute": 9.0
+        }
+      },
+      "phaseOnlyMetrics": {
+        "centre": {
+          "samples": 8,
+          "rms": 0.0,
+          "maxAbsolute": 0.0
+        },
+        "width": {
+          "samples": 8,
+          "rms": 3.009688570561463,
+          "maxAbsolute": 5.5006562093268485
+        },
+        "height": {
+          "samples": 6,
+          "rms": 3.208212428199717,
+          "maxAbsolute": 6.855841103603069
+        }
+      },
+      "rows": [
+        {
+          "file": "frame-001.png",
+          "pts": 1988,
+          "seconds": 3.313333,
+          "modelSeconds": -0.12037205416051355,
+          "usable": {
+            "centre": true,
+            "width": true,
+            "height": true
+          },
+          "observed": {
+            "centre": 746.5,
+            "width": 272.0,
+            "height": 170.0
+          },
+          "aligned": {
+            "centre": 742.500095,
+            "width": 284.11041,
+            "height": 163.0
+          },
+          "phaseOnly": {
+            "centre": 742.500095,
+            "width": 284.11041,
+            "height": 163.0
+          }
+        },
+        {
+          "file": "frame-002.png",
+          "pts": 1998,
+          "seconds": 3.33,
+          "modelSeconds": -0.10370505416051357,
+          "usable": {
+            "centre": true,
+            "width": true,
+            "height": false
+          },
+          "observed": {
+            "centre": 745.5,
+            "width": 274.0,
+            "height": 175.0
+          },
+          "aligned": {
+            "centre": 742.500095,
+            "width": 284.11041,
+            "height": 163.0
+          },
+          "phaseOnly": {
+            "centre": 742.500095,
+            "width": 284.11041,
+            "height": 163.0
+          }
+        },
+        {
+          "file": "frame-003.png",
+          "pts": 2008,
+          "seconds": 3.346667,
+          "modelSeconds": -0.08703805416051358,
+          "usable": {
+            "centre": true,
+            "width": true,
+            "height": true
+          },
+          "observed": {
+            "centre": 745.0,
+            "width": 277.0,
+            "height": 168.0
+          },
+          "aligned": {
+            "centre": 742.500095,
+            "width": 284.11041,
+            "height": 163.0
+          },
+          "phaseOnly": {
+            "centre": 742.500095,
+            "width": 284.11041,
+            "height": 163.0
+          }
+        },
+        {
+          "file": "frame-004.png",
+          "pts": 2018,
+          "seconds": 3.363333,
+          "modelSeconds": -0.07037205416051373,
+          "usable": {
+            "centre": true,
+            "width": true,
+            "height": true
+          },
+          "observed": {
+            "centre": 744.0,
+            "width": 279.0,
+            "height": 166.0
+          },
+          "aligned": {
+            "centre": 742.500095,
+            "width": 284.11041,
+            "height": 163.0
+          },
+          "phaseOnly": {
+            "centre": 742.500095,
+            "width": 284.11041,
+            "height": 163.0
+          }
+        },
+        {
+          "file": "frame-005.png",
+          "pts": 2038,
+          "seconds": 3.396667,
+          "modelSeconds": -0.037038054160513756,
+          "usable": {
+            "centre": true,
+            "width": true,
+            "height": true
+          },
+          "observed": {
+            "centre": 743.0,
+            "width": 281.0,
+            "height": 164.0
+          },
+          "aligned": {
+            "centre": 742.500095,
+            "width": 284.11041,
+            "height": 163.0
+          },
+          "phaseOnly": {
+            "centre": 742.500095,
+            "width": 284.11041,
+            "height": 163.0
+          }
+        },
+        {
+          "file": "frame-006.png",
+          "pts": 2048,
+          "seconds": 3.413333,
+          "modelSeconds": -0.020372054160513464,
+          "usable": {
+            "centre": true,
+            "width": true,
+            "height": true
+          },
+          "observed": {
+            "centre": 735.0,
+            "width": 285.0,
+            "height": 166.0
+          },
+          "aligned": {
+            "centre": 742.500095,
+            "width": 284.11041,
+            "height": 163.0
+          },
+          "phaseOnly": {
+            "centre": 735.0,
+            "width": 285.49204186716605,
+            "height": 164.37389866202494
+          }
+        },
+        {
+          "file": "frame-007.png",
+          "pts": 2058,
+          "seconds": 3.43,
+          "modelSeconds": -0.003705054160513477,
+          "usable": {
+            "centre": true,
+            "width": true,
+            "height": true
+          },
+          "observed": {
+            "centre": 715.5,
+            "width": 294.0,
+            "height": 172.0
+          },
+          "aligned": {
+            "centre": 742.500095,
+            "width": 284.11041,
+            "height": 163.0
+          },
+          "phaseOnly": {
+            "centre": 715.5,
+            "width": 291.89849548586545,
+            "height": 170.67604284460157
+          }
+        },
+        {
+          "file": "frame-008.png",
+          "pts": 2068,
+          "seconds": 3.446667,
+          "modelSeconds": 0.01296194583948651,
+          "usable": {
+            "centre": true,
+            "width": true,
+            "height": false
+          },
+          "observed": {
+            "centre": 690.5,
+            "width": 302.0,
+            "height": 186.0
+          },
+          "aligned": {
+            "centre": 732.0810825584982,
+            "width": 286.3443577433811,
+            "height": 165.2207177106605
+          },
+          "phaseOnly": {
+            "centre": 690.5,
+            "width": 300.58680932976966,
+            "height": 178.54945204895532
+          }
+        },
+        {
+          "file": "frame-009.png",
+          "pts": 2078,
+          "seconds": 3.463333,
+          "modelSeconds": 0.029627945839486358,
+          "usable": {
+            "centre": true,
+            "width": true,
+            "height": false
+          },
+          "observed": {
+            "centre": 662.5,
+            "width": 310.0,
+            "height": 186.0
+          },
+          "aligned": {
+            "centre": 700.4211780742087,
+            "width": 297.15644187809374,
+            "height": 175.5790870166056
+          },
+          "phaseOnly": {
+            "centre": 662.5,
+            "width": 309.9638953398081,
+            "height": 185.57207827780712
+          }
+        },
+        {
+          "file": "frame-010.png",
+          "pts": 2088,
+          "seconds": 3.48,
+          "modelSeconds": 0.046294945839486346,
+          "usable": {
+            "centre": true,
+            "width": true,
+            "height": true
+          },
+          "observed": {
+            "centre": 635.0,
+            "width": 311.0,
+            "height": 188.0
+          },
+          "aligned": {
+            "centre": 662.127604896613,
+            "width": 305.3271052592385,
+            "height": 185.65067097256724
+          },
+          "phaseOnly": {
+            "centre": 635.0,
+            "width": 313.69856124206626,
+            "height": 190.68990173550418
+          }
+        },
+        {
+          "file": "frame-011.png",
+          "pts": 2098,
+          "seconds": 3.496667,
+          "modelSeconds": 0.06296194583948633,
+          "usable": {
+            "centre": true,
+            "width": true,
+            "height": true
+          },
+          "observed": {
+            "centre": 608.5,
+            "width": 316.0,
+            "height": 196.0
+          },
+          "aligned": {
+            "centre": 625.0169712979678,
+            "width": 316.412368383282,
+            "height": 192.22811460972147
+          },
+          "phaseOnly": {
+            "centre": 608.5,
+            "width": 320.4758026263395,
+            "height": 194.41775795188445
+          }
+        },
+        {
+          "file": "frame-012.png",
+          "pts": 2108,
+          "seconds": 3.513333,
+          "modelSeconds": 0.07962794583948618,
+          "usable": {
+            "centre": true,
+            "width": true,
+            "height": true
+          },
+          "observed": {
+            "centre": 584.0,
+            "width": 320.0,
+            "height": 196.0
+          },
+          "aligned": {
+            "centre": 592.4735585993407,
+            "width": 323.90588468282925,
+            "height": 196.08804646062777
+          },
+          "phaseOnly": {
+            "centre": 584.0,
+            "width": 325.50065620932685,
+            "height": 196.7855414137327
+          }
+        },
+        {
+          "file": "frame-013.png",
+          "pts": 2128,
+          "seconds": 3.546667,
+          "modelSeconds": 0.11296194583948616,
+          "usable": {
+            "centre": true,
+            "width": true,
+            "height": true
+          },
+          "observed": {
+            "centre": 544.0,
+            "width": 329.0,
+            "height": 204.0
+          },
+          "aligned": {
+            "centre": 544.0,
+            "width": 335.262190661658,
+            "height": 198.00240784436875
+          },
+          "phaseOnly": {
+            "centre": 544.0,
+            "width": 335.262190661658,
+            "height": 198.00240784436875
+          }
+        },
+        {
+          "file": "frame-014.png",
+          "pts": 2138,
+          "seconds": 3.563333,
+          "modelSeconds": 0.12962794583948645,
+          "usable": {
+            "centre": true,
+            "width": true,
+            "height": true
+          },
+          "observed": {
+            "centre": 529.5,
+            "width": 332.0,
+            "height": 204.0
+          },
+          "aligned": {
+            "centre": 527.2683101394495,
+            "width": 334.7231519065358,
+            "height": 196.9005635407521
+          },
+          "phaseOnly": {
+            "centre": 529.5,
+            "width": 334.86996582469635,
+            "height": 197.14415889639693
+          }
+        }
+      ]
+    },
+    {
+      "restWidth": 285,
+      "pressSeconds": 0.116,
+      "anchorModelSeconds": 0.11296194583948614,
+      "authoredPointerDownOnSourceClock": 3.4337050541605136,
+      "trajectoryMetrics": {
+        "centre": {
+          "samples": 8,
+          "rms": 25.09421657486892,
+          "maxAbsolute": 41.581082558498224
+        },
+        "width": {
+          "samples": 8,
+          "rms": 8.393980908564837,
+          "maxAbsolute": 15.655642256618876
+        },
+        "height": {
+          "samples": 6,
+          "rms": 5.166684396567979,
+          "maxAbsolute": 9.0
+        }
+      },
+      "phaseOnlyMetrics": {
+        "centre": {
+          "samples": 8,
+          "rms": 0.0,
+          "maxAbsolute": 0.0
+        },
+        "width": {
+          "samples": 8,
+          "rms": 3.0096466327420286,
+          "maxAbsolute": 5.500780189001546
+        },
+        "height": {
+          "samples": 6,
+          "rms": 3.2084769181175905,
+          "maxAbsolute": 6.856571479769485
+        }
+      },
+      "rows": [
+        {
+          "file": "frame-001.png",
+          "pts": 1988,
+          "seconds": 3.313333,
+          "modelSeconds": -0.12037205416051355,
+          "usable": {
+            "centre": true,
+            "width": true,
+            "height": true
+          },
+          "observed": {
+            "centre": 746.5,
+            "width": 272.0,
+            "height": 170.0
+          },
+          "aligned": {
+            "centre": 742.500095,
+            "width": 284.11041,
+            "height": 163.0
+          },
+          "phaseOnly": {
+            "centre": 742.500095,
+            "width": 284.11041,
+            "height": 163.0
+          }
+        },
+        {
+          "file": "frame-002.png",
+          "pts": 1998,
+          "seconds": 3.33,
+          "modelSeconds": -0.10370505416051357,
+          "usable": {
+            "centre": true,
+            "width": true,
+            "height": false
+          },
+          "observed": {
+            "centre": 745.5,
+            "width": 274.0,
+            "height": 175.0
+          },
+          "aligned": {
+            "centre": 742.500095,
+            "width": 284.11041,
+            "height": 163.0
+          },
+          "phaseOnly": {
+            "centre": 742.500095,
+            "width": 284.11041,
+            "height": 163.0
+          }
+        },
+        {
+          "file": "frame-003.png",
+          "pts": 2008,
+          "seconds": 3.346667,
+          "modelSeconds": -0.08703805416051358,
+          "usable": {
+            "centre": true,
+            "width": true,
+            "height": true
+          },
+          "observed": {
+            "centre": 745.0,
+            "width": 277.0,
+            "height": 168.0
+          },
+          "aligned": {
+            "centre": 742.500095,
+            "width": 284.11041,
+            "height": 163.0
+          },
+          "phaseOnly": {
+            "centre": 742.500095,
+            "width": 284.11041,
+            "height": 163.0
+          }
+        },
+        {
+          "file": "frame-004.png",
+          "pts": 2018,
+          "seconds": 3.363333,
+          "modelSeconds": -0.07037205416051373,
+          "usable": {
+            "centre": true,
+            "width": true,
+            "height": true
+          },
+          "observed": {
+            "centre": 744.0,
+            "width": 279.0,
+            "height": 166.0
+          },
+          "aligned": {
+            "centre": 742.500095,
+            "width": 284.11041,
+            "height": 163.0
+          },
+          "phaseOnly": {
+            "centre": 742.500095,
+            "width": 284.11041,
+            "height": 163.0
+          }
+        },
+        {
+          "file": "frame-005.png",
+          "pts": 2038,
+          "seconds": 3.396667,
+          "modelSeconds": -0.037038054160513756,
+          "usable": {
+            "centre": true,
+            "width": true,
+            "height": true
+          },
+          "observed": {
+            "centre": 743.0,
+            "width": 281.0,
+            "height": 164.0
+          },
+          "aligned": {
+            "centre": 742.500095,
+            "width": 284.11041,
+            "height": 163.0
+          },
+          "phaseOnly": {
+            "centre": 742.500095,
+            "width": 284.11041,
+            "height": 163.0
+          }
+        },
+        {
+          "file": "frame-006.png",
+          "pts": 2048,
+          "seconds": 3.413333,
+          "modelSeconds": -0.020372054160513464,
+          "usable": {
+            "centre": true,
+            "width": true,
+            "height": true
+          },
+          "observed": {
+            "centre": 735.0,
+            "width": 285.0,
+            "height": 166.0
+          },
+          "aligned": {
+            "centre": 742.500095,
+            "width": 284.11041,
+            "height": 163.0
+          },
+          "phaseOnly": {
+            "centre": 735.0,
+            "width": 285.49204186716605,
+            "height": 164.37389866202494
+          }
+        },
+        {
+          "file": "frame-007.png",
+          "pts": 2058,
+          "seconds": 3.43,
+          "modelSeconds": -0.003705054160513477,
+          "usable": {
+            "centre": true,
+            "width": true,
+            "height": true
+          },
+          "observed": {
+            "centre": 715.5,
+            "width": 294.0,
+            "height": 172.0
+          },
+          "aligned": {
+            "centre": 742.500095,
+            "width": 284.11041,
+            "height": 163.0
+          },
+          "phaseOnly": {
+            "centre": 715.5,
+            "width": 291.89849548586545,
+            "height": 170.67604284460157
+          }
+        },
+        {
+          "file": "frame-008.png",
+          "pts": 2068,
+          "seconds": 3.446667,
+          "modelSeconds": 0.01296194583948651,
+          "usable": {
+            "centre": true,
+            "width": true,
+            "height": false
+          },
+          "observed": {
+            "centre": 690.5,
+            "width": 302.0,
+            "height": 186.0
+          },
+          "aligned": {
+            "centre": 732.0810825584982,
+            "width": 286.3443577433811,
+            "height": 165.2207177106605
+          },
+          "phaseOnly": {
+            "centre": 690.5,
+            "width": 300.58680932976966,
+            "height": 178.54945204895532
+          }
+        },
+        {
+          "file": "frame-009.png",
+          "pts": 2078,
+          "seconds": 3.463333,
+          "modelSeconds": 0.029627945839486358,
+          "usable": {
+            "centre": true,
+            "width": true,
+            "height": false
+          },
+          "observed": {
+            "centre": 662.5,
+            "width": 310.0,
+            "height": 186.0
+          },
+          "aligned": {
+            "centre": 700.4211780742087,
+            "width": 297.15644187809374,
+            "height": 175.5790870166056
+          },
+          "phaseOnly": {
+            "centre": 662.5,
+            "width": 309.9638953398081,
+            "height": 185.57207827780712
+          }
+        },
+        {
+          "file": "frame-010.png",
+          "pts": 2088,
+          "seconds": 3.48,
+          "modelSeconds": 0.046294945839486346,
+          "usable": {
+            "centre": true,
+            "width": true,
+            "height": true
+          },
+          "observed": {
+            "centre": 635.0,
+            "width": 311.0,
+            "height": 188.0
+          },
+          "aligned": {
+            "centre": 662.127604896613,
+            "width": 305.3271052592385,
+            "height": 185.65067097256724
+          },
+          "phaseOnly": {
+            "centre": 635.0,
+            "width": 313.69856124206626,
+            "height": 190.68990173550418
+          }
+        },
+        {
+          "file": "frame-011.png",
+          "pts": 2098,
+          "seconds": 3.496667,
+          "modelSeconds": 0.06296194583948633,
+          "usable": {
+            "centre": true,
+            "width": true,
+            "height": true
+          },
+          "observed": {
+            "centre": 608.5,
+            "width": 316.0,
+            "height": 196.0
+          },
+          "aligned": {
+            "centre": 625.0169712979678,
+            "width": 316.412368383282,
+            "height": 192.22811460972147
+          },
+          "phaseOnly": {
+            "centre": 608.5,
+            "width": 320.4758026263395,
+            "height": 194.41775795188445
+          }
+        },
+        {
+          "file": "frame-012.png",
+          "pts": 2108,
+          "seconds": 3.513333,
+          "modelSeconds": 0.07962794583948618,
+          "usable": {
+            "centre": true,
+            "width": true,
+            "height": true
+          },
+          "observed": {
+            "centre": 584.0,
+            "width": 320.0,
+            "height": 196.0
+          },
+          "aligned": {
+            "centre": 592.4735585993407,
+            "width": 323.90588468282925,
+            "height": 196.08804646062777
+          },
+          "phaseOnly": {
+            "centre": 584.0,
+            "width": 325.50078018900155,
+            "height": 196.78564813446195
+          }
+        },
+        {
+          "file": "frame-013.png",
+          "pts": 2128,
+          "seconds": 3.546667,
+          "modelSeconds": 0.11296194583948616,
+          "usable": {
+            "centre": true,
+            "width": true,
+            "height": true
+          },
+          "observed": {
+            "centre": 544.0,
+            "width": 329.0,
+            "height": 204.0
+          },
+          "aligned": {
+            "centre": 544.0,
+            "width": 335.26252405315194,
+            "height": 198.0026056706137
+          },
+          "phaseOnly": {
+            "centre": 544.0,
+            "width": 335.2625240531519,
+            "height": 198.0026056706137
+          }
+        },
+        {
+          "file": "frame-014.png",
+          "pts": 2138,
+          "seconds": 3.563333,
+          "modelSeconds": 0.12962794583948645,
+          "usable": {
+            "centre": true,
+            "width": true,
+            "height": true
+          },
+          "observed": {
+            "centre": 529.5,
+            "width": 332.0,
+            "height": 204.0
+          },
+          "aligned": {
+            "centre": 527.2683118184262,
+            "width": 334.72252198039666,
+            "height": 196.89975018279847
+          },
+          "phaseOnly": {
+            "centre": 529.5,
+            "width": 334.86937630471783,
+            "height": 197.14342852023051
+          }
+        }
+      ]
+    },
+    {
+      "restWidth": 285,
+      "pressSeconds": 0.16,
+      "anchorModelSeconds": 0.11296194583948614,
+      "authoredPointerDownOnSourceClock": 3.4337050541605136,
+      "trajectoryMetrics": {
+        "centre": {
+          "samples": 8,
+          "rms": 25.113565679525237,
+          "maxAbsolute": 41.581082558498224
+        },
+        "width": {
+          "samples": 8,
+          "rms": 8.371846486296684,
+          "maxAbsolute": 15.655642256618876
+        },
+        "height": {
+          "samples": 6,
+          "rms": 5.176079816071155,
+          "maxAbsolute": 9.0
+        }
+      },
+      "phaseOnlyMetrics": {
+        "centre": {
+          "samples": 8,
+          "rms": 0.0,
+          "maxAbsolute": 0.0
+        },
+        "width": {
+          "samples": 8,
+          "rms": 2.8558397036534804,
+          "maxAbsolute": 5.500780189001546
+        },
+        "height": {
+          "samples": 6,
+          "rms": 3.5218529474477918,
+          "maxAbsolute": 7.724462230686896
+        }
+      },
+      "rows": [
+        {
+          "file": "frame-001.png",
+          "pts": 1988,
+          "seconds": 3.313333,
+          "modelSeconds": -0.12037205416051355,
+          "usable": {
+            "centre": true,
+            "width": true,
+            "height": true
+          },
+          "observed": {
+            "centre": 746.5,
+            "width": 272.0,
+            "height": 170.0
+          },
+          "aligned": {
+            "centre": 742.500095,
+            "width": 284.11041,
+            "height": 163.0
+          },
+          "phaseOnly": {
+            "centre": 742.500095,
+            "width": 284.11041,
+            "height": 163.0
+          }
+        },
+        {
+          "file": "frame-002.png",
+          "pts": 1998,
+          "seconds": 3.33,
+          "modelSeconds": -0.10370505416051357,
+          "usable": {
+            "centre": true,
+            "width": true,
+            "height": false
+          },
+          "observed": {
+            "centre": 745.5,
+            "width": 274.0,
+            "height": 175.0
+          },
+          "aligned": {
+            "centre": 742.500095,
+            "width": 284.11041,
+            "height": 163.0
+          },
+          "phaseOnly": {
+            "centre": 742.500095,
+            "width": 284.11041,
+            "height": 163.0
+          }
+        },
+        {
+          "file": "frame-003.png",
+          "pts": 2008,
+          "seconds": 3.346667,
+          "modelSeconds": -0.08703805416051358,
+          "usable": {
+            "centre": true,
+            "width": true,
+            "height": true
+          },
+          "observed": {
+            "centre": 745.0,
+            "width": 277.0,
+            "height": 168.0
+          },
+          "aligned": {
+            "centre": 742.500095,
+            "width": 284.11041,
+            "height": 163.0
+          },
+          "phaseOnly": {
+            "centre": 742.500095,
+            "width": 284.11041,
+            "height": 163.0
+          }
+        },
+        {
+          "file": "frame-004.png",
+          "pts": 2018,
+          "seconds": 3.363333,
+          "modelSeconds": -0.07037205416051373,
+          "usable": {
+            "centre": true,
+            "width": true,
+            "height": true
+          },
+          "observed": {
+            "centre": 744.0,
+            "width": 279.0,
+            "height": 166.0
+          },
+          "aligned": {
+            "centre": 742.500095,
+            "width": 284.11041,
+            "height": 163.0
+          },
+          "phaseOnly": {
+            "centre": 742.500095,
+            "width": 284.11041,
+            "height": 163.0
+          }
+        },
+        {
+          "file": "frame-005.png",
+          "pts": 2038,
+          "seconds": 3.396667,
+          "modelSeconds": -0.037038054160513756,
+          "usable": {
+            "centre": true,
+            "width": true,
+            "height": true
+          },
+          "observed": {
+            "centre": 743.0,
+            "width": 281.0,
+            "height": 164.0
+          },
+          "aligned": {
+            "centre": 742.500095,
+            "width": 284.11041,
+            "height": 163.0
+          },
+          "phaseOnly": {
+            "centre": 742.500095,
+            "width": 284.11041,
+            "height": 163.0
+          }
+        },
+        {
+          "file": "frame-006.png",
+          "pts": 2048,
+          "seconds": 3.413333,
+          "modelSeconds": -0.020372054160513464,
+          "usable": {
+            "centre": true,
+            "width": true,
+            "height": true
+          },
+          "observed": {
+            "centre": 735.0,
+            "width": 285.0,
+            "height": 166.0
+          },
+          "aligned": {
+            "centre": 742.500095,
+            "width": 284.11041,
+            "height": 163.0
+          },
+          "phaseOnly": {
+            "centre": 735.0,
+            "width": 285.49204186716605,
+            "height": 164.37389866202494
+          }
+        },
+        {
+          "file": "frame-007.png",
+          "pts": 2058,
+          "seconds": 3.43,
+          "modelSeconds": -0.003705054160513477,
+          "usable": {
+            "centre": true,
+            "width": true,
+            "height": true
+          },
+          "observed": {
+            "centre": 715.5,
+            "width": 294.0,
+            "height": 172.0
+          },
+          "aligned": {
+            "centre": 742.500095,
+            "width": 284.11041,
+            "height": 163.0
+          },
+          "phaseOnly": {
+            "centre": 715.5,
+            "width": 291.89849548586545,
+            "height": 170.67604284460157
+          }
+        },
+        {
+          "file": "frame-008.png",
+          "pts": 2068,
+          "seconds": 3.446667,
+          "modelSeconds": 0.01296194583948651,
+          "usable": {
+            "centre": true,
+            "width": true,
+            "height": false
+          },
+          "observed": {
+            "centre": 690.5,
+            "width": 302.0,
+            "height": 186.0
+          },
+          "aligned": {
+            "centre": 732.0810825584982,
+            "width": 286.3443577433811,
+            "height": 165.2207177106605
+          },
+          "phaseOnly": {
+            "centre": 690.5,
+            "width": 300.58680932976966,
+            "height": 178.54945204895532
+          }
+        },
+        {
+          "file": "frame-009.png",
+          "pts": 2078,
+          "seconds": 3.463333,
+          "modelSeconds": 0.029627945839486358,
+          "usable": {
+            "centre": true,
+            "width": true,
+            "height": false
+          },
+          "observed": {
+            "centre": 662.5,
+            "width": 310.0,
+            "height": 186.0
+          },
+          "aligned": {
+            "centre": 700.4211780742087,
+            "width": 297.15644187809374,
+            "height": 175.5790870166056
+          },
+          "phaseOnly": {
+            "centre": 662.5,
+            "width": 309.9638953398081,
+            "height": 185.57207827780712
+          }
+        },
+        {
+          "file": "frame-010.png",
+          "pts": 2088,
+          "seconds": 3.48,
+          "modelSeconds": 0.046294945839486346,
+          "usable": {
+            "centre": true,
+            "width": true,
+            "height": true
+          },
+          "observed": {
+            "centre": 635.0,
+            "width": 311.0,
+            "height": 188.0
+          },
+          "aligned": {
+            "centre": 662.127604896613,
+            "width": 305.3271052592385,
+            "height": 185.65067097256724
+          },
+          "phaseOnly": {
+            "centre": 635.0,
+            "width": 313.69856124206626,
+            "height": 190.68990173550418
+          }
+        },
+        {
+          "file": "frame-011.png",
+          "pts": 2098,
+          "seconds": 3.496667,
+          "modelSeconds": 0.06296194583948633,
+          "usable": {
+            "centre": true,
+            "width": true,
+            "height": true
+          },
+          "observed": {
+            "centre": 608.5,
+            "width": 316.0,
+            "height": 196.0
+          },
+          "aligned": {
+            "centre": 625.0169712979678,
+            "width": 316.412368383282,
+            "height": 192.22811460972147
+          },
+          "phaseOnly": {
+            "centre": 608.5,
+            "width": 320.4758026263395,
+            "height": 194.41775795188445
+          }
+        },
+        {
+          "file": "frame-012.png",
+          "pts": 2108,
+          "seconds": 3.513333,
+          "modelSeconds": 0.07962794583948618,
+          "usable": {
+            "centre": true,
+            "width": true,
+            "height": true
+          },
+          "observed": {
+            "centre": 584.0,
+            "width": 320.0,
+            "height": 196.0
+          },
+          "aligned": {
+            "centre": 592.4735585993407,
+            "width": 323.90588468282925,
+            "height": 196.08804646062777
+          },
+          "phaseOnly": {
+            "centre": 584.0,
+            "width": 325.50078018900155,
+            "height": 196.78564813446195
+          }
+        },
+        {
+          "file": "frame-013.png",
+          "pts": 2128,
+          "seconds": 3.546667,
+          "modelSeconds": 0.11296194583948616,
+          "usable": {
+            "centre": true,
+            "width": true,
+            "height": true
+          },
+          "observed": {
+            "centre": 544.0,
+            "width": 329.0,
+            "height": 204.0
+          },
+          "aligned": {
+            "centre": 544.0,
+            "width": 335.26252405315194,
+            "height": 198.0026056706137
+          },
+          "phaseOnly": {
+            "centre": 544.0,
+            "width": 335.2625240531519,
+            "height": 198.0026056706137
+          }
+        },
+        {
+          "file": "frame-014.png",
+          "pts": 2138,
+          "seconds": 3.563333,
+          "modelSeconds": 0.12962794583948645,
+          "usable": {
+            "centre": true,
+            "width": true,
+            "height": true
+          },
+          "observed": {
+            "centre": 529.5,
+            "width": 332.0,
+            "height": 204.0
+          },
+          "aligned": {
+            "centre": 533.0710274721699,
+            "width": 334.1079162003933,
+            "height": 196.8588099648398
+          },
+          "phaseOnly": {
+            "centre": 529.5,
+            "width": 333.00801827859493,
+            "height": 196.2755377693131
+          }
+        }
+      ]
+    },
+    {
+      "restWidth": 285,
+      "pressSeconds": 0.24,
+      "anchorModelSeconds": 0.11296194583948614,
+      "authoredPointerDownOnSourceClock": 3.4337050541605136,
+      "trajectoryMetrics": {
+        "centre": {
+          "samples": 8,
+          "rms": 25.113565679525237,
+          "maxAbsolute": 41.581082558498224
+        },
+        "width": {
+          "samples": 8,
+          "rms": 8.371846486296684,
+          "maxAbsolute": 15.655642256618876
+        },
+        "height": {
+          "samples": 6,
+          "rms": 5.176079816071155,
+          "maxAbsolute": 9.0
+        }
+      },
+      "phaseOnlyMetrics": {
+        "centre": {
+          "samples": 8,
+          "rms": 0.0,
+          "maxAbsolute": 0.0
+        },
+        "width": {
+          "samples": 8,
+          "rms": 2.8558397036534804,
+          "maxAbsolute": 5.500780189001546
+        },
+        "height": {
+          "samples": 6,
+          "rms": 3.5218529474477918,
+          "maxAbsolute": 7.724462230686896
+        }
+      },
+      "rows": [
+        {
+          "file": "frame-001.png",
+          "pts": 1988,
+          "seconds": 3.313333,
+          "modelSeconds": -0.12037205416051355,
+          "usable": {
+            "centre": true,
+            "width": true,
+            "height": true
+          },
+          "observed": {
+            "centre": 746.5,
+            "width": 272.0,
+            "height": 170.0
+          },
+          "aligned": {
+            "centre": 742.500095,
+            "width": 284.11041,
+            "height": 163.0
+          },
+          "phaseOnly": {
+            "centre": 742.500095,
+            "width": 284.11041,
+            "height": 163.0
+          }
+        },
+        {
+          "file": "frame-002.png",
+          "pts": 1998,
+          "seconds": 3.33,
+          "modelSeconds": -0.10370505416051357,
+          "usable": {
+            "centre": true,
+            "width": true,
+            "height": false
+          },
+          "observed": {
+            "centre": 745.5,
+            "width": 274.0,
+            "height": 175.0
+          },
+          "aligned": {
+            "centre": 742.500095,
+            "width": 284.11041,
+            "height": 163.0
+          },
+          "phaseOnly": {
+            "centre": 742.500095,
+            "width": 284.11041,
+            "height": 163.0
+          }
+        },
+        {
+          "file": "frame-003.png",
+          "pts": 2008,
+          "seconds": 3.346667,
+          "modelSeconds": -0.08703805416051358,
+          "usable": {
+            "centre": true,
+            "width": true,
+            "height": true
+          },
+          "observed": {
+            "centre": 745.0,
+            "width": 277.0,
+            "height": 168.0
+          },
+          "aligned": {
+            "centre": 742.500095,
+            "width": 284.11041,
+            "height": 163.0
+          },
+          "phaseOnly": {
+            "centre": 742.500095,
+            "width": 284.11041,
+            "height": 163.0
+          }
+        },
+        {
+          "file": "frame-004.png",
+          "pts": 2018,
+          "seconds": 3.363333,
+          "modelSeconds": -0.07037205416051373,
+          "usable": {
+            "centre": true,
+            "width": true,
+            "height": true
+          },
+          "observed": {
+            "centre": 744.0,
+            "width": 279.0,
+            "height": 166.0
+          },
+          "aligned": {
+            "centre": 742.500095,
+            "width": 284.11041,
+            "height": 163.0
+          },
+          "phaseOnly": {
+            "centre": 742.500095,
+            "width": 284.11041,
+            "height": 163.0
+          }
+        },
+        {
+          "file": "frame-005.png",
+          "pts": 2038,
+          "seconds": 3.396667,
+          "modelSeconds": -0.037038054160513756,
+          "usable": {
+            "centre": true,
+            "width": true,
+            "height": true
+          },
+          "observed": {
+            "centre": 743.0,
+            "width": 281.0,
+            "height": 164.0
+          },
+          "aligned": {
+            "centre": 742.500095,
+            "width": 284.11041,
+            "height": 163.0
+          },
+          "phaseOnly": {
+            "centre": 742.500095,
+            "width": 284.11041,
+            "height": 163.0
+          }
+        },
+        {
+          "file": "frame-006.png",
+          "pts": 2048,
+          "seconds": 3.413333,
+          "modelSeconds": -0.020372054160513464,
+          "usable": {
+            "centre": true,
+            "width": true,
+            "height": true
+          },
+          "observed": {
+            "centre": 735.0,
+            "width": 285.0,
+            "height": 166.0
+          },
+          "aligned": {
+            "centre": 742.500095,
+            "width": 284.11041,
+            "height": 163.0
+          },
+          "phaseOnly": {
+            "centre": 735.0,
+            "width": 285.49204186716605,
+            "height": 164.37389866202494
+          }
+        },
+        {
+          "file": "frame-007.png",
+          "pts": 2058,
+          "seconds": 3.43,
+          "modelSeconds": -0.003705054160513477,
+          "usable": {
+            "centre": true,
+            "width": true,
+            "height": true
+          },
+          "observed": {
+            "centre": 715.5,
+            "width": 294.0,
+            "height": 172.0
+          },
+          "aligned": {
+            "centre": 742.500095,
+            "width": 284.11041,
+            "height": 163.0
+          },
+          "phaseOnly": {
+            "centre": 715.5,
+            "width": 291.89849548586545,
+            "height": 170.67604284460157
+          }
+        },
+        {
+          "file": "frame-008.png",
+          "pts": 2068,
+          "seconds": 3.446667,
+          "modelSeconds": 0.01296194583948651,
+          "usable": {
+            "centre": true,
+            "width": true,
+            "height": false
+          },
+          "observed": {
+            "centre": 690.5,
+            "width": 302.0,
+            "height": 186.0
+          },
+          "aligned": {
+            "centre": 732.0810825584982,
+            "width": 286.3443577433811,
+            "height": 165.2207177106605
+          },
+          "phaseOnly": {
+            "centre": 690.5,
+            "width": 300.58680932976966,
+            "height": 178.54945204895532
+          }
+        },
+        {
+          "file": "frame-009.png",
+          "pts": 2078,
+          "seconds": 3.463333,
+          "modelSeconds": 0.029627945839486358,
+          "usable": {
+            "centre": true,
+            "width": true,
+            "height": false
+          },
+          "observed": {
+            "centre": 662.5,
+            "width": 310.0,
+            "height": 186.0
+          },
+          "aligned": {
+            "centre": 700.4211780742087,
+            "width": 297.15644187809374,
+            "height": 175.5790870166056
+          },
+          "phaseOnly": {
+            "centre": 662.5,
+            "width": 309.9638953398081,
+            "height": 185.57207827780712
+          }
+        },
+        {
+          "file": "frame-010.png",
+          "pts": 2088,
+          "seconds": 3.48,
+          "modelSeconds": 0.046294945839486346,
+          "usable": {
+            "centre": true,
+            "width": true,
+            "height": true
+          },
+          "observed": {
+            "centre": 635.0,
+            "width": 311.0,
+            "height": 188.0
+          },
+          "aligned": {
+            "centre": 662.127604896613,
+            "width": 305.3271052592385,
+            "height": 185.65067097256724
+          },
+          "phaseOnly": {
+            "centre": 635.0,
+            "width": 313.69856124206626,
+            "height": 190.68990173550418
+          }
+        },
+        {
+          "file": "frame-011.png",
+          "pts": 2098,
+          "seconds": 3.496667,
+          "modelSeconds": 0.06296194583948633,
+          "usable": {
+            "centre": true,
+            "width": true,
+            "height": true
+          },
+          "observed": {
+            "centre": 608.5,
+            "width": 316.0,
+            "height": 196.0
+          },
+          "aligned": {
+            "centre": 625.0169712979678,
+            "width": 316.412368383282,
+            "height": 192.22811460972147
+          },
+          "phaseOnly": {
+            "centre": 608.5,
+            "width": 320.4758026263395,
+            "height": 194.41775795188445
+          }
+        },
+        {
+          "file": "frame-012.png",
+          "pts": 2108,
+          "seconds": 3.513333,
+          "modelSeconds": 0.07962794583948618,
+          "usable": {
+            "centre": true,
+            "width": true,
+            "height": true
+          },
+          "observed": {
+            "centre": 584.0,
+            "width": 320.0,
+            "height": 196.0
+          },
+          "aligned": {
+            "centre": 592.4735585993407,
+            "width": 323.90588468282925,
+            "height": 196.08804646062777
+          },
+          "phaseOnly": {
+            "centre": 584.0,
+            "width": 325.50078018900155,
+            "height": 196.78564813446195
+          }
+        },
+        {
+          "file": "frame-013.png",
+          "pts": 2128,
+          "seconds": 3.546667,
+          "modelSeconds": 0.11296194583948616,
+          "usable": {
+            "centre": true,
+            "width": true,
+            "height": true
+          },
+          "observed": {
+            "centre": 544.0,
+            "width": 329.0,
+            "height": 204.0
+          },
+          "aligned": {
+            "centre": 544.0,
+            "width": 335.26252405315194,
+            "height": 198.0026056706137
+          },
+          "phaseOnly": {
+            "centre": 544.0,
+            "width": 335.2625240531519,
+            "height": 198.0026056706137
+          }
+        },
+        {
+          "file": "frame-014.png",
+          "pts": 2138,
+          "seconds": 3.563333,
+          "modelSeconds": 0.12962794583948645,
+          "usable": {
+            "centre": true,
+            "width": true,
+            "height": true
+          },
+          "observed": {
+            "centre": 529.5,
+            "width": 332.0,
+            "height": 204.0
+          },
+          "aligned": {
+            "centre": 533.0710274721699,
+            "width": 334.1079162003933,
+            "height": 196.8588099648398
+          },
+          "phaseOnly": {
+            "centre": 529.5,
+            "width": 333.00801827859493,
+            "height": 196.2755377693131
+          }
+        }
+      ]
+    },
+    {
+      "restWidth": 278,
+      "pressSeconds": 0.04,
+      "anchorModelSeconds": 0.11296224684974292,
+      "authoredPointerDownOnSourceClock": 3.433704753150257,
+      "trajectoryMetrics": {
+        "centre": {
+          "samples": 8,
+          "rms": 25.09392134012299,
+          "maxAbsolute": 41.580944158617285
+        },
+        "width": {
+          "samples": 8,
+          "rms": 13.414805342503904,
+          "maxAbsolute": 22.61775566224003
+        },
+        "height": {
+          "samples": 6,
+          "rms": 3.047579604953975,
+          "maxAbsolute": 4.5
+        }
+      },
+      "phaseOnlyMetrics": {
+        "centre": {
+          "samples": 8,
+          "rms": 0.0,
+          "maxAbsolute": 0.0
+        },
+        "width": {
+          "samples": 8,
+          "rms": 5.676141263471446,
+          "maxAbsolute": 9.02366774669963
+        },
+        "height": {
+          "samples": 6,
+          "rms": 4.132824409485782,
+          "maxAbsolute": 6.789740167762545
+        }
+      },
+      "rows": [
+        {
+          "file": "frame-001.png",
+          "pts": 1988,
+          "seconds": 3.313333,
+          "modelSeconds": -0.12037175315025683,
+          "usable": {
+            "centre": true,
+            "width": true,
+            "height": true
+          },
+          "observed": {
+            "centre": 746.5,
+            "width": 272.0,
+            "height": 170.0
+          },
+          "aligned": {
+            "centre": 742.500335,
+            "width": 277.13421000000005,
+            "height": 167.5
+          },
+          "phaseOnly": {
+            "centre": 742.500335,
+            "width": 277.13421000000005,
+            "height": 167.5
+          }
+        },
+        {
+          "file": "frame-002.png",
+          "pts": 1998,
+          "seconds": 3.33,
+          "modelSeconds": -0.10370475315025685,
+          "usable": {
+            "centre": true,
+            "width": true,
+            "height": false
+          },
+          "observed": {
+            "centre": 745.5,
+            "width": 274.0,
+            "height": 175.0
+          },
+          "aligned": {
+            "centre": 742.500335,
+            "width": 277.13421000000005,
+            "height": 167.5
+          },
+          "phaseOnly": {
+            "centre": 742.500335,
+            "width": 277.13421000000005,
+            "height": 167.5
+          }
+        },
+        {
+          "file": "frame-003.png",
+          "pts": 2008,
+          "seconds": 3.346667,
+          "modelSeconds": -0.08703775315025686,
+          "usable": {
+            "centre": true,
+            "width": true,
+            "height": true
+          },
+          "observed": {
+            "centre": 745.0,
+            "width": 277.0,
+            "height": 168.0
+          },
+          "aligned": {
+            "centre": 742.500335,
+            "width": 277.13421000000005,
+            "height": 167.5
+          },
+          "phaseOnly": {
+            "centre": 742.500335,
+            "width": 277.13421000000005,
+            "height": 167.5
+          }
+        },
+        {
+          "file": "frame-004.png",
+          "pts": 2018,
+          "seconds": 3.363333,
+          "modelSeconds": -0.07037175315025701,
+          "usable": {
+            "centre": true,
+            "width": true,
+            "height": true
+          },
+          "observed": {
+            "centre": 744.0,
+            "width": 279.0,
+            "height": 166.0
+          },
+          "aligned": {
+            "centre": 742.500335,
+            "width": 277.13421000000005,
+            "height": 167.5
+          },
+          "phaseOnly": {
+            "centre": 742.500335,
+            "width": 277.13421000000005,
+            "height": 167.5
+          }
+        },
+        {
+          "file": "frame-005.png",
+          "pts": 2038,
+          "seconds": 3.396667,
+          "modelSeconds": -0.037037753150257036,
+          "usable": {
+            "centre": true,
+            "width": true,
+            "height": true
+          },
+          "observed": {
+            "centre": 743.0,
+            "width": 281.0,
+            "height": 164.0
+          },
+          "aligned": {
+            "centre": 742.500335,
+            "width": 277.13421000000005,
+            "height": 167.5
+          },
+          "phaseOnly": {
+            "centre": 742.500335,
+            "width": 277.13421000000005,
+            "height": 167.5
+          }
+        },
+        {
+          "file": "frame-006.png",
+          "pts": 2048,
+          "seconds": 3.413333,
+          "modelSeconds": -0.020371753150256744,
+          "usable": {
+            "centre": true,
+            "width": true,
+            "height": true
+          },
+          "observed": {
+            "centre": 735.0,
+            "width": 285.0,
+            "height": 166.0
+          },
+          "aligned": {
+            "centre": 742.500335,
+            "width": 277.13421000000005,
+            "height": 167.5
+          },
+          "phaseOnly": {
+            "centre": 735.0,
+            "width": 278.52452762090536,
+            "height": 168.88302089581677
+          }
+        },
+        {
+          "file": "frame-007.png",
+          "pts": 2058,
+          "seconds": 3.43,
+          "modelSeconds": -0.0037047531502567566,
+          "usable": {
+            "centre": true,
+            "width": true,
+            "height": true
+          },
+          "observed": {
+            "centre": 715.5,
+            "width": 294.0,
+            "height": 172.0
+          },
+          "aligned": {
+            "centre": 742.500335,
+            "width": 277.13421000000005,
+            "height": 167.5
+          },
+          "phaseOnly": {
+            "centre": 715.5,
+            "width": 284.97633225330037,
+            "height": 175.2177677907784
+          }
+        },
+        {
+          "file": "frame-008.png",
+          "pts": 2068,
+          "seconds": 3.446667,
+          "modelSeconds": 0.01296224684974323,
+          "usable": {
+            "centre": true,
+            "width": true,
+            "height": false
+          },
+          "observed": {
+            "centre": 690.5,
+            "width": 302.0,
+            "height": 186.0
+          },
+          "aligned": {
+            "centre": 732.0809441586173,
+            "width": 279.38224433775997,
+            "height": 169.73533459888256
+          },
+          "phaseOnly": {
+            "centre": 690.5,
+            "width": 293.76999252975395,
+            "height": 183.0646833501091
+          }
+        },
+        {
+          "file": "frame-009.png",
+          "pts": 2078,
+          "seconds": 3.463333,
+          "modelSeconds": 0.02962824684974308,
+          "usable": {
+            "centre": true,
+            "width": true,
+            "height": false
+          },
+          "observed": {
+            "centre": 662.5,
+            "width": 310.0,
+            "height": 186.0
+          },
+          "aligned": {
+            "centre": 700.4204919667669,
+            "width": 290.28902838353827,
+            "height": 180.11868735646834
+          },
+          "phaseOnly": {
+            "centre": 662.5,
+            "width": 303.3537823553924,
+            "height": 189.92068398414858
+          }
+        },
+        {
+          "file": "frame-010.png",
+          "pts": 2088,
+          "seconds": 3.48,
+          "modelSeconds": 0.046295246849743066,
+          "usable": {
+            "centre": true,
+            "width": true,
+            "height": true
+          },
+          "observed": {
+            "centre": 635.0,
+            "width": 311.0,
+            "height": 188.0
+          },
+          "aligned": {
+            "centre": 662.1268038286433,
+            "width": 298.83289592798667,
+            "height": 189.99637633598968
+          },
+          "phaseOnly": {
+            "centre": 635.0,
+            "width": 307.44311409631246,
+            "height": 194.78974016776255
+          }
+        },
+        {
+          "file": "frame-011.png",
+          "pts": 2098,
+          "seconds": 3.496667,
+          "modelSeconds": 0.06296224684974305,
+          "usable": {
+            "centre": true,
+            "width": true,
+            "height": true
+          },
+          "observed": {
+            "centre": 608.5,
+            "width": 316.0,
+            "height": 196.0
+          },
+          "aligned": {
+            "centre": 625.0165535547633,
+            "width": 310.2429830173162,
+            "height": 196.23879121287132
+          },
+          "phaseOnly": {
+            "centre": 608.5,
+            "width": 314.4434578421264,
+            "height": 198.2843503377273
+          }
+        },
+        {
+          "file": "frame-012.png",
+          "pts": 2108,
+          "seconds": 3.513333,
+          "modelSeconds": 0.0796282468497429,
+          "usable": {
+            "centre": true,
+            "width": true,
+            "height": true
+          },
+          "observed": {
+            "centre": 584.0,
+            "width": 320.0,
+            "height": 196.0
+          },
+          "aligned": {
+            "centre": 592.4727150049827,
+            "width": 318.0025381856044,
+            "height": 199.81738362073227
+          },
+          "phaseOnly": {
+            "centre": 584.0,
+            "width": 319.66390349404946,
+            "height": 200.44414246452536
+          }
+        },
+        {
+          "file": "frame-013.png",
+          "pts": 2128,
+          "seconds": 3.546667,
+          "modelSeconds": 0.11296224684974288,
+          "usable": {
+            "centre": true,
+            "width": true,
+            "height": true
+          },
+          "observed": {
+            "centre": 544.0,
+            "width": 329.0,
+            "height": 204.0
+          },
+          "aligned": {
+            "centre": 544.0,
+            "width": 329.6182501984448,
+            "height": 201.36407639958782
+          },
+          "phaseOnly": {
+            "centre": 544.0,
+            "width": 329.6182501984448,
+            "height": 201.36407639958782
+          }
+        },
+        {
+          "file": "frame-014.png",
+          "pts": 2138,
+          "seconds": 3.563333,
+          "modelSeconds": 0.12962824684974317,
+          "usable": {
+            "centre": true,
+            "width": true,
+            "height": true
+          },
+          "observed": {
+            "centre": 529.5,
+            "width": 332.0,
+            "height": 204.0
+          },
+          "aligned": {
+            "centre": 527.2683110419708,
+            "width": 329.15857406041613,
+            "height": 200.17750196009084
+          },
+          "phaseOnly": {
+            "centre": 529.5,
+            "width": 329.29854458011596,
+            "height": 200.42979604216208
+          }
+        }
+      ]
+    },
+    {
+      "restWidth": 278,
+      "pressSeconds": 0.08,
+      "anchorModelSeconds": 0.11296225274256673,
+      "authoredPointerDownOnSourceClock": 3.433704747257433,
+      "trajectoryMetrics": {
+        "centre": {
+          "samples": 8,
+          "rms": 25.093916497118954,
+          "maxAbsolute": 41.580935411862356
+        },
+        "width": {
+          "samples": 8,
+          "rms": 13.414860399489603,
+          "maxAbsolute": 22.617752926671983
+        },
+        "height": {
+          "samples": 6,
+          "rms": 3.0476020651774753,
+          "maxAbsolute": 4.5
+        }
+      },
+      "phaseOnlyMetrics": {
+        "centre": {
+          "samples": 8,
+          "rms": 0.0,
+          "maxAbsolute": 0.0
+        },
+        "width": {
+          "samples": 8,
+          "rms": 5.676230275057598,
+          "maxAbsolute": 9.02366774669963
+        },
+        "height": {
+          "samples": 6,
+          "rms": 4.132893410659834,
+          "maxAbsolute": 6.789919922106577
+        }
+      },
+      "rows": [
+        {
+          "file": "frame-001.png",
+          "pts": 1988,
+          "seconds": 3.313333,
+          "modelSeconds": -0.12037174725743283,
+          "usable": {
+            "centre": true,
+            "width": true,
+            "height": true
+          },
+          "observed": {
+            "centre": 746.5,
+            "width": 272.0,
+            "height": 170.0
+          },
+          "aligned": {
+            "centre": 742.500335,
+            "width": 277.13421000000005,
+            "height": 167.5
+          },
+          "phaseOnly": {
+            "centre": 742.500335,
+            "width": 277.13421000000005,
+            "height": 167.5
+          }
+        },
+        {
+          "file": "frame-002.png",
+          "pts": 1998,
+          "seconds": 3.33,
+          "modelSeconds": -0.10370474725743284,
+          "usable": {
+            "centre": true,
+            "width": true,
+            "height": false
+          },
+          "observed": {
+            "centre": 745.5,
+            "width": 274.0,
+            "height": 175.0
+          },
+          "aligned": {
+            "centre": 742.500335,
+            "width": 277.13421000000005,
+            "height": 167.5
+          },
+          "phaseOnly": {
+            "centre": 742.500335,
+            "width": 277.13421000000005,
+            "height": 167.5
+          }
+        },
+        {
+          "file": "frame-003.png",
+          "pts": 2008,
+          "seconds": 3.346667,
+          "modelSeconds": -0.08703774725743285,
+          "usable": {
+            "centre": true,
+            "width": true,
+            "height": true
+          },
+          "observed": {
+            "centre": 745.0,
+            "width": 277.0,
+            "height": 168.0
+          },
+          "aligned": {
+            "centre": 742.500335,
+            "width": 277.13421000000005,
+            "height": 167.5
+          },
+          "phaseOnly": {
+            "centre": 742.500335,
+            "width": 277.13421000000005,
+            "height": 167.5
+          }
+        },
+        {
+          "file": "frame-004.png",
+          "pts": 2018,
+          "seconds": 3.363333,
+          "modelSeconds": -0.070371747257433,
+          "usable": {
+            "centre": true,
+            "width": true,
+            "height": true
+          },
+          "observed": {
+            "centre": 744.0,
+            "width": 279.0,
+            "height": 166.0
+          },
+          "aligned": {
+            "centre": 742.500335,
+            "width": 277.13421000000005,
+            "height": 167.5
+          },
+          "phaseOnly": {
+            "centre": 742.500335,
+            "width": 277.13421000000005,
+            "height": 167.5
+          }
+        },
+        {
+          "file": "frame-005.png",
+          "pts": 2038,
+          "seconds": 3.396667,
+          "modelSeconds": -0.03703774725743303,
+          "usable": {
+            "centre": true,
+            "width": true,
+            "height": true
+          },
+          "observed": {
+            "centre": 743.0,
+            "width": 281.0,
+            "height": 164.0
+          },
+          "aligned": {
+            "centre": 742.500335,
+            "width": 277.13421000000005,
+            "height": 167.5
+          },
+          "phaseOnly": {
+            "centre": 742.500335,
+            "width": 277.13421000000005,
+            "height": 167.5
+          }
+        },
+        {
+          "file": "frame-006.png",
+          "pts": 2048,
+          "seconds": 3.413333,
+          "modelSeconds": -0.020371747257432737,
+          "usable": {
+            "centre": true,
+            "width": true,
+            "height": true
+          },
+          "observed": {
+            "centre": 735.0,
+            "width": 285.0,
+            "height": 166.0
+          },
+          "aligned": {
+            "centre": 742.500335,
+            "width": 277.13421000000005,
+            "height": 167.5
+          },
+          "phaseOnly": {
+            "centre": 735.0,
+            "width": 278.52452762090536,
+            "height": 168.88302089581677
+          }
+        },
+        {
+          "file": "frame-007.png",
+          "pts": 2058,
+          "seconds": 3.43,
+          "modelSeconds": -0.00370474725743275,
+          "usable": {
+            "centre": true,
+            "width": true,
+            "height": true
+          },
+          "observed": {
+            "centre": 715.5,
+            "width": 294.0,
+            "height": 172.0
+          },
+          "aligned": {
+            "centre": 742.500335,
+            "width": 277.13421000000005,
+            "height": 167.5
+          },
+          "phaseOnly": {
+            "centre": 715.5,
+            "width": 284.97633225330037,
+            "height": 175.2177677907784
+          }
+        },
+        {
+          "file": "frame-008.png",
+          "pts": 2068,
+          "seconds": 3.446667,
+          "modelSeconds": 0.012962252742567237,
+          "usable": {
+            "centre": true,
+            "width": true,
+            "height": false
+          },
+          "observed": {
+            "centre": 690.5,
+            "width": 302.0,
+            "height": 186.0
+          },
+          "aligned": {
+            "centre": 732.0809354118624,
+            "width": 279.382247073328,
+            "height": 169.73533731380186
+          },
+          "phaseOnly": {
+            "centre": 690.5,
+            "width": 293.76999252975395,
+            "height": 183.0646833501091
+          }
+        },
+        {
+          "file": "frame-009.png",
+          "pts": 2078,
+          "seconds": 3.463333,
+          "modelSeconds": 0.029628252742567085,
+          "usable": {
+            "centre": true,
+            "width": true,
+            "height": false
+          },
+          "observed": {
+            "centre": 662.5,
+            "width": 310.0,
+            "height": 186.0
+          },
+          "aligned": {
+            "centre": 700.4204788838802,
+            "width": 290.2890329871143,
+            "height": 180.11869136940427
+          },
+          "phaseOnly": {
+            "centre": 662.5,
+            "width": 303.3536611522274,
+            "height": 189.92073980690213
+          }
+        },
+        {
+          "file": "frame-010.png",
+          "pts": 2088,
+          "seconds": 3.48,
+          "modelSeconds": 0.04629525274256707,
+          "usable": {
+            "centre": true,
+            "width": true,
+            "height": true
+          },
+          "observed": {
+            "centre": 635.0,
+            "width": 311.0,
+            "height": 188.0
+          },
+          "aligned": {
+            "centre": 662.126813566559,
+            "width": 298.8327337961504,
+            "height": 189.99643244237387
+          },
+          "phaseOnly": {
+            "centre": 635.0,
+            "width": 307.4428742903619,
+            "height": 194.78991992210658
+          }
+        },
+        {
+          "file": "frame-011.png",
+          "pts": 2098,
+          "seconds": 3.496667,
+          "modelSeconds": 0.06296225274256706,
+          "usable": {
+            "centre": true,
+            "width": true,
+            "height": true
+          },
+          "observed": {
+            "centre": 608.5,
+            "width": 316.0,
+            "height": 196.0
+          },
+          "aligned": {
+            "centre": 625.0165411868053,
+            "width": 310.24274632742964,
+            "height": 196.2389573311818
+          },
+          "phaseOnly": {
+            "centre": 608.5,
+            "width": 314.4432602579526,
+            "height": 198.28459973495967
+          }
+        },
+        {
+          "file": "frame-012.png",
+          "pts": 2108,
+          "seconds": 3.513333,
+          "modelSeconds": 0.07962825274256691,
+          "usable": {
+            "centre": true,
+            "width": true,
+            "height": true
+          },
+          "observed": {
+            "centre": 584.0,
+            "width": 320.0,
+            "height": 196.0
+          },
+          "aligned": {
+            "centre": 592.4726922943315,
+            "width": 318.0022158210759,
+            "height": 199.81766445615952
+          },
+          "phaseOnly": {
+            "centre": 584.0,
+            "width": 319.663431418876,
+            "height": 200.44431840148573
+          }
+        },
+        {
+          "file": "frame-013.png",
+          "pts": 2128,
+          "seconds": 3.546667,
+          "modelSeconds": 0.11296225274256688,
+          "usable": {
+            "centre": true,
+            "width": true,
+            "height": true
+          },
+          "observed": {
+            "centre": 544.0,
+            "width": 329.0,
+            "height": 204.0
+          },
+          "aligned": {
+            "centre": 543.9999999999999,
+            "width": 329.6175238424831,
+            "height": 201.36419617083885
+          },
+          "phaseOnly": {
+            "centre": 544.0,
+            "width": 329.617523842483,
+            "height": 201.36419617083888
+          }
+        },
+        {
+          "file": "frame-014.png",
+          "pts": 2138,
+          "seconds": 3.563333,
+          "modelSeconds": 0.12962825274256717,
+          "usable": {
+            "centre": true,
+            "width": true,
+            "height": true
+          },
+          "observed": {
+            "centre": 529.5,
+            "width": 332.0,
+            "height": 204.0
+          },
+          "aligned": {
+            "centre": 527.2683020326208,
+            "width": 329.1578414421631,
+            "height": 200.17771467795353
+          },
+          "phaseOnly": {
+            "centre": 529.5,
+            "width": 329.2978350234592,
+            "height": 200.43003724518258
+          }
+        }
+      ]
+    },
+    {
+      "restWidth": 278,
+      "pressSeconds": 0.116,
+      "anchorModelSeconds": 0.11296225274256673,
+      "authoredPointerDownOnSourceClock": 3.433704747257433,
+      "trajectoryMetrics": {
+        "centre": {
+          "samples": 8,
+          "rms": 25.093916490793283,
+          "maxAbsolute": 41.580935411862356
+        },
+        "width": {
+          "samples": 8,
+          "rms": 13.414877025517933,
+          "maxAbsolute": 22.617752926671983
+        },
+        "height": {
+          "samples": 6,
+          "rms": 3.047764183691636,
+          "maxAbsolute": 4.5
+        }
+      },
+      "phaseOnlyMetrics": {
+        "centre": {
+          "samples": 8,
+          "rms": 0.0,
+          "maxAbsolute": 0.0
+        },
+        "width": {
+          "samples": 8,
+          "rms": 5.676260005565704,
+          "maxAbsolute": 9.02366774669963
+        },
+        "height": {
+          "samples": 6,
+          "rms": 4.133011501696923,
+          "maxAbsolute": 6.789919922106577
+        }
+      },
+      "rows": [
+        {
+          "file": "frame-001.png",
+          "pts": 1988,
+          "seconds": 3.313333,
+          "modelSeconds": -0.12037174725743283,
+          "usable": {
+            "centre": true,
+            "width": true,
+            "height": true
+          },
+          "observed": {
+            "centre": 746.5,
+            "width": 272.0,
+            "height": 170.0
+          },
+          "aligned": {
+            "centre": 742.500335,
+            "width": 277.13421000000005,
+            "height": 167.5
+          },
+          "phaseOnly": {
+            "centre": 742.500335,
+            "width": 277.13421000000005,
+            "height": 167.5
+          }
+        },
+        {
+          "file": "frame-002.png",
+          "pts": 1998,
+          "seconds": 3.33,
+          "modelSeconds": -0.10370474725743284,
+          "usable": {
+            "centre": true,
+            "width": true,
+            "height": false
+          },
+          "observed": {
+            "centre": 745.5,
+            "width": 274.0,
+            "height": 175.0
+          },
+          "aligned": {
+            "centre": 742.500335,
+            "width": 277.13421000000005,
+            "height": 167.5
+          },
+          "phaseOnly": {
+            "centre": 742.500335,
+            "width": 277.13421000000005,
+            "height": 167.5
+          }
+        },
+        {
+          "file": "frame-003.png",
+          "pts": 2008,
+          "seconds": 3.346667,
+          "modelSeconds": -0.08703774725743285,
+          "usable": {
+            "centre": true,
+            "width": true,
+            "height": true
+          },
+          "observed": {
+            "centre": 745.0,
+            "width": 277.0,
+            "height": 168.0
+          },
+          "aligned": {
+            "centre": 742.500335,
+            "width": 277.13421000000005,
+            "height": 167.5
+          },
+          "phaseOnly": {
+            "centre": 742.500335,
+            "width": 277.13421000000005,
+            "height": 167.5
+          }
+        },
+        {
+          "file": "frame-004.png",
+          "pts": 2018,
+          "seconds": 3.363333,
+          "modelSeconds": -0.070371747257433,
+          "usable": {
+            "centre": true,
+            "width": true,
+            "height": true
+          },
+          "observed": {
+            "centre": 744.0,
+            "width": 279.0,
+            "height": 166.0
+          },
+          "aligned": {
+            "centre": 742.500335,
+            "width": 277.13421000000005,
+            "height": 167.5
+          },
+          "phaseOnly": {
+            "centre": 742.500335,
+            "width": 277.13421000000005,
+            "height": 167.5
+          }
+        },
+        {
+          "file": "frame-005.png",
+          "pts": 2038,
+          "seconds": 3.396667,
+          "modelSeconds": -0.03703774725743303,
+          "usable": {
+            "centre": true,
+            "width": true,
+            "height": true
+          },
+          "observed": {
+            "centre": 743.0,
+            "width": 281.0,
+            "height": 164.0
+          },
+          "aligned": {
+            "centre": 742.500335,
+            "width": 277.13421000000005,
+            "height": 167.5
+          },
+          "phaseOnly": {
+            "centre": 742.500335,
+            "width": 277.13421000000005,
+            "height": 167.5
+          }
+        },
+        {
+          "file": "frame-006.png",
+          "pts": 2048,
+          "seconds": 3.413333,
+          "modelSeconds": -0.020371747257432737,
+          "usable": {
+            "centre": true,
+            "width": true,
+            "height": true
+          },
+          "observed": {
+            "centre": 735.0,
+            "width": 285.0,
+            "height": 166.0
+          },
+          "aligned": {
+            "centre": 742.500335,
+            "width": 277.13421000000005,
+            "height": 167.5
+          },
+          "phaseOnly": {
+            "centre": 735.0,
+            "width": 278.52452762090536,
+            "height": 168.88302089581677
+          }
+        },
+        {
+          "file": "frame-007.png",
+          "pts": 2058,
+          "seconds": 3.43,
+          "modelSeconds": -0.00370474725743275,
+          "usable": {
+            "centre": true,
+            "width": true,
+            "height": true
+          },
+          "observed": {
+            "centre": 715.5,
+            "width": 294.0,
+            "height": 172.0
+          },
+          "aligned": {
+            "centre": 742.500335,
+            "width": 277.13421000000005,
+            "height": 167.5
+          },
+          "phaseOnly": {
+            "centre": 715.5,
+            "width": 284.97633225330037,
+            "height": 175.2177677907784
+          }
+        },
+        {
+          "file": "frame-008.png",
+          "pts": 2068,
+          "seconds": 3.446667,
+          "modelSeconds": 0.012962252742567237,
+          "usable": {
+            "centre": true,
+            "width": true,
+            "height": false
+          },
+          "observed": {
+            "centre": 690.5,
+            "width": 302.0,
+            "height": 186.0
+          },
+          "aligned": {
+            "centre": 732.0809354118624,
+            "width": 279.382247073328,
+            "height": 169.73533731380186
+          },
+          "phaseOnly": {
+            "centre": 690.5,
+            "width": 293.76999252975395,
+            "height": 183.0646833501091
+          }
+        },
+        {
+          "file": "frame-009.png",
+          "pts": 2078,
+          "seconds": 3.463333,
+          "modelSeconds": 0.029628252742567085,
+          "usable": {
+            "centre": true,
+            "width": true,
+            "height": false
+          },
+          "observed": {
+            "centre": 662.5,
+            "width": 310.0,
+            "height": 186.0
+          },
+          "aligned": {
+            "centre": 700.4204788838802,
+            "width": 290.2890329871143,
+            "height": 180.11869136940427
+          },
+          "phaseOnly": {
+            "centre": 662.5,
+            "width": 303.3536611522274,
+            "height": 189.92073980690213
+          }
+        },
+        {
+          "file": "frame-010.png",
+          "pts": 2088,
+          "seconds": 3.48,
+          "modelSeconds": 0.04629525274256707,
+          "usable": {
+            "centre": true,
+            "width": true,
+            "height": true
+          },
+          "observed": {
+            "centre": 635.0,
+            "width": 311.0,
+            "height": 188.0
+          },
+          "aligned": {
+            "centre": 662.126813566559,
+            "width": 298.8327337961504,
+            "height": 189.99643244237387
+          },
+          "phaseOnly": {
+            "centre": 635.0,
+            "width": 307.4428742903619,
+            "height": 194.78991992210658
+          }
+        },
+        {
+          "file": "frame-011.png",
+          "pts": 2098,
+          "seconds": 3.496667,
+          "modelSeconds": 0.06296225274256706,
+          "usable": {
+            "centre": true,
+            "width": true,
+            "height": true
+          },
+          "observed": {
+            "centre": 608.5,
+            "width": 316.0,
+            "height": 196.0
+          },
+          "aligned": {
+            "centre": 625.0165411868053,
+            "width": 310.24274632742964,
+            "height": 196.2389573311818
+          },
+          "phaseOnly": {
+            "centre": 608.5,
+            "width": 314.4432602579526,
+            "height": 198.28459973495967
+          }
+        },
+        {
+          "file": "frame-012.png",
+          "pts": 2108,
+          "seconds": 3.513333,
+          "modelSeconds": 0.07962825274256691,
+          "usable": {
+            "centre": true,
+            "width": true,
+            "height": true
+          },
+          "observed": {
+            "centre": 584.0,
+            "width": 320.0,
+            "height": 196.0
+          },
+          "aligned": {
+            "centre": 592.4726922943315,
+            "width": 318.0022158210759,
+            "height": 199.81766445615952
+          },
+          "phaseOnly": {
+            "centre": 584.0,
+            "width": 319.6635395316531,
+            "height": 200.44441261039574
+          }
+        },
+        {
+          "file": "frame-013.png",
+          "pts": 2128,
+          "seconds": 3.546667,
+          "modelSeconds": 0.11296225274256688,
+          "usable": {
+            "centre": true,
+            "width": true,
+            "height": true
+          },
+          "observed": {
+            "centre": 544.0,
+            "width": 329.0,
+            "height": 204.0
+          },
+          "aligned": {
+            "centre": 543.9999999999999,
+            "width": 329.6177682801803,
+            "height": 201.36437617083885
+          },
+          "phaseOnly": {
+            "centre": 544.0,
+            "width": 329.6177682801803,
+            "height": 201.36437617083888
+          }
+        },
+        {
+          "file": "frame-014.png",
+          "pts": 2138,
+          "seconds": 3.563333,
+          "modelSeconds": 0.12962825274256717,
+          "usable": {
+            "centre": true,
+            "width": true,
+            "height": true
+          },
+          "observed": {
+            "centre": 529.5,
+            "width": 332.0,
+            "height": 204.0
+          },
+          "aligned": {
+            "centre": 527.2683026016437,
+            "width": 329.1572137182543,
+            "height": 200.17693916953326
+          },
+          "phaseOnly": {
+            "centre": 529.5,
+            "width": 329.2973219862666,
+            "height": 200.42933431292917
+          }
+        }
+      ]
+    },
+    {
+      "restWidth": 278,
+      "pressSeconds": 0.16,
+      "anchorModelSeconds": 0.11296225274256673,
+      "authoredPointerDownOnSourceClock": 3.433704747257433,
+      "trajectoryMetrics": {
+        "centre": {
+          "samples": 8,
+          "rms": 25.11326730698229,
+          "maxAbsolute": 41.580935411862356
+        },
+        "width": {
+          "samples": 8,
+          "rms": 13.435852984307646,
+          "maxAbsolute": 22.617752926671983
+        },
+        "height": {
+          "samples": 6,
+          "rms": 3.056121216148347,
+          "maxAbsolute": 4.5
+        }
+      },
+      "phaseOnlyMetrics": {
+        "centre": {
+          "samples": 8,
+          "rms": 0.0,
+          "maxAbsolute": 0.0
+        },
+        "width": {
+          "samples": 8,
+          "rms": 5.841376213113951,
+          "maxAbsolute": 9.02366774669963
+        },
+        "height": {
+          "samples": 6,
+          "rms": 4.274831395686655,
+          "maxAbsolute": 6.789919922106577
+        }
+      },
+      "rows": [
+        {
+          "file": "frame-001.png",
+          "pts": 1988,
+          "seconds": 3.313333,
+          "modelSeconds": -0.12037174725743283,
+          "usable": {
+            "centre": true,
+            "width": true,
+            "height": true
+          },
+          "observed": {
+            "centre": 746.5,
+            "width": 272.0,
+            "height": 170.0
+          },
+          "aligned": {
+            "centre": 742.500335,
+            "width": 277.13421000000005,
+            "height": 167.5
+          },
+          "phaseOnly": {
+            "centre": 742.500335,
+            "width": 277.13421000000005,
+            "height": 167.5
+          }
+        },
+        {
+          "file": "frame-002.png",
+          "pts": 1998,
+          "seconds": 3.33,
+          "modelSeconds": -0.10370474725743284,
+          "usable": {
+            "centre": true,
+            "width": true,
+            "height": false
+          },
+          "observed": {
+            "centre": 745.5,
+            "width": 274.0,
+            "height": 175.0
+          },
+          "aligned": {
+            "centre": 742.500335,
+            "width": 277.13421000000005,
+            "height": 167.5
+          },
+          "phaseOnly": {
+            "centre": 742.500335,
+            "width": 277.13421000000005,
+            "height": 167.5
+          }
+        },
+        {
+          "file": "frame-003.png",
+          "pts": 2008,
+          "seconds": 3.346667,
+          "modelSeconds": -0.08703774725743285,
+          "usable": {
+            "centre": true,
+            "width": true,
+            "height": true
+          },
+          "observed": {
+            "centre": 745.0,
+            "width": 277.0,
+            "height": 168.0
+          },
+          "aligned": {
+            "centre": 742.500335,
+            "width": 277.13421000000005,
+            "height": 167.5
+          },
+          "phaseOnly": {
+            "centre": 742.500335,
+            "width": 277.13421000000005,
+            "height": 167.5
+          }
+        },
+        {
+          "file": "frame-004.png",
+          "pts": 2018,
+          "seconds": 3.363333,
+          "modelSeconds": -0.070371747257433,
+          "usable": {
+            "centre": true,
+            "width": true,
+            "height": true
+          },
+          "observed": {
+            "centre": 744.0,
+            "width": 279.0,
+            "height": 166.0
+          },
+          "aligned": {
+            "centre": 742.500335,
+            "width": 277.13421000000005,
+            "height": 167.5
+          },
+          "phaseOnly": {
+            "centre": 742.500335,
+            "width": 277.13421000000005,
+            "height": 167.5
+          }
+        },
+        {
+          "file": "frame-005.png",
+          "pts": 2038,
+          "seconds": 3.396667,
+          "modelSeconds": -0.03703774725743303,
+          "usable": {
+            "centre": true,
+            "width": true,
+            "height": true
+          },
+          "observed": {
+            "centre": 743.0,
+            "width": 281.0,
+            "height": 164.0
+          },
+          "aligned": {
+            "centre": 742.500335,
+            "width": 277.13421000000005,
+            "height": 167.5
+          },
+          "phaseOnly": {
+            "centre": 742.500335,
+            "width": 277.13421000000005,
+            "height": 167.5
+          }
+        },
+        {
+          "file": "frame-006.png",
+          "pts": 2048,
+          "seconds": 3.413333,
+          "modelSeconds": -0.020371747257432737,
+          "usable": {
+            "centre": true,
+            "width": true,
+            "height": true
+          },
+          "observed": {
+            "centre": 735.0,
+            "width": 285.0,
+            "height": 166.0
+          },
+          "aligned": {
+            "centre": 742.500335,
+            "width": 277.13421000000005,
+            "height": 167.5
+          },
+          "phaseOnly": {
+            "centre": 735.0,
+            "width": 278.52452762090536,
+            "height": 168.88302089581677
+          }
+        },
+        {
+          "file": "frame-007.png",
+          "pts": 2058,
+          "seconds": 3.43,
+          "modelSeconds": -0.00370474725743275,
+          "usable": {
+            "centre": true,
+            "width": true,
+            "height": true
+          },
+          "observed": {
+            "centre": 715.5,
+            "width": 294.0,
+            "height": 172.0
+          },
+          "aligned": {
+            "centre": 742.500335,
+            "width": 277.13421000000005,
+            "height": 167.5
+          },
+          "phaseOnly": {
+            "centre": 715.5,
+            "width": 284.97633225330037,
+            "height": 175.2177677907784
+          }
+        },
+        {
+          "file": "frame-008.png",
+          "pts": 2068,
+          "seconds": 3.446667,
+          "modelSeconds": 0.012962252742567237,
+          "usable": {
+            "centre": true,
+            "width": true,
+            "height": false
+          },
+          "observed": {
+            "centre": 690.5,
+            "width": 302.0,
+            "height": 186.0
+          },
+          "aligned": {
+            "centre": 732.0809354118624,
+            "width": 279.382247073328,
+            "height": 169.73533731380186
+          },
+          "phaseOnly": {
+            "centre": 690.5,
+            "width": 293.76999252975395,
+            "height": 183.0646833501091
+          }
+        },
+        {
+          "file": "frame-009.png",
+          "pts": 2078,
+          "seconds": 3.463333,
+          "modelSeconds": 0.029628252742567085,
+          "usable": {
+            "centre": true,
+            "width": true,
+            "height": false
+          },
+          "observed": {
+            "centre": 662.5,
+            "width": 310.0,
+            "height": 186.0
+          },
+          "aligned": {
+            "centre": 700.4204788838802,
+            "width": 290.2890329871143,
+            "height": 180.11869136940427
+          },
+          "phaseOnly": {
+            "centre": 662.5,
+            "width": 303.3536611522274,
+            "height": 189.92073980690213
+          }
+        },
+        {
+          "file": "frame-010.png",
+          "pts": 2088,
+          "seconds": 3.48,
+          "modelSeconds": 0.04629525274256707,
+          "usable": {
+            "centre": true,
+            "width": true,
+            "height": true
+          },
+          "observed": {
+            "centre": 635.0,
+            "width": 311.0,
+            "height": 188.0
+          },
+          "aligned": {
+            "centre": 662.126813566559,
+            "width": 298.8327337961504,
+            "height": 189.99643244237387
+          },
+          "phaseOnly": {
+            "centre": 635.0,
+            "width": 307.4428742903619,
+            "height": 194.78991992210658
+          }
+        },
+        {
+          "file": "frame-011.png",
+          "pts": 2098,
+          "seconds": 3.496667,
+          "modelSeconds": 0.06296225274256706,
+          "usable": {
+            "centre": true,
+            "width": true,
+            "height": true
+          },
+          "observed": {
+            "centre": 608.5,
+            "width": 316.0,
+            "height": 196.0
+          },
+          "aligned": {
+            "centre": 625.0165411868053,
+            "width": 310.24274632742964,
+            "height": 196.2389573311818
+          },
+          "phaseOnly": {
+            "centre": 608.5,
+            "width": 314.4432602579526,
+            "height": 198.28459973495967
+          }
+        },
+        {
+          "file": "frame-012.png",
+          "pts": 2108,
+          "seconds": 3.513333,
+          "modelSeconds": 0.07962825274256691,
+          "usable": {
+            "centre": true,
+            "width": true,
+            "height": true
+          },
+          "observed": {
+            "centre": 584.0,
+            "width": 320.0,
+            "height": 196.0
+          },
+          "aligned": {
+            "centre": 592.4726922943315,
+            "width": 318.0022158210759,
+            "height": 199.81766445615952
+          },
+          "phaseOnly": {
+            "centre": 584.0,
+            "width": 319.6635395316531,
+            "height": 200.44441261039574
+          }
+        },
+        {
+          "file": "frame-013.png",
+          "pts": 2128,
+          "seconds": 3.546667,
+          "modelSeconds": 0.11296225274256688,
+          "usable": {
+            "centre": true,
+            "width": true,
+            "height": true
+          },
+          "observed": {
+            "centre": 544.0,
+            "width": 329.0,
+            "height": 204.0
+          },
+          "aligned": {
+            "centre": 543.9999999999999,
+            "width": 329.6177682801803,
+            "height": 201.36437617083885
+          },
+          "phaseOnly": {
+            "centre": 544.0,
+            "width": 329.6177682801803,
+            "height": 201.36437617083888
+          }
+        },
+        {
+          "file": "frame-014.png",
+          "pts": 2138,
+          "seconds": 3.563333,
+          "modelSeconds": 0.12962825274256717,
+          "usable": {
+            "centre": true,
+            "width": true,
+            "height": true
+          },
+          "observed": {
+            "centre": 529.5,
+            "width": 332.0,
+            "height": 204.0
+          },
+          "aligned": {
+            "centre": 533.0711165142206,
+            "width": 328.45215667017834,
+            "height": 200.1371181322955
+          },
+          "phaseOnly": {
+            "centre": 529.5,
+            "width": 327.25463850221,
+            "height": 199.53860450316714
+          }
+        }
+      ]
+    },
+    {
+      "restWidth": 278,
+      "pressSeconds": 0.24,
+      "anchorModelSeconds": 0.11296225274256673,
+      "authoredPointerDownOnSourceClock": 3.433704747257433,
+      "trajectoryMetrics": {
+        "centre": {
+          "samples": 8,
+          "rms": 25.11326730698229,
+          "maxAbsolute": 41.580935411862356
+        },
+        "width": {
+          "samples": 8,
+          "rms": 13.435852984307646,
+          "maxAbsolute": 22.617752926671983
+        },
+        "height": {
+          "samples": 6,
+          "rms": 3.056121216148347,
+          "maxAbsolute": 4.5
+        }
+      },
+      "phaseOnlyMetrics": {
+        "centre": {
+          "samples": 8,
+          "rms": 0.0,
+          "maxAbsolute": 0.0
+        },
+        "width": {
+          "samples": 8,
+          "rms": 5.841376213113951,
+          "maxAbsolute": 9.02366774669963
+        },
+        "height": {
+          "samples": 6,
+          "rms": 4.274831395686655,
+          "maxAbsolute": 6.789919922106577
+        }
+      },
+      "rows": [
+        {
+          "file": "frame-001.png",
+          "pts": 1988,
+          "seconds": 3.313333,
+          "modelSeconds": -0.12037174725743283,
+          "usable": {
+            "centre": true,
+            "width": true,
+            "height": true
+          },
+          "observed": {
+            "centre": 746.5,
+            "width": 272.0,
+            "height": 170.0
+          },
+          "aligned": {
+            "centre": 742.500335,
+            "width": 277.13421000000005,
+            "height": 167.5
+          },
+          "phaseOnly": {
+            "centre": 742.500335,
+            "width": 277.13421000000005,
+            "height": 167.5
+          }
+        },
+        {
+          "file": "frame-002.png",
+          "pts": 1998,
+          "seconds": 3.33,
+          "modelSeconds": -0.10370474725743284,
+          "usable": {
+            "centre": true,
+            "width": true,
+            "height": false
+          },
+          "observed": {
+            "centre": 745.5,
+            "width": 274.0,
+            "height": 175.0
+          },
+          "aligned": {
+            "centre": 742.500335,
+            "width": 277.13421000000005,
+            "height": 167.5
+          },
+          "phaseOnly": {
+            "centre": 742.500335,
+            "width": 277.13421000000005,
+            "height": 167.5
+          }
+        },
+        {
+          "file": "frame-003.png",
+          "pts": 2008,
+          "seconds": 3.346667,
+          "modelSeconds": -0.08703774725743285,
+          "usable": {
+            "centre": true,
+            "width": true,
+            "height": true
+          },
+          "observed": {
+            "centre": 745.0,
+            "width": 277.0,
+            "height": 168.0
+          },
+          "aligned": {
+            "centre": 742.500335,
+            "width": 277.13421000000005,
+            "height": 167.5
+          },
+          "phaseOnly": {
+            "centre": 742.500335,
+            "width": 277.13421000000005,
+            "height": 167.5
+          }
+        },
+        {
+          "file": "frame-004.png",
+          "pts": 2018,
+          "seconds": 3.363333,
+          "modelSeconds": -0.070371747257433,
+          "usable": {
+            "centre": true,
+            "width": true,
+            "height": true
+          },
+          "observed": {
+            "centre": 744.0,
+            "width": 279.0,
+            "height": 166.0
+          },
+          "aligned": {
+            "centre": 742.500335,
+            "width": 277.13421000000005,
+            "height": 167.5
+          },
+          "phaseOnly": {
+            "centre": 742.500335,
+            "width": 277.13421000000005,
+            "height": 167.5
+          }
+        },
+        {
+          "file": "frame-005.png",
+          "pts": 2038,
+          "seconds": 3.396667,
+          "modelSeconds": -0.03703774725743303,
+          "usable": {
+            "centre": true,
+            "width": true,
+            "height": true
+          },
+          "observed": {
+            "centre": 743.0,
+            "width": 281.0,
+            "height": 164.0
+          },
+          "aligned": {
+            "centre": 742.500335,
+            "width": 277.13421000000005,
+            "height": 167.5
+          },
+          "phaseOnly": {
+            "centre": 742.500335,
+            "width": 277.13421000000005,
+            "height": 167.5
+          }
+        },
+        {
+          "file": "frame-006.png",
+          "pts": 2048,
+          "seconds": 3.413333,
+          "modelSeconds": -0.020371747257432737,
+          "usable": {
+            "centre": true,
+            "width": true,
+            "height": true
+          },
+          "observed": {
+            "centre": 735.0,
+            "width": 285.0,
+            "height": 166.0
+          },
+          "aligned": {
+            "centre": 742.500335,
+            "width": 277.13421000000005,
+            "height": 167.5
+          },
+          "phaseOnly": {
+            "centre": 735.0,
+            "width": 278.52452762090536,
+            "height": 168.88302089581677
+          }
+        },
+        {
+          "file": "frame-007.png",
+          "pts": 2058,
+          "seconds": 3.43,
+          "modelSeconds": -0.00370474725743275,
+          "usable": {
+            "centre": true,
+            "width": true,
+            "height": true
+          },
+          "observed": {
+            "centre": 715.5,
+            "width": 294.0,
+            "height": 172.0
+          },
+          "aligned": {
+            "centre": 742.500335,
+            "width": 277.13421000000005,
+            "height": 167.5
+          },
+          "phaseOnly": {
+            "centre": 715.5,
+            "width": 284.97633225330037,
+            "height": 175.2177677907784
+          }
+        },
+        {
+          "file": "frame-008.png",
+          "pts": 2068,
+          "seconds": 3.446667,
+          "modelSeconds": 0.012962252742567237,
+          "usable": {
+            "centre": true,
+            "width": true,
+            "height": false
+          },
+          "observed": {
+            "centre": 690.5,
+            "width": 302.0,
+            "height": 186.0
+          },
+          "aligned": {
+            "centre": 732.0809354118624,
+            "width": 279.382247073328,
+            "height": 169.73533731380186
+          },
+          "phaseOnly": {
+            "centre": 690.5,
+            "width": 293.76999252975395,
+            "height": 183.0646833501091
+          }
+        },
+        {
+          "file": "frame-009.png",
+          "pts": 2078,
+          "seconds": 3.463333,
+          "modelSeconds": 0.029628252742567085,
+          "usable": {
+            "centre": true,
+            "width": true,
+            "height": false
+          },
+          "observed": {
+            "centre": 662.5,
+            "width": 310.0,
+            "height": 186.0
+          },
+          "aligned": {
+            "centre": 700.4204788838802,
+            "width": 290.2890329871143,
+            "height": 180.11869136940427
+          },
+          "phaseOnly": {
+            "centre": 662.5,
+            "width": 303.3536611522274,
+            "height": 189.92073980690213
+          }
+        },
+        {
+          "file": "frame-010.png",
+          "pts": 2088,
+          "seconds": 3.48,
+          "modelSeconds": 0.04629525274256707,
+          "usable": {
+            "centre": true,
+            "width": true,
+            "height": true
+          },
+          "observed": {
+            "centre": 635.0,
+            "width": 311.0,
+            "height": 188.0
+          },
+          "aligned": {
+            "centre": 662.126813566559,
+            "width": 298.8327337961504,
+            "height": 189.99643244237387
+          },
+          "phaseOnly": {
+            "centre": 635.0,
+            "width": 307.4428742903619,
+            "height": 194.78991992210658
+          }
+        },
+        {
+          "file": "frame-011.png",
+          "pts": 2098,
+          "seconds": 3.496667,
+          "modelSeconds": 0.06296225274256706,
+          "usable": {
+            "centre": true,
+            "width": true,
+            "height": true
+          },
+          "observed": {
+            "centre": 608.5,
+            "width": 316.0,
+            "height": 196.0
+          },
+          "aligned": {
+            "centre": 625.0165411868053,
+            "width": 310.24274632742964,
+            "height": 196.2389573311818
+          },
+          "phaseOnly": {
+            "centre": 608.5,
+            "width": 314.4432602579526,
+            "height": 198.28459973495967
+          }
+        },
+        {
+          "file": "frame-012.png",
+          "pts": 2108,
+          "seconds": 3.513333,
+          "modelSeconds": 0.07962825274256691,
+          "usable": {
+            "centre": true,
+            "width": true,
+            "height": true
+          },
+          "observed": {
+            "centre": 584.0,
+            "width": 320.0,
+            "height": 196.0
+          },
+          "aligned": {
+            "centre": 592.4726922943315,
+            "width": 318.0022158210759,
+            "height": 199.81766445615952
+          },
+          "phaseOnly": {
+            "centre": 584.0,
+            "width": 319.6635395316531,
+            "height": 200.44441261039574
+          }
+        },
+        {
+          "file": "frame-013.png",
+          "pts": 2128,
+          "seconds": 3.546667,
+          "modelSeconds": 0.11296225274256688,
+          "usable": {
+            "centre": true,
+            "width": true,
+            "height": true
+          },
+          "observed": {
+            "centre": 544.0,
+            "width": 329.0,
+            "height": 204.0
+          },
+          "aligned": {
+            "centre": 543.9999999999999,
+            "width": 329.6177682801803,
+            "height": 201.36437617083885
+          },
+          "phaseOnly": {
+            "centre": 544.0,
+            "width": 329.6177682801803,
+            "height": 201.36437617083888
+          }
+        },
+        {
+          "file": "frame-014.png",
+          "pts": 2138,
+          "seconds": 3.563333,
+          "modelSeconds": 0.12962825274256717,
+          "usable": {
+            "centre": true,
+            "width": true,
+            "height": true
+          },
+          "observed": {
+            "centre": 529.5,
+            "width": 332.0,
+            "height": 204.0
+          },
+          "aligned": {
+            "centre": 533.0711165142206,
+            "width": 328.45215667017834,
+            "height": 200.1371181322955
+          },
+          "phaseOnly": {
+            "centre": 529.5,
+            "width": 327.25463850221,
+            "height": 199.53860450316714
+          }
+        }
+      ]
+    },
+    {
+      "restWidth": 271,
+      "pressSeconds": 0.04,
+      "anchorModelSeconds": 0.11296201273565563,
+      "authoredPointerDownOnSourceClock": 3.433704987264344,
+      "trajectoryMetrics": {
+        "centre": {
+          "samples": 8,
+          "rms": 25.09425676378623,
+          "maxAbsolute": 41.5815733086863
+        },
+        "width": {
+          "samples": 8,
+          "rms": 19.34632984218206,
+          "maxAbsolute": 29.58419863768563
+        },
+        "height": {
+          "samples": 6,
+          "rms": 4.929470578583052,
+          "maxAbsolute": 7.310691238828355
+        }
+      },
+      "phaseOnlyMetrics": {
+        "centre": {
+          "samples": 8,
+          "rms": 0.0,
+          "maxAbsolute": 0.0
+        },
+        "width": {
+          "samples": 8,
+          "rms": 11.712170951171116,
+          "maxAbsolute": 15.958615197988536
+        },
+        "height": {
+          "samples": 6,
+          "rms": 7.384463853389766,
+          "maxAbsolute": 10.734580719610818
+        }
+      },
+      "rows": [
+        {
+          "file": "frame-001.png",
+          "pts": 1988,
+          "seconds": 3.313333,
+          "modelSeconds": -0.12037198726434406,
+          "usable": {
+            "centre": true,
+            "width": true,
+            "height": true
+          },
+          "observed": {
+            "centre": 746.5,
+            "width": 272.0,
+            "height": 170.0
+          },
+          "aligned": {
+            "centre": 742.500185,
+            "width": 270.15661,
+            "height": 172.0
+          },
+          "phaseOnly": {
+            "centre": 742.500185,
+            "width": 270.15661,
+            "height": 172.0
+          }
+        },
+        {
+          "file": "frame-002.png",
+          "pts": 1998,
+          "seconds": 3.33,
+          "modelSeconds": -0.10370498726434407,
+          "usable": {
+            "centre": true,
+            "width": true,
+            "height": false
+          },
+          "observed": {
+            "centre": 745.5,
+            "width": 274.0,
+            "height": 175.0
+          },
+          "aligned": {
+            "centre": 742.500185,
+            "width": 270.15661,
+            "height": 172.0
+          },
+          "phaseOnly": {
+            "centre": 742.500185,
+            "width": 270.15661,
+            "height": 172.0
+          }
+        },
+        {
+          "file": "frame-003.png",
+          "pts": 2008,
+          "seconds": 3.346667,
+          "modelSeconds": -0.08703798726434409,
+          "usable": {
+            "centre": true,
+            "width": true,
+            "height": true
+          },
+          "observed": {
+            "centre": 745.0,
+            "width": 277.0,
+            "height": 168.0
+          },
+          "aligned": {
+            "centre": 742.500185,
+            "width": 270.15661,
+            "height": 172.0
+          },
+          "phaseOnly": {
+            "centre": 742.500185,
+            "width": 270.15661,
+            "height": 172.0
+          }
+        },
+        {
+          "file": "frame-004.png",
+          "pts": 2018,
+          "seconds": 3.363333,
+          "modelSeconds": -0.07037198726434424,
+          "usable": {
+            "centre": true,
+            "width": true,
+            "height": true
+          },
+          "observed": {
+            "centre": 744.0,
+            "width": 279.0,
+            "height": 166.0
+          },
+          "aligned": {
+            "centre": 742.500185,
+            "width": 270.15661,
+            "height": 172.0
+          },
+          "phaseOnly": {
+            "centre": 742.500185,
+            "width": 270.15661,
+            "height": 172.0
+          }
+        },
+        {
+          "file": "frame-005.png",
+          "pts": 2038,
+          "seconds": 3.396667,
+          "modelSeconds": -0.03703798726434426,
+          "usable": {
+            "centre": true,
+            "width": true,
+            "height": true
+          },
+          "observed": {
+            "centre": 743.0,
+            "width": 281.0,
+            "height": 164.0
+          },
+          "aligned": {
+            "centre": 742.500185,
+            "width": 270.15661,
+            "height": 172.0
+          },
+          "phaseOnly": {
+            "centre": 742.500185,
+            "width": 270.15661,
+            "height": 172.0
+          }
+        },
+        {
+          "file": "frame-006.png",
+          "pts": 2048,
+          "seconds": 3.413333,
+          "modelSeconds": -0.02037198726434397,
+          "usable": {
+            "centre": true,
+            "width": true,
+            "height": true
+          },
+          "observed": {
+            "centre": 735.0,
+            "width": 285.0,
+            "height": 166.0
+          },
+          "aligned": {
+            "centre": 742.500185,
+            "width": 270.15661,
+            "height": 172.0
+          },
+          "phaseOnly": {
+            "centre": 735.0,
+            "width": 271.5539836093274,
+            "height": 173.38986531554298
+          }
+        },
+        {
+          "file": "frame-007.png",
+          "pts": 2058,
+          "seconds": 3.43,
+          "modelSeconds": -0.003704987264343984,
+          "usable": {
+            "centre": true,
+            "width": true,
+            "height": true
+          },
+          "observed": {
+            "centre": 715.5,
+            "width": 294.0,
+            "height": 172.0
+          },
+          "aligned": {
+            "centre": 742.500185,
+            "width": 270.15661,
+            "height": 172.0
+          },
+          "phaseOnly": {
+            "centre": 715.5,
+            "width": 278.04138480201146,
+            "height": 179.74514904320117
+          }
+        },
+        {
+          "file": "frame-008.png",
+          "pts": 2068,
+          "seconds": 3.446667,
+          "modelSeconds": 0.012962012735656003,
+          "usable": {
+            "centre": true,
+            "width": true,
+            "height": false
+          },
+          "observed": {
+            "centre": 690.5,
+            "width": 302.0,
+            "height": 186.0
+          },
+          "aligned": {
+            "centre": 732.0815733086863,
+            "width": 272.41580136231437,
+            "height": 174.2460603075503
+          },
+          "phaseOnly": {
+            "centre": 690.5,
+            "width": 286.93541809460925,
+            "height": 187.5360218808766
+          }
+        },
+        {
+          "file": "frame-009.png",
+          "pts": 2078,
+          "seconds": 3.463333,
+          "modelSeconds": 0.02962801273565585,
+          "usable": {
+            "centre": true,
+            "width": true,
+            "height": false
+          },
+          "observed": {
+            "centre": 662.5,
+            "width": 310.0,
+            "height": 186.0
+          },
+          "aligned": {
+            "centre": 700.4208106963201,
+            "width": 283.40417352394576,
+            "height": 184.62803885736992
+          },
+          "phaseOnly": {
+            "centre": 662.5,
+            "width": 296.73085230508013,
+            "height": 194.17355384899787
+          }
+        },
+        {
+          "file": "frame-010.png",
+          "pts": 2088,
+          "seconds": 3.48,
+          "modelSeconds": 0.04629501273565584,
+          "usable": {
+            "centre": true,
+            "width": true,
+            "height": true
+          },
+          "observed": {
+            "centre": 635.0,
+            "width": 311.0,
+            "height": 188.0
+          },
+          "aligned": {
+            "centre": 662.1275904051208,
+            "width": 292.3176768555893,
+            "height": 194.24518832712698
+          },
+          "phaseOnly": {
+            "centre": 635.0,
+            "width": 301.17986165194884,
+            "height": 198.73458071961082
+          }
+        },
+        {
+          "file": "frame-011.png",
+          "pts": 2098,
+          "seconds": 3.496667,
+          "modelSeconds": 0.06296201273565583,
+          "usable": {
+            "centre": true,
+            "width": true,
+            "height": true
+          },
+          "observed": {
+            "centre": 608.5,
+            "width": 316.0,
+            "height": 196.0
+          },
+          "aligned": {
+            "centre": 625.0168814889671,
+            "width": 304.070833752409,
+            "height": 200.07429118879014
+          },
+          "phaseOnly": {
+            "centre": 608.5,
+            "width": 308.419218641666,
+            "height": 201.9442476752465
+          }
+        },
+        {
+          "file": "frame-012.png",
+          "pts": 2108,
+          "seconds": 3.513333,
+          "modelSeconds": 0.07962801273565567,
+          "usable": {
+            "centre": true,
+            "width": true,
+            "height": true
+          },
+          "observed": {
+            "centre": 584.0,
+            "width": 320.0,
+            "height": 196.0
+          },
+          "aligned": {
+            "centre": 592.4735547593343,
+            "width": 312.1199539863457,
+            "height": 203.31069123882835
+          },
+          "phaseOnly": {
+            "centre": 584.0,
+            "width": 313.8540007912268,
+            "height": 203.852049021899
+          }
+        },
+        {
+          "file": "frame-013.png",
+          "pts": 2128,
+          "seconds": 3.546667,
+          "modelSeconds": 0.11296201273565565,
+          "usable": {
+            "centre": true,
+            "width": true,
+            "height": true
+          },
+          "observed": {
+            "centre": 544.0,
+            "width": 329.0,
+            "height": 204.0
+          },
+          "aligned": {
+            "centre": 544.0,
+            "width": 324.0381792821069,
+            "height": 204.41836415183096
+          },
+          "phaseOnly": {
+            "centre": 544.0,
+            "width": 324.0381792821069,
+            "height": 204.41836415183096
+          }
+        },
+        {
+          "file": "frame-014.png",
+          "pts": 2138,
+          "seconds": 3.563333,
+          "modelSeconds": 0.12962801273565594,
+          "usable": {
+            "centre": true,
+            "width": true,
+            "height": true
+          },
+          "observed": {
+            "centre": 529.5,
+            "width": 332.0,
+            "height": 204.0
+          },
+          "aligned": {
+            "centre": 527.2681337660216,
+            "width": 323.6682398063046,
+            "height": 203.13417739179562
+          },
+          "phaseOnly": {
+            "centre": 529.5,
+            "width": 323.8001065059263,
+            "height": 203.39632969591307
+          }
+        }
+      ]
+    },
+    {
+      "restWidth": 271,
+      "pressSeconds": 0.08,
+      "anchorModelSeconds": 0.1129620255150844,
+      "authoredPointerDownOnSourceClock": 3.4337049744849155,
+      "trajectoryMetrics": {
+        "centre": {
+          "samples": 8,
+          "rms": 25.094237498670903,
+          "maxAbsolute": 41.581554340285834
+        },
+        "width": {
+          "samples": 8,
+          "rms": 19.34642278671516,
+          "maxAbsolute": 29.58419267712162
+        },
+        "height": {
+          "samples": 6,
+          "rms": 4.929580300771604,
+          "maxAbsolute": 7.310972819556497
+        }
+      },
+      "phaseOnlyMetrics": {
+        "centre": {
+          "samples": 8,
+          "rms": 0.0,
+          "maxAbsolute": 0.0
+        },
+        "width": {
+          "samples": 8,
+          "rms": 11.712342253754088,
+          "maxAbsolute": 15.958615197988536
+        },
+        "height": {
+          "samples": 6,
+          "rms": 7.384571803486931,
+          "maxAbsolute": 10.734759661957838
+        }
+      },
+      "rows": [
+        {
+          "file": "frame-001.png",
+          "pts": 1988,
+          "seconds": 3.313333,
+          "modelSeconds": -0.12037197448491543,
+          "usable": {
+            "centre": true,
+            "width": true,
+            "height": true
+          },
+          "observed": {
+            "centre": 746.5,
+            "width": 272.0,
+            "height": 170.0
+          },
+          "aligned": {
+            "centre": 742.500185,
+            "width": 270.15661,
+            "height": 172.0
+          },
+          "phaseOnly": {
+            "centre": 742.500185,
+            "width": 270.15661,
+            "height": 172.0
+          }
+        },
+        {
+          "file": "frame-002.png",
+          "pts": 1998,
+          "seconds": 3.33,
+          "modelSeconds": -0.10370497448491545,
+          "usable": {
+            "centre": true,
+            "width": true,
+            "height": false
+          },
+          "observed": {
+            "centre": 745.5,
+            "width": 274.0,
+            "height": 175.0
+          },
+          "aligned": {
+            "centre": 742.500185,
+            "width": 270.15661,
+            "height": 172.0
+          },
+          "phaseOnly": {
+            "centre": 742.500185,
+            "width": 270.15661,
+            "height": 172.0
+          }
+        },
+        {
+          "file": "frame-003.png",
+          "pts": 2008,
+          "seconds": 3.346667,
+          "modelSeconds": -0.08703797448491546,
+          "usable": {
+            "centre": true,
+            "width": true,
+            "height": true
+          },
+          "observed": {
+            "centre": 745.0,
+            "width": 277.0,
+            "height": 168.0
+          },
+          "aligned": {
+            "centre": 742.500185,
+            "width": 270.15661,
+            "height": 172.0
+          },
+          "phaseOnly": {
+            "centre": 742.500185,
+            "width": 270.15661,
+            "height": 172.0
+          }
+        },
+        {
+          "file": "frame-004.png",
+          "pts": 2018,
+          "seconds": 3.363333,
+          "modelSeconds": -0.07037197448491561,
+          "usable": {
+            "centre": true,
+            "width": true,
+            "height": true
+          },
+          "observed": {
+            "centre": 744.0,
+            "width": 279.0,
+            "height": 166.0
+          },
+          "aligned": {
+            "centre": 742.500185,
+            "width": 270.15661,
+            "height": 172.0
+          },
+          "phaseOnly": {
+            "centre": 742.500185,
+            "width": 270.15661,
+            "height": 172.0
+          }
+        },
+        {
+          "file": "frame-005.png",
+          "pts": 2038,
+          "seconds": 3.396667,
+          "modelSeconds": -0.03703797448491564,
+          "usable": {
+            "centre": true,
+            "width": true,
+            "height": true
+          },
+          "observed": {
+            "centre": 743.0,
+            "width": 281.0,
+            "height": 164.0
+          },
+          "aligned": {
+            "centre": 742.500185,
+            "width": 270.15661,
+            "height": 172.0
+          },
+          "phaseOnly": {
+            "centre": 742.500185,
+            "width": 270.15661,
+            "height": 172.0
+          }
+        },
+        {
+          "file": "frame-006.png",
+          "pts": 2048,
+          "seconds": 3.413333,
+          "modelSeconds": -0.020371974484915345,
+          "usable": {
+            "centre": true,
+            "width": true,
+            "height": true
+          },
+          "observed": {
+            "centre": 735.0,
+            "width": 285.0,
+            "height": 166.0
+          },
+          "aligned": {
+            "centre": 742.500185,
+            "width": 270.15661,
+            "height": 172.0
+          },
+          "phaseOnly": {
+            "centre": 735.0,
+            "width": 271.5539836093274,
+            "height": 173.38986531554298
+          }
+        },
+        {
+          "file": "frame-007.png",
+          "pts": 2058,
+          "seconds": 3.43,
+          "modelSeconds": -0.0037049744849153576,
+          "usable": {
+            "centre": true,
+            "width": true,
+            "height": true
+          },
+          "observed": {
+            "centre": 715.5,
+            "width": 294.0,
+            "height": 172.0
+          },
+          "aligned": {
+            "centre": 742.500185,
+            "width": 270.15661,
+            "height": 172.0
+          },
+          "phaseOnly": {
+            "centre": 715.5,
+            "width": 278.04138480201146,
+            "height": 179.74514904320117
+          }
+        },
+        {
+          "file": "frame-008.png",
+          "pts": 2068,
+          "seconds": 3.446667,
+          "modelSeconds": 0.01296202551508463,
+          "usable": {
+            "centre": true,
+            "width": true,
+            "height": false
+          },
+          "observed": {
+            "centre": 690.5,
+            "width": 302.0,
+            "height": 186.0
+          },
+          "aligned": {
+            "centre": 732.0815543402858,
+            "width": 272.4158073228784,
+            "height": 174.24606622216896
+          },
+          "phaseOnly": {
+            "centre": 690.5,
+            "width": 286.93541809460925,
+            "height": 187.5360218808766
+          }
+        },
+        {
+          "file": "frame-009.png",
+          "pts": 2078,
+          "seconds": 3.463333,
+          "modelSeconds": 0.029628025515084477,
+          "usable": {
+            "centre": true,
+            "width": true,
+            "height": false
+          },
+          "observed": {
+            "centre": 662.5,
+            "width": 310.0,
+            "height": 186.0
+          },
+          "aligned": {
+            "centre": 700.420782323633,
+            "width": 283.4041836351097,
+            "height": 184.62804747497302
+          },
+          "phaseOnly": {
+            "centre": 662.5,
+            "width": 296.73077853070794,
+            "height": 194.17364282248184
+          }
+        },
+        {
+          "file": "frame-010.png",
+          "pts": 2088,
+          "seconds": 3.48,
+          "modelSeconds": 0.046295025515084465,
+          "usable": {
+            "centre": true,
+            "width": true,
+            "height": true
+          },
+          "observed": {
+            "centre": 635.0,
+            "width": 311.0,
+            "height": 188.0
+          },
+          "aligned": {
+            "centre": 662.1275642163433,
+            "width": 292.3175869576856,
+            "height": 194.24529064976906
+          },
+          "phaseOnly": {
+            "centre": 635.0,
+            "width": 301.1796102513073,
+            "height": 198.73475966195784
+          }
+        },
+        {
+          "file": "frame-011.png",
+          "pts": 2098,
+          "seconds": 3.496667,
+          "modelSeconds": 0.06296202551508445,
+          "usable": {
+            "centre": true,
+            "width": true,
+            "height": true
+          },
+          "observed": {
+            "centre": 608.5,
+            "width": 316.0,
+            "height": 196.0
+          },
+          "aligned": {
+            "centre": 625.0168307573658,
+            "width": 304.07054004260056,
+            "height": 200.07447676399286
+          },
+          "phaseOnly": {
+            "centre": 608.5,
+            "width": 308.41886951178134,
+            "height": 201.9444624852996
+          }
+        },
+        {
+          "file": "frame-012.png",
+          "pts": 2108,
+          "seconds": 3.513333,
+          "modelSeconds": 0.0796280255150843,
+          "usable": {
+            "centre": true,
+            "width": true,
+            "height": true
+          },
+          "observed": {
+            "centre": 584.0,
+            "width": 320.0,
+            "height": 196.0
+          },
+          "aligned": {
+            "centre": 592.4735031711317,
+            "width": 312.1195365811794,
+            "height": 203.3109728195565
+          },
+          "phaseOnly": {
+            "centre": 584.0,
+            "width": 313.8534993768191,
+            "height": 203.85226934149438
+          }
+        },
+        {
+          "file": "frame-013.png",
+          "pts": 2128,
+          "seconds": 3.546667,
+          "modelSeconds": 0.11296202551508427,
+          "usable": {
+            "centre": true,
+            "width": true,
+            "height": true
+          },
+          "observed": {
+            "centre": 544.0,
+            "width": 329.0,
+            "height": 204.0
+          },
+          "aligned": {
+            "centre": 544.0000000000001,
+            "width": 324.03732226762503,
+            "height": 204.41852133561812
+          },
+          "phaseOnly": {
+            "centre": 544.0,
+            "width": 324.03732226762503,
+            "height": 204.4185213356181
+          }
+        },
+        {
+          "file": "frame-014.png",
+          "pts": 2138,
+          "seconds": 3.563333,
+          "modelSeconds": 0.12962802551508457,
+          "usable": {
+            "centre": true,
+            "width": true,
+            "height": true
+          },
+          "observed": {
+            "centre": 529.5,
+            "width": 332.0,
+            "height": 204.0
+          },
+          "aligned": {
+            "centre": 527.2681415617968,
+            "width": 323.66747675501455,
+            "height": 203.13441818305358
+          },
+          "phaseOnly": {
+            "centre": 529.5,
+            "width": 323.7992681945364,
+            "height": 203.39656964663982
+          }
+        }
+      ]
+    },
+    {
+      "restWidth": 271,
+      "pressSeconds": 0.116,
+      "anchorModelSeconds": 0.1129620092909016,
+      "authoredPointerDownOnSourceClock": 3.4337049907090984,
+      "trajectoryMetrics": {
+        "centre": {
+          "samples": 8,
+          "rms": 25.094258424603936,
+          "maxAbsolute": 41.58157842170658
+        },
+        "width": {
+          "samples": 8,
+          "rms": 19.3464617519682,
+          "maxAbsolute": 29.58420024438334
+        },
+        "height": {
+          "samples": 6,
+          "rms": 4.929600543190597,
+          "maxAbsolute": 7.3109708127357464
+        }
+      },
+      "phaseOnlyMetrics": {
+        "centre": {
+          "samples": 8,
+          "rms": 0.0,
+          "maxAbsolute": 0.0
+        },
+        "width": {
+          "samples": 8,
+          "rms": 11.712376403613534,
+          "maxAbsolute": 15.958615197988536
+        },
+        "height": {
+          "samples": 6,
+          "rms": 7.384594848861646,
+          "maxAbsolute": 10.734759661957838
+        }
+      },
+      "rows": [
+        {
+          "file": "frame-001.png",
+          "pts": 1988,
+          "seconds": 3.313333,
+          "modelSeconds": -0.12037199070909832,
+          "usable": {
+            "centre": true,
+            "width": true,
+            "height": true
+          },
+          "observed": {
+            "centre": 746.5,
+            "width": 272.0,
+            "height": 170.0
+          },
+          "aligned": {
+            "centre": 742.500185,
+            "width": 270.15661,
+            "height": 172.0
+          },
+          "phaseOnly": {
+            "centre": 742.500185,
+            "width": 270.15661,
+            "height": 172.0
+          }
+        },
+        {
+          "file": "frame-002.png",
+          "pts": 1998,
+          "seconds": 3.33,
+          "modelSeconds": -0.10370499070909833,
+          "usable": {
+            "centre": true,
+            "width": true,
+            "height": false
+          },
+          "observed": {
+            "centre": 745.5,
+            "width": 274.0,
+            "height": 175.0
+          },
+          "aligned": {
+            "centre": 742.500185,
+            "width": 270.15661,
+            "height": 172.0
+          },
+          "phaseOnly": {
+            "centre": 742.500185,
+            "width": 270.15661,
+            "height": 172.0
+          }
+        },
+        {
+          "file": "frame-003.png",
+          "pts": 2008,
+          "seconds": 3.346667,
+          "modelSeconds": -0.08703799070909835,
+          "usable": {
+            "centre": true,
+            "width": true,
+            "height": true
+          },
+          "observed": {
+            "centre": 745.0,
+            "width": 277.0,
+            "height": 168.0
+          },
+          "aligned": {
+            "centre": 742.500185,
+            "width": 270.15661,
+            "height": 172.0
+          },
+          "phaseOnly": {
+            "centre": 742.500185,
+            "width": 270.15661,
+            "height": 172.0
+          }
+        },
+        {
+          "file": "frame-004.png",
+          "pts": 2018,
+          "seconds": 3.363333,
+          "modelSeconds": -0.0703719907090985,
+          "usable": {
+            "centre": true,
+            "width": true,
+            "height": true
+          },
+          "observed": {
+            "centre": 744.0,
+            "width": 279.0,
+            "height": 166.0
+          },
+          "aligned": {
+            "centre": 742.500185,
+            "width": 270.15661,
+            "height": 172.0
+          },
+          "phaseOnly": {
+            "centre": 742.500185,
+            "width": 270.15661,
+            "height": 172.0
+          }
+        },
+        {
+          "file": "frame-005.png",
+          "pts": 2038,
+          "seconds": 3.396667,
+          "modelSeconds": -0.03703799070909852,
+          "usable": {
+            "centre": true,
+            "width": true,
+            "height": true
+          },
+          "observed": {
+            "centre": 743.0,
+            "width": 281.0,
+            "height": 164.0
+          },
+          "aligned": {
+            "centre": 742.500185,
+            "width": 270.15661,
+            "height": 172.0
+          },
+          "phaseOnly": {
+            "centre": 742.500185,
+            "width": 270.15661,
+            "height": 172.0
+          }
+        },
+        {
+          "file": "frame-006.png",
+          "pts": 2048,
+          "seconds": 3.413333,
+          "modelSeconds": -0.02037199070909823,
+          "usable": {
+            "centre": true,
+            "width": true,
+            "height": true
+          },
+          "observed": {
+            "centre": 735.0,
+            "width": 285.0,
+            "height": 166.0
+          },
+          "aligned": {
+            "centre": 742.500185,
+            "width": 270.15661,
+            "height": 172.0
+          },
+          "phaseOnly": {
+            "centre": 735.0,
+            "width": 271.5539836093274,
+            "height": 173.38986531554298
+          }
+        },
+        {
+          "file": "frame-007.png",
+          "pts": 2058,
+          "seconds": 3.43,
+          "modelSeconds": -0.0037049907090982437,
+          "usable": {
+            "centre": true,
+            "width": true,
+            "height": true
+          },
+          "observed": {
+            "centre": 715.5,
+            "width": 294.0,
+            "height": 172.0
+          },
+          "aligned": {
+            "centre": 742.500185,
+            "width": 270.15661,
+            "height": 172.0
+          },
+          "phaseOnly": {
+            "centre": 715.5,
+            "width": 278.04138480201146,
+            "height": 179.74514904320117
+          }
+        },
+        {
+          "file": "frame-008.png",
+          "pts": 2068,
+          "seconds": 3.446667,
+          "modelSeconds": 0.012962009290901744,
+          "usable": {
+            "centre": true,
+            "width": true,
+            "height": false
+          },
+          "observed": {
+            "centre": 690.5,
+            "width": 302.0,
+            "height": 186.0
+          },
+          "aligned": {
+            "centre": 732.0815784217066,
+            "width": 272.41579975561666,
+            "height": 174.2460587132374
+          },
+          "phaseOnly": {
+            "centre": 690.5,
+            "width": 286.93541809460925,
+            "height": 187.5360218808766
+          }
+        },
+        {
+          "file": "frame-009.png",
+          "pts": 2078,
+          "seconds": 3.463333,
+          "modelSeconds": 0.02962800929090159,
+          "usable": {
+            "centre": true,
+            "width": true,
+            "height": false
+          },
+          "observed": {
+            "centre": 662.5,
+            "width": 310.0,
+            "height": 186.0
+          },
+          "aligned": {
+            "centre": 700.4208183443095,
+            "width": 283.4041707984346,
+            "height": 184.62803653445505
+          },
+          "phaseOnly": {
+            "centre": 662.5,
+            "width": 296.73077853070794,
+            "height": 194.17364282248184
+          }
+        },
+        {
+          "file": "frame-010.png",
+          "pts": 2088,
+          "seconds": 3.48,
+          "modelSeconds": 0.04629500929090158,
+          "usable": {
+            "centre": true,
+            "width": true,
+            "height": true
+          },
+          "observed": {
+            "centre": 635.0,
+            "width": 311.0,
+            "height": 188.0
+          },
+          "aligned": {
+            "centre": 662.127601684713,
+            "width": 292.31757406314364,
+            "height": 194.24528344607302
+          },
+          "phaseOnly": {
+            "centre": 635.0,
+            "width": 301.1796102513073,
+            "height": 198.73475966195784
+          }
+        },
+        {
+          "file": "frame-011.png",
+          "pts": 2098,
+          "seconds": 3.496667,
+          "modelSeconds": 0.06296200929090157,
+          "usable": {
+            "centre": true,
+            "width": true,
+            "height": true
+          },
+          "observed": {
+            "centre": 608.5,
+            "width": 316.0,
+            "height": 196.0
+          },
+          "aligned": {
+            "centre": 625.0168648069283,
+            "width": 304.07053062326037,
+            "height": 200.0744725014554
+          },
+          "phaseOnly": {
+            "centre": 608.5,
+            "width": 308.41886951178134,
+            "height": 201.9444624852996
+          }
+        },
+        {
+          "file": "frame-012.png",
+          "pts": 2108,
+          "seconds": 3.513333,
+          "modelSeconds": 0.07962800929090141,
+          "usable": {
+            "centre": true,
+            "width": true,
+            "height": true
+          },
+          "observed": {
+            "centre": 584.0,
+            "width": 320.0,
+            "height": 196.0
+          },
+          "aligned": {
+            "centre": 592.4735319841451,
+            "width": 312.11953047567505,
+            "height": 203.31097081273575
+          },
+          "phaseOnly": {
+            "centre": 584.0,
+            "width": 313.85364816835335,
+            "height": 203.85234319930487
+          }
+        },
+        {
+          "file": "frame-013.png",
+          "pts": 2128,
+          "seconds": 3.546667,
+          "modelSeconds": 0.11296200929090139,
+          "usable": {
+            "centre": true,
+            "width": true,
+            "height": true
+          },
+          "observed": {
+            "centre": 544.0,
+            "width": 329.0,
+            "height": 204.0
+          },
+          "aligned": {
+            "centre": 544.0000000000002,
+            "width": 324.0376912820033,
+            "height": 204.41872544242693
+          },
+          "phaseOnly": {
+            "centre": 544.0,
+            "width": 324.0376912820034,
+            "height": 204.41872544242693
+          }
+        },
+        {
+          "file": "frame-014.png",
+          "pts": 2138,
+          "seconds": 3.563333,
+          "modelSeconds": 0.12962800929090168,
+          "usable": {
+            "centre": true,
+            "width": true,
+            "height": true
+          },
+          "observed": {
+            "centre": 529.5,
+            "width": 332.0,
+            "height": 204.0
+          },
+          "aligned": {
+            "centre": 527.2681367572764,
+            "width": 323.6668690314125,
+            "height": 203.13363784652938
+          },
+          "phaseOnly": {
+            "centre": 529.5,
+            "width": 323.79876650592627,
+            "height": 203.39583905377964
+          }
+        }
+      ]
+    },
+    {
+      "restWidth": 271,
+      "pressSeconds": 0.16,
+      "anchorModelSeconds": 0.1129620092909016,
+      "authoredPointerDownOnSourceClock": 3.4337049907090984,
+      "trajectoryMetrics": {
+        "centre": {
+          "samples": 8,
+          "rms": 25.113602935907398,
+          "maxAbsolute": 41.58157842170658
+        },
+        "width": {
+          "samples": 8,
+          "rms": 19.39177446420748,
+          "maxAbsolute": 29.58420024438334
+        },
+        "height": {
+          "samples": 6,
+          "rms": 4.930593669672119,
+          "maxAbsolute": 7.3109708127357464
+        }
+      },
+      "phaseOnlyMetrics": {
+        "centre": {
+          "samples": 8,
+          "rms": 0.0,
+          "maxAbsolute": 0.0
+        },
+        "width": {
+          "samples": 8,
+          "rms": 11.932919255462389,
+          "maxAbsolute": 15.958615197988536
+        },
+        "height": {
+          "samples": 6,
+          "rms": 7.406126800742418,
+          "maxAbsolute": 10.734759661957838
+        }
+      },
+      "rows": [
+        {
+          "file": "frame-001.png",
+          "pts": 1988,
+          "seconds": 3.313333,
+          "modelSeconds": -0.12037199070909832,
+          "usable": {
+            "centre": true,
+            "width": true,
+            "height": true
+          },
+          "observed": {
+            "centre": 746.5,
+            "width": 272.0,
+            "height": 170.0
+          },
+          "aligned": {
+            "centre": 742.500185,
+            "width": 270.15661,
+            "height": 172.0
+          },
+          "phaseOnly": {
+            "centre": 742.500185,
+            "width": 270.15661,
+            "height": 172.0
+          }
+        },
+        {
+          "file": "frame-002.png",
+          "pts": 1998,
+          "seconds": 3.33,
+          "modelSeconds": -0.10370499070909833,
+          "usable": {
+            "centre": true,
+            "width": true,
+            "height": false
+          },
+          "observed": {
+            "centre": 745.5,
+            "width": 274.0,
+            "height": 175.0
+          },
+          "aligned": {
+            "centre": 742.500185,
+            "width": 270.15661,
+            "height": 172.0
+          },
+          "phaseOnly": {
+            "centre": 742.500185,
+            "width": 270.15661,
+            "height": 172.0
+          }
+        },
+        {
+          "file": "frame-003.png",
+          "pts": 2008,
+          "seconds": 3.346667,
+          "modelSeconds": -0.08703799070909835,
+          "usable": {
+            "centre": true,
+            "width": true,
+            "height": true
+          },
+          "observed": {
+            "centre": 745.0,
+            "width": 277.0,
+            "height": 168.0
+          },
+          "aligned": {
+            "centre": 742.500185,
+            "width": 270.15661,
+            "height": 172.0
+          },
+          "phaseOnly": {
+            "centre": 742.500185,
+            "width": 270.15661,
+            "height": 172.0
+          }
+        },
+        {
+          "file": "frame-004.png",
+          "pts": 2018,
+          "seconds": 3.363333,
+          "modelSeconds": -0.0703719907090985,
+          "usable": {
+            "centre": true,
+            "width": true,
+            "height": true
+          },
+          "observed": {
+            "centre": 744.0,
+            "width": 279.0,
+            "height": 166.0
+          },
+          "aligned": {
+            "centre": 742.500185,
+            "width": 270.15661,
+            "height": 172.0
+          },
+          "phaseOnly": {
+            "centre": 742.500185,
+            "width": 270.15661,
+            "height": 172.0
+          }
+        },
+        {
+          "file": "frame-005.png",
+          "pts": 2038,
+          "seconds": 3.396667,
+          "modelSeconds": -0.03703799070909852,
+          "usable": {
+            "centre": true,
+            "width": true,
+            "height": true
+          },
+          "observed": {
+            "centre": 743.0,
+            "width": 281.0,
+            "height": 164.0
+          },
+          "aligned": {
+            "centre": 742.500185,
+            "width": 270.15661,
+            "height": 172.0
+          },
+          "phaseOnly": {
+            "centre": 742.500185,
+            "width": 270.15661,
+            "height": 172.0
+          }
+        },
+        {
+          "file": "frame-006.png",
+          "pts": 2048,
+          "seconds": 3.413333,
+          "modelSeconds": -0.02037199070909823,
+          "usable": {
+            "centre": true,
+            "width": true,
+            "height": true
+          },
+          "observed": {
+            "centre": 735.0,
+            "width": 285.0,
+            "height": 166.0
+          },
+          "aligned": {
+            "centre": 742.500185,
+            "width": 270.15661,
+            "height": 172.0
+          },
+          "phaseOnly": {
+            "centre": 735.0,
+            "width": 271.5539836093274,
+            "height": 173.38986531554298
+          }
+        },
+        {
+          "file": "frame-007.png",
+          "pts": 2058,
+          "seconds": 3.43,
+          "modelSeconds": -0.0037049907090982437,
+          "usable": {
+            "centre": true,
+            "width": true,
+            "height": true
+          },
+          "observed": {
+            "centre": 715.5,
+            "width": 294.0,
+            "height": 172.0
+          },
+          "aligned": {
+            "centre": 742.500185,
+            "width": 270.15661,
+            "height": 172.0
+          },
+          "phaseOnly": {
+            "centre": 715.5,
+            "width": 278.04138480201146,
+            "height": 179.74514904320117
+          }
+        },
+        {
+          "file": "frame-008.png",
+          "pts": 2068,
+          "seconds": 3.446667,
+          "modelSeconds": 0.012962009290901744,
+          "usable": {
+            "centre": true,
+            "width": true,
+            "height": false
+          },
+          "observed": {
+            "centre": 690.5,
+            "width": 302.0,
+            "height": 186.0
+          },
+          "aligned": {
+            "centre": 732.0815784217066,
+            "width": 272.41579975561666,
+            "height": 174.2460587132374
+          },
+          "phaseOnly": {
+            "centre": 690.5,
+            "width": 286.93541809460925,
+            "height": 187.5360218808766
+          }
+        },
+        {
+          "file": "frame-009.png",
+          "pts": 2078,
+          "seconds": 3.463333,
+          "modelSeconds": 0.02962800929090159,
+          "usable": {
+            "centre": true,
+            "width": true,
+            "height": false
+          },
+          "observed": {
+            "centre": 662.5,
+            "width": 310.0,
+            "height": 186.0
+          },
+          "aligned": {
+            "centre": 700.4208183443095,
+            "width": 283.4041707984346,
+            "height": 184.62803653445505
+          },
+          "phaseOnly": {
+            "centre": 662.5,
+            "width": 296.73077853070794,
+            "height": 194.17364282248184
+          }
+        },
+        {
+          "file": "frame-010.png",
+          "pts": 2088,
+          "seconds": 3.48,
+          "modelSeconds": 0.04629500929090158,
+          "usable": {
+            "centre": true,
+            "width": true,
+            "height": true
+          },
+          "observed": {
+            "centre": 635.0,
+            "width": 311.0,
+            "height": 188.0
+          },
+          "aligned": {
+            "centre": 662.127601684713,
+            "width": 292.31757406314364,
+            "height": 194.24528344607302
+          },
+          "phaseOnly": {
+            "centre": 635.0,
+            "width": 301.1796102513073,
+            "height": 198.73475966195784
+          }
+        },
+        {
+          "file": "frame-011.png",
+          "pts": 2098,
+          "seconds": 3.496667,
+          "modelSeconds": 0.06296200929090157,
+          "usable": {
+            "centre": true,
+            "width": true,
+            "height": true
+          },
+          "observed": {
+            "centre": 608.5,
+            "width": 316.0,
+            "height": 196.0
+          },
+          "aligned": {
+            "centre": 625.0168648069283,
+            "width": 304.07053062326037,
+            "height": 200.0744725014554
+          },
+          "phaseOnly": {
+            "centre": 608.5,
+            "width": 308.41886951178134,
+            "height": 201.9444624852996
+          }
+        },
+        {
+          "file": "frame-012.png",
+          "pts": 2108,
+          "seconds": 3.513333,
+          "modelSeconds": 0.07962800929090141,
+          "usable": {
+            "centre": true,
+            "width": true,
+            "height": true
+          },
+          "observed": {
+            "centre": 584.0,
+            "width": 320.0,
+            "height": 196.0
+          },
+          "aligned": {
+            "centre": 592.4735319841451,
+            "width": 312.11953047567505,
+            "height": 203.31097081273575
+          },
+          "phaseOnly": {
+            "centre": 584.0,
+            "width": 313.85364816835335,
+            "height": 203.85234319930487
+          }
+        },
+        {
+          "file": "frame-013.png",
+          "pts": 2128,
+          "seconds": 3.546667,
+          "modelSeconds": 0.11296200929090139,
+          "usable": {
+            "centre": true,
+            "width": true,
+            "height": true
+          },
+          "observed": {
+            "centre": 544.0,
+            "width": 329.0,
+            "height": 204.0
+          },
+          "aligned": {
+            "centre": 544.0000000000002,
+            "width": 324.0376912820033,
+            "height": 204.41872544242693
+          },
+          "phaseOnly": {
+            "centre": 544.0,
+            "width": 324.0376912820034,
+            "height": 204.41872544242693
+          }
+        },
+        {
+          "file": "frame-014.png",
+          "pts": 2138,
+          "seconds": 3.563333,
+          "modelSeconds": 0.12962800929090168,
+          "usable": {
+            "centre": true,
+            "width": true,
+            "height": true
+          },
+          "observed": {
+            "centre": 529.5,
+            "width": 332.0,
+            "height": 204.0
+          },
+          "aligned": {
+            "centre": 533.07088026502,
+            "width": 322.8630558641196,
+            "height": 203.10036790804202
+          },
+          "phaseOnly": {
+            "centre": 529.5,
+            "width": 321.5607165799557,
+            "height": 202.49140824276915
+          }
+        }
+      ]
+    },
+    {
+      "restWidth": 271,
+      "pressSeconds": 0.24,
+      "anchorModelSeconds": 0.1129620092909016,
+      "authoredPointerDownOnSourceClock": 3.4337049907090984,
+      "trajectoryMetrics": {
+        "centre": {
+          "samples": 8,
+          "rms": 25.113602935907398,
+          "maxAbsolute": 41.58157842170658
+        },
+        "width": {
+          "samples": 8,
+          "rms": 19.39177446420748,
+          "maxAbsolute": 29.58420024438334
+        },
+        "height": {
+          "samples": 6,
+          "rms": 4.930593669672119,
+          "maxAbsolute": 7.3109708127357464
+        }
+      },
+      "phaseOnlyMetrics": {
+        "centre": {
+          "samples": 8,
+          "rms": 0.0,
+          "maxAbsolute": 0.0
+        },
+        "width": {
+          "samples": 8,
+          "rms": 11.932919255462389,
+          "maxAbsolute": 15.958615197988536
+        },
+        "height": {
+          "samples": 6,
+          "rms": 7.406126800742418,
+          "maxAbsolute": 10.734759661957838
+        }
+      },
+      "rows": [
+        {
+          "file": "frame-001.png",
+          "pts": 1988,
+          "seconds": 3.313333,
+          "modelSeconds": -0.12037199070909832,
+          "usable": {
+            "centre": true,
+            "width": true,
+            "height": true
+          },
+          "observed": {
+            "centre": 746.5,
+            "width": 272.0,
+            "height": 170.0
+          },
+          "aligned": {
+            "centre": 742.500185,
+            "width": 270.15661,
+            "height": 172.0
+          },
+          "phaseOnly": {
+            "centre": 742.500185,
+            "width": 270.15661,
+            "height": 172.0
+          }
+        },
+        {
+          "file": "frame-002.png",
+          "pts": 1998,
+          "seconds": 3.33,
+          "modelSeconds": -0.10370499070909833,
+          "usable": {
+            "centre": true,
+            "width": true,
+            "height": false
+          },
+          "observed": {
+            "centre": 745.5,
+            "width": 274.0,
+            "height": 175.0
+          },
+          "aligned": {
+            "centre": 742.500185,
+            "width": 270.15661,
+            "height": 172.0
+          },
+          "phaseOnly": {
+            "centre": 742.500185,
+            "width": 270.15661,
+            "height": 172.0
+          }
+        },
+        {
+          "file": "frame-003.png",
+          "pts": 2008,
+          "seconds": 3.346667,
+          "modelSeconds": -0.08703799070909835,
+          "usable": {
+            "centre": true,
+            "width": true,
+            "height": true
+          },
+          "observed": {
+            "centre": 745.0,
+            "width": 277.0,
+            "height": 168.0
+          },
+          "aligned": {
+            "centre": 742.500185,
+            "width": 270.15661,
+            "height": 172.0
+          },
+          "phaseOnly": {
+            "centre": 742.500185,
+            "width": 270.15661,
+            "height": 172.0
+          }
+        },
+        {
+          "file": "frame-004.png",
+          "pts": 2018,
+          "seconds": 3.363333,
+          "modelSeconds": -0.0703719907090985,
+          "usable": {
+            "centre": true,
+            "width": true,
+            "height": true
+          },
+          "observed": {
+            "centre": 744.0,
+            "width": 279.0,
+            "height": 166.0
+          },
+          "aligned": {
+            "centre": 742.500185,
+            "width": 270.15661,
+            "height": 172.0
+          },
+          "phaseOnly": {
+            "centre": 742.500185,
+            "width": 270.15661,
+            "height": 172.0
+          }
+        },
+        {
+          "file": "frame-005.png",
+          "pts": 2038,
+          "seconds": 3.396667,
+          "modelSeconds": -0.03703799070909852,
+          "usable": {
+            "centre": true,
+            "width": true,
+            "height": true
+          },
+          "observed": {
+            "centre": 743.0,
+            "width": 281.0,
+            "height": 164.0
+          },
+          "aligned": {
+            "centre": 742.500185,
+            "width": 270.15661,
+            "height": 172.0
+          },
+          "phaseOnly": {
+            "centre": 742.500185,
+            "width": 270.15661,
+            "height": 172.0
+          }
+        },
+        {
+          "file": "frame-006.png",
+          "pts": 2048,
+          "seconds": 3.413333,
+          "modelSeconds": -0.02037199070909823,
+          "usable": {
+            "centre": true,
+            "width": true,
+            "height": true
+          },
+          "observed": {
+            "centre": 735.0,
+            "width": 285.0,
+            "height": 166.0
+          },
+          "aligned": {
+            "centre": 742.500185,
+            "width": 270.15661,
+            "height": 172.0
+          },
+          "phaseOnly": {
+            "centre": 735.0,
+            "width": 271.5539836093274,
+            "height": 173.38986531554298
+          }
+        },
+        {
+          "file": "frame-007.png",
+          "pts": 2058,
+          "seconds": 3.43,
+          "modelSeconds": -0.0037049907090982437,
+          "usable": {
+            "centre": true,
+            "width": true,
+            "height": true
+          },
+          "observed": {
+            "centre": 715.5,
+            "width": 294.0,
+            "height": 172.0
+          },
+          "aligned": {
+            "centre": 742.500185,
+            "width": 270.15661,
+            "height": 172.0
+          },
+          "phaseOnly": {
+            "centre": 715.5,
+            "width": 278.04138480201146,
+            "height": 179.74514904320117
+          }
+        },
+        {
+          "file": "frame-008.png",
+          "pts": 2068,
+          "seconds": 3.446667,
+          "modelSeconds": 0.012962009290901744,
+          "usable": {
+            "centre": true,
+            "width": true,
+            "height": false
+          },
+          "observed": {
+            "centre": 690.5,
+            "width": 302.0,
+            "height": 186.0
+          },
+          "aligned": {
+            "centre": 732.0815784217066,
+            "width": 272.41579975561666,
+            "height": 174.2460587132374
+          },
+          "phaseOnly": {
+            "centre": 690.5,
+            "width": 286.93541809460925,
+            "height": 187.5360218808766
+          }
+        },
+        {
+          "file": "frame-009.png",
+          "pts": 2078,
+          "seconds": 3.463333,
+          "modelSeconds": 0.02962800929090159,
+          "usable": {
+            "centre": true,
+            "width": true,
+            "height": false
+          },
+          "observed": {
+            "centre": 662.5,
+            "width": 310.0,
+            "height": 186.0
+          },
+          "aligned": {
+            "centre": 700.4208183443095,
+            "width": 283.4041707984346,
+            "height": 184.62803653445505
+          },
+          "phaseOnly": {
+            "centre": 662.5,
+            "width": 296.73077853070794,
+            "height": 194.17364282248184
+          }
+        },
+        {
+          "file": "frame-010.png",
+          "pts": 2088,
+          "seconds": 3.48,
+          "modelSeconds": 0.04629500929090158,
+          "usable": {
+            "centre": true,
+            "width": true,
+            "height": true
+          },
+          "observed": {
+            "centre": 635.0,
+            "width": 311.0,
+            "height": 188.0
+          },
+          "aligned": {
+            "centre": 662.127601684713,
+            "width": 292.31757406314364,
+            "height": 194.24528344607302
+          },
+          "phaseOnly": {
+            "centre": 635.0,
+            "width": 301.1796102513073,
+            "height": 198.73475966195784
+          }
+        },
+        {
+          "file": "frame-011.png",
+          "pts": 2098,
+          "seconds": 3.496667,
+          "modelSeconds": 0.06296200929090157,
+          "usable": {
+            "centre": true,
+            "width": true,
+            "height": true
+          },
+          "observed": {
+            "centre": 608.5,
+            "width": 316.0,
+            "height": 196.0
+          },
+          "aligned": {
+            "centre": 625.0168648069283,
+            "width": 304.07053062326037,
+            "height": 200.0744725014554
+          },
+          "phaseOnly": {
+            "centre": 608.5,
+            "width": 308.41886951178134,
+            "height": 201.9444624852996
+          }
+        },
+        {
+          "file": "frame-012.png",
+          "pts": 2108,
+          "seconds": 3.513333,
+          "modelSeconds": 0.07962800929090141,
+          "usable": {
+            "centre": true,
+            "width": true,
+            "height": true
+          },
+          "observed": {
+            "centre": 584.0,
+            "width": 320.0,
+            "height": 196.0
+          },
+          "aligned": {
+            "centre": 592.4735319841451,
+            "width": 312.11953047567505,
+            "height": 203.31097081273575
+          },
+          "phaseOnly": {
+            "centre": 584.0,
+            "width": 313.85364816835335,
+            "height": 203.85234319930487
+          }
+        },
+        {
+          "file": "frame-013.png",
+          "pts": 2128,
+          "seconds": 3.546667,
+          "modelSeconds": 0.11296200929090139,
+          "usable": {
+            "centre": true,
+            "width": true,
+            "height": true
+          },
+          "observed": {
+            "centre": 544.0,
+            "width": 329.0,
+            "height": 204.0
+          },
+          "aligned": {
+            "centre": 544.0000000000002,
+            "width": 324.0376912820033,
+            "height": 204.41872544242693
+          },
+          "phaseOnly": {
+            "centre": 544.0,
+            "width": 324.0376912820034,
+            "height": 204.41872544242693
+          }
+        },
+        {
+          "file": "frame-014.png",
+          "pts": 2138,
+          "seconds": 3.563333,
+          "modelSeconds": 0.12962800929090168,
+          "usable": {
+            "centre": true,
+            "width": true,
+            "height": true
+          },
+          "observed": {
+            "centre": 529.5,
+            "width": 332.0,
+            "height": 204.0
+          },
+          "aligned": {
+            "centre": 533.07088026502,
+            "width": 322.8630558641196,
+            "height": 203.10036790804202
+          },
+          "phaseOnly": {
+            "centre": 529.5,
+            "width": 321.5607165799557,
+            "height": 202.49140824276915
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -29,7 +29,7 @@ internal class AtlasMotionProbe {
 
 /** Own-window AWT input and own-buffer captures; no global cursor, screen grab or OS automation. */
 internal suspend fun captureAtlasMotion(window: Container, probe: AtlasMotionProbe, directory: File,
-                                       readback: Boolean = true) {
+                                       readback: Boolean = true, shortTapsOnly: Boolean = false) {
     check(SwingUtilities.isEventDispatchThread())
     fun descendants(component: Component): Sequence<Component> = sequence {
         yield(component)
@@ -133,6 +133,23 @@ internal suspend fun captureAtlasMotion(window: Container, probe: AtlasMotionPro
     }
     try {
         capture("00-rest")
+        if (shortTapsOnly) {
+            val middle = (left + right) * .5f
+            // Isolate the new adjacent-trip path without repeating the full held/edge replay.
+            // Both directions end on Type; every snapshot gets its own real AWT gesture.
+            for (from in listOf(0, 2)) for (wait in listOf(25L, 70L, 140L, 490L)) {
+                prepare(from)
+                send(MouseEvent.MOUSE_PRESSED, middle, true)
+                delay(50)
+                send(MouseEvent.MOUSE_RELEASED, middle, false)
+                delay(wait)
+                capture("14-short-${if (from == 0) "right" else "left"}-${wait}ms")
+                check(probe.scene == 1) { "Adjacent tap did not select Type: ${probe.scene}" }
+            }
+            delay(1000); capture("15-short-recovered")
+            checksPassed = true
+            return
+        }
         // Readback on this backend takes over a second. Each phase therefore replays
         // the gesture independently; no intermediate screenshot can slow its inputs.
         for (wait in listOf(25L, 70L, 140L, 490L)) {
@@ -259,6 +276,7 @@ internal suspend fun captureAtlasMotion(window: Container, probe: AtlasMotionPro
             File(directory, "events.csv").writeText(rows.joinToString("\n") + "\n")
             File(directory, "capture.json").writeText("""{
               "backend":"${layer.renderApi}","scale":$scale,"readbackEnabled":$readback,"checksPassed":$checksPassed,
+              "scenario":"${if (shortTapsOnly) "short-taps" else "full"}",
               "navigation":{"left":${bounds.left},"top":${bounds.top},"width":${bounds.width},"height":${bounds.height}},
               "input":"AWT events dispatched only to this application's Compose component",
               "timing":"Each phase uses a fresh gesture replay because native readback is slow. CSV capture timestamps are render-start times. PNG encoding follows input. Not a continuous video, presented FPS or measured iOS timing."
@@ -280,6 +298,6 @@ internal suspend fun captureAtlasMotion(window: Container, probe: AtlasMotionPro
                 }
             }
         } finally { frames.forEach { it.second.close() } }
+        if (checksPassed) println("ATLAS_MOTION_CAPTURE ${directory.absolutePath} selection-and-layout-checks=passed")
     }
-    println("ATLAS_MOTION_CAPTURE ${directory.absolutePath} selection-and-layout-checks=passed")
 }

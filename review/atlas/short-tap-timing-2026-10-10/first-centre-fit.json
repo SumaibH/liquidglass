@@ -1,0 +1,112 @@
+{
+  "measurementsSha256": "c1464bd90b4ef230bd50dc83c01069a996ff11d78096c8e6ef9b2ae4ea694e24",
+  "method": "Fit omega and one time origin for an analytical critically damped response, with fixed resting/target centres. Compare24/s with its own best time origin.",
+  "limits": "Exploratory output fit only; all selected samples train the fit. No recovered pointer-down, Apple spring, production change, full-gesture or independent validation claim. Observed centres are optical cross-section midpoints, not tracked mass centres.",
+  "fixedRestX": 742.5,
+  "fixedTargetX": 479.0,
+  "fittedOmega": 18.37401217847773,
+  "fittedTimeOrigin": 3.402279699949547,
+  "fixed24TimeOrigin": 3.419816540131343,
+  "metrics": {
+    "fitted": {
+      "rms": 2.3428852748785394,
+      "maxAbsolute": 3.6034994246858787
+    },
+    "fixed24": {
+      "rms": 12.82194401596521,
+      "maxAbsolute": 20.30223051477242
+    }
+  },
+  "samples": [
+    {
+      "file": "frame-006.png",
+      "pts": 2048,
+      "seconds": 3.413333,
+      "observed": 735.0,
+      "predictions": {
+        "fitted": 737.7483659583356,
+        "fixed24": 742.5
+      }
+    },
+    {
+      "file": "frame-007.png",
+      "pts": 2058,
+      "seconds": 3.43,
+      "observed": 715.5,
+      "predictions": {
+        "fitted": 717.9819808735044,
+        "fixed24": 735.8022305147724
+      }
+    },
+    {
+      "file": "frame-008.png",
+      "pts": 2068,
+      "seconds": 3.446667,
+      "observed": 690.5,
+      "predictions": {
+        "fitted": 690.6389129964541,
+        "fixed24": 706.4714233677148
+      }
+    },
+    {
+      "file": "frame-009.png",
+      "pts": 2078,
+      "seconds": 3.463333,
+      "observed": 662.5,
+      "predictions": {
+        "fitted": 661.0936806769306,
+        "fixed24": 668.5703605449729
+      }
+    },
+    {
+      "file": "frame-010.png",
+      "pts": 2088,
+      "seconds": 3.48,
+      "observed": 635.0,
+      "predictions": {
+        "fitted": 632.4080550261777,
+        "fixed24": 630.9347674992187
+      }
+    },
+    {
+      "file": "frame-011.png",
+      "pts": 2098,
+      "seconds": 3.496667,
+      "observed": 608.5,
+      "predictions": {
+        "fitted": 606.1853791982887,
+        "fixed24": 597.5101203061292
+      }
+    },
+    {
+      "file": "frame-012.png",
+      "pts": 2108,
+      "seconds": 3.513333,
+      "observed": 584.0,
+      "predictions": {
+        "fitted": 583.1236264198504,
+        "fixed24": 569.6120525529448
+      }
+    },
+    {
+      "file": "frame-013.png",
+      "pts": 2128,
+      "seconds": 3.546667,
+      "observed": 544.0,
+      "predictions": {
+        "fitted": 546.8039865167382,
+        "fixed24": 529.7533826187013
+      }
+    },
+    {
+      "file": "frame-014.png",
+      "pts": 2138,
+      "seconds": 3.563333,
+      "observed": 529.5,
+      "predictions": {
+        "fitted": 533.1034994246859,
+        "fixed24": 516.3862164038864
+      }
+    }
+  ]
+}

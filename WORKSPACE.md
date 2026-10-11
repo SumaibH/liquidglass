@@ -83,6 +83,12 @@ than the nominal phase names. Timing can vary substantially even without screens
 The contact sheet preserves source pixels. These are phase snapshots, not a continuous recording,
 presented-frame benchmark or measured iOS timing. Pillow is needed only for the optional sheet.
 
+For the adjacent-tap path specifically, use `-Patlas.motionShortTaps=true` with a new
+`atlas.motionCapture` directory. This produces ten snapshots: rest, four phases from each end
+to the middle tab, and recovery. The default33-phase replay remains unchanged. Both scenarios
+use the same app-owned input, stable-layout and selection assertions; their separate CSVs retain
+actual timestamps and readback overhead.
+
 ## Recovery and local evidence
 
 [Retired source history](archive/retired-workflows/2026-10-03/README.md) is committed

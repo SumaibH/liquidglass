@@ -2053,5 +2053,20 @@
     "run": 38034772892,
     "status": "passed",
     "native": "Both platforms10checks, all four profiles maxchannelerror0, visible-text gate passed. Windows host compiled; both CI images inspected."
+  },
+  "short-tap-timing-2026-10-10": {
+    "diagnostic": "review/atlas/short-tap-timing-2026-10-10/verification.json",
+    "focused": "28passed15s",
+    "full": "333passed/27optional skips/zero failures;322passes recovered from interrupted generic binary results plus exact38case follow-up, source hashes and full360case inventory checked.2Atlas tests passed128.13s; Android assembled.",
+    "native": "33full phases passed3m10s,10focused adjacent phases passed1m2s,static passed14s; sheets and representative native crops inspected.",
+    "candidate": "Locally verified checkpoint; full1:1 and owner acceptance remain open.",
+    "remaining": "Repeated width max20.64px; full original contours/optics and other gestures remain open."
+  },
+  "ci-build-e597b59": {
+    "run": 38039974486,
+    "codeql": 38039974570,
+    "docs": 38039974538,
+    "status": "All ten required checks passed",
+    "scope": "Hosted proof-only checkpoint; current short-tap runtime changes are subsequent and local."
   }
 }

@@ -29,6 +29,10 @@ endpoint-facing edge to changing width and preserves the remaining cap-curvature
 The [inset material correction](review/atlas/inset-material-2026-10-10/README.md) records the
 rejected dark-disc appearance and the native before/after: resting tint now stays on the bar
 while the recovering glass can extend beyond it.
+The [consecutive short-tap candidate](review/atlas/short-tap-timing-2026-10-10/README.md) slows adjacent
+travel while preserving its deformation and long-trip response. Two recorded partial trips improve
+from roughly13–16px to2.5px centre RMS with one time alignment each. The remaining width mismatch
+and current verification status are explicit; this is not full motion or optical parity.
 
 ## Start with one scene
 
