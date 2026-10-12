@@ -6,6 +6,10 @@ against the evidence that produced it. Read this before moving files or changing
 
 ## Current workflow
 
+After an interruption or usage limit, read [NEXT-SESSION.md](NEXT-SESSION.md) and
+[TODO.md](TODO.md) before starting tests or changing source. They identify the current
+unverified experiment, completed checks and exact resume action; preserve all dirty work.
+
 Use [WORKSPACE.md](WORKSPACE.md). Atlas Studio lives in `desktop/` and shares the
 Loupe screen with the Android sample. The old independent workspaces are retired;
 keep historical records as provenance and follow the single canonical workflow.

@@ -14,7 +14,7 @@ public final class PhoneTapProbe {
         boolean touch = args.length == 2 && args[1].equals("touch");
         float[] durations = touch ? new float[] {.04f,.08f,.116f,.16f,.24f} : new float[] {-1f};
         try (PrintWriter out = new PrintWriter(Files.newBufferedWriter(Path.of(args[0])))) {
-            out.println("restWidth,restHeight,slots,pressSeconds,seconds,phase,cx,width,height,formation,protrusion");
+            out.println("restWidth,restHeight,slots,pressSeconds,seconds,phase,cx,width,height,formation,protrusion,transitAppearance");
             for (float[] rest : new float[][] {{285,163}, {278,167.5f}, {271,172}}) {
                 for (int distance = 1; distance <= 2; distance++) {
                   for (float duration : durations) {
@@ -41,9 +41,9 @@ public final class PhoneTapProbe {
                         if(c.getSolverFailed() || (c.isHeld() && duration<=.12f))
                             throw new IllegalStateException("Invalid tap state at " + t);
                         float phase=(c.getCentreX()-bar.centreOf(0))/(bar.centreOf(distance)-bar.centreOf(0));
-                        out.printf(Locale.ROOT,"%.3f,%.3f,%d,%.3f,%.7f,%.7f,%.4f,%.4f,%.4f,%.6f,%.5f%n",
+                        out.printf(Locale.ROOT,"%.3f,%.3f,%d,%.3f,%.7f,%.7f,%.4f,%.4f,%.4f,%.6f,%.5f,%.6f%n",
                             rest[0],rest[1],distance,duration,t,phase,c.getCentreX(),e.getWidth(),
-                            e.getHeight(),c.getFormation(),c.protrusion());
+                            e.getHeight(),c.getFormation(),c.protrusion(),c.getTransitAppearance());
                     }
                   }
                 }

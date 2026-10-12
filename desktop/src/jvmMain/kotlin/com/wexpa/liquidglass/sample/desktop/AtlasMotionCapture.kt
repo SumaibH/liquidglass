@@ -277,6 +277,7 @@ internal suspend fun captureAtlasMotion(window: Container, probe: AtlasMotionPro
             File(directory, "capture.json").writeText("""{
               "backend":"${layer.renderApi}","scale":$scale,"readbackEnabled":$readback,"checksPassed":$checksPassed,
               "scenario":"${if (shortTapsOnly) "short-taps" else "full"}",
+              "requestedGpu":"${System.getProperty("skiko.gpu.priority", "auto")}","rendererInfo":"${atlasJsonText(layer.renderInfo)}",
               "navigation":{"left":${bounds.left},"top":${bounds.top},"width":${bounds.width},"height":${bounds.height}},
               "input":"AWT events dispatched only to this application's Compose component",
               "timing":"Each phase uses a fresh gesture replay because native readback is slow. CSV capture timestamps are render-start times. PNG encoding follows input. Not a continuous video, presented FPS or measured iOS timing."

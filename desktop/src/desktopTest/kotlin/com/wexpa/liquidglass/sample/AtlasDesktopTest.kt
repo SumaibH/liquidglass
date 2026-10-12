@@ -29,7 +29,7 @@ class AtlasDesktopTest {
         assertEquals(Offset(114f, 114f), boundedLens(Offset.Zero, IntSize(1000, 700), 104f, 10f))
     }
 
-    @Test fun actualAtlasControlsAndExtremeDragsRecoverAcrossAllScenes() = runComposeUiTest(testTimeout = 6.minutes) {
+    @Test fun actualAtlasSceneSwitchingAndControlsRecover() = runComposeUiTest(testTimeout = 6.minutes) {
         val report = File("build/reports/atlas").apply { mkdirs() }
         setContent {
             CompositionLocalProvider(LocalDensity provides Density(1f)) {
@@ -45,6 +45,27 @@ class AtlasDesktopTest {
             waitForIdle()
             capture("scene-$scene")
         }
+        onNodeWithTag("zoom-in").performClick()
+        onNodeWithTag("atlas-lens").assertContentDescriptionEquals("Magnifier, 135 percent")
+        onNodeWithTag("lens-toggle").performClick()
+        onNodeWithTag("atlas-lens").assertDoesNotExist()
+        onNodeWithTag("lens-toggle").performClick()
+        onNodeWithTag("atlas-lens").assertExists()
+        onNodeWithTag("motion").performClick()
+        onNodeWithText("Motion reduced").assertExists()
+        capture("recovered")
+    }
+    @Test fun actualAtlasExtremeDragsRemainAnchoredAndRecover() = runComposeUiTest(testTimeout = 6.minutes) {
+        val report = File("build/reports/atlas").apply { mkdirs() }
+        setContent {
+            CompositionLocalProvider(LocalDensity provides Density(1f)) {
+                Box(Modifier.size(800.dp, 600.dp)) { LoupeScreen(initialScene = 2) }
+            }
+        }
+        waitForIdle()
+        fun capture(name: String) {
+            ImageIO.write(onRoot().captureToImage().toAwtImage(), "png", File(report, "$name.png"))
+        }
         val canvas = onNodeWithTag("atlas-canvas").fetchSemanticsNode().boundsInRoot
         val lens = onNodeWithTag("atlas-lens")
         lens.performTouchInput { down(center) }
@@ -59,14 +80,10 @@ class AtlasDesktopTest {
         }
         lens.performTouchInput { up() }
         waitForIdle()
-        onNodeWithTag("zoom-in").performClick()
-        onNodeWithTag("atlas-lens").assertContentDescriptionEquals("Magnifier, 135 percent")
-        onNodeWithTag("lens-toggle").performClick()
-        onNodeWithTag("atlas-lens").assertDoesNotExist()
-        onNodeWithTag("lens-toggle").performClick()
-        onNodeWithTag("atlas-lens").assertExists()
-        onNodeWithTag("motion").performClick()
-        onNodeWithText("Motion reduced").assertExists()
-        capture("recovered")
+        val recovered = lens.fetchSemanticsNode().boundsInRoot
+        assertTrue(recovered.left >= canvas.left && recovered.right <= canvas.right)
+        assertTrue(recovered.top >= canvas.top && recovered.bottom <= canvas.bottom)
+        capture("extreme-recovered")
     }
+
 }

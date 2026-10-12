@@ -1,0 +1,1893 @@
+{
+  "sourceSha256": "186e1eb34e6baf896b16bffe839176fc298b2b7a6823d11cb39204ed960ebc06",
+  "measurementsSha256": "c2eed05a721ff635ba374e81ef28910f01f6139271f13a1211943bba073bee32",
+  "traceSha256": "44e22aa53c6327b1f49befbe7e571c1ef8efae962149294a4970527777a68305",
+  "alignmentSha256": "4b0c4b2a40c4fd7433713ce31bf4d4fb48e2e2284e7741713927ca5a382ef0bc",
+  "timeOrigin": 3.4008330000005014,
+  "model": "Current Calm/V3 interior tint alpha=.5*(1-f), lift=-10*(1-f) RGB levels. Use OBSERVED bar B: S=B*(1-.5*(1-f))-10*(1-f). Central ink factor 1/(1-.12*f*f): style heldMagnification and heldLens both interpolate with f.",
+  "limits": "Diagnostic interior algebra only, not a full rendered optical comparison. Raw share, blur, edge transport and highlights are not reproduced. Selected glyph size may include native emphasis as well as lensing. Unknown hidden backdrop prevents fitting bar lift from its observed value. Use the previous nominal trajectory time origin for all authored alternatives; input durations and resting dimensions are not recovered original input.",
+  "samples": [
+    {
+      "file": "frame-001.png",
+      "pts": 1988,
+      "seconds": 3.313333,
+      "observedBar": 32.0,
+      "observedSelector": 10.0,
+      "observedRatio": 0.3125,
+      "iconScale": [
+        {
+          "threshold": 160,
+          "width": 1.0,
+          "height": 1.0
+        },
+        {
+          "threshold": 180,
+          "width": 1.0,
+          "height": 1.0
+        },
+        {
+          "threshold": 200,
+          "width": 1.0,
+          "height": 1.0
+        }
+      ],
+      "alternatives": [
+        {
+          "restWidth": 271,
+          "pressSeconds": 0.04,
+          "formation": 0.0,
+          "selectorInterior": 6.0,
+          "selectorToBar": 0.1875,
+          "centralInkFactor": 1.0
+        },
+        {
+          "restWidth": 271,
+          "pressSeconds": 0.08,
+          "formation": 0.0,
+          "selectorInterior": 6.0,
+          "selectorToBar": 0.1875,
+          "centralInkFactor": 1.0
+        },
+        {
+          "restWidth": 271,
+          "pressSeconds": 0.116,
+          "formation": 0.0,
+          "selectorInterior": 6.0,
+          "selectorToBar": 0.1875,
+          "centralInkFactor": 1.0
+        },
+        {
+          "restWidth": 271,
+          "pressSeconds": 0.16,
+          "formation": 0.0,
+          "selectorInterior": 6.0,
+          "selectorToBar": 0.1875,
+          "centralInkFactor": 1.0
+        },
+        {
+          "restWidth": 271,
+          "pressSeconds": 0.24,
+          "formation": 0.0,
+          "selectorInterior": 6.0,
+          "selectorToBar": 0.1875,
+          "centralInkFactor": 1.0
+        },
+        {
+          "restWidth": 278,
+          "pressSeconds": 0.04,
+          "formation": 0.0,
+          "selectorInterior": 6.0,
+          "selectorToBar": 0.1875,
+          "centralInkFactor": 1.0
+        },
+        {
+          "restWidth": 278,
+          "pressSeconds": 0.08,
+          "formation": 0.0,
+          "selectorInterior": 6.0,
+          "selectorToBar": 0.1875,
+          "centralInkFactor": 1.0
+        },
+        {
+          "restWidth": 278,
+          "pressSeconds": 0.116,
+          "formation": 0.0,
+          "selectorInterior": 6.0,
+          "selectorToBar": 0.1875,
+          "centralInkFactor": 1.0
+        },
+        {
+          "restWidth": 278,
+          "pressSeconds": 0.16,
+          "formation": 0.0,
+          "selectorInterior": 6.0,
+          "selectorToBar": 0.1875,
+          "centralInkFactor": 1.0
+        },
+        {
+          "restWidth": 278,
+          "pressSeconds": 0.24,
+          "formation": 0.0,
+          "selectorInterior": 6.0,
+          "selectorToBar": 0.1875,
+          "centralInkFactor": 1.0
+        },
+        {
+          "restWidth": 285,
+          "pressSeconds": 0.04,
+          "formation": 0.0,
+          "selectorInterior": 6.0,
+          "selectorToBar": 0.1875,
+          "centralInkFactor": 1.0
+        },
+        {
+          "restWidth": 285,
+          "pressSeconds": 0.08,
+          "formation": 0.0,
+          "selectorInterior": 6.0,
+          "selectorToBar": 0.1875,
+          "centralInkFactor": 1.0
+        },
+        {
+          "restWidth": 285,
+          "pressSeconds": 0.116,
+          "formation": 0.0,
+          "selectorInterior": 6.0,
+          "selectorToBar": 0.1875,
+          "centralInkFactor": 1.0
+        },
+        {
+          "restWidth": 285,
+          "pressSeconds": 0.16,
+          "formation": 0.0,
+          "selectorInterior": 6.0,
+          "selectorToBar": 0.1875,
+          "centralInkFactor": 1.0
+        },
+        {
+          "restWidth": 285,
+          "pressSeconds": 0.24,
+          "formation": 0.0,
+          "selectorInterior": 6.0,
+          "selectorToBar": 0.1875,
+          "centralInkFactor": 1.0
+        }
+      ]
+    },
+    {
+      "file": "frame-002.png",
+      "pts": 1998,
+      "seconds": 3.33,
+      "observedBar": 32.0,
+      "observedSelector": 10.0,
+      "observedRatio": 0.3125,
+      "iconScale": [],
+      "alternatives": [
+        {
+          "restWidth": 271,
+          "pressSeconds": 0.04,
+          "formation": 0.0,
+          "selectorInterior": 6.0,
+          "selectorToBar": 0.1875,
+          "centralInkFactor": 1.0
+        },
+        {
+          "restWidth": 271,
+          "pressSeconds": 0.08,
+          "formation": 0.0,
+          "selectorInterior": 6.0,
+          "selectorToBar": 0.1875,
+          "centralInkFactor": 1.0
+        },
+        {
+          "restWidth": 271,
+          "pressSeconds": 0.116,
+          "formation": 0.0,
+          "selectorInterior": 6.0,
+          "selectorToBar": 0.1875,
+          "centralInkFactor": 1.0
+        },
+        {
+          "restWidth": 271,
+          "pressSeconds": 0.16,
+          "formation": 0.0,
+          "selectorInterior": 6.0,
+          "selectorToBar": 0.1875,
+          "centralInkFactor": 1.0
+        },
+        {
+          "restWidth": 271,
+          "pressSeconds": 0.24,
+          "formation": 0.0,
+          "selectorInterior": 6.0,
+          "selectorToBar": 0.1875,
+          "centralInkFactor": 1.0
+        },
+        {
+          "restWidth": 278,
+          "pressSeconds": 0.04,
+          "formation": 0.0,
+          "selectorInterior": 6.0,
+          "selectorToBar": 0.1875,
+          "centralInkFactor": 1.0
+        },
+        {
+          "restWidth": 278,
+          "pressSeconds": 0.08,
+          "formation": 0.0,
+          "selectorInterior": 6.0,
+          "selectorToBar": 0.1875,
+          "centralInkFactor": 1.0
+        },
+        {
+          "restWidth": 278,
+          "pressSeconds": 0.116,
+          "formation": 0.0,
+          "selectorInterior": 6.0,
+          "selectorToBar": 0.1875,
+          "centralInkFactor": 1.0
+        },
+        {
+          "restWidth": 278,
+          "pressSeconds": 0.16,
+          "formation": 0.0,
+          "selectorInterior": 6.0,
+          "selectorToBar": 0.1875,
+          "centralInkFactor": 1.0
+        },
+        {
+          "restWidth": 278,
+          "pressSeconds": 0.24,
+          "formation": 0.0,
+          "selectorInterior": 6.0,
+          "selectorToBar": 0.1875,
+          "centralInkFactor": 1.0
+        },
+        {
+          "restWidth": 285,
+          "pressSeconds": 0.04,
+          "formation": 0.0,
+          "selectorInterior": 6.0,
+          "selectorToBar": 0.1875,
+          "centralInkFactor": 1.0
+        },
+        {
+          "restWidth": 285,
+          "pressSeconds": 0.08,
+          "formation": 0.0,
+          "selectorInterior": 6.0,
+          "selectorToBar": 0.1875,
+          "centralInkFactor": 1.0
+        },
+        {
+          "restWidth": 285,
+          "pressSeconds": 0.116,
+          "formation": 0.0,
+          "selectorInterior": 6.0,
+          "selectorToBar": 0.1875,
+          "centralInkFactor": 1.0
+        },
+        {
+          "restWidth": 285,
+          "pressSeconds": 0.16,
+          "formation": 0.0,
+          "selectorInterior": 6.0,
+          "selectorToBar": 0.1875,
+          "centralInkFactor": 1.0
+        },
+        {
+          "restWidth": 285,
+          "pressSeconds": 0.24,
+          "formation": 0.0,
+          "selectorInterior": 6.0,
+          "selectorToBar": 0.1875,
+          "centralInkFactor": 1.0
+        }
+      ]
+    },
+    {
+      "file": "frame-003.png",
+      "pts": 2008,
+      "seconds": 3.346667,
+      "observedBar": 32.0,
+      "observedSelector": 10.0,
+      "observedRatio": 0.3125,
+      "iconScale": [],
+      "alternatives": [
+        {
+          "restWidth": 271,
+          "pressSeconds": 0.04,
+          "formation": 0.0,
+          "selectorInterior": 6.0,
+          "selectorToBar": 0.1875,
+          "centralInkFactor": 1.0
+        },
+        {
+          "restWidth": 271,
+          "pressSeconds": 0.08,
+          "formation": 0.0,
+          "selectorInterior": 6.0,
+          "selectorToBar": 0.1875,
+          "centralInkFactor": 1.0
+        },
+        {
+          "restWidth": 271,
+          "pressSeconds": 0.116,
+          "formation": 0.0,
+          "selectorInterior": 6.0,
+          "selectorToBar": 0.1875,
+          "centralInkFactor": 1.0
+        },
+        {
+          "restWidth": 271,
+          "pressSeconds": 0.16,
+          "formation": 0.0,
+          "selectorInterior": 6.0,
+          "selectorToBar": 0.1875,
+          "centralInkFactor": 1.0
+        },
+        {
+          "restWidth": 271,
+          "pressSeconds": 0.24,
+          "formation": 0.0,
+          "selectorInterior": 6.0,
+          "selectorToBar": 0.1875,
+          "centralInkFactor": 1.0
+        },
+        {
+          "restWidth": 278,
+          "pressSeconds": 0.04,
+          "formation": 0.0,
+          "selectorInterior": 6.0,
+          "selectorToBar": 0.1875,
+          "centralInkFactor": 1.0
+        },
+        {
+          "restWidth": 278,
+          "pressSeconds": 0.08,
+          "formation": 0.0,
+          "selectorInterior": 6.0,
+          "selectorToBar": 0.1875,
+          "centralInkFactor": 1.0
+        },
+        {
+          "restWidth": 278,
+          "pressSeconds": 0.116,
+          "formation": 0.0,
+          "selectorInterior": 6.0,
+          "selectorToBar": 0.1875,
+          "centralInkFactor": 1.0
+        },
+        {
+          "restWidth": 278,
+          "pressSeconds": 0.16,
+          "formation": 0.0,
+          "selectorInterior": 6.0,
+          "selectorToBar": 0.1875,
+          "centralInkFactor": 1.0
+        },
+        {
+          "restWidth": 278,
+          "pressSeconds": 0.24,
+          "formation": 0.0,
+          "selectorInterior": 6.0,
+          "selectorToBar": 0.1875,
+          "centralInkFactor": 1.0
+        },
+        {
+          "restWidth": 285,
+          "pressSeconds": 0.04,
+          "formation": 0.0,
+          "selectorInterior": 6.0,
+          "selectorToBar": 0.1875,
+          "centralInkFactor": 1.0
+        },
+        {
+          "restWidth": 285,
+          "pressSeconds": 0.08,
+          "formation": 0.0,
+          "selectorInterior": 6.0,
+          "selectorToBar": 0.1875,
+          "centralInkFactor": 1.0
+        },
+        {
+          "restWidth": 285,
+          "pressSeconds": 0.116,
+          "formation": 0.0,
+          "selectorInterior": 6.0,
+          "selectorToBar": 0.1875,
+          "centralInkFactor": 1.0
+        },
+        {
+          "restWidth": 285,
+          "pressSeconds": 0.16,
+          "formation": 0.0,
+          "selectorInterior": 6.0,
+          "selectorToBar": 0.1875,
+          "centralInkFactor": 1.0
+        },
+        {
+          "restWidth": 285,
+          "pressSeconds": 0.24,
+          "formation": 0.0,
+          "selectorInterior": 6.0,
+          "selectorToBar": 0.1875,
+          "centralInkFactor": 1.0
+        }
+      ]
+    },
+    {
+      "file": "frame-004.png",
+      "pts": 2018,
+      "seconds": 3.363333,
+      "observedBar": 32.0,
+      "observedSelector": 10.0,
+      "observedRatio": 0.3125,
+      "iconScale": [],
+      "alternatives": [
+        {
+          "restWidth": 271,
+          "pressSeconds": 0.04,
+          "formation": 0.0,
+          "selectorInterior": 6.0,
+          "selectorToBar": 0.1875,
+          "centralInkFactor": 1.0
+        },
+        {
+          "restWidth": 271,
+          "pressSeconds": 0.08,
+          "formation": 0.0,
+          "selectorInterior": 6.0,
+          "selectorToBar": 0.1875,
+          "centralInkFactor": 1.0
+        },
+        {
+          "restWidth": 271,
+          "pressSeconds": 0.116,
+          "formation": 0.0,
+          "selectorInterior": 6.0,
+          "selectorToBar": 0.1875,
+          "centralInkFactor": 1.0
+        },
+        {
+          "restWidth": 271,
+          "pressSeconds": 0.16,
+          "formation": 0.0,
+          "selectorInterior": 6.0,
+          "selectorToBar": 0.1875,
+          "centralInkFactor": 1.0
+        },
+        {
+          "restWidth": 271,
+          "pressSeconds": 0.24,
+          "formation": 0.0,
+          "selectorInterior": 6.0,
+          "selectorToBar": 0.1875,
+          "centralInkFactor": 1.0
+        },
+        {
+          "restWidth": 278,
+          "pressSeconds": 0.04,
+          "formation": 0.0,
+          "selectorInterior": 6.0,
+          "selectorToBar": 0.1875,
+          "centralInkFactor": 1.0
+        },
+        {
+          "restWidth": 278,
+          "pressSeconds": 0.08,
+          "formation": 0.0,
+          "selectorInterior": 6.0,
+          "selectorToBar": 0.1875,
+          "centralInkFactor": 1.0
+        },
+        {
+          "restWidth": 278,
+          "pressSeconds": 0.116,
+          "formation": 0.0,
+          "selectorInterior": 6.0,
+          "selectorToBar": 0.1875,
+          "centralInkFactor": 1.0
+        },
+        {
+          "restWidth": 278,
+          "pressSeconds": 0.16,
+          "formation": 0.0,
+          "selectorInterior": 6.0,
+          "selectorToBar": 0.1875,
+          "centralInkFactor": 1.0
+        },
+        {
+          "restWidth": 278,
+          "pressSeconds": 0.24,
+          "formation": 0.0,
+          "selectorInterior": 6.0,
+          "selectorToBar": 0.1875,
+          "centralInkFactor": 1.0
+        },
+        {
+          "restWidth": 285,
+          "pressSeconds": 0.04,
+          "formation": 0.0,
+          "selectorInterior": 6.0,
+          "selectorToBar": 0.1875,
+          "centralInkFactor": 1.0
+        },
+        {
+          "restWidth": 285,
+          "pressSeconds": 0.08,
+          "formation": 0.0,
+          "selectorInterior": 6.0,
+          "selectorToBar": 0.1875,
+          "centralInkFactor": 1.0
+        },
+        {
+          "restWidth": 285,
+          "pressSeconds": 0.116,
+          "formation": 0.0,
+          "selectorInterior": 6.0,
+          "selectorToBar": 0.1875,
+          "centralInkFactor": 1.0
+        },
+        {
+          "restWidth": 285,
+          "pressSeconds": 0.16,
+          "formation": 0.0,
+          "selectorInterior": 6.0,
+          "selectorToBar": 0.1875,
+          "centralInkFactor": 1.0
+        },
+        {
+          "restWidth": 285,
+          "pressSeconds": 0.24,
+          "formation": 0.0,
+          "selectorInterior": 6.0,
+          "selectorToBar": 0.1875,
+          "centralInkFactor": 1.0
+        }
+      ]
+    },
+    {
+      "file": "frame-005.png",
+      "pts": 2038,
+      "seconds": 3.396667,
+      "observedBar": 32.0,
+      "observedSelector": 10.0,
+      "observedRatio": 0.3125,
+      "iconScale": [],
+      "alternatives": [
+        {
+          "restWidth": 271,
+          "pressSeconds": 0.04,
+          "formation": 0.0,
+          "selectorInterior": 6.0,
+          "selectorToBar": 0.1875,
+          "centralInkFactor": 1.0
+        },
+        {
+          "restWidth": 271,
+          "pressSeconds": 0.08,
+          "formation": 0.0,
+          "selectorInterior": 6.0,
+          "selectorToBar": 0.1875,
+          "centralInkFactor": 1.0
+        },
+        {
+          "restWidth": 271,
+          "pressSeconds": 0.116,
+          "formation": 0.0,
+          "selectorInterior": 6.0,
+          "selectorToBar": 0.1875,
+          "centralInkFactor": 1.0
+        },
+        {
+          "restWidth": 271,
+          "pressSeconds": 0.16,
+          "formation": 0.0,
+          "selectorInterior": 6.0,
+          "selectorToBar": 0.1875,
+          "centralInkFactor": 1.0
+        },
+        {
+          "restWidth": 271,
+          "pressSeconds": 0.24,
+          "formation": 0.0,
+          "selectorInterior": 6.0,
+          "selectorToBar": 0.1875,
+          "centralInkFactor": 1.0
+        },
+        {
+          "restWidth": 278,
+          "pressSeconds": 0.04,
+          "formation": 0.0,
+          "selectorInterior": 6.0,
+          "selectorToBar": 0.1875,
+          "centralInkFactor": 1.0
+        },
+        {
+          "restWidth": 278,
+          "pressSeconds": 0.08,
+          "formation": 0.0,
+          "selectorInterior": 6.0,
+          "selectorToBar": 0.1875,
+          "centralInkFactor": 1.0
+        },
+        {
+          "restWidth": 278,
+          "pressSeconds": 0.116,
+          "formation": 0.0,
+          "selectorInterior": 6.0,
+          "selectorToBar": 0.1875,
+          "centralInkFactor": 1.0
+        },
+        {
+          "restWidth": 278,
+          "pressSeconds": 0.16,
+          "formation": 0.0,
+          "selectorInterior": 6.0,
+          "selectorToBar": 0.1875,
+          "centralInkFactor": 1.0
+        },
+        {
+          "restWidth": 278,
+          "pressSeconds": 0.24,
+          "formation": 0.0,
+          "selectorInterior": 6.0,
+          "selectorToBar": 0.1875,
+          "centralInkFactor": 1.0
+        },
+        {
+          "restWidth": 285,
+          "pressSeconds": 0.04,
+          "formation": 0.0,
+          "selectorInterior": 6.0,
+          "selectorToBar": 0.1875,
+          "centralInkFactor": 1.0
+        },
+        {
+          "restWidth": 285,
+          "pressSeconds": 0.08,
+          "formation": 0.0,
+          "selectorInterior": 6.0,
+          "selectorToBar": 0.1875,
+          "centralInkFactor": 1.0
+        },
+        {
+          "restWidth": 285,
+          "pressSeconds": 0.116,
+          "formation": 0.0,
+          "selectorInterior": 6.0,
+          "selectorToBar": 0.1875,
+          "centralInkFactor": 1.0
+        },
+        {
+          "restWidth": 285,
+          "pressSeconds": 0.16,
+          "formation": 0.0,
+          "selectorInterior": 6.0,
+          "selectorToBar": 0.1875,
+          "centralInkFactor": 1.0
+        },
+        {
+          "restWidth": 285,
+          "pressSeconds": 0.24,
+          "formation": 0.0,
+          "selectorInterior": 6.0,
+          "selectorToBar": 0.1875,
+          "centralInkFactor": 1.0
+        }
+      ]
+    },
+    {
+      "file": "frame-006.png",
+      "pts": 2048,
+      "seconds": 3.413333,
+      "observedBar": 37.0,
+      "observedSelector": 14.0,
+      "observedRatio": 0.3783783783783784,
+      "iconScale": [],
+      "alternatives": [
+        {
+          "restWidth": 271,
+          "pressSeconds": 0.04,
+          "formation": 0.016675499998879666,
+          "selectorInterior": 8.97525174996807,
+          "selectorToBar": 0.24257437162075865,
+          "centralInkFactor": 1.0000333697895312
+        },
+        {
+          "restWidth": 271,
+          "pressSeconds": 0.08,
+          "formation": 0.016675499998879666,
+          "selectorInterior": 8.97525174996807,
+          "selectorToBar": 0.24257437162075865,
+          "centralInkFactor": 1.0000333697895312
+        },
+        {
+          "restWidth": 271,
+          "pressSeconds": 0.116,
+          "formation": 0.016675499998879666,
+          "selectorInterior": 8.97525174996807,
+          "selectorToBar": 0.24257437162075865,
+          "centralInkFactor": 1.0000333697895312
+        },
+        {
+          "restWidth": 271,
+          "pressSeconds": 0.16,
+          "formation": 0.016675499998879666,
+          "selectorInterior": 8.97525174996807,
+          "selectorToBar": 0.24257437162075865,
+          "centralInkFactor": 1.0000333697895312
+        },
+        {
+          "restWidth": 271,
+          "pressSeconds": 0.24,
+          "formation": 0.016675499998879666,
+          "selectorInterior": 8.97525174996807,
+          "selectorToBar": 0.24257437162075865,
+          "centralInkFactor": 1.0000333697895312
+        },
+        {
+          "restWidth": 278,
+          "pressSeconds": 0.04,
+          "formation": 0.016675499998879666,
+          "selectorInterior": 8.97525174996807,
+          "selectorToBar": 0.24257437162075865,
+          "centralInkFactor": 1.0000333697895312
+        },
+        {
+          "restWidth": 278,
+          "pressSeconds": 0.08,
+          "formation": 0.016675499998879666,
+          "selectorInterior": 8.97525174996807,
+          "selectorToBar": 0.24257437162075865,
+          "centralInkFactor": 1.0000333697895312
+        },
+        {
+          "restWidth": 278,
+          "pressSeconds": 0.116,
+          "formation": 0.016675499998879666,
+          "selectorInterior": 8.97525174996807,
+          "selectorToBar": 0.24257437162075865,
+          "centralInkFactor": 1.0000333697895312
+        },
+        {
+          "restWidth": 278,
+          "pressSeconds": 0.16,
+          "formation": 0.016675499998879666,
+          "selectorInterior": 8.97525174996807,
+          "selectorToBar": 0.24257437162075865,
+          "centralInkFactor": 1.0000333697895312
+        },
+        {
+          "restWidth": 278,
+          "pressSeconds": 0.24,
+          "formation": 0.016675499998879666,
+          "selectorInterior": 8.97525174996807,
+          "selectorToBar": 0.24257437162075865,
+          "centralInkFactor": 1.0000333697895312
+        },
+        {
+          "restWidth": 285,
+          "pressSeconds": 0.04,
+          "formation": 0.016675499998879666,
+          "selectorInterior": 8.97525174996807,
+          "selectorToBar": 0.24257437162075865,
+          "centralInkFactor": 1.0000333697895312
+        },
+        {
+          "restWidth": 285,
+          "pressSeconds": 0.08,
+          "formation": 0.016675499998879666,
+          "selectorInterior": 8.97525174996807,
+          "selectorToBar": 0.24257437162075865,
+          "centralInkFactor": 1.0000333697895312
+        },
+        {
+          "restWidth": 285,
+          "pressSeconds": 0.116,
+          "formation": 0.016675499998879666,
+          "selectorInterior": 8.97525174996807,
+          "selectorToBar": 0.24257437162075865,
+          "centralInkFactor": 1.0000333697895312
+        },
+        {
+          "restWidth": 285,
+          "pressSeconds": 0.16,
+          "formation": 0.016675499998879666,
+          "selectorInterior": 8.97525174996807,
+          "selectorToBar": 0.24257437162075865,
+          "centralInkFactor": 1.0000333697895312
+        },
+        {
+          "restWidth": 285,
+          "pressSeconds": 0.24,
+          "formation": 0.016675499998879666,
+          "selectorInterior": 8.97525174996807,
+          "selectorToBar": 0.24257437162075865,
+          "centralInkFactor": 1.0000333697895312
+        }
+      ]
+    },
+    {
+      "file": "frame-007.png",
+      "pts": 2058,
+      "seconds": 3.43,
+      "observedBar": 43.0,
+      "observedSelector": 15.0,
+      "observedRatio": 0.3488372093023256,
+      "iconScale": [],
+      "alternatives": [
+        {
+          "restWidth": 271,
+          "pressSeconds": 0.04,
+          "formation": 0.06857318501234748,
+          "selectorInterior": 13.660055327888944,
+          "selectorToBar": 0.31767570529974287,
+          "centralInkFactor": 1.0005645923890238
+        },
+        {
+          "restWidth": 271,
+          "pressSeconds": 0.08,
+          "formation": 0.06857318501234748,
+          "selectorInterior": 13.660055327888944,
+          "selectorToBar": 0.31767570529974287,
+          "centralInkFactor": 1.0005645923890238
+        },
+        {
+          "restWidth": 271,
+          "pressSeconds": 0.116,
+          "formation": 0.06857318501234748,
+          "selectorInterior": 13.660055327888944,
+          "selectorToBar": 0.31767570529974287,
+          "centralInkFactor": 1.0005645923890238
+        },
+        {
+          "restWidth": 271,
+          "pressSeconds": 0.16,
+          "formation": 0.06857318501234748,
+          "selectorInterior": 13.660055327888944,
+          "selectorToBar": 0.31767570529974287,
+          "centralInkFactor": 1.0005645923890238
+        },
+        {
+          "restWidth": 271,
+          "pressSeconds": 0.24,
+          "formation": 0.06857318501234748,
+          "selectorInterior": 13.660055327888944,
+          "selectorToBar": 0.31767570529974287,
+          "centralInkFactor": 1.0005645923890238
+        },
+        {
+          "restWidth": 278,
+          "pressSeconds": 0.04,
+          "formation": 0.06857318501234748,
+          "selectorInterior": 13.660055327888944,
+          "selectorToBar": 0.31767570529974287,
+          "centralInkFactor": 1.0005645923890238
+        },
+        {
+          "restWidth": 278,
+          "pressSeconds": 0.08,
+          "formation": 0.06857318501234748,
+          "selectorInterior": 13.660055327888944,
+          "selectorToBar": 0.31767570529974287,
+          "centralInkFactor": 1.0005645923890238
+        },
+        {
+          "restWidth": 278,
+          "pressSeconds": 0.116,
+          "formation": 0.06857318501234748,
+          "selectorInterior": 13.660055327888944,
+          "selectorToBar": 0.31767570529974287,
+          "centralInkFactor": 1.0005645923890238
+        },
+        {
+          "restWidth": 278,
+          "pressSeconds": 0.16,
+          "formation": 0.06857318501234748,
+          "selectorInterior": 13.660055327888944,
+          "selectorToBar": 0.31767570529974287,
+          "centralInkFactor": 1.0005645923890238
+        },
+        {
+          "restWidth": 278,
+          "pressSeconds": 0.24,
+          "formation": 0.06857318501234748,
+          "selectorInterior": 13.660055327888944,
+          "selectorToBar": 0.31767570529974287,
+          "centralInkFactor": 1.0005645923890238
+        },
+        {
+          "restWidth": 285,
+          "pressSeconds": 0.04,
+          "formation": 0.06857318501234748,
+          "selectorInterior": 13.660055327888944,
+          "selectorToBar": 0.31767570529974287,
+          "centralInkFactor": 1.0005645923890238
+        },
+        {
+          "restWidth": 285,
+          "pressSeconds": 0.08,
+          "formation": 0.06857318501234748,
+          "selectorInterior": 13.660055327888944,
+          "selectorToBar": 0.31767570529974287,
+          "centralInkFactor": 1.0005645923890238
+        },
+        {
+          "restWidth": 285,
+          "pressSeconds": 0.116,
+          "formation": 0.06857318501234748,
+          "selectorInterior": 13.660055327888944,
+          "selectorToBar": 0.31767570529974287,
+          "centralInkFactor": 1.0005645923890238
+        },
+        {
+          "restWidth": 285,
+          "pressSeconds": 0.16,
+          "formation": 0.06857318501234748,
+          "selectorInterior": 13.660055327888944,
+          "selectorToBar": 0.31767570529974287,
+          "centralInkFactor": 1.0005645923890238
+        },
+        {
+          "restWidth": 285,
+          "pressSeconds": 0.24,
+          "formation": 0.06857318501234748,
+          "selectorInterior": 13.660055327888944,
+          "selectorToBar": 0.31767570529974287,
+          "centralInkFactor": 1.0005645923890238
+        }
+      ]
+    },
+    {
+      "file": "frame-008.png",
+      "pts": 2068,
+      "seconds": 3.446667,
+      "observedBar": 47.0,
+      "observedSelector": 23.0,
+      "observedRatio": 0.48936170212765956,
+      "iconScale": [],
+      "alternatives": [
+        {
+          "restWidth": 271,
+          "pressSeconds": 0.04,
+          "formation": 0.1277140604958603,
+          "selectorInterior": 17.778421026611323,
+          "selectorToBar": 0.37826427716194305,
+          "centralInkFactor": 1.0019611443088328
+        },
+        {
+          "restWidth": 271,
+          "pressSeconds": 0.08,
+          "formation": 0.12988613060200865,
+          "selectorInterior": 17.85118537516729,
+          "selectorToBar": 0.3798124547907934,
+          "centralInkFactor": 1.0020285555376176
+        },
+        {
+          "restWidth": 271,
+          "pressSeconds": 0.116,
+          "formation": 0.12988613060200865,
+          "selectorInterior": 17.85118537516729,
+          "selectorToBar": 0.3798124547907934,
+          "centralInkFactor": 1.0020285555376176
+        },
+        {
+          "restWidth": 271,
+          "pressSeconds": 0.16,
+          "formation": 0.12988613060200865,
+          "selectorInterior": 17.85118537516729,
+          "selectorToBar": 0.3798124547907934,
+          "centralInkFactor": 1.0020285555376176
+        },
+        {
+          "restWidth": 271,
+          "pressSeconds": 0.24,
+          "formation": 0.12988613060200865,
+          "selectorInterior": 17.85118537516729,
+          "selectorToBar": 0.3798124547907934,
+          "centralInkFactor": 1.0020285555376176
+        },
+        {
+          "restWidth": 278,
+          "pressSeconds": 0.04,
+          "formation": 0.1277140604958603,
+          "selectorInterior": 17.778421026611323,
+          "selectorToBar": 0.37826427716194305,
+          "centralInkFactor": 1.0019611443088328
+        },
+        {
+          "restWidth": 278,
+          "pressSeconds": 0.08,
+          "formation": 0.12988613060200865,
+          "selectorInterior": 17.85118537516729,
+          "selectorToBar": 0.3798124547907934,
+          "centralInkFactor": 1.0020285555376176
+        },
+        {
+          "restWidth": 278,
+          "pressSeconds": 0.116,
+          "formation": 0.12988613060200865,
+          "selectorInterior": 17.85118537516729,
+          "selectorToBar": 0.3798124547907934,
+          "centralInkFactor": 1.0020285555376176
+        },
+        {
+          "restWidth": 278,
+          "pressSeconds": 0.16,
+          "formation": 0.12988613060200865,
+          "selectorInterior": 17.85118537516729,
+          "selectorToBar": 0.3798124547907934,
+          "centralInkFactor": 1.0020285555376176
+        },
+        {
+          "restWidth": 278,
+          "pressSeconds": 0.24,
+          "formation": 0.12988613060200865,
+          "selectorInterior": 17.85118537516729,
+          "selectorToBar": 0.3798124547907934,
+          "centralInkFactor": 1.0020285555376176
+        },
+        {
+          "restWidth": 285,
+          "pressSeconds": 0.04,
+          "formation": 0.1277140604958603,
+          "selectorInterior": 17.778421026611323,
+          "selectorToBar": 0.37826427716194305,
+          "centralInkFactor": 1.0019611443088328
+        },
+        {
+          "restWidth": 285,
+          "pressSeconds": 0.08,
+          "formation": 0.12988613060200865,
+          "selectorInterior": 17.85118537516729,
+          "selectorToBar": 0.3798124547907934,
+          "centralInkFactor": 1.0020285555376176
+        },
+        {
+          "restWidth": 285,
+          "pressSeconds": 0.116,
+          "formation": 0.12988613060200865,
+          "selectorInterior": 17.85118537516729,
+          "selectorToBar": 0.3798124547907934,
+          "centralInkFactor": 1.0020285555376176
+        },
+        {
+          "restWidth": 285,
+          "pressSeconds": 0.16,
+          "formation": 0.12988613060200865,
+          "selectorInterior": 17.85118537516729,
+          "selectorToBar": 0.3798124547907934,
+          "centralInkFactor": 1.0020285555376176
+        },
+        {
+          "restWidth": 285,
+          "pressSeconds": 0.24,
+          "formation": 0.12988613060200865,
+          "selectorInterior": 17.85118537516729,
+          "selectorToBar": 0.3798124547907934,
+          "centralInkFactor": 1.0020285555376176
+        }
+      ]
+    },
+    {
+      "file": "frame-009.png",
+      "pts": 2078,
+      "seconds": 3.463333,
+      "observedBar": 49.0,
+      "observedSelector": 29.0,
+      "observedRatio": 0.5918367346938775,
+      "iconScale": [],
+      "alternatives": [
+        {
+          "restWidth": 271,
+          "pressSeconds": 0.04,
+          "formation": 0.16191229999930334,
+          "selectorInterior": 20.085974349975963,
+          "selectorToBar": 0.4099178438770605,
+          "centralInkFactor": 1.003155798883581
+        },
+        {
+          "restWidth": 271,
+          "pressSeconds": 0.08,
+          "formation": 0.1867525999984092,
+          "selectorInterior": 20.94296469994512,
+          "selectorToBar": 0.42740744285602283,
+          "centralInkFactor": 1.0042027734129209
+        },
+        {
+          "restWidth": 271,
+          "pressSeconds": 0.116,
+          "formation": 0.1867525999984092,
+          "selectorInterior": 20.94296469994512,
+          "selectorToBar": 0.42740744285602283,
+          "centralInkFactor": 1.0042027734129209
+        },
+        {
+          "restWidth": 271,
+          "pressSeconds": 0.16,
+          "formation": 0.1867525999984092,
+          "selectorInterior": 20.94296469994512,
+          "selectorToBar": 0.42740744285602283,
+          "centralInkFactor": 1.0042027734129209
+        },
+        {
+          "restWidth": 271,
+          "pressSeconds": 0.24,
+          "formation": 0.1867525999984092,
+          "selectorInterior": 20.94296469994512,
+          "selectorToBar": 0.42740744285602283,
+          "centralInkFactor": 1.0042027734129209
+        },
+        {
+          "restWidth": 278,
+          "pressSeconds": 0.04,
+          "formation": 0.16191229999930334,
+          "selectorInterior": 20.085974349975963,
+          "selectorToBar": 0.4099178438770605,
+          "centralInkFactor": 1.003155798883581
+        },
+        {
+          "restWidth": 278,
+          "pressSeconds": 0.08,
+          "formation": 0.1867525999984092,
+          "selectorInterior": 20.94296469994512,
+          "selectorToBar": 0.42740744285602283,
+          "centralInkFactor": 1.0042027734129209
+        },
+        {
+          "restWidth": 278,
+          "pressSeconds": 0.116,
+          "formation": 0.1867525999984092,
+          "selectorInterior": 20.94296469994512,
+          "selectorToBar": 0.42740744285602283,
+          "centralInkFactor": 1.0042027734129209
+        },
+        {
+          "restWidth": 278,
+          "pressSeconds": 0.16,
+          "formation": 0.1867525999984092,
+          "selectorInterior": 20.94296469994512,
+          "selectorToBar": 0.42740744285602283,
+          "centralInkFactor": 1.0042027734129209
+        },
+        {
+          "restWidth": 278,
+          "pressSeconds": 0.24,
+          "formation": 0.1867525999984092,
+          "selectorInterior": 20.94296469994512,
+          "selectorToBar": 0.42740744285602283,
+          "centralInkFactor": 1.0042027734129209
+        },
+        {
+          "restWidth": 285,
+          "pressSeconds": 0.04,
+          "formation": 0.16191229999930334,
+          "selectorInterior": 20.085974349975963,
+          "selectorToBar": 0.4099178438770605,
+          "centralInkFactor": 1.003155798883581
+        },
+        {
+          "restWidth": 285,
+          "pressSeconds": 0.08,
+          "formation": 0.1867525999984092,
+          "selectorInterior": 20.94296469994512,
+          "selectorToBar": 0.42740744285602283,
+          "centralInkFactor": 1.0042027734129209
+        },
+        {
+          "restWidth": 285,
+          "pressSeconds": 0.116,
+          "formation": 0.1867525999984092,
+          "selectorInterior": 20.94296469994512,
+          "selectorToBar": 0.42740744285602283,
+          "centralInkFactor": 1.0042027734129209
+        },
+        {
+          "restWidth": 285,
+          "pressSeconds": 0.16,
+          "formation": 0.1867525999984092,
+          "selectorInterior": 20.94296469994512,
+          "selectorToBar": 0.42740744285602283,
+          "centralInkFactor": 1.0042027734129209
+        },
+        {
+          "restWidth": 285,
+          "pressSeconds": 0.24,
+          "formation": 0.1867525999984092,
+          "selectorInterior": 20.94296469994512,
+          "selectorToBar": 0.42740744285602283,
+          "centralInkFactor": 1.0042027734129209
+        }
+      ]
+    },
+    {
+      "file": "frame-010.png",
+      "pts": 2088,
+      "seconds": 3.48,
+      "observedBar": 50.0,
+      "observedSelector": 35.0,
+      "observedRatio": 0.7,
+      "iconScale": [],
+      "alternatives": [
+        {
+          "restWidth": 271,
+          "pressSeconds": 0.04,
+          "formation": 0.17482728238358045,
+          "selectorInterior": 21.11895488342532,
+          "selectorToBar": 0.4223790976685064,
+          "centralInkFactor": 1.003681251347443
+        },
+        {
+          "restWidth": 271,
+          "pressSeconds": 0.08,
+          "formation": 0.23329700794294392,
+          "selectorInterior": 23.16539527800304,
+          "selectorToBar": 0.4633079055600608,
+          "centralInkFactor": 1.0065742375829407
+        },
+        {
+          "restWidth": 271,
+          "pressSeconds": 0.116,
+          "formation": 0.23329701875749886,
+          "selectorInterior": 23.165395656512462,
+          "selectorToBar": 0.46330791313024927,
+          "centralInkFactor": 1.0065742381964493
+        },
+        {
+          "restWidth": 271,
+          "pressSeconds": 0.16,
+          "formation": 0.23329701875749886,
+          "selectorInterior": 23.165395656512462,
+          "selectorToBar": 0.46330791313024927,
+          "centralInkFactor": 1.0065742381964493
+        },
+        {
+          "restWidth": 271,
+          "pressSeconds": 0.24,
+          "formation": 0.23329701875749886,
+          "selectorInterior": 23.165395656512462,
+          "selectorToBar": 0.46330791313024927,
+          "centralInkFactor": 1.0065742381964493
+        },
+        {
+          "restWidth": 278,
+          "pressSeconds": 0.04,
+          "formation": 0.17482728238358045,
+          "selectorInterior": 21.11895488342532,
+          "selectorToBar": 0.4223790976685064,
+          "centralInkFactor": 1.003681251347443
+        },
+        {
+          "restWidth": 278,
+          "pressSeconds": 0.08,
+          "formation": 0.23329700794294392,
+          "selectorInterior": 23.16539527800304,
+          "selectorToBar": 0.4633079055600608,
+          "centralInkFactor": 1.0065742375829407
+        },
+        {
+          "restWidth": 278,
+          "pressSeconds": 0.116,
+          "formation": 0.23329701875749886,
+          "selectorInterior": 23.165395656512462,
+          "selectorToBar": 0.46330791313024927,
+          "centralInkFactor": 1.0065742381964493
+        },
+        {
+          "restWidth": 278,
+          "pressSeconds": 0.16,
+          "formation": 0.23329701875749886,
+          "selectorInterior": 23.165395656512462,
+          "selectorToBar": 0.46330791313024927,
+          "centralInkFactor": 1.0065742381964493
+        },
+        {
+          "restWidth": 278,
+          "pressSeconds": 0.24,
+          "formation": 0.23329701875749886,
+          "selectorInterior": 23.165395656512462,
+          "selectorToBar": 0.46330791313024927,
+          "centralInkFactor": 1.0065742381964493
+        },
+        {
+          "restWidth": 285,
+          "pressSeconds": 0.04,
+          "formation": 0.17482728238358045,
+          "selectorInterior": 21.11895488342532,
+          "selectorToBar": 0.4223790976685064,
+          "centralInkFactor": 1.003681251347443
+        },
+        {
+          "restWidth": 285,
+          "pressSeconds": 0.08,
+          "formation": 0.23329700794294392,
+          "selectorInterior": 23.16539527800304,
+          "selectorToBar": 0.4633079055600608,
+          "centralInkFactor": 1.0065742375829407
+        },
+        {
+          "restWidth": 285,
+          "pressSeconds": 0.116,
+          "formation": 0.23329701875749886,
+          "selectorInterior": 23.165395656512462,
+          "selectorToBar": 0.46330791313024927,
+          "centralInkFactor": 1.0065742381964493
+        },
+        {
+          "restWidth": 285,
+          "pressSeconds": 0.16,
+          "formation": 0.23329701875749886,
+          "selectorInterior": 23.165395656512462,
+          "selectorToBar": 0.46330791313024927,
+          "centralInkFactor": 1.0065742381964493
+        },
+        {
+          "restWidth": 285,
+          "pressSeconds": 0.24,
+          "formation": 0.23329701875749886,
+          "selectorInterior": 23.165395656512462,
+          "selectorToBar": 0.46330791313024927,
+          "centralInkFactor": 1.0065742381964493
+        }
+      ]
+    },
+    {
+      "file": "frame-011.png",
+      "pts": 2098,
+      "seconds": 3.496667,
+      "observedBar": 50.5,
+      "observedSelector": 40.0,
+      "observedRatio": 0.7920792079207921,
+      "iconScale": [],
+      "alternatives": [
+        {
+          "restWidth": 271,
+          "pressSeconds": 0.04,
+          "formation": 0.1747681858406065,
+          "selectorInterior": 21.41057855088138,
+          "selectorToBar": 0.4239718524927006,
+          "centralInkFactor": 1.0036787538810132
+        },
+        {
+          "restWidth": 271,
+          "pressSeconds": 0.08,
+          "formation": 0.2582319788612051,
+          "selectorInterior": 24.35267725485748,
+          "selectorToBar": 0.482231232769455,
+          "centralInkFactor": 1.0080665999295042
+        },
+        {
+          "restWidth": 271,
+          "pressSeconds": 0.116,
+          "formation": 0.268132296591252,
+          "selectorInterior": 24.701663454841636,
+          "selectorToBar": 0.48914185059092347,
+          "centralInkFactor": 1.0087024710410022
+        },
+        {
+          "restWidth": 271,
+          "pressSeconds": 0.16,
+          "formation": 0.268132296591252,
+          "selectorInterior": 24.701663454841636,
+          "selectorToBar": 0.48914185059092347,
+          "centralInkFactor": 1.0087024710410022
+        },
+        {
+          "restWidth": 271,
+          "pressSeconds": 0.24,
+          "formation": 0.268132296591252,
+          "selectorInterior": 24.701663454841636,
+          "selectorToBar": 0.48914185059092347,
+          "centralInkFactor": 1.0087024710410022
+        },
+        {
+          "restWidth": 278,
+          "pressSeconds": 0.04,
+          "formation": 0.1747681858406065,
+          "selectorInterior": 21.41057855088138,
+          "selectorToBar": 0.4239718524927006,
+          "centralInkFactor": 1.0036787538810132
+        },
+        {
+          "restWidth": 278,
+          "pressSeconds": 0.08,
+          "formation": 0.2582319788612051,
+          "selectorInterior": 24.35267725485748,
+          "selectorToBar": 0.482231232769455,
+          "centralInkFactor": 1.0080665999295042
+        },
+        {
+          "restWidth": 278,
+          "pressSeconds": 0.116,
+          "formation": 0.268132296591252,
+          "selectorInterior": 24.701663454841636,
+          "selectorToBar": 0.48914185059092347,
+          "centralInkFactor": 1.0087024710410022
+        },
+        {
+          "restWidth": 278,
+          "pressSeconds": 0.16,
+          "formation": 0.268132296591252,
+          "selectorInterior": 24.701663454841636,
+          "selectorToBar": 0.48914185059092347,
+          "centralInkFactor": 1.0087024710410022
+        },
+        {
+          "restWidth": 278,
+          "pressSeconds": 0.24,
+          "formation": 0.268132296591252,
+          "selectorInterior": 24.701663454841636,
+          "selectorToBar": 0.48914185059092347,
+          "centralInkFactor": 1.0087024710410022
+        },
+        {
+          "restWidth": 285,
+          "pressSeconds": 0.04,
+          "formation": 0.1747681858406065,
+          "selectorInterior": 21.41057855088138,
+          "selectorToBar": 0.4239718524927006,
+          "centralInkFactor": 1.0036787538810132
+        },
+        {
+          "restWidth": 285,
+          "pressSeconds": 0.08,
+          "formation": 0.2582319788612051,
+          "selectorInterior": 24.35267725485748,
+          "selectorToBar": 0.482231232769455,
+          "centralInkFactor": 1.0080665999295042
+        },
+        {
+          "restWidth": 285,
+          "pressSeconds": 0.116,
+          "formation": 0.268132296591252,
+          "selectorInterior": 24.701663454841636,
+          "selectorToBar": 0.48914185059092347,
+          "centralInkFactor": 1.0087024710410022
+        },
+        {
+          "restWidth": 285,
+          "pressSeconds": 0.16,
+          "formation": 0.268132296591252,
+          "selectorInterior": 24.701663454841636,
+          "selectorToBar": 0.48914185059092347,
+          "centralInkFactor": 1.0087024710410022
+        },
+        {
+          "restWidth": 285,
+          "pressSeconds": 0.24,
+          "formation": 0.268132296591252,
+          "selectorInterior": 24.701663454841636,
+          "selectorToBar": 0.48914185059092347,
+          "centralInkFactor": 1.0087024710410022
+        }
+      ]
+    },
+    {
+      "file": "frame-012.png",
+      "pts": 2108,
+      "seconds": 3.513333,
+      "observedBar": 51.0,
+      "observedSelector": 44.5,
+      "observedRatio": 0.8725490196078431,
+      "iconScale": [],
+      "alternatives": [
+        {
+          "restWidth": 271,
+          "pressSeconds": 0.04,
+          "formation": 0.16691050000030894,
+          "selectorInterior": 21.425322750010963,
+          "selectorToBar": 0.42010436764727377,
+          "centralInkFactor": 1.003354307566074
+        },
+        {
+          "restWidth": 271,
+          "pressSeconds": 0.08,
+          "formation": 0.2585029000002217,
+          "selectorInterior": 24.67685295000787,
+          "selectorToBar": 0.4838598617648602,
+          "centralInkFactor": 1.0080836716668984
+        },
+        {
+          "restWidth": 271,
+          "pressSeconds": 0.116,
+          "formation": 0.29215509999940503,
+          "selectorInterior": 25.871506049978873,
+          "selectorToBar": 0.507284432352527,
+          "centralInkFactor": 1.0103485478370748
+        },
+        {
+          "restWidth": 271,
+          "pressSeconds": 0.16,
+          "formation": 0.29215509999940503,
+          "selectorInterior": 25.871506049978873,
+          "selectorToBar": 0.507284432352527,
+          "centralInkFactor": 1.0103485478370748
+        },
+        {
+          "restWidth": 271,
+          "pressSeconds": 0.24,
+          "formation": 0.29215509999940503,
+          "selectorInterior": 25.871506049978873,
+          "selectorToBar": 0.507284432352527,
+          "centralInkFactor": 1.0103485478370748
+        },
+        {
+          "restWidth": 278,
+          "pressSeconds": 0.04,
+          "formation": 0.16691050000030894,
+          "selectorInterior": 21.425322750010963,
+          "selectorToBar": 0.42010436764727377,
+          "centralInkFactor": 1.003354307566074
+        },
+        {
+          "restWidth": 278,
+          "pressSeconds": 0.08,
+          "formation": 0.2585029000002217,
+          "selectorInterior": 24.67685295000787,
+          "selectorToBar": 0.4838598617648602,
+          "centralInkFactor": 1.0080836716668984
+        },
+        {
+          "restWidth": 278,
+          "pressSeconds": 0.116,
+          "formation": 0.29215509999940503,
+          "selectorInterior": 25.871506049978873,
+          "selectorToBar": 0.507284432352527,
+          "centralInkFactor": 1.0103485478370748
+        },
+        {
+          "restWidth": 278,
+          "pressSeconds": 0.16,
+          "formation": 0.29215509999940503,
+          "selectorInterior": 25.871506049978873,
+          "selectorToBar": 0.507284432352527,
+          "centralInkFactor": 1.0103485478370748
+        },
+        {
+          "restWidth": 278,
+          "pressSeconds": 0.24,
+          "formation": 0.29215509999940503,
+          "selectorInterior": 25.871506049978873,
+          "selectorToBar": 0.507284432352527,
+          "centralInkFactor": 1.0103485478370748
+        },
+        {
+          "restWidth": 285,
+          "pressSeconds": 0.04,
+          "formation": 0.16691050000030894,
+          "selectorInterior": 21.425322750010963,
+          "selectorToBar": 0.42010436764727377,
+          "centralInkFactor": 1.003354307566074
+        },
+        {
+          "restWidth": 285,
+          "pressSeconds": 0.08,
+          "formation": 0.2585029000002217,
+          "selectorInterior": 24.67685295000787,
+          "selectorToBar": 0.4838598617648602,
+          "centralInkFactor": 1.0080836716668984
+        },
+        {
+          "restWidth": 285,
+          "pressSeconds": 0.116,
+          "formation": 0.29215509999940503,
+          "selectorInterior": 25.871506049978873,
+          "selectorToBar": 0.507284432352527,
+          "centralInkFactor": 1.0103485478370748
+        },
+        {
+          "restWidth": 285,
+          "pressSeconds": 0.16,
+          "formation": 0.29215509999940503,
+          "selectorInterior": 25.871506049978873,
+          "selectorToBar": 0.507284432352527,
+          "centralInkFactor": 1.0103485478370748
+        },
+        {
+          "restWidth": 285,
+          "pressSeconds": 0.24,
+          "formation": 0.29215509999940503,
+          "selectorInterior": 25.871506049978873,
+          "selectorToBar": 0.507284432352527,
+          "centralInkFactor": 1.0103485478370748
+        }
+      ]
+    },
+    {
+      "file": "frame-013.png",
+      "pts": 2128,
+      "seconds": 3.546667,
+      "observedBar": 51.0,
+      "observedSelector": 50.0,
+      "observedRatio": 0.9803921568627451,
+      "iconScale": [
+        {
+          "threshold": 160,
+          "width": 1.144927536231884,
+          "height": 1.144927536231884
+        },
+        {
+          "threshold": 180,
+          "width": 1.144927536231884,
+          "height": 1.144927536231884
+        },
+        {
+          "threshold": 200,
+          "width": 1.144927536231884,
+          "height": 1.144927536231884
+        }
+      ],
+      "alternatives": [
+        {
+          "restWidth": 271,
+          "pressSeconds": 0.04,
+          "formation": 0.13975944898769888,
+          "selectorInterior": 20.46146043906331,
+          "selectorToBar": 0.40120510664830017,
+          "centralInkFactor": 1.0023494313192265
+        },
+        {
+          "restWidth": 271,
+          "pressSeconds": 0.08,
+          "formation": 0.22269288413723554,
+          "selectorInterior": 23.40559738687186,
+          "selectorToBar": 0.4589332820955267,
+          "centralInkFactor": 1.0059866815454594
+        },
+        {
+          "restWidth": 271,
+          "pressSeconds": 0.116,
+          "formation": 0.28792672958687693,
+          "selectorInterior": 25.721398900334126,
+          "selectorToBar": 0.5043411549085123,
+          "centralInkFactor": 1.01004817763675
+        },
+        {
+          "restWidth": 271,
+          "pressSeconds": 0.16,
+          "formation": 0.4385081473658526,
+          "selectorInterior": 31.06703923148776,
+          "selectorToBar": 0.6091576319899561,
+          "centralInkFactor": 1.0236197466528882
+        },
+        {
+          "restWidth": 271,
+          "pressSeconds": 0.24,
+          "formation": 0.4385081473658526,
+          "selectorInterior": 31.06703923148776,
+          "selectorToBar": 0.6091576319899561,
+          "centralInkFactor": 1.0236197466528882
+        },
+        {
+          "restWidth": 278,
+          "pressSeconds": 0.04,
+          "formation": 0.13975944898769888,
+          "selectorInterior": 20.46146043906331,
+          "selectorToBar": 0.40120510664830017,
+          "centralInkFactor": 1.0023494313192265
+        },
+        {
+          "restWidth": 278,
+          "pressSeconds": 0.08,
+          "formation": 0.22269288413723554,
+          "selectorInterior": 23.40559738687186,
+          "selectorToBar": 0.4589332820955267,
+          "centralInkFactor": 1.0059866815454594
+        },
+        {
+          "restWidth": 278,
+          "pressSeconds": 0.116,
+          "formation": 0.28792672958687693,
+          "selectorInterior": 25.721398900334126,
+          "selectorToBar": 0.5043411549085123,
+          "centralInkFactor": 1.01004817763675
+        },
+        {
+          "restWidth": 278,
+          "pressSeconds": 0.16,
+          "formation": 0.4385081473658526,
+          "selectorInterior": 31.06703923148776,
+          "selectorToBar": 0.6091576319899561,
+          "centralInkFactor": 1.0236197466528882
+        },
+        {
+          "restWidth": 278,
+          "pressSeconds": 0.24,
+          "formation": 0.4385081473658526,
+          "selectorInterior": 31.06703923148776,
+          "selectorToBar": 0.6091576319899561,
+          "centralInkFactor": 1.0236197466528882
+        },
+        {
+          "restWidth": 285,
+          "pressSeconds": 0.04,
+          "formation": 0.13975944898769888,
+          "selectorInterior": 20.46146043906331,
+          "selectorToBar": 0.40120510664830017,
+          "centralInkFactor": 1.0023494313192265
+        },
+        {
+          "restWidth": 285,
+          "pressSeconds": 0.08,
+          "formation": 0.22269288413723554,
+          "selectorInterior": 23.40559738687186,
+          "selectorToBar": 0.4589332820955267,
+          "centralInkFactor": 1.0059866815454594
+        },
+        {
+          "restWidth": 285,
+          "pressSeconds": 0.116,
+          "formation": 0.28792672958687693,
+          "selectorInterior": 25.721398900334126,
+          "selectorToBar": 0.5043411549085123,
+          "centralInkFactor": 1.01004817763675
+        },
+        {
+          "restWidth": 285,
+          "pressSeconds": 0.16,
+          "formation": 0.4385081473658526,
+          "selectorInterior": 31.06703923148776,
+          "selectorToBar": 0.6091576319899561,
+          "centralInkFactor": 1.0236197466528882
+        },
+        {
+          "restWidth": 285,
+          "pressSeconds": 0.24,
+          "formation": 0.4385081473658526,
+          "selectorInterior": 31.06703923148776,
+          "selectorToBar": 0.6091576319899561,
+          "centralInkFactor": 1.0236197466528882
+        }
+      ]
+    },
+    {
+      "file": "frame-014.png",
+      "pts": 2138,
+      "seconds": 3.563333,
+      "observedBar": 51.0,
+      "observedSelector": 52.0,
+      "observedRatio": 1.0196078431372548,
+      "iconScale": [
+        {
+          "threshold": 160,
+          "width": 1.1594202898550725,
+          "height": 1.1594202898550725
+        },
+        {
+          "threshold": 180,
+          "width": 1.144927536231884,
+          "height": 1.144927536231884
+        },
+        {
+          "threshold": 200,
+          "width": 1.144927536231884,
+          "height": 1.144927536231884
+        }
+      ],
+      "alternatives": [
+        {
+          "restWidth": 271,
+          "pressSeconds": 0.04,
+          "formation": 0.12402650000047706,
+          "selectorInterior": 19.90294075001694,
+          "selectorToBar": 0.39025374019641057,
+          "centralInkFactor": 1.001849322404645
+        },
+        {
+          "restWidth": 271,
+          "pressSeconds": 0.08,
+          "formation": 0.19756540000077538,
+          "selectorInterior": 22.513571700027526,
+          "selectorToBar": 0.4414425823534809,
+          "centralInkFactor": 1.004705892168557
+        },
+        {
+          "restWidth": 271,
+          "pressSeconds": 0.116,
+          "formation": 0.2633286000008356,
+          "selectorInterior": 24.848165300029663,
+          "selectorToBar": 0.48721892745156203,
+          "centralInkFactor": 1.0083908547789016
+        },
+        {
+          "restWidth": 271,
+          "pressSeconds": 0.16,
+          "formation": 0.5647068999965421,
+          "selectorInterior": 35.54709494987724,
+          "selectorToBar": 0.6970018617622988,
+          "centralInkFactor": 1.0397899172956644
+        },
+        {
+          "restWidth": 271,
+          "pressSeconds": 0.24,
+          "formation": 0.5659236999962577,
+          "selectorInterior": 35.590291349867144,
+          "selectorToBar": 0.6978488499973949,
+          "centralInkFactor": 1.039968437322268
+        },
+        {
+          "restWidth": 278,
+          "pressSeconds": 0.04,
+          "formation": 0.12402650000047706,
+          "selectorInterior": 19.90294075001694,
+          "selectorToBar": 0.39025374019641057,
+          "centralInkFactor": 1.001849322404645
+        },
+        {
+          "restWidth": 278,
+          "pressSeconds": 0.08,
+          "formation": 0.19756540000077538,
+          "selectorInterior": 22.513571700027526,
+          "selectorToBar": 0.4414425823534809,
+          "centralInkFactor": 1.004705892168557
+        },
+        {
+          "restWidth": 278,
+          "pressSeconds": 0.116,
+          "formation": 0.2633286000008356,
+          "selectorInterior": 24.848165300029663,
+          "selectorToBar": 0.48721892745156203,
+          "centralInkFactor": 1.0083908547789016
+        },
+        {
+          "restWidth": 278,
+          "pressSeconds": 0.16,
+          "formation": 0.5647068999965421,
+          "selectorInterior": 35.54709494987724,
+          "selectorToBar": 0.6970018617622988,
+          "centralInkFactor": 1.0397899172956644
+        },
+        {
+          "restWidth": 278,
+          "pressSeconds": 0.24,
+          "formation": 0.5659236999962577,
+          "selectorInterior": 35.590291349867144,
+          "selectorToBar": 0.6978488499973949,
+          "centralInkFactor": 1.039968437322268
+        },
+        {
+          "restWidth": 285,
+          "pressSeconds": 0.04,
+          "formation": 0.12402650000047706,
+          "selectorInterior": 19.90294075001694,
+          "selectorToBar": 0.39025374019641057,
+          "centralInkFactor": 1.001849322404645
+        },
+        {
+          "restWidth": 285,
+          "pressSeconds": 0.08,
+          "formation": 0.19756540000077538,
+          "selectorInterior": 22.513571700027526,
+          "selectorToBar": 0.4414425823534809,
+          "centralInkFactor": 1.004705892168557
+        },
+        {
+          "restWidth": 285,
+          "pressSeconds": 0.116,
+          "formation": 0.2633286000008356,
+          "selectorInterior": 24.848165300029663,
+          "selectorToBar": 0.48721892745156203,
+          "centralInkFactor": 1.0083908547789016
+        },
+        {
+          "restWidth": 285,
+          "pressSeconds": 0.16,
+          "formation": 0.5647068999965421,
+          "selectorInterior": 35.54709494987724,
+          "selectorToBar": 0.6970018617622988,
+          "centralInkFactor": 1.0397899172956644
+        },
+        {
+          "restWidth": 285,
+          "pressSeconds": 0.24,
+          "formation": 0.5659236999962577,
+          "selectorInterior": 35.590291349867144,
+          "selectorToBar": 0.6978488499973949,
+          "centralInkFactor": 1.039968437322268
+        }
+      ]
+    }
+  ]
+}

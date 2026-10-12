@@ -33,6 +33,14 @@ The [consecutive short-tap candidate](review/atlas/short-tap-timing-2026-10-10/R
 travel while preserving its deformation and long-trip response. Two recorded partial trips improve
 from roughly13–16px to2.5px centre RMS with one time alignment each. The remaining width mismatch
 and current verification status are explicit; this is not full motion or optical parity.
+The [tap optical audit](review/atlas/tap-optics-audit-2026-10-11/README.md) identifies a remaining
+opacity and icon-size mismatch using original patches and production shader probes. The separate
+[appearance candidate](review/atlas/tap-optics-candidate-2026-10-11/README.md) improves short-tap
+pigment and selected ink without granting held ownership; a long-tap opacity mismatch remains open.
+The [desktop sampling repair](review/atlas/wide-input-2026-10-11/README.md) removes a vertical selector
+seam by retaining offscreen blur input. Its measured rendering cost and remaining performance work
+are documented alongside the native before/after. Atlas can prefer the discrete GPU and records
+the adapter actually selected; see the [GPU comparison](review/atlas/gpu-2026-10-11/README.md).
 
 ## Start with one scene
 

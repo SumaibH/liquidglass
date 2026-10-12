@@ -2,6 +2,8 @@
 
 Current work and recovery: read [PROGRESS.md](PROGRESS.md) after an interruption. It identifies the
 verified commit, requirement checklist, evidence and next steps; the local checkpoint names live jobs.
+For the exact unfinished experiment and commands, start with [NEXT-SESSION.md](NEXT-SESSION.md).
+[TODO.md](TODO.md) retains the full delivery checklist.
 
 Use the canonical `liquidglass` checkout, branching from `main` for changes. Atlas Studio is the
 desktop sample **inside liquidglass**, not another copy of Vitals. The former
@@ -38,6 +40,15 @@ window calls `LoupeScreen`, shared with Android under
 The canvas demonstrates sky, type and line-grid backdrops with a movable continuous lens,
 anchored note card and calm navigation. Narrower windows reflow the same controls.
 The sky is illustrative; this is a material demo, not a live astronomy instrument.
+
+Atlas prefers a discrete GPU when one is available. Override with `-Patlas.gpu=auto` or
+`-Patlas.gpu=integrated` on `:desktop:run`; the default is `discrete`. This sets Skiko's
+per-process adapter preference, without changing Windows-wide graphics settings or the library's
+rendering policy. Startup prints `ATLAS_RENDERER` with the actual selected video card; capture
+metadata records it too. Check that adapter name rather than assuming the requested preference
+was honored. On the owner's hybrid machine, automatic selection used Intel UHD while discrete
+selected the NVIDIA RTX3050Laptop6GB. See [the GPU diagnostic](review/atlas/gpu-2026-10-11/README.md)
+for the paired static-scene results and their limits.
 
 The library preserves earlier Astra/Claude/Fable work in historical presets and history.
 The current development preview adds opt-in calm interactions, continuous magnifier optics

@@ -34,14 +34,29 @@ click handling on it (the bar owns the gesture and calls `onSelected`).
 
 Put the shadow on the bar's `modifier` with `clip = false`. The held lens is taller than the bar.
 
-## The deforming selector
+## Current Calm selector
 
-`GlassTabBarStyle.V3(dark = true)` replaces the capsule indicator with a small constrained body
-and turns on the two optical changes that go with it. It is opt-in; `GlassTabBarStyle.Measured`
-and every other preset keep the capsule.
+`GlassTabBarStyle.Calm(dark = true)` uses the pose controller. It couples projected area and
+spine length so short taps become rounder and longer trips flatten. Adjacent travel uses a
+slower authored rate, blending to the existing rate for longer trips. Tap deformation can
+extend beyond the resting bar; this does not grant held-gesture ownership. Off-axis drag
+strain belongs to the whole navigation bar, whose layout and hit targets stay anchored.
+
+Dark Calm's development tap appearance also fades the inset pigment and emphasizes selected
+ink during travel. Its held refraction band, rim and whole-bar lift retain their separate
+response. Use `tapTintFade = 0f` and `tapSelectedScale = 1f` to disable those two additions.
+Light Calm and historical presets retain these defaults. See the [API reference](api-reference.md)
+for the field contract and [current research](research/atlas-stabilization.md) for the measured
+comparisons, authored choices and remaining limitations.
+
+## Historical horizontal selector
+
+`V3()` and `Calm()` use the pose controller by default. The following older two-disk controller
+remains available for comparison by setting `poseMotion = false`. Its containment and tuning
+rules do not describe the current Calm pose controller. `Measured()` retains the original capsule.
 
 ```kotlin
-style = GlassTabBarStyle.V3(dark = true)
+style = GlassTabBarStyle.V3(dark = true, spec = GlassSelectorSpec(poseMotion = false))
 ```
 
 What changes:

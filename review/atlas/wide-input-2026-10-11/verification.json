@@ -1,0 +1,167 @@
+{
+  "status": "Local verification complete via explicit recovered/fresh case inventory",
+  "focused": {
+    "passed": 13,
+    "failures": 0,
+    "duration": "7s",
+    "sourceHashes": {
+      "liquidglass/src/commonMain/kotlin/com/wexpa/liquidglass/GlassTapAppearance.kt": "A5D9792175F2597B826F985AA4D191376CB9068137A93FF451E9C30F92424B0A",
+      "liquidglass/src/jvmMain/kotlin/com/wexpa/liquidglass/LiquidGlass.jvm.kt": "FCBEEBFA59FFF8A16EC8BCE840491731312C2817C073A93007C81EF84ACF19BF",
+      "liquidglass/src/jvmMain/kotlin/com/wexpa/liquidglass/GlassWideInput.jvm.kt": "F594920A516CA5D53513E1D29DDDB64B86E603E17D1F4FD7A3B4FFD7BF5FEE11",
+      "liquidglass/src/commonMain/kotlin/com/wexpa/liquidglass/GlassPoseDynamics.kt": "2DA2BE6247C5825D2B0E24E5FE802861437398EB970633C4A681A75926526242",
+      "liquidglass/src/jvmTest/kotlin/com/wexpa/liquidglass/GlassWideInputBoundsTest.kt": "2E59A12EAA5C1118251B030B790B242865B1A7615BF0B1DDE8B74BAF5A4ED89B",
+      "liquidglass/src/commonMain/kotlin/com/wexpa/liquidglass/GlassTabBar.kt": "1129C65EA728579586C04405118B4B30607BD00C7309A213A93D0FD11582BB76"
+    }
+  },
+  "regression": {
+    "oldDeferredLayer": "FAIL red0 vs56.875 +/-1.1",
+    "oldStaticImage": "PASS; does not reproduce clipping",
+    "candidate": "4 panel/container image/deferred 2D-gradient tests pass at6viewport placements",
+    "rejected": "Original drawImage offset fixture misaligned uniforms, replaced with canvas translation"
+  },
+  "nativeShort": {
+    "phases": 10,
+    "pass": true,
+    "duration": "54s",
+    "inspected": "All10 phases, early left/right at nativepixels; hard seam absent"
+  },
+  "nativeFull": {
+    "phases": 33,
+    "pass": true,
+    "duration": "3m27s",
+    "inspected": "All33 phase panels in native-scale sheet sections; held,early/formed throws,allcorners,reversals,middle landing"
+  },
+  "static": {
+    "metric": "native static-scene forced redraw; GPU submission, not presented FPS",
+    "backend": "DIRECT3D",
+    "requestedGpu": "discrete",
+    "rendererInfo": "GraphicsApi: DIRECT3D\nOS: windows x64\nVideo card: NVIDIA GeForce RTX 3050 6GB Laptop GPU\nTotal VRAM: 6001 MB\n",
+    "width": 1920,
+    "height": 1051,
+    "samples": 120,
+    "warmup": 10,
+    "p50_ms": 10.9689,
+    "p95_ms": 16.3768,
+    "max_ms": 59.431
+  },
+  "limits": [
+    "Rest lower-edge region changed as offscreen tone input restored; no fullimage identity claim",
+    "Longtap opacity and full iOS parity remain open",
+    "JVM-only graph change; Android single-input path unchanged",
+    "Controlled A/B found about3ms extra median submission cost; not accepted as a performance improvement."
+  ],
+  "fullVerification": {
+    "finished": "2026-10-12T01:38:24.389286+05:00",
+    "method": "330 fully deserialized SUCCESS records before truncated EOF,4 unchanged-source focused bounds cases,8 required fresh follow-up cases and27 explicit optional skips. Exact369-case inventory matched. Original full run was interrupted, not a completed all-green run.",
+    "library": {
+      "tests": 369,
+      "passed": 342,
+      "skipped": 27,
+      "failures": 0,
+      "errors": 0,
+      "recoveredPasses": 330,
+      "reusedFocused": 4,
+      "freshFollowupCases": 35
+    },
+    "desktop": {
+      "tests": 3,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "seconds": 205.606
+    },
+    "android": "assembleDebug successful; unchanged Android inputs UP-TO-DATE",
+    "sourceStillMatches": true,
+    "sourceHashes": {
+      "liquidglass/src/commonMain/kotlin/com/wexpa/liquidglass/GlassTapAppearance.kt": "A5D9792175F2597B826F985AA4D191376CB9068137A93FF451E9C30F92424B0A",
+      "liquidglass/src/jvmMain/kotlin/com/wexpa/liquidglass/LiquidGlass.jvm.kt": "FCBEEBFA59FFF8A16EC8BCE840491731312C2817C073A93007C81EF84ACF19BF",
+      "liquidglass/src/jvmMain/kotlin/com/wexpa/liquidglass/GlassWideInput.jvm.kt": "F594920A516CA5D53513E1D29DDDB64B86E603E17D1F4FD7A3B4FFD7BF5FEE11",
+      "liquidglass/src/commonMain/kotlin/com/wexpa/liquidglass/GlassPoseDynamics.kt": "2DA2BE6247C5825D2B0E24E5FE802861437398EB970633C4A681A75926526242",
+      "liquidglass/src/jvmTest/kotlin/com/wexpa/liquidglass/GlassWideInputBoundsTest.kt": "2E59A12EAA5C1118251B030B790B242865B1A7615BF0B1DDE8B74BAF5A4ED89B",
+      "liquidglass/src/commonMain/kotlin/com/wexpa/liquidglass/GlassTabBar.kt": "1129C65EA728579586C04405118B4B30607BD00C7309A213A93D0FD11582BB76"
+    },
+    "native": "10short and33full phases plusstatic NVIDIA captures passed and inspected",
+    "performance": "Controlled A/B remains TODO and was not started after owner save-after-test request"
+  },
+  "controlledStaticComparison": {
+    "order": "old1,new1,new2,old2",
+    "runs": [
+      {
+        "metric": "native static-scene forced redraw; GPU submission, not presented FPS",
+        "backend": "DIRECT3D",
+        "requestedGpu": "discrete",
+        "rendererInfo": "GraphicsApi: DIRECT3D\nOS: windows x64\nVideo card: NVIDIA GeForce RTX 3050 6GB Laptop GPU\nTotal VRAM: 6001 MB\n",
+        "width": 1920,
+        "height": 1051,
+        "samples": 120,
+        "warmup": 10,
+        "p50_ms": 8.9178,
+        "p95_ms": 14.2824,
+        "max_ms": 16.8142,
+        "variant": "old1"
+      },
+      {
+        "metric": "native static-scene forced redraw; GPU submission, not presented FPS",
+        "backend": "DIRECT3D",
+        "requestedGpu": "discrete",
+        "rendererInfo": "GraphicsApi: DIRECT3D\nOS: windows x64\nVideo card: NVIDIA GeForce RTX 3050 6GB Laptop GPU\nTotal VRAM: 6001 MB\n",
+        "width": 1920,
+        "height": 1051,
+        "samples": 120,
+        "warmup": 10,
+        "p50_ms": 11.2053,
+        "p95_ms": 16.2203,
+        "max_ms": 18.0446,
+        "variant": "new1"
+      },
+      {
+        "metric": "native static-scene forced redraw; GPU submission, not presented FPS",
+        "backend": "DIRECT3D",
+        "requestedGpu": "discrete",
+        "rendererInfo": "GraphicsApi: DIRECT3D\nOS: windows x64\nVideo card: NVIDIA GeForce RTX 3050 6GB Laptop GPU\nTotal VRAM: 6001 MB\n",
+        "width": 1920,
+        "height": 1051,
+        "samples": 120,
+        "warmup": 10,
+        "p50_ms": 12.3574,
+        "p95_ms": 16.1027,
+        "max_ms": 17.4814,
+        "variant": "new2"
+      },
+      {
+        "metric": "native static-scene forced redraw; GPU submission, not presented FPS",
+        "backend": "DIRECT3D",
+        "requestedGpu": "discrete",
+        "rendererInfo": "GraphicsApi: DIRECT3D\nOS: windows x64\nVideo card: NVIDIA GeForce RTX 3050 6GB Laptop GPU\nTotal VRAM: 6001 MB\n",
+        "width": 1920,
+        "height": 1051,
+        "samples": 120,
+        "warmup": 10,
+        "p50_ms": 8.5822,
+        "p95_ms": 14.8722,
+        "max_ms": 16.7397,
+        "variant": "old2"
+      }
+    ],
+    "scope": "Same optical candidate andGPU/grid/resolution/samplecount; only JVM wide-input binding varies. Not presented FPS.",
+    "finding": "Correctness fix adds about3ms median GPU submission in this workload; performance remains open."
+  },
+  "rejectedCrop": {
+    "focused": "13pass36s",
+    "nativePixels": "Static identical to corrected uncropped graph",
+    "timing": {
+      "metric": "native static-scene forced redraw; GPU submission, not presented FPS",
+      "backend": "DIRECT3D",
+      "requestedGpu": "discrete",
+      "rendererInfo": "GraphicsApi: DIRECT3D\nOS: windows x64\nVideo card: NVIDIA GeForce RTX 3050 6GB Laptop GPU\nTotal VRAM: 6001 MB\n",
+      "width": 1920,
+      "height": 1051,
+      "samples": 120,
+      "warmup": 10,
+      "p50_ms": 12.2554,
+      "p95_ms": 15.9896,
+      "max_ms": 17.2259
+    },
+    "decision": "No useful speedup; source restored byte-for-byte to verified uncropped graph."
+  }
+}

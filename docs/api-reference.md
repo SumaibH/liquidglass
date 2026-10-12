@@ -171,6 +171,10 @@ data class GlassTabBarStyle(
     val heldScale: Float = 1f, val heldLift: Float = 0f, val selectedScale: Float = 1f,
     val lensFuse: Dp = 0.dp,
     val selector: GlassSelectorSpec? = null,
+    val barInteraction: GlassInteraction? = null,
+    val deformItemsWithBar: Boolean = false,
+    val tapTintFade: Float = 0f,
+    val tapSelectedScale: Float = 1f,
 )
 ```
 
@@ -203,6 +207,17 @@ Calm's resting inset tint is limited to the underlying bar's shape, even while t
 body extends above or below it. Refraction, rim lighting and body coverage stay independent.
 The mask follows the bar's drawing transform without changing its layout or hit targets;
 applications do not supply a separate clipping shape.
+
+Dark `Calm()` also enables a development tap-appearance response: `tapTintFade = 1f` and
+`tapSelectedScale = 1.15f`. As the coupled body gains projected area, the inset pigment fades
+and selected ink grows about its own anchor. The response is bounded below full material
+formation and fades as held zoom takes over. It does not enable a hold, change the bar's lift
+or strain, move hit targets, or drive the selector's held band/rim parameters.
+Set these two fields to `0f` and `1f` respectively to retain the earlier tap appearance.
+Light Calm and historical presets keep those defaults. The gains are authored from measured
+dark Phone patches and icon bounds; full optical parity remains unproven. See the
+[candidate evidence](https://github.com/shayann07/liquidglass/blob/main/review/atlas/tap-optics-candidate-2026-10-11/README.md)
+for current verification status.
 
 `GlassTabBarStyle.V3(dark, tintAmount, spec, edgeFold)` is the measured preset with this selector,
 the exact ink compositor and the straight-run fold turned on together.

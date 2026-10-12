@@ -51,13 +51,19 @@ private val runtimeEffect: RuntimeEffect? by lazy {
     runCatching { RuntimeEffect.makeForShader(GLASS_SHADER_SOURCE) }.getOrNull()
 }
 
+private val wideRuntimeEffect: RuntimeEffect by lazy {
+    RuntimeEffect.makeForShader(glassShaderWithWideInput(GLASS_SHADER_SOURCE))
+}
+
 internal actual fun createGlassRenderEffect(
     uniforms: GlassUniforms,
 ): androidx.compose.ui.graphics.RenderEffect? {
-    val effect = runtimeEffect ?: return null
+    val useWideInput = uniforms.wideStrip >= 1f && uniforms.wideScale > 0f
+    val effect = (if (useWideInput) wideRuntimeEffect else runtimeEffect) ?: return null
     if (uniforms.width <= 0f || uniforms.height <= 0f) return null
 
     val builder = RuntimeShaderBuilder(effect)
+    if (useWideInput) builder.child("wideContent", placeholderFieldShader)
     builder.uniform("uSize", uniforms.width, uniforms.height)
     builder.uniform(
         "uRadii",
@@ -170,6 +176,9 @@ internal actual fun createGlassRenderEffect(
         ImageFilter.makeBlur(sigma, sigma, FilterTileMode.CLAMP)
     } else {
         null
+    }
+    if (useWideInput) {
+        return glassWideInputFilter(builder, uniforms.wideStrip, uniforms.wideScale, prepared).asComposeRenderEffect()
     }
     return ImageFilter.makeRuntimeShader(
         runtimeShaderBuilder = builder,
@@ -339,13 +348,19 @@ private val containerEffect: RuntimeEffect? by lazy {
     runCatching { RuntimeEffect.makeForShader(GLASS_CONTAINER_SHADER_SOURCE) }.getOrNull()
 }
 
+private val wideContainerEffect: RuntimeEffect by lazy {
+    RuntimeEffect.makeForShader(glassShaderWithWideInput(GLASS_CONTAINER_SHADER_SOURCE))
+}
+
 internal actual fun createGlassContainerRenderEffect(
     uniforms: GlassContainerUniforms,
 ): androidx.compose.ui.graphics.RenderEffect? {
-    val effect = containerEffect ?: return null
+    val useWideInput = uniforms.wideStrip >= 1f && uniforms.wideScale > 0f
+    val effect = (if (useWideInput) wideContainerEffect else containerEffect) ?: return null
     if (uniforms.width <= 0f || uniforms.height <= 0f) return null
 
     val builder = RuntimeShaderBuilder(effect)
+    if (useWideInput) builder.child("wideContent", placeholderFieldShader)
     builder.uniform("uSize", uniforms.width, uniforms.height)
     builder.uniform("uRect", uniforms.rects)
     builder.uniform("uRadius", uniforms.radii)
@@ -410,6 +425,9 @@ internal actual fun createGlassContainerRenderEffect(
         ImageFilter.makeBlur(sigma, sigma, FilterTileMode.CLAMP)
     } else {
         null
+    }
+    if (useWideInput) {
+        return glassWideInputFilter(builder, uniforms.wideStrip, uniforms.wideScale, prepared).asComposeRenderEffect()
     }
     return ImageFilter.makeRuntimeShader(
         runtimeShaderBuilder = builder,

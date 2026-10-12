@@ -1,0 +1,40 @@
+{
+  "host": "Windows hybrid IntelUHD andRTX3050Laptop6GB",
+  "nvidiaDriver": "616.92",
+  "skiko": "0.150.1",
+  "results": {
+    "nvidia": {
+      "metric": "native static-scene forced redraw; GPU submission, not presented FPS",
+      "backend": "DIRECT3D",
+      "requestedGpu": "discrete",
+      "rendererInfo": "GraphicsApi: DIRECT3D\nOS: windows x64\nVideo card: NVIDIA GeForce RTX 3050 6GB Laptop GPU\nTotal VRAM: 6001 MB\n",
+      "width": 1920,
+      "height": 1051,
+      "samples": 120,
+      "warmup": 10,
+      "p50_ms": 4.4777,
+      "p95_ms": 7.4771,
+      "max_ms": 11.0769
+    },
+    "auto": {
+      "metric": "native static-scene forced redraw; GPU submission, not presented FPS",
+      "backend": "DIRECT3D",
+      "requestedGpu": "auto",
+      "rendererInfo": "GraphicsApi: DIRECT3D\nOS: windows x64\nVideo card: Intel(R) UHD Graphics\nTotal VRAM: 128 MB\n",
+      "width": 1920,
+      "height": 1051,
+      "samples": 120,
+      "warmup": 10,
+      "p50_ms": 8.9164,
+      "p95_ms": 15.7317,
+      "max_ms": 18.4355
+    }
+  },
+  "scope": "Same candidate source, same gridscene1920x1051Direct3D, sequential staticcaptures;120forcedredraws after10warmups each. Submission metric only, no presentedFPS/inputlatency/sustainedload claim.",
+  "sourceSha256": {
+    "desktop/build.gradle.kts": "b597565167671a7db881153b524e193268c08464695e48b9868148e100ec7e9e",
+    "desktop/src/jvmMain/kotlin/com/wexpa/liquidglass/sample/desktop/Main.kt": "65a56c63bde0bd6d8d0f1137b4e499de78d9157a6d332b0965a1dc8b8657782a",
+    "desktop/src/jvmMain/kotlin/com/wexpa/liquidglass/sample/desktop/AtlasMotionCapture.kt": "ab4c822dfaf015b53cc8d7ee4d19e8fab0cdddde97ef0e093d48c1b19fadbe3c"
+  },
+  "implementationSource": "https://raw.githubusercontent.com/JetBrains/skiko/v0.150.1/skiko/src/jvmMain/kotlin/org/jetbrains/skiko/SkikoProperties.kt"
+}

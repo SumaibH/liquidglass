@@ -36,6 +36,11 @@ kotlin {
 compose.desktop {
     application {
         mainClass = "com.wexpa.liquidglass.sample.desktop.MainKt"
+        val gpuPriority = providers.gradleProperty("atlas.gpu").getOrElse("discrete")
+        require(gpuPriority in setOf("auto", "integrated", "discrete")) {
+            "atlas.gpu must be auto, integrated or discrete"
+        }
+        jvmArgs += "-Dskiko.gpu.priority=$gpuPriority"
         providers.gradleProperty("atlas.capture").orNull?.let {
             jvmArgs += "-Datlas.capture=$it"
         }

@@ -2068,5 +2068,56 @@
     "docs": 38039974538,
     "status": "All ten required checks passed",
     "scope": "Hosted proof-only checkpoint; current short-tap runtime changes are subsequent and local."
+  },
+  "tap-optics-audit-2026-10-11": {
+    "packet": "review/atlas/tap-optics-audit-2026-10-11/verification.json",
+    "status": "Open optical defect; no correction adopted",
+    "source": "14 native clean-source frames and3 complete-icon multithreshold probes inspected",
+    "shader": "29 native JVM shader-helper samples completed; current late selector20..36 vs observed50/52, centraldisk69..71 vs source79..80. Fullformation control78.",
+    "limits": "Uniform observed-bar backdrop and synthetic central ink; not complete source scene/pose, hidden backdrop recovery or original finger times."
+  },
+  "ci-build-44f01de": {
+    "run": 38125880804,
+    "status": "failed: combined Atlas test timedout6min",
+    "library": "333passed27optional,0failures,24m23.11s",
+    "desktop": "1passed1timeout; all nine screenshots exist but do not establish test completion",
+    "otherRequiredChecks": "9passed, includingDocs38125880909 andCodeQL38125880910",
+    "buildDuration": "32m30s",
+    "repair": "Local test split retains allconditions/assertions andpasses3cases2m7s; awaiting next hosted confirmation."
+  },
+  "tap-optics-candidate-2026-10-11": {
+    "packet": "review/atlas/tap-optics-candidate-2026-10-11/verification.json",
+    "localFull": "338passed27optional,0failures;Androidassembled11m11s;3splitAtlaschecks passed2m7s",
+    "native": "NVIDIA full33 and adjacent10 completed and inspected; functional assertions pass, native vertical seam fails visual acceptance.",
+    "visualLimit": "Vertical seam in early moving selector and long-tap pigment restoring too early (max23.55RGB). Full parity and owner acceptance remain open."
+  },
+  "wide-input-experiment-2026-10-11": {
+    "status": "Verified local sampling correction; full optical parity remains open",
+    "packet": "review/atlas/wide-input-2026-10-11/verification.json",
+    "library": {
+      "tests": 369,
+      "passed": 342,
+      "skipped": 27,
+      "failures": 0,
+      "errors": 0,
+      "recoveredPasses": 330,
+      "reusedFocused": 4,
+      "freshFollowupCases": 35
+    },
+    "desktop": {
+      "tests": 3,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "seconds": 205.606
+    },
+    "android": "assembleDebug successful; unchanged Android inputs UP-TO-DATE",
+    "native": "10short and33full phases plusstatic NVIDIA captures passed and inspected",
+    "limits": [
+      "Long-tap optical decay unresolved",
+      "Controlled NVIDIA A/B shows about 3 ms median submission regression; no presented FPS or latency claim",
+      "JVM-only correction; Android path unchanged"
+    ],
+    "performance": "Old/new/new/old grid comparison: old medians 8.9178/8.5822 ms, corrected 11.2053/12.3574 ms; crop candidate 12.2554 ms, rejected and exact verified source restored."
   }
 }

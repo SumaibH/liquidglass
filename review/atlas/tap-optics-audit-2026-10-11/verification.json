@@ -1,0 +1,24 @@
+{
+  "revision": "44f01de8fb404c44068fc73bc20e564d25e7f7f9",
+  "sourceSamples": 14,
+  "sourceOverlaysInspected": true,
+  "completeIconsInspected": [
+    1,
+    13,
+    14
+  ],
+  "shaderSamples": 29,
+  "shaderProbe": "Completed successfully; existing production JVM material/content/aperture helpers, no runtime source changes or full-suite rerun.",
+  "sourceSha256": {
+    "tools/measure_phone_tap_material.py": "42de0927a0e3129fc9ffd474f1aed823840be4ef92ef7a3edc9ebf24f8ecdc04",
+    "tools/compare_phone_tap_material.py": "5b262126d1b6409438b090bc9481e5828b18d563ec0f37ffc751b1d5bdd81b09",
+    "tools/PhoneTapOpticsProbe.java": "469a27694fa79a25a66bbe4871d1d5deaf8a76fd1eb231c07f766f5658ffb679",
+    "liquidglass/src/commonMain/kotlin/com/wexpa/liquidglass/GlassPoseDynamics.kt": "d76d66c3ba07a55b78bf35108ca5e0e71158552e1aee2b38dfd6ba7ffcd14814",
+    "liquidglass/src/commonMain/kotlin/com/wexpa/liquidglass/GlassTabBar.kt": "2a08670d06fa48c392bb19611fac7e7f17476c14a7245ccb41816fc75e78bf28",
+    "liquidglass/src/commonMain/kotlin/com/wexpa/liquidglass/GlassMorph.kt": "b633652bae46c158c2dc69bb546a8b9a6ed5f33d90f3026814f40f6fddc951e5",
+    "liquidglass/src/commonMain/kotlin/com/wexpa/liquidglass/GlassContentShaderSource.kt": "a83ba9d4903081a2866b32f19e454b4acbae92de09afd4df5f0cdf0b17fedc23",
+    "liquidglass/src/jvmTest/kotlin/com/wexpa/liquidglass/GlassRender.kt": "b6afde414cd413fba2efebc3ff3d1381cfb8f7a6de767149b8adbf9486713fe0",
+    "liquidglass/src/jvmTest/kotlin/com/wexpa/liquidglass/GlassEndpointRender.kt": "46d9da5fd42cad00360a296174d359037e86217864c5569efca66d519d4f9470"
+  },
+  "limits": "Shader diagnostic uses a uniform observed-bar backdrop and central synthetic disk. It is not a full source-scene reconstruction, pose deformation, hidden backdrop recovery or native performance proof. Input durations remain authored; no optical correction adopted."
+}

@@ -1,10 +1,24 @@
 # LiquidGlass / Atlas progress and recovery
 
-Updated 2026-10-11. **Goal active: full 1:1 iOS parity is not established.**
+Updated 2026-10-12. **Goal active: full 1:1 iOS parity is not established.**
 Read this first after an interruption. Detailed history lives in the
 [review](review/ATLAS-STABILIZATION.md) and [verification ledger](review/atlas/verification.json).
 
 ## Current state
+
+**12October verified recovery:**342library cases pass,27optional skips,3Atlas cases pass and
+Android assembly succeeds; all43native phases/static inspected. The original run was interrupted;
+330completed records were recovered,4focused cases reused and8required cases finished separately.
+Exact369-case inventory and source hashes match. All queues terminal. Fullparity and the long-tap
+opacity error remain open; controlled NVIDIA comparison found about3ms additional median submission cost.
+
+
+**Latest handoff:** [NEXT-SESSION.md](NEXT-SESSION.md) contains the exact dirty-source state,
+saved failures and resume commands; [TODO.md](TODO.md) preserves the complete delivery checklist.
+The new JVM wide-input correction passes13 focused cases and removes the seam in all inspected
+NVIDIA replays. The complete local test inventory and3Atlas cases now pass; all queues are
+terminal. See the12October verified recovery above for exact totals and interruption provenance.
+The long-tap optical mismatch remains open.
 
 **Latest verified local short-tap checkpoint:** two consecutive adjacent-tap episodes expose a timing
 error hidden by the previous single-frame shape gate. An authored0.75 adjacent-trip rate reduces
@@ -17,6 +31,23 @@ and were inspected, along with the static studio. All local queues are terminal.
 checkpoint, not full iOS parity or owner acceptance. Read the
 [short-tap evidence and failure history](review/atlas/short-tap-timing-2026-10-10/README.md).
 Previously completed full/native results below belong to the preceding runtime.
+
+**Optical defect now measured:** the same tap's selector interior reaches50–52 RGB levels on
+a51-level bar, while current shader probes give20–36 at the sampled formation strengths. The
+visible Contacts icon is79–80px versus a69px rest; the central shader test disk remains69–71px
+at those strengths and reaches78px at full strength. The [tap optical audit](review/atlas/tap-optics-audit-2026-10-11/README.md)
+records raw pixels, current shader output and limits. This establishes another remaining mismatch,
+not an accepted appearance. The separate appearance candidate below addresses part of this mismatch; unknown hidden backdrop prevents
+changing the earlier bar-lift calibration from these values alone.
+
+**New local optical candidate:** a separate tap pigment/ink response improves the short sequence
+while retaining held-band strength and whole-bar behavior.36focused checks plus actual79×79px
+ink rendering pass; full local verification has338library passes/27optional skips and Android
+assembly. Three split Atlas checks pass. The [candidate packet](review/atlas/tap-optics-candidate-2026-10-11/README.md)
+also preserves the independent long-tap failure: late opacity still differs by up to23.55 RGB
+levels under nominal input. Native review also found an inherited vertical selector seam.
+The new wide-input correction removes it in native replays; its complete local regression inventory now passes.
+These changes form a development checkpoint; the long-tap counterexample prevents full optical acceptance.
 
 **Earlier endpoint/material checkpoint, 10 October:** endpoint recovery follows the leading edge
 while the body changes width, and the resting inset tint is limited to the actual bar shape.
@@ -51,7 +82,9 @@ caps on both backgrounds. A thin glass rim remains during recovery.
 - Canonical checkout: `D:/Work/AndroidStudioProjects/SideProjects/kmp/liquidglass`.
 - Branch: `codex/atlas-stabilization`; [draft PR #6](https://github.com/shayann07/liquidglass/pull/6).
 - Previous baseline **e597b59** has all ten required checks passing. Hosted verification for the
-  new short-tap checkpoint is recorded separately after its push.
+  new pushed short-tap checkpoint **44f01de** failed CI38125880804 only on the combined Atlas test's
+  six-minute timeout; its333library cases pass. Docs38125880909 and CodeQL38125880910 pass. The
+  local test split retains all coverage and passed; hosted confirmation awaits the next revision.
 - Commit/push/final merge authorized; no releases, tags or blanket PR6 review bypass.
 
 The improved width/edge trajectory does not establish complete optical parity. Right/left width
@@ -109,15 +142,15 @@ the historical spring's source comment is corrected, without changing its value.
 | M1 | Distance-dependent tap, hold and throw | Adjacent-tap timing improves across two episodes; endpoint width/edge recovery and inset tint corrected. Repeated short-tap width still misses by up to20.64px under nominal input. Full contour/optical timing across all gestures remains open. |
 | M2 | Whole-bar squeeze, subtle corner extremes | Shared bounded transform and all eight native window-boundary snapshots; fixed layout/hit targets. Exact iOS envelope/optical behavior across directions remains incomplete. |
 | M3 | Calm generic controls | Existing card limits, accessibility and gesture ownership verified. Preserve them through further changes. |
-| O1 | Continuous glass without a split rim | Standalone continuous lens and endpoint regressions passed. Full Apple optics and Android endpoint precision remain unproven. |
-| A1 | Atlas UI and credible performance | Redesigned studio, native phase captures and stable input checks. Presented-frame performance, owner acceptance and later physical-device verification remain. |
+| O1 | Continuous glass without a split rim | New JVM wide-input candidate removes native selector seam and passes a fail-first deferred-layer regression. Local verification complete; full Apple optics and Android endpoint precision remain unproven. |
+| A1 | Atlas UI and credible performance | Redesigned studio, native phase captures and stable input checks. Controlled wide-input comparison adds about3ms median submission; presented-frame performance, owner acceptance and physical-device verification remain. |
 | P1 | Easy integration across UI stacks | Compose/CanvasKit scenes plus native .NET painter and runnable WinForms host. More native hosts, .NET motion and arbitrary-widget capture remain incomplete. |
 | D1 | Open-source documentation | README, usage, research and evidence maintained; keep statements tied to the actual verified commit. |
 | C1 | Free CI, licensing and protection | Apache-2.0/NOTICE, CodeQL, Dependabot and ten protected checks configured, including both .NET platforms and C#. Final review/merge remains after implementation acceptance. |
 
 ## Resume in this order
 
-1. Read `WORKSPACE.md`, this file, `git status` and `.local/active-goal-checkpoint.txt`.
+1. Read `NEXT-SESSION.md`, `TODO.md`, `WORKSPACE.md`, this file, `git status` and `.local/active-goal-checkpoint.txt`.
 2. Inspect **existing live handles first**. Full library baseline and native diagnostic sessions
    58306/55336/50321 are finished. Observation timeout does not mean a job stopped; never duplicate it.
 3. Exact0e5c1d6 hosted build37822979856 is finished and all required checks passed; reports inspected.

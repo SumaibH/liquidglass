@@ -281,6 +281,9 @@ internal data class GlassPoseSpec(
     /** Opt-in coupled-tap clock ratio for adjacent trips, blending back to the existing
      * rate by two slots. Authored output calibration; not an identified Apple spring. */
     val tapShortTripRate: Float = 1f,
+    /** Opt-in tap appearance from excess projected area; zero preserves historical optics.
+     * This is separate from held formation and never grants pointer ownership. */
+    val tapAppearanceArea: Float = 0f,
 ) {
     internal val spineLimitSlots: Float get() = max(elongationSlots, tapSpineLimitSlots)
 
@@ -323,7 +326,7 @@ internal data class GlassPoseSpec(
         )
         val CalmEndpoint = CalmVolume.copy(releaseImpactGain = 2.25f)
         val Calm = CalmEndpoint.copy(releaseImpactGain = 4f, releaseEdgeAnchor = true,
-            releaseRecoveryOmega = 14f, tapShortTripRate = .75f)
+            releaseRecoveryOmega = 14f, tapShortTripRate = .75f, tapAppearanceArea = .44f)
     }
 }
 
@@ -390,6 +393,9 @@ internal class GlassPoseController(
     /** 0 the flat resting inset, 1 the fully formed held material. */
     private val form = GlassSpring()
     val formation: Float get() = form.value.coerceIn(0f, 1f)
+    private val transit = GlassSpring()
+    /** Tap pigment/ink response; not held formation, bar growth, band optics or pointer ownership. */
+    val transitAppearance: Float get() = transit.value.coerceIn(0f,.95f)
     private val tapArea = GlassSpring()
     private var tapAreaActive = false
     private var tapDistance = 0f
@@ -573,6 +579,7 @@ internal class GlassPoseController(
         pose.dx = reference.a
         pose.dy = 0f
         form.snapTo(0f)
+        transit.snapTo(0f)
         graspX.snapTo(pose.cx)
         graspY.snapTo(pose.cy)
         hasGrasp = false
@@ -1151,6 +1158,26 @@ internal class GlassPoseController(
                 ((2f*kotlin.math.PI.toFloat()*radius + 4f*spine)*radius).coerceAtLeast(1e-5f)
         }
 
+        if (coupleTapArea && spec.tapAppearanceArea > 0f) {
+            val restArea = kotlin.math.PI.toFloat()*reference.r*reference.r + 4f*reference.a*reference.r
+            val extra = (tapArea.value/restArea - 1f).coerceAtLeast(0f)
+            val q = extra/spec.tapAppearanceArea
+            val raw = q*q
+            // C1 shoulder into a .95 ceiling: a moving inset never becomes the full held
+            // material. The already-sprung area drives this channel without a second lag.
+            val shoulder = ((raw-.85f)/.2f).coerceIn(0f,1f)
+            transit.value = if (raw<=.85f) raw else .85f+.2f*(shoulder-.5f*shoulder*shoulder)
+            val slope = if(raw<=.85f) 1f else 1f-shoulder
+            transit.velocity = slope*2f*q/spec.tapAppearanceArea*tapArea.velocity/restArea
+            transit.target = transit.value
+        } else {
+            // Carry value/real-time derivative through hold, release or cancellation; a
+            // re-grab must not instantly recolour or resize the selected ink.
+            transit.target=0f
+            transit.step(dt,spec.formOmega,1f)
+            if(abs(transit.value)<.0001f && abs(transit.velocity)<.002f)transit.snapTo(0f)
+        }
+
         // ---- the centre
         if (mode == GlassPoseMode.Held && hasGrasp) {
             frame.update(reference, pose)
@@ -1690,7 +1717,8 @@ internal class GlassPoseController(
      * that will fire it.
      */
     val isIdle: Boolean
-        get() = mode != GlassPoseMode.PressPending && !tapAreaActive && quietSteps >= QUIET_STEPS
+        get() = mode != GlassPoseMode.PressPending && !tapAreaActive &&
+            transitAppearance < .0001f && quietSteps >= QUIET_STEPS
 
     private var quietSteps: Int = 0
     private val lastPublished = GlassPose()

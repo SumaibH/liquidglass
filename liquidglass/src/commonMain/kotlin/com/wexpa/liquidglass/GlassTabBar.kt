@@ -223,7 +223,8 @@ fun GlassTabBar(
         val itemInk = remember(itemCount) { GlassItemBounds(itemCount) }
         // One layout snapshot serves the body's admission, both paint variants and the semantics.
         val formationNow = poseHandle?.formation ?: handle?.formation ?: 0f
-        val emphasisNow = 1f + (style.selectedScale - 1f) * formationNow
+        val transitAppearance = poseHandle?.transitAppearance ?: 0f
+        val emphasisNow = glassTransitInkScale(style,formationNow,transitAppearance)
         // The ink's own vertical half extent, measured from the row the body has to make room
         // for. Horizontal span alone does not prove a label fits inside a rounded end.
         val inkHalfHeightPx = with(density) {
@@ -349,7 +350,8 @@ fun GlassTabBar(
         val selectorWidthPx = with(density) { selectorWidth.toPx() }
         val selectorHeightPx = with(density) { selectorHeight.toPx() }
         val selectorRisePx = with(density) { style.lensRise.toPx() } * lift
-        val selectorStyle = lerpGlassStyle(style.pill, style.lens, lift)
+        val selectorStyle = glassTransitStyle(lerpGlassStyle(style.pill, style.lens, lift),
+            transitAppearance,style.tapTintFade)
 
         // The V3 body owns its own centre; offsetX follows it so semantics, the press glow and
         // the diagnostics all read one number.
@@ -838,7 +840,7 @@ fun GlassTabBar(
                         semanticSelected = selected,
                         item = item,
                         emphasisIndex = activeIndex,
-                        emphasis = 1f + (style.selectedScale - 1f) * lift,
+                        emphasis = glassTransitInkScale(style,lift,transitAppearance),
                         onMeasured = if (anyHandle) { index, width -> itemInk.widths[index] = width } else null,
                     )
                 }
@@ -994,7 +996,7 @@ fun GlassTabBar(
                                 onClick = null,
                                 item = item,
                                 emphasisIndex = activeIndex,
-                                emphasis = 1f + (style.selectedScale - 1f) * lift,
+                                emphasis = glassTransitInkScale(style,lift,transitAppearance),
                             )
                         }
                     }
@@ -1063,7 +1065,7 @@ fun GlassTabBar(
                                     onClick = null,
                                     item = item,
                                     emphasisIndex = activeIndex,
-                                    emphasis = 1f + (style.selectedScale - 1f) * lift,
+                                    emphasis = glassTransitInkScale(style,lift,transitAppearance),
                                 )
                             }
                         }
@@ -1349,6 +1351,10 @@ data class GlassTabBarStyle(
     /** Let visible ordinary/selected ink share the bar's bounded drawing response.
      * Layout, hit targets and selector travel remain independent. Enabled by [Calm]. */
     val deformItemsWithBar: Boolean = false,
+    /** Fade the resting selector pigment during coupled tap travel; held optics stay separate. */
+    val tapTintFade: Float = 0f,
+    /** Transient selected-ink emphasis around its own anchor, fading as held zoom takes over. */
+    val tapSelectedScale: Float = 1f,
 ) {
     companion object {
         /** Recommended navigation preset. Material responds gently; the selector deforms
@@ -1361,6 +1367,9 @@ data class GlassTabBarStyle(
             // feedback undershot it; weakening press is not a correction to drag strain.
             heldScale = 1f,
             deformItemsWithBar = true,
+            // New dark Phone tap patch/icon evidence. Light and historical presets are unchanged.
+            tapTintFade = if (dark) 1f else 0f,
+            tapSelectedScale = if (dark) 1.15f else 1f,
             barInteraction = GlassInteraction.Calm.copy(
                 pressScale = 1.05f, pressGrowth = 0.dp,
                 pullShape = GlassPullShape.AreaPreserving,
