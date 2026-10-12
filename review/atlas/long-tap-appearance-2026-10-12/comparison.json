@@ -1,0 +1,743 @@
+{
+  "method": "Actual production exports; same observed-bar interior transfer and fixed episode time origins. All three episodes informed calibration, not held-out proof.",
+  "limits": "No hidden backdrop, edge transport, complete contour or original pointer time reconstruction. Values above the surrounding bar cannot be explained by negative pigment alone. Use native/shader evidence separately.",
+  "inputSha256": {
+    "patches": "6a2c069f7d43b9c3e7781eb7d3afc2d80f12eaf6e22cc69c011d2bc24a1aa667",
+    "baseline": "c7e121afc89f73ab49bbe35737259b0c2c35e14e0746bedf255187ff11e8d255",
+    "candidate": "5466909da852b2c0cf5a5fe2eeb19fbe5633933ce42d54f367b04cb5fb689824"
+  },
+  "unchangedGeometryRows": 14430,
+  "episodes": {
+    "short": {
+      "timeOrigin": 3.4008330000005014,
+      "models": {
+        "baseline": {
+          "rms": 2.2776364261576796,
+          "maxAbsolute": 5.013608180635693,
+          "samples": [
+            {
+              "file": "frame-006.png",
+              "seconds": 3.413333,
+              "observedBar": 37.0,
+              "observedSelector": 14.0,
+              "formation": 0.01667599999887962,
+              "appearance": 0.0003969999999367275,
+              "predicted": 8.986391819364307,
+              "error": -5.013608180635693
+            },
+            {
+              "file": "frame-007.png",
+              "seconds": 3.43,
+              "observedBar": 43.0,
+              "observedSelector": 15.0,
+              "formation": 0.0685730850555481,
+              "appearance": 0.024981131856218728,
+              "predicted": 14.392997284414506,
+              "error": -0.6070027155854945
+            },
+            {
+              "file": "frame-008.png",
+              "seconds": 3.446667,
+              "observedBar": 47.0,
+              "observedSelector": 23.0,
+              "formation": 0.12771396049586028,
+              "appearance": 0.1255761281035126,
+              "predicted": 21.447950841840516,
+              "error": -1.552049158159484
+            },
+            {
+              "file": "frame-009.png",
+              "seconds": 3.463333,
+              "observedBar": 49.0,
+              "observedSelector": 29.0,
+              "formation": 0.16191199999930353,
+              "appearance": 0.2952299999943499,
+              "predicted": 28.6222548480997,
+              "error": -0.37774515190029945
+            },
+            {
+              "file": "frame-010.png",
+              "seconds": 3.48,
+              "observedBar": 50.0,
+              "observedSelector": 35.0,
+              "formation": 0.17482708236918024,
+              "appearance": 0.4879363808804437,
+              "predicted": 35.211063928948164,
+              "error": 0.21106392894816395
+            },
+            {
+              "file": "frame-011.png",
+              "seconds": 3.496667,
+              "observedBar": 50.5,
+              "observedSelector": 40.0,
+              "formation": 0.17476778597500212,
+              "appearance": 0.6629434963474634,
+              "predicted": 40.69521656218506,
+              "error": 0.6952165621850597
+            },
+            {
+              "file": "frame-012.png",
+              "seconds": 3.513333,
+              "observedBar": 51.0,
+              "observedSelector": 44.5,
+              "formation": 0.16691100000030887,
+              "appearance": 0.7980259999965467,
+              "predicted": 45.026687722047086,
+              "error": 0.526687722047086
+            },
+            {
+              "file": "frame-013.png",
+              "seconds": 3.546667,
+              "observedBar": 51.0,
+              "observedSelector": 50.0,
+              "formation": 0.13975934918929228,
+              "appearance": 0.9112473658920293,
+              "predicted": 48.28962385771971,
+              "error": -1.710376142280289
+            },
+            {
+              "file": "frame-014.png",
+              "seconds": 3.563333,
+              "observedBar": 51.0,
+              "observedSelector": 52.0,
+              "formation": 0.12402700000047692,
+              "appearance": 0.90802100000046,
+              "predicted": 48.13972521988736,
+              "error": -3.86027478011264
+            }
+          ]
+        },
+        "candidate": {
+          "rms": 2.1441904407273196,
+          "maxAbsolute": 5.013608180635693,
+          "samples": [
+            {
+              "file": "frame-006.png",
+              "seconds": 3.413333,
+              "observedBar": 37.0,
+              "observedSelector": 14.0,
+              "formation": 0.01667599999887962,
+              "appearance": 0.0003969999999367275,
+              "predicted": 8.986391819364307,
+              "error": -5.013608180635693
+            },
+            {
+              "file": "frame-007.png",
+              "seconds": 3.43,
+              "observedBar": 43.0,
+              "observedSelector": 15.0,
+              "formation": 0.0685730850555481,
+              "appearance": 0.02498213200022079,
+              "predicted": 14.39302662858734,
+              "error": -0.6069733714126606
+            },
+            {
+              "file": "frame-008.png",
+              "seconds": 3.446667,
+              "observedBar": 47.0,
+              "observedSelector": 23.0,
+              "formation": 0.12771396049586028,
+              "appearance": 0.12579116741422652,
+              "predicted": 21.454234630761306,
+              "error": -1.5457653692386941
+            },
+            {
+              "file": "frame-009.png",
+              "seconds": 3.463333,
+              "observedBar": 49.0,
+              "observedSelector": 29.0,
+              "formation": 0.16191199999930353,
+              "appearance": 0.2982159999941951,
+              "predicted": 28.708592159591294,
+              "error": -0.2914078404087057
+            },
+            {
+              "file": "frame-010.png",
+              "seconds": 3.48,
+              "observedBar": 50.0,
+              "observedSelector": 35.0,
+              "formation": 0.17482708236918024,
+              "appearance": 0.4995125764352457,
+              "predicted": 35.54539663608389,
+              "error": 0.5453966360838933
+            },
+            {
+              "file": "frame-011.png",
+              "seconds": 3.496667,
+              "observedBar": 50.5,
+              "observedSelector": 40.0,
+              "formation": 0.17476778597500212,
+              "appearance": 0.686480047369436,
+              "predicted": 41.37988154607577,
+              "error": 1.3798815460757723
+            },
+            {
+              "file": "frame-012.png",
+              "seconds": 3.513333,
+              "observedBar": 51.0,
+              "observedSelector": 44.5,
+              "formation": 0.16691100000030887,
+              "appearance": 0.8349599999961417,
+              "predicted": 46.1189981960077,
+              "error": 1.618998196007702
+            },
+            {
+              "file": "frame-013.png",
+              "seconds": 3.546667,
+              "observedBar": 51.0,
+              "observedSelector": 50.0,
+              "formation": 0.13975934918929228,
+              "appearance": 0.9397843057499968,
+              "predicted": 49.16110042562223,
+              "error": -0.8388995743777699
+            },
+            {
+              "file": "frame-014.png",
+              "seconds": 3.563333,
+              "observedBar": 51.0,
+              "observedSelector": 52.0,
+              "formation": 0.12402700000047692,
+              "appearance": 0.9419300000000038,
+              "predicted": 49.1941948000961,
+              "error": -2.805805199903901
+            }
+          ]
+        }
+      }
+    },
+    "first-long": {
+      "timeOrigin": 0.855,
+      "models": {
+        "baseline": {
+          "rms": 13.81829597887128,
+          "maxAbsolute": 23.54860666582451,
+          "samples": [
+            {
+              "file": "frame-006.png",
+              "seconds": 0.905,
+              "observedBar": 42.0,
+              "observedSelector": 42.0,
+              "formation": 0.16718800000000011,
+              "appearance": 0.3411020000000006,
+              "predicted": 24.98911700354402,
+              "error": -17.01088299645598
+            },
+            {
+              "file": "frame-008.png",
+              "seconds": 0.946667,
+              "observedBar": 42.0,
+              "observedSelector": 45.0,
+              "formation": 0.21690906609705754,
+              "appearance": 0.8540538158690543,
+              "predicted": 38.45703685744913,
+              "error": -6.542963142550867
+            },
+            {
+              "file": "frame-009.png",
+              "seconds": 0.963333,
+              "observedBar": 41.0,
+              "observedSelector": 45.0,
+              "formation": 0.21703705731291703,
+              "appearance": 0.9101236159458551,
+              "predicted": 38.853718716818214,
+              "error": -6.146281283181786
+            },
+            {
+              "file": "frame-010.png",
+              "seconds": 0.98,
+              "observedBar": 41.0,
+              "observedSelector": 45.0,
+              "formation": 0.21024,
+              "appearance": 0.902996,
+              "predicted": 38.66339868928,
+              "error": -6.336601310719999
+            },
+            {
+              "file": "frame-011.png",
+              "seconds": 0.996667,
+              "observedBar": 41.0,
+              "observedSelector": 45.0,
+              "formation": 0.19806873647578363,
+              "appearance": 0.8302308735179764,
+              "predicted": 36.84763331173249,
+              "error": -8.152366688267513
+            },
+            {
+              "file": "frame-012.png",
+              "seconds": 1.013333,
+              "observedBar": 40.0,
+              "observedSelector": 44.0,
+              "formation": 0.18193031464503429,
+              "appearance": 0.6903108594537509,
+              "predicted": 32.39958106706441,
+              "error": -11.60041893293559
+            },
+            {
+              "file": "frame-016.png",
+              "seconds": 1.08,
+              "observedBar": 37.0,
+              "observedSelector": 38.0,
+              "formation": 0.1050889999999999,
+              "appearance": 0.11591299999999964,
+              "predicted": 14.451393334175489,
+              "error": -23.54860666582451
+            },
+            {
+              "file": "frame-019.png",
+              "seconds": 1.13,
+              "observedBar": 36.0,
+              "observedSelector": 29.0,
+              "formation": 0.059685000000000085,
+              "appearance": 0.01160500000000007,
+              "predicted": 9.976725956100005,
+              "error": -19.023274043899995
+            }
+          ]
+        },
+        "candidate": {
+          "rms": 4.333129932319737,
+          "maxAbsolute": 5.227104528032449,
+          "samples": [
+            {
+              "file": "frame-006.png",
+              "seconds": 0.905,
+              "observedBar": 42.0,
+              "observedSelector": 42.0,
+              "formation": 0.16718800000000011,
+              "appearance": 0.8557040000000016,
+              "predicted": 38.27468534908804,
+              "error": -3.7253146509119617
+            },
+            {
+              "file": "frame-008.png",
+              "seconds": 0.946667,
+              "observedBar": 42.0,
+              "observedSelector": 45.0,
+              "formation": 0.21690906609705754,
+              "appearance": 0.95,
+              "predicted": 40.78620905245044,
+              "error": -4.213790947549562
+            },
+            {
+              "file": "frame-009.png",
+              "seconds": 0.963333,
+              "observedBar": 41.0,
+              "observedSelector": 45.0,
+              "formation": 0.21703705731291703,
+              "appearance": 0.95,
+              "predicted": 39.8059815124022,
+              "error": -5.194018487597802
+            },
+            {
+              "file": "frame-010.png",
+              "seconds": 0.98,
+              "observedBar": 41.0,
+              "observedSelector": 45.0,
+              "formation": 0.21024,
+              "appearance": 0.95,
+              "predicted": 39.795615999999995,
+              "error": -5.204384000000005
+            },
+            {
+              "file": "frame-011.png",
+              "seconds": 0.996667,
+              "observedBar": 41.0,
+              "observedSelector": 45.0,
+              "formation": 0.19806873647578363,
+              "appearance": 0.95,
+              "predicted": 39.77705482312557,
+              "error": -5.222945176874433
+            },
+            {
+              "file": "frame-012.png",
+              "seconds": 1.013333,
+              "observedBar": 40.0,
+              "observedSelector": 44.0,
+              "formation": 0.18193031464503429,
+              "appearance": 0.95,
+              "predicted": 38.77289547196755,
+              "error": -5.227104528032449
+            },
+            {
+              "file": "frame-016.png",
+              "seconds": 1.08,
+              "observedBar": 37.0,
+              "observedSelector": 38.0,
+              "formation": 0.1050889999999999,
+              "appearance": 0.95,
+              "predicted": 35.724751825,
+              "error": -2.2752481750000015
+            },
+            {
+              "file": "frame-019.png",
+              "seconds": 1.13,
+              "observedBar": 36.0,
+              "observedSelector": 29.0,
+              "formation": 0.059685000000000085,
+              "appearance": 0.816754000000001,
+              "predicted": 31.175349050280026,
+              "error": 2.175349050280026
+            }
+          ]
+        }
+      }
+    },
+    "repeated-long": {
+      "timeOrigin": 2.6762776828949337,
+      "models": {
+        "baseline": {
+          "rms": 13.891290690223009,
+          "maxAbsolute": 20.23673729707299,
+          "samples": [
+            {
+              "file": "frame-008.png",
+              "seconds": 2.746667,
+              "observedBar": 44.0,
+              "observedSelector": 45.0,
+              "formation": 0.2030938350141897,
+              "appearance": 0.6421607746881218,
+              "predicted": 34.87474288880697,
+              "error": -10.12525711119303
+            },
+            {
+              "file": "frame-009.png",
+              "seconds": 2.763333,
+              "observedBar": 44.0,
+              "observedSelector": 46.0,
+              "formation": 0.21537253426930555,
+              "appearance": 0.8196939929264546,
+              "predicted": 39.47286254764363,
+              "error": -6.527137452356371
+            },
+            {
+              "file": "frame-010.png",
+              "seconds": 2.78,
+              "observedBar": 43.0,
+              "observedSelector": 46.0,
+              "formation": 0.21776011367174739,
+              "appearance": 0.90284462339603,
+              "predicted": 40.606037461347654,
+              "error": -5.393962538652346
+            },
+            {
+              "file": "frame-011.png",
+              "seconds": 2.796667,
+              "observedBar": 43.0,
+              "observedSelector": 46.0,
+              "formation": 0.21271126273861385,
+              "appearance": 0.9099183779380253,
+              "predicted": 40.76601223576567,
+              "error": -5.233987764234328
+            },
+            {
+              "file": "frame-012.png",
+              "seconds": 2.813333,
+              "observedBar": 42.0,
+              "observedSelector": 45.0,
+              "formation": 0.20188799271982746,
+              "appearance": 0.8592560481894038,
+              "predicted": 38.517787425344935,
+              "error": -6.482212574655065
+            },
+            {
+              "file": "frame-013.png",
+              "seconds": 2.83,
+              "observedBar": 41.0,
+              "observedSelector": 44.0,
+              "formation": 0.186705497030609,
+              "appearance": 0.7334374011312429,
+              "predicted": 34.38778616110555,
+              "error": -9.612213838894448
+            },
+            {
+              "file": "frame-014.png",
+              "seconds": 2.846667,
+              "observedBar": 40.0,
+              "observedSelector": 43.0,
+              "formation": 0.1685960010593996,
+              "appearance": 0.5675748949871233,
+              "predicted": 29.21440115349956,
+              "error": -13.785598846500442
+            },
+            {
+              "file": "frame-015.png",
+              "seconds": 2.863333,
+              "observedBar": 39.0,
+              "observedSelector": 41.0,
+              "formation": 0.14898806659751135,
+              "appearance": 0.3946980452433169,
+              "predicted": 23.80398398911118,
+              "error": -17.19601601088882
+            },
+            {
+              "file": "frame-016.png",
+              "seconds": 2.88,
+              "observedBar": 38.0,
+              "observedSelector": 39.0,
+              "formation": 0.1291607908589243,
+              "appearance": 0.24609675162907388,
+              "predicted": 18.960673251173464,
+              "error": -20.039326748826536
+            },
+            {
+              "file": "frame-017.png",
+              "seconds": 2.896667,
+              "observedBar": 38.0,
+              "observedSelector": 36.0,
+              "formation": 0.11012044364984279,
+              "appearance": 0.1383282835807341,
+              "predicted": 15.763262702927008,
+              "error": -20.23673729707299
+            },
+            {
+              "file": "frame-018.png",
+              "seconds": 2.913333,
+              "observedBar": 37.0,
+              "observedSelector": 33.0,
+              "formation": 0.09255096682282479,
+              "appearance": 0.07082919885642115,
+              "predicted": 12.969508363105245,
+              "error": -20.030491636894755
+            },
+            {
+              "file": "frame-019.png",
+              "seconds": 2.93,
+              "observedBar": 36.0,
+              "observedSelector": 30.0,
+              "formation": 0.07683638608655669,
+              "appearance": 0.0334402373628281,
+              "predicted": 11.015801500895353,
+              "error": -18.984198499104647
+            },
+            {
+              "file": "frame-020.png",
+              "seconds": 2.946667,
+              "observedBar": 36.0,
+              "observedSelector": 27.0,
+              "formation": 0.06312534497345985,
+              "appearance": 0.014730328586251618,
+              "predicted": 10.153922861611697,
+              "error": -16.846077138388303
+            },
+            {
+              "file": "frame-021.png",
+              "seconds": 2.963333,
+              "observedBar": 35.0,
+              "observedSelector": 24.0,
+              "formation": 0.05140001293128223,
+              "appearance": 0.006119190709013462,
+              "predicted": 9.073128621864896,
+              "error": -14.926871378135104
+            },
+            {
+              "file": "frame-022.png",
+              "seconds": 2.98,
+              "observedBar": 35.0,
+              "observedSelector": 21.0,
+              "formation": 0.041530452163321976,
+              "appearance": 0.0024181359013633443,
+              "predicted": 8.705824449151006,
+              "error": -12.294175550848994
+            },
+            {
+              "file": "frame-023.png",
+              "seconds": 2.996667,
+              "observedBar": 34.0,
+              "observedSelector": 19.0,
+              "formation": 0.033334262711449646,
+              "appearance": 0.0009159344783311325,
+              "predicted": 7.92393096010985,
+              "error": -11.07606903989015
+            },
+            {
+              "file": "frame-024.png",
+              "seconds": 3.013333,
+              "observedBar": 34.0,
+              "observedSelector": 18.0,
+              "formation": 0.026602076720457703,
+              "appearance": 0.00033439185301065285,
+              "predicted": 7.727044472504975,
+              "error": -10.272955527495025
+            }
+          ]
+        },
+        "candidate": {
+          "rms": 3.6029328327719403,
+          "maxAbsolute": 5.244880694661035,
+          "samples": [
+            {
+              "file": "frame-008.png",
+              "seconds": 2.746667,
+              "observedBar": 44.0,
+              "observedSelector": 45.0,
+              "formation": 0.2030938350141897,
+              "appearance": 0.95,
+              "predicted": 42.724950136022706,
+              "error": -2.2750498639772943
+            },
+            {
+              "file": "frame-009.png",
+              "seconds": 2.763333,
+              "observedBar": 44.0,
+              "observedSelector": 46.0,
+              "formation": 0.21537253426930555,
+              "appearance": 0.95,
+              "predicted": 42.744596054830886,
+              "error": -3.255403945169114
+            },
+            {
+              "file": "frame-010.png",
+              "seconds": 2.78,
+              "observedBar": 43.0,
+              "observedSelector": 46.0,
+              "formation": 0.21776011367174739,
+              "appearance": 0.95,
+              "predicted": 41.767972179033,
+              "error": -4.232027820966998
+            },
+            {
+              "file": "frame-011.png",
+              "seconds": 2.796667,
+              "observedBar": 43.0,
+              "observedSelector": 46.0,
+              "formation": 0.21271126273861385,
+              "appearance": 0.95,
+              "predicted": 41.76002023881332,
+              "error": -4.239979761186682
+            },
+            {
+              "file": "frame-012.png",
+              "seconds": 2.813333,
+              "observedBar": 42.0,
+              "observedSelector": 45.0,
+              "formation": 0.20188799271982746,
+              "appearance": 0.95,
+              "predicted": 40.762926388715734,
+              "error": -4.237073611284266
+            },
+            {
+              "file": "frame-013.png",
+              "seconds": 2.83,
+              "observedBar": 41.0,
+              "observedSelector": 44.0,
+              "formation": 0.186705497030609,
+              "appearance": 0.95,
+              "predicted": 39.75972588297168,
+              "error": -4.240274117028321
+            },
+            {
+              "file": "frame-014.png",
+              "seconds": 2.846667,
+              "observedBar": 40.0,
+              "observedSelector": 43.0,
+              "formation": 0.1685960010593996,
+              "appearance": 0.95,
+              "predicted": 38.7528940015891,
+              "error": -4.247105998410902
+            },
+            {
+              "file": "frame-015.png",
+              "seconds": 2.863333,
+              "observedBar": 39.0,
+              "observedSelector": 41.0,
+              "formation": 0.14898806659751135,
+              "appearance": 0.95,
+              "predicted": 37.74475739823133,
+              "error": -3.2552426017686713
+            },
+            {
+              "file": "frame-016.png",
+              "seconds": 2.88,
+              "observedBar": 38.0,
+              "observedSelector": 39.0,
+              "formation": 0.1291607908589243,
+              "appearance": 0.95,
+              "predicted": 36.73728314674544,
+              "error": -2.2627168532545596
+            },
+            {
+              "file": "frame-017.png",
+              "seconds": 2.896667,
+              "observedBar": 38.0,
+              "observedSelector": 36.0,
+              "formation": 0.11012044364984279,
+              "appearance": 0.95,
+              "predicted": 36.709674643292274,
+              "error": 0.7096746432922743
+            },
+            {
+              "file": "frame-018.png",
+              "seconds": 2.913333,
+              "observedBar": 37.0,
+              "observedSelector": 33.0,
+              "formation": 0.09255096682282479,
+              "appearance": 0.95,
+              "predicted": 35.70688512772252,
+              "error": 2.706885127722522
+            },
+            {
+              "file": "frame-019.png",
+              "seconds": 2.93,
+              "observedBar": 36.0,
+              "observedSelector": 30.0,
+              "formation": 0.07683638608655669,
+              "appearance": 0.9418473512386031,
+              "predicted": 34.49683653710211,
+              "error": 4.496836537102112
+            },
+            {
+              "file": "frame-020.png",
+              "seconds": 2.946667,
+              "observedBar": 36.0,
+              "observedSelector": 27.0,
+              "formation": 0.06312534497345985,
+              "appearance": 0.8568523515471695,
+              "predicted": 32.244880694661035,
+              "error": 5.244880694661035
+            },
+            {
+              "file": "frame-021.png",
+              "seconds": 2.963333,
+              "observedBar": 35.0,
+              "observedSelector": 24.0,
+              "formation": 0.05140001293128223,
+              "appearance": 0.6891169252227368,
+              "predicted": 26.890148780376137,
+              "error": 2.890148780376137
+            },
+            {
+              "file": "frame-022.png",
+              "seconds": 2.98,
+              "observedBar": 35.0,
+              "observedSelector": 21.0,
+              "formation": 0.041530452163321976,
+              "appearance": 0.493639046810245,
+              "predicted": 21.653382269236822,
+              "error": 0.6533822692368219
+            },
+            {
+              "file": "frame-023.png",
+              "seconds": 2.996667,
+              "observedBar": 34.0,
+              "observedSelector": 19.0,
+              "formation": 0.033334262711449646,
+              "appearance": 0.3195134840030416,
+              "predicted": 16.23931900806985,
+              "error": -2.760680991930151
+            },
+            {
+              "file": "frame-024.png",
+              "seconds": 3.013333,
+              "observedBar": 34.0,
+              "observedSelector": 18.0,
+              "formation": 0.026602076720457703,
+              "appearance": 0.19215781892970646,
+              "predicted": 12.768498662431124,
+              "error": -5.231501337568876
+            }
+          ]
+        }
+      }
+    }
+  }
+}

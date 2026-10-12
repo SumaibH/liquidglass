@@ -36,6 +36,7 @@ jobs:
           path: |
             **/build/reports/tests/**
             **/build/reports/atlas/**
+            **/build/test-results/**/TEST-*.xml
           if-no-files-found: ignore
           retention-days: 14
   dependency-review:

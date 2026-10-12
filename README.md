@@ -36,7 +36,11 @@ and current verification status are explicit; this is not full motion or optical
 The [tap optical audit](review/atlas/tap-optics-audit-2026-10-11/README.md) identifies a remaining
 opacity and icon-size mismatch using original patches and production shader probes. The separate
 [appearance candidate](review/atlas/tap-optics-candidate-2026-10-11/README.md) improves short-tap
-pigment and selected ink without granting held ownership; a long-tap opacity mismatch remains open.
+pigment and selected ink without granting held ownership. The subsequent
+[long-tap candidate](review/atlas/long-tap-appearance-2026-10-12/README.md) adds axial travel strain
+and gradual pigment recovery: measured interior errors improve, with unchanged pose/held formation.
+Its 344 library passes, 27 optional skips, three Atlas tests and Android build are verified;
+one original gesture timeout and its unchanged-source retry are documented. Full optical parity remains open.
 The [desktop sampling repair](review/atlas/wide-input-2026-10-11/README.md) removes a vertical selector
 seam by retaining offscreen blur input. Its measured rendering cost and remaining performance work
 are documented alongside the native before/after. Atlas can prefer the discrete GPU and records

@@ -1,0 +1,366 @@
+{
+  "sourceSha256": "186e1eb34e6baf896b16bffe839176fc298b2b7a6823d11cb39204ed960ebc06",
+  "crop": [
+    0,
+    420,
+    1170,
+    260
+  ],
+  "method": "Strongest absolute adjacent-pixel gradient per RGB channel within inspected fixed windows; edge at pixel-pair midpoint. All probes retained; no subpixel fit.",
+  "limits": "Cross-sections, not complete bounding boxes or full contours. Six-pixel agreement is a measurement quality gate, not a model tolerance. Optical rim and background can be ambiguous. An accepted probe still requires visual overlay inspection. No finger times recovered.",
+  "samples": [
+    {
+      "file": "frame-011.png",
+      "pts": 1678,
+      "seconds": 2.796667,
+      "sha256": "c17d10a251bf21264fc83ccfd6b3f3188c8a710dd705a3e83bcd02d2ca08c79e",
+      "annotation": {
+        "file": "frame-011.png",
+        "ys": [
+          140,
+          142,
+          144
+        ],
+        "left": [
+          442,
+          458
+        ],
+        "right": [
+          809,
+          825
+        ],
+        "xs": [
+          590,
+          610,
+          630
+        ],
+        "top": [
+          40,
+          55
+        ],
+        "bottom": [
+          205,
+          226
+        ]
+      },
+      "summary": {
+        "horizontal": {
+          "median": 365.0,
+          "range": [
+            364.0,
+            365.0
+          ],
+          "edgeMedians": {
+            "left": 451.5,
+            "right": 816.5
+          },
+          "usable": true,
+          "flags": []
+        },
+        "vertical": {
+          "median": 174.0,
+          "range": [
+            174.0,
+            174.0
+          ],
+          "edgeMedians": {
+            "top": 45.5,
+            "bottom": 219.5
+          },
+          "usable": true,
+          "flags": []
+        }
+      },
+      "probes": [
+        {
+          "axis": "horizontal",
+          "scanline": 140,
+          "channel": 0,
+          "left": {
+            "position": 451.5,
+            "contrast": 40.0,
+            "atWindowEdge": false
+          },
+          "right": {
+            "position": 816.5,
+            "contrast": -35.0,
+            "atWindowEdge": false
+          },
+          "separation": 365.0
+        },
+        {
+          "axis": "horizontal",
+          "scanline": 140,
+          "channel": 1,
+          "left": {
+            "position": 451.5,
+            "contrast": 80.0,
+            "atWindowEdge": false
+          },
+          "right": {
+            "position": 816.5,
+            "contrast": -64.0,
+            "atWindowEdge": false
+          },
+          "separation": 365.0
+        },
+        {
+          "axis": "horizontal",
+          "scanline": 140,
+          "channel": 2,
+          "left": {
+            "position": 451.5,
+            "contrast": 74.0,
+            "atWindowEdge": false
+          },
+          "right": {
+            "position": 816.5,
+            "contrast": -82.0,
+            "atWindowEdge": false
+          },
+          "separation": 365.0
+        },
+        {
+          "axis": "horizontal",
+          "scanline": 142,
+          "channel": 0,
+          "left": {
+            "position": 451.5,
+            "contrast": 42.0,
+            "atWindowEdge": false
+          },
+          "right": {
+            "position": 816.5,
+            "contrast": -33.0,
+            "atWindowEdge": false
+          },
+          "separation": 365.0
+        },
+        {
+          "axis": "horizontal",
+          "scanline": 142,
+          "channel": 1,
+          "left": {
+            "position": 451.5,
+            "contrast": 81.0,
+            "atWindowEdge": false
+          },
+          "right": {
+            "position": 816.5,
+            "contrast": -58.0,
+            "atWindowEdge": false
+          },
+          "separation": 365.0
+        },
+        {
+          "axis": "horizontal",
+          "scanline": 142,
+          "channel": 2,
+          "left": {
+            "position": 451.5,
+            "contrast": 71.0,
+            "atWindowEdge": false
+          },
+          "right": {
+            "position": 816.5,
+            "contrast": -79.0,
+            "atWindowEdge": false
+          },
+          "separation": 365.0
+        },
+        {
+          "axis": "horizontal",
+          "scanline": 144,
+          "channel": 0,
+          "left": {
+            "position": 452.5,
+            "contrast": 21.0,
+            "atWindowEdge": false
+          },
+          "right": {
+            "position": 816.5,
+            "contrast": -24.0,
+            "atWindowEdge": false
+          },
+          "separation": 364.0
+        },
+        {
+          "axis": "horizontal",
+          "scanline": 144,
+          "channel": 1,
+          "left": {
+            "position": 452.5,
+            "contrast": 43.0,
+            "atWindowEdge": false
+          },
+          "right": {
+            "position": 816.5,
+            "contrast": -41.0,
+            "atWindowEdge": false
+          },
+          "separation": 364.0
+        },
+        {
+          "axis": "horizontal",
+          "scanline": 144,
+          "channel": 2,
+          "left": {
+            "position": 451.5,
+            "contrast": 30.0,
+            "atWindowEdge": false
+          },
+          "right": {
+            "position": 816.5,
+            "contrast": -57.0,
+            "atWindowEdge": false
+          },
+          "separation": 365.0
+        },
+        {
+          "axis": "vertical",
+          "scanline": 590,
+          "channel": 0,
+          "top": {
+            "position": 45.5,
+            "contrast": 28.0,
+            "atWindowEdge": false
+          },
+          "bottom": {
+            "position": 219.5,
+            "contrast": -85.0,
+            "atWindowEdge": false
+          },
+          "separation": 174.0
+        },
+        {
+          "axis": "vertical",
+          "scanline": 590,
+          "channel": 1,
+          "top": {
+            "position": 45.5,
+            "contrast": 28.0,
+            "atWindowEdge": false
+          },
+          "bottom": {
+            "position": 219.5,
+            "contrast": -85.0,
+            "atWindowEdge": false
+          },
+          "separation": 174.0
+        },
+        {
+          "axis": "vertical",
+          "scanline": 590,
+          "channel": 2,
+          "top": {
+            "position": 45.5,
+            "contrast": 28.0,
+            "atWindowEdge": false
+          },
+          "bottom": {
+            "position": 219.5,
+            "contrast": -85.0,
+            "atWindowEdge": false
+          },
+          "separation": 174.0
+        },
+        {
+          "axis": "vertical",
+          "scanline": 610,
+          "channel": 0,
+          "top": {
+            "position": 45.5,
+            "contrast": 39.0,
+            "atWindowEdge": false
+          },
+          "bottom": {
+            "position": 219.5,
+            "contrast": -61.0,
+            "atWindowEdge": false
+          },
+          "separation": 174.0
+        },
+        {
+          "axis": "vertical",
+          "scanline": 610,
+          "channel": 1,
+          "top": {
+            "position": 45.5,
+            "contrast": 39.0,
+            "atWindowEdge": false
+          },
+          "bottom": {
+            "position": 219.5,
+            "contrast": -61.0,
+            "atWindowEdge": false
+          },
+          "separation": 174.0
+        },
+        {
+          "axis": "vertical",
+          "scanline": 610,
+          "channel": 2,
+          "top": {
+            "position": 45.5,
+            "contrast": 39.0,
+            "atWindowEdge": false
+          },
+          "bottom": {
+            "position": 219.5,
+            "contrast": -61.0,
+            "atWindowEdge": false
+          },
+          "separation": 174.0
+        },
+        {
+          "axis": "vertical",
+          "scanline": 630,
+          "channel": 0,
+          "top": {
+            "position": 45.5,
+            "contrast": 39.0,
+            "atWindowEdge": false
+          },
+          "bottom": {
+            "position": 219.5,
+            "contrast": -58.0,
+            "atWindowEdge": false
+          },
+          "separation": 174.0
+        },
+        {
+          "axis": "vertical",
+          "scanline": 630,
+          "channel": 1,
+          "top": {
+            "position": 45.5,
+            "contrast": 39.0,
+            "atWindowEdge": false
+          },
+          "bottom": {
+            "position": 219.5,
+            "contrast": -61.0,
+            "atWindowEdge": false
+          },
+          "separation": 174.0
+        },
+        {
+          "axis": "vertical",
+          "scanline": 630,
+          "channel": 2,
+          "top": {
+            "position": 45.5,
+            "contrast": 39.0,
+            "atWindowEdge": false
+          },
+          "bottom": {
+            "position": 219.5,
+            "contrast": -60.0,
+            "atWindowEdge": false
+          },
+          "separation": 174.0
+        }
+      ]
+    }
+  ]
+}

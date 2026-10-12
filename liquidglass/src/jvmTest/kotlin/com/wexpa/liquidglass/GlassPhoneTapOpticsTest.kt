@@ -10,6 +10,52 @@ import kotlin.math.abs
 class GlassPhoneTapOpticsTest {
     private fun bar() = GlassSelectorBar(834f,186f,21.75f,3,93f,139f,83.75f,90f,150f,150f,3f,800f)
 
+    @Test fun longTapRetainsItsClearInteriorThroughLateTravel() = checkLongInteriors(
+        origin = .855f,
+        sourceTimes = floatArrayOf(.905f,.946667f,.963333f,.98f,.996667f,1.013333f,1.08f,1.13f),
+        bars = intArrayOf(42,42,41,41,41,40,37,36),
+        observed = floatArrayOf(42f,45f,45f,45f,45f,44f,38f,29f),
+    )
+
+    @Test fun repeatedLongTapRestoresPigmentGradually() = checkLongInteriors(
+        // One independent geometry anchor: frame011 centre634px at2.796667s.
+        // Inherited source endpoints221..748 and nominal40ms input remain provisional.
+        origin = 2.676277683f,
+        sourceTimes = floatArrayOf(2.746667f,2.763333f,2.78f,2.796667f,2.813333f,2.83f,
+            2.846667f,2.863333f,2.88f,2.896667f,2.913333f,2.93f,2.946667f,2.963333f,
+            2.98f,2.996667f,3.013333f),
+        bars = intArrayOf(44,44,43,43,42,41,40,39,38,38,37,36,36,35,35,34,34),
+        observed = floatArrayOf(45f,46f,46f,46f,45f,44f,43f,41f,39f,36f,33f,30f,
+            27f,24f,21f,19f,18f),
+    )
+
+    private fun checkLongInteriors(origin: Float, sourceTimes: FloatArray, bars: IntArray,
+        observed: FloatArray) {
+        val b=bar(); val c=GlassPoseController(GlassPoseSpec.Calm)
+        c.attach(b,null,null); c.snapToRest(0)
+        c.pointerDown(b.centreOf(2),b.centreY,0.0,true); c.retarget(2)
+        c.advanceTo(.04f); c.pointerUp(2)
+        val style=GlassTabBarStyle.Calm()
+        for(i in sourceTimes.indices) {
+            c.advanceTo(sourceTimes[i]-origin)
+            assertFalse(c.isHeld); assertFalse(c.solverFailed)
+            val material=glassTransitStyle(lerpGlassStyle(style.pill,style.lens,c.formation),
+                c.transitAppearance,style.tapTintFade)
+            val rgb=0xff000000.toInt() or (bars[i] shl 16) or (bars[i] shl 8) or bars[i]
+            // Real production shader on the observed uniform bar. This isolates pigment;
+            // it does not reconstruct hidden source pixels, full contours or edge transport.
+            val pixels=GlassRender.render(width=400,height=260,pad=24,profile=2f,
+                heldLens=material.heldLens,tintAlpha=material.tint.alpha,
+                tint=Triple(material.tint.red,material.tint.green,material.tint.blue),lift=material.tintLift,
+                backdrop={_,_->rgb})
+            val rendered=GlassRender.luma(pixels[154*448+224])
+            println("LONG_TAP_OPTICS source=${sourceTimes[i]} appearance=${c.transitAppearance} rgb=$rendered")
+            assertEquals(observed[i].toDouble(),rendered,6.0,"source${sourceTimes[i]} interior on observed bar")
+            assertTrue(c.transitAppearance in 0f..0.95f)
+            assertEquals(c.formation,material.heldLens,1e-6f)
+        }
+    }
+
     @Test fun movingTapClearsItsInsetWithoutBecomingHeld() {
         val b=bar();val c=GlassPoseController(GlassPoseSpec.Calm)
         c.attach(b,null,null);c.snapToRest(2)
@@ -103,16 +149,16 @@ class GlassPhoneTapOpticsTest {
 
     @Test fun regrabReleaseReducedMotionAndRelayoutClearOrCarryAppearance() {
         val b=bar()
-        for(time in listOf(.07f,.12f,.18f)) {
+        for(target in listOf(1,2)) for(time in listOf(.07f,.12f,.18f,.28f,.34f)) {
             val c=GlassPoseController(GlassPoseSpec.Calm)
-            c.attach(b,null,null);c.snapToRest(0);c.retarget(1);c.advanceTo(time)
+            c.attach(b,null,null);c.snapToRest(0);c.retarget(target);c.advanceTo(time)
             val before=c.transitAppearance
             c.pointerDown(c.centreX,b.centreY,time.toDouble(),true)
             c.beginDrag(c.centreX,b.centreY)
             assertEquals(before,c.transitAppearance,0f)
             c.advanceTo(time+1f/960f)
             assertTrue(abs(c.transitAppearance-before)<.03f)
-            val held=c.transitAppearance;c.pointerUp(1)
+            val held=c.transitAppearance;c.pointerUp(target)
             assertEquals(held,c.transitAppearance,0f)
             c.advanceTo(time+.4f)
             c.motionEnabled=false;c.advanceTo(time+.41f)

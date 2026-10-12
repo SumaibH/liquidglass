@@ -6,6 +6,16 @@ Read this first after an interruption. Detailed history lives in the
 
 ## Current state
 
+**13October long-tap checkpoint:** area+axial appearance and critical pigment recovery pass
+all371library cases (344pass/27optional skips),3Atlas cases andAndroidassembly. All43NVIDIA
+native phases inspected; rest/recovery match the preceding wide-input renderer exactly.
+The original remaining-suite run had one V3gesture1minute timeout; same-source isolated retry
+passed27.451s at the unchanged deadline. The failure/retry and exact case inventory are retained.
+All local queues terminal. See the [long-tap proof](review/atlas/long-tap-appearance-2026-10-12/README.md)
+and NEXT-SESSION.md. Finite colour agreement is calibrated on allthree episodes, not independent
+full-parity evidence. First-use redraw771ms, static wide-input cost and remaining TODOs stay open.
+The preceding ebc12d3 revision passed allten hosted contexts; newer revisions need their own CI.
+
 **12October verified recovery:**342library cases pass,27optional skips,3Atlas cases pass and
 Android assembly succeeds; all43native phases/static inspected. The original run was interrupted;
 330completed records were recovered,4focused cases reused and8required cases finished separately.

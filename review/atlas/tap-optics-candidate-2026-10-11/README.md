@@ -4,6 +4,9 @@
 and the independent long-tap opacity failure below. The later
 [wide-input correction](../wide-input-2026-10-11/README.md) removes that seam in native replays;
 the premature darkening during long taps remains unresolved.
+The subsequent [long-tap appearance candidate](../long-tap-appearance-2026-10-12/README.md)
+addresses the finite interior-patch failure using axial travel strain and gradual recovery.
+Its results and limitations are separate; this packet preserves the earlier failure unchanged.
 The [preceding optical audit](../tap-optics-audit-2026-10-11/README.md) found that improved motion
 timing still left a nearly opaque dark inset and too little selected-ink enlargement during taps.
 

@@ -284,6 +284,11 @@ internal data class GlassPoseSpec(
     /** Opt-in tap appearance from excess projected area; zero preserves historical optics.
      * This is separate from held formation and never grants pointer ownership. */
     val tapAppearanceArea: Float = 0f,
+    /** Half-spine growth as a fraction of resting width that also clears tap pigment.
+     * Width normalization remains finite for circular resting controls. Zero disables it. */
+    val tapAppearanceSpine: Float = 0f,
+    /** Critical recovery rate when tap pigment demand falls; zero follows demand directly. */
+    val tapAppearanceFallOmega: Float = 0f,
 ) {
     internal val spineLimitSlots: Float get() = max(elongationSlots, tapSpineLimitSlots)
 
@@ -326,7 +331,8 @@ internal data class GlassPoseSpec(
         )
         val CalmEndpoint = CalmVolume.copy(releaseImpactGain = 2.25f)
         val Calm = CalmEndpoint.copy(releaseImpactGain = 4f, releaseEdgeAnchor = true,
-            releaseRecoveryOmega = 14f, tapShortTripRate = .75f, tapAppearanceArea = .44f)
+            releaseRecoveryOmega = 14f, tapShortTripRate = .75f, tapAppearanceArea = .44f,
+            tapAppearanceSpine = .13f, tapAppearanceFallOmega = 45f)
     }
 }
 
@@ -1162,14 +1168,27 @@ internal class GlassPoseController(
             val restArea = kotlin.math.PI.toFloat()*reference.r*reference.r + 4f*reference.a*reference.r
             val extra = (tapArea.value/restArea - 1f).coerceAtLeast(0f)
             val q = extra/spec.tapAppearanceArea
-            val raw = q*q
+            val spine = kotlin.math.hypot(pose.dx, pose.dy)
+            val spineScale = spec.tapAppearanceSpine * reference.width
+            val axial = if (spineScale > 0f) (spine-reference.a).coerceAtLeast(0f)/spineScale else 0f
+            val axialVelocity = if (spineScale > 0f && spine > reference.a && spine > 1e-5f)
+                (pose.dx*velocity.dx + pose.dy*velocity.dy)/(spine*spineScale) else 0f
+            val raw = q*q + axial*axial
             // C1 shoulder into a .95 ceiling: a moving inset never becomes the full held
-            // material. The already-sprung area drives this channel without a second lag.
+            // material. Existing area/spine springs drive onset without a second lag.
             val shoulder = ((raw-.85f)/.2f).coerceIn(0f,1f)
-            transit.value = if (raw<=.85f) raw else .85f+.2f*(shoulder-.5f*shoulder*shoulder)
+            val demand = if (raw<=.85f) raw else .85f+.2f*(shoulder-.5f*shoulder*shoulder)
             val slope = if(raw<=.85f) 1f else 1f-shoulder
-            transit.velocity = slope*2f*q/spec.tapAppearanceArea*tapArea.velocity/restArea
-            transit.target = transit.value
+            transit.target = demand
+            if (spec.tapAppearanceFallOmega > 0f && demand < transit.value) {
+                // Long-trip pigment recovers after area and axial travel have subsided.
+                // Retain value/physical-time velocity instead of snapping to the lower demand.
+                transit.step(dt,spec.tapAppearanceFallOmega,1f)
+            } else {
+                transit.value = demand
+                transit.velocity = slope*2f*(q/spec.tapAppearanceArea*tapArea.velocity/restArea +
+                    axial*axialVelocity)
+            }
         } else {
             // Carry value/real-time derivative through hold, release or cancellation; a
             // re-grab must not instantly recolour or resize the selected ink.

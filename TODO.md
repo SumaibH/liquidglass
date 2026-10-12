@@ -19,7 +19,9 @@ bounded completed work, **not completion of full iOS parity**. All open rows rem
 - [x] Inspect native early taps in both directions, gradients and clipped/nested/container
  paths, plus resting/recovered insets and caps. The hard seam is removed; full optics remain open.
 - [ ] Fix the separate long-tap appearance decay; current candidate becomes dark too early.
-  Preserve the independent short-tap check and do not turn taps into fully held glass.
+  Area+axial candidate corrects the25calibrated interior patches;371-case library inventory,
+  3Atlas/Android and43native phases are verified. Complete optical/ink timing remains inM1.
+  The original V3gesturetimeout and unchanged-source retry remain a reliability issue.
 
 ## M1 — complete motion, contour and optics across supplied gestures
 
@@ -105,7 +107,8 @@ bounded completed work, **not completion of full iOS parity**. All open rows rem
 
 ## Next action only
 
-The owner requested saving after tests; that save is complete. All test queues are terminal.
-Next implementation session: audit the verified diff and performance comparison prerequisite,
-then address the independent long-tap opacity mismatch. Do not repeat the completed suite.
-See NEXT-SESSION for exact files, evidence and the825-file verified backup.
+Current long-tap source is locally verified:344library passes/27optional skips,3Atlas passes,
+Androidassembly and43inspected native phases. Originaltimeout/retry provenance is preserved.
+All local queues are terminal. Confirm the checkpoint's exact-head hostedCI, then continue
+first-use/live performance and full gesture/optical parity; do not repeat unchanged local checks.
+See NEXT-SESSION.md and the13October verified snapshot for source hashes and exact case provenance.

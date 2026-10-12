@@ -2119,5 +2119,49 @@
       "JVM-only correction; Android path unchanged"
     ],
     "performance": "Old/new/new/old grid comparison: old medians 8.9178/8.5822 ms, corrected 11.2053/12.3574 ms; crop candidate 12.2554 ms, rejected and exact verified source restored."
+  },
+  "ci-build-ebc12d3": {
+    "run": 38271522386,
+    "status": "All ten required checks passed",
+    "scope": "Published wide-input/tap-area checkpoint. New local axial-appearance candidate is subsequent and uncommitted.",
+    "reports": "Saved HTML reports; XML was not included in the workflow artifact. Native grid/extreme-recovery images inspected.",
+    "library": "342passed27optional,0failures;24m40.98s",
+    "desktop": "3passed0failures;6m21.21s total; extreme2m40.34s and scene/control3m40.21s, each below6min"
+  },
+  "long-tap-appearance-2026-10-12": {
+    "packet": "review/atlas/long-tap-appearance-2026-10-12/verification.json",
+    "status": "Full local library inventory and Atlas/Android verified; finite calibrated patch agreement, not full parity",
+    "library": {
+      "tests": 371,
+      "passed": 344,
+      "skipped": 27,
+      "failures": 0,
+      "errors": 0,
+      "reusedFocused": 38,
+      "remainingCases": 332,
+      "retriedCases": 1
+    },
+    "initialFailure": {
+      "case": "com.wexpa.liquidglass.GlassTabBarV3GestureTest.aDeclinedDragReturnsTheSelectorToTheSelectionTheHostHolds",
+      "seconds": 65.318,
+      "reason": "one-minute deadline exceeded",
+      "rerunSeconds": 27.451,
+      "fixedByCodeChange": false
+    },
+    "desktop": {
+      "tests": 3,
+      "passed": 3,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "seconds": 314.815
+    },
+    "android": "assembleDebug passed",
+    "native": "All33full and10adjacent NVIDIA phases pass and inspected; same-scene rest/recovery pixel-identical to prior wide fix.",
+    "limits": [
+      "Finite original/repeated patches used for calibration, not held-out acceptance",
+      "Full optical/continuous motion/selected ink parity remains unproven",
+      "First-use redraw and static wide-input cost remain open"
+    ]
   }
 }

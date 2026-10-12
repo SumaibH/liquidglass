@@ -43,7 +43,10 @@ extend beyond the resting bar; this does not grant held-gesture ownership. Off-a
 strain belongs to the whole navigation bar, whose layout and hit targets stay anchored.
 
 Dark Calm's development tap appearance also fades the inset pigment and emphasizes selected
-ink during travel. Its held refraction band, rim and whole-bar lift retain their separate
+ink during travel. Projected area and stretch along the travel axis drive that appearance;
+pigment recovers gradually when both subside. These are authored response parameters calibrated
+against the original short/long tap sequences, not recovered Apple mechanics. Its held refraction
+band, rim and whole-bar lift retain their separate
 response. Use `tapTintFade = 0f` and `tapSelectedScale = 1f` to disable those two additions.
 Light Calm and historical presets retain these defaults. See the [API reference](api-reference.md)
 for the field contract and [current research](research/atlas-stabilization.md) for the measured

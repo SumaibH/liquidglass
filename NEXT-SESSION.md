@@ -1,111 +1,97 @@
 # Resume LiquidGlass / Atlas Studio
 
-Updated 12 October 2026. Full iOS parity remains unfinished. Read this before launching builds.
-Historical handoffs are preserved in `.local/handoffs/`; this file is the current state.
+Updated 13 October 2026. Full iOS parity remains unfinished. This is the current handoff;
+older exact snapshots and rejected experiments remain under `.local/handoffs/` and in research.
+
+## Current checkpoint
+
+Long-tap appearance now uses projected area plus axial travel strain and gradual pigment recovery.
+All 371 library cases are accounted for: **344 passes,27 optional skips,zero remaining failures**.
+All **3Atlas tests pass**; Android assembly succeeds. All **43NVIDIA native phases** were inspected.
+Rest/recovery in the adjacent replay are pixel-identical to the preceding wide-input renderer.
+All LOCAL test/capture queues are terminal. Do not repeat completed validation for unchanged code.
+
+This is a development checkpoint, not complete optical parity or owner acceptance. First-use redraw
+771ms and the earlier controlled ~3ms wide-input submission cost remain unresolved. Original source
+finger timing and hidden backdrop remain unknown. Allthree colour sequences informed calibration;
+the repeated episode must NOT be presented as held-out proof.
 
 ## Read and respect
 
 - Full objective: `C:/Users/shaya/.codex/attachments/8bcea84d-a196-4b90-8a8b-4627531cee0b/goal-objective.md`.
-  It incorporates the earlier objective under `79754856-c646-459c-b409-5e80eee1368e`.
-- Canonical checkout: `D:/Work/AndroidStudioProjects/SideProjects/kmp/liquidglass`.
-  Branch `codex/atlas-stabilization`; draft PR6. The chat working directory is different.
-- Read `AGENTS.md`, `WORKSPACE.md`, `PROGRESS.md`, `TODO.md` and the latest research log entries.
-- Work alone: no subagents or computer-use. Terminal and Atlas-owned input/render buffers only.
-  No Vitals work. No physical device available. Preserve all staged/unstaged/untracked work.
-- Use `tools/workspace.ps1 library ...`; JDK21 is
-  `C:/Program Files/Microsoft/jdk-21.0.12.101-hotspot`. Private caches are under `.local/`.
-- Commits, pushes and eventual merge authorized. No packages/tags/releases or blanket PR6 review bypass.
-  Raw private recordings, page content, names and transcripts stay off GitHub.
-- Record measured evidence separately from authored parameters. Do not refit constants silently,
-  count isolated green tests as visual acceptance, or restart completed work after an interruption.
+  It incorporates the original under `79754856-c646-459c-b409-5e80eee1368e`. Preserve full scope.
+- Canonical checkout: `D:/Work/AndroidStudioProjects/SideProjects/kmp/liquidglass`;
+  branch `codex/atlas-stabilization`, draft PR6. The chat working directory is different.
+- Read AGENTS.md, WORKSPACE.md, PROGRESS.md, TODO.md and latest research entries.
+- Work alone. NO subagents or computer-use. Terminal and app-owned input/render buffers only.
+  Atlas only; no Vitals. No physical device available. Preserve all dirty/untracked work.
+- Use tools/workspace.ps1 with JDK21 at `C:/Program Files/Microsoft/jdk-21.0.12.101-hotspot`.
+  Private Gradle/Maven caches are under `.local/`; do not run a second suite over live work.
+- Commits/pushes/eventual merge authorized; no packages/tags/releases or blanket PR6 review bypass.
+  Private recordings/page content/names/transcripts stay off GitHub.
+- Record findings/failures immediately; distinguish measured evidence from authored parameters.
+  Tests, snapshots and calibration fits do not alone establish full 1:1 behavior.
 
-## Current verified implementation
+## Verification provenance
 
-The local candidate contains a separate dark-Calm tap pigment/ink response, the JVM wide-input
-sampling correction, NVIDIA preference/actual-renderer metadata, and three split Atlas tests.
-The short-tap appearance improves; the long-tap appearance still darkens too early.
+- `.local/tap-strain-final-verification.json`: exact371-case inventory, sources and original failure.
+- `.local/tap-strain-remaining-v2-results`: complete333-case run XML.305passed,27skipped,one
+  historical V3 declined-drag test hit its1minute deadline after65.318s. Originalrun32m12s.
+- `.local/tap-strain-timeout-recheck.xml`: the failed case passed27.451s with unchanged code,
+  assertions and deadline. This is a recorded reliability issue, not a code fix or spotless run.
+-38same-runtime focused cases are reused, plus305remaining passes+1retry+27skips. No duplicates,
+  missing cases or interrupted test counted as passed. The initialconfiguration-only failure is saved.
+- `.local/tap-strain-atlas-android-result.json`: successful6m12s completion;3Atlas total314.815s.
+- `.local/tap-strain-final-results`, `.local/tap-strain-gesture-results`, focused/baseline XML/logs.
+- `.local/atlas-tap-strain-full`:33phases,3m9s,inspected. `.local/atlas-tap-strain-short`:10phases,
+ 48s,inspected. Native timestamps include render/readback delays, not presented-frame timing.
+- Public packet: `review/atlas/long-tap-appearance-2026-10-12/README.md` and verification.json.
+- Previous pushed ebc12d3 passed allten required hosted contexts. CI38271522386 reports saved
+  under `.local/ci-ebc12d3-reports`:342library passes27skips;3Atlas passes. The split Atlas
+  tests took2m40.34s and3m40.21s, below unchanged6minute deadlines. Inspect Git/PR for the newer
+  published revision and its CI state; do not apply ebc12d3 hosted results to newer code.
+- CI now includes JUnitXML in the existing14day report artifact; permissions/gates unchanged.
 
-The wide-input correction removes the inherited hard vertical selector seam. The bar's quarter-size
-blur strip now has an explicit offset/scale input in Skia's filter graph. Kernel, through-bar,
-substrate mask and controller geometry remain intact. Panel and container paths are covered.
-Android/portable shader contracts are unchanged. Earlier lower-edge missing-tone pixels also change;
-full-image identity with the old defective renderer is not claimed.
+## Implementation and source evidence
 
-**Complete local inventory: 342 library passes,27 optional skips,zero failures/errors;
-3Atlas passes; Android assembly successful.** Original full run was interrupted:
-330complete SUCCESS testcase records were recovered before a truncated binary record,
-4same-source focused cases reused, and8missing required cases run successfully in a4m50s follow-up.
-All369inventory entries were matched; no partial/cancelled case counted as passed.
-All43NVIDIA native phases and the static grid capture were inspected.
-
-- `.local/wide-input-final-verification.json`: aggregate and exact case provenance/source hashes.
-- `.local/wide-input-interrupted-2026-10-12`: original raw binary, complete recovered records, inventory.
-- `.local/wide-input-followup-results`: fresh XML reports; follow-up result/log alongside it.
-- `review/atlas/wide-input-2026-10-11`: public seam proof, native33+10/static and verification.
-- All tests/captures/helpers are terminal. Revalidate current processes before using any old PID.
-  Do not repeat this suite unless a subsequent runtime change invalidates its evidence.
-
-## Performance result and rejected attempt
-
-NVIDIA RTX3050Laptop6GB preference is verified; auto previously chose Intel UHD.
-The initial auto/discrete comparison improved static median8.9→4.5ms. These are submission times,
-not presented FPS or input latency, and must not be compared across unmatched later runs.
-
-A controlled NVIDIA grid old/new/new/old comparison isolated the wide-input fix:
-old medians8.9178/8.5822ms; corrected11.2053/12.3574ms. P95old14.2824/14.8722;
-corrected16.2203/16.1027. This is a real ~3ms median cost in that workload; A1 remains open.
-An explicit crop before upscaling produced identical pixels but12.2554ms median, so it was rejected.
-The exact fully verified uncropped source was restored and compiled. No new full suite is needed
-for that rejected/restored experiment. Preserve `.local/wide-bench-result.json`, benchmark timing
-JSONs and `.local/GlassWideInput-{before-crop,rejected-crop}.kt` variants.
+- GlassPoseDynamics.kt adds opt-in tapAppearanceSpine / tapAppearanceFallOmega, historical defaults0.
+  Calm uses.13rest-width half-spine growth and45rad/s critical fall, alongside existing area.44.
+  Rising demand follows already-sprung geometry; interruptions carry value/real-time velocity.
+- GlassPhoneTapOpticsTest.kt covers original8+repeat17 long patches with real production shader,
+  unchanged6RGB gate, and both-distance interruptions through.34s. Oldrenderer failsbothcases.
+- Actual14430-row production export retains every published pose/formation/protrusion field exactly.
+  Short/first-long/repeat interior RMS2.14/4.33/3.60, maxima5.01/5.23/5.24. This compares transfer
+  over observed bar pixels, not hidden backdrop/edge transport or complete source-scene rendering.
+- `tools/compare_phone_transit_appearance.py` reproduces numeric comparison with standard Python.
+- `.local/tap-strain-study-v1/v2/v3` and scripts preserve trials. Firstfit.6/60 failed independent
+  repeat max7.38. Laterfits use allthree episodes for calibration. No held-out acceptance claim.
+- Repeat geometry anchor frame011: centre634px,width365px,height174px at2.796667s; inherited
+  endpoints221..748 and nominal40ms input give origin2.676277683s. Timing sensitivity remains.
+- The earlier JVM wide-input graph fixes clipped tone-strip sampling; deferred-layer test fails
+  oldrenderer and passes corrected panel/container paths. Controlled NVIDIA A/B found~3ms cost.
+  Cropping retainedpixels butdidnotspeedup andwasrejected; verifieduncropped code remains.
+- No separate selector perpendicular squeeze: that belongs to the bar. Tap/landing deformation
+  remains legitimate. Layout/hit targets fixed; measured foreground drawing may deform.
+- Both chats were read: Implement Astra iOS parity (`01a0cabb-a5f0-73e2-a03c-27cb059c2571`) and
+  IOS Astra (`01a120e8-b510-7e42-8143-a95f8d239e07`). Do not ask for supplied references again.
+- Fable/Antigravity preserved in archive/retired-workflows/2026-10-03 and the supplied local
+  Antigravity brain779811df-5189-434e-b337-015a75295e06. Raw docs/1.MP4 and2.MP4 stay local.
+  Firsttwo long-repeat decodeframes contain private text: NEVER publish them.
 
 ## Next work
 
-1. Audit current git/PR state and preserve the verified checkpoint with its honest performance limit.
-   Last pushed revision before this closeout is44f01de; inspect Git rather than assuming it remains HEAD.
-2. Fix long-tap pigment/ink timing using existing source evidence, preserving short taps, held optics,
-   bar squeeze ownership and geometry. Do not change controller shape to hide a material error.
-3. Continue the full requirement checklist in `TODO.md`: every video1/video2 gesture, all edge/corner
-   envelopes, magnifier/selector optics, Atlas UI/latency, native integrations, docs and final protected CI/merge.
+1. Confirm the latest checkpoint commit/push and its exact-head CI; current sources are locally
+   verified. Keep timeout history and pending full-goal limitations in PR6.
+2. Address first-use/live-render hitches and measure presentation/input behavior. Do not call
+   forced-submission or screenshot timings FPS. Native cold firsttap771ms remains a counterexample.
+3. Continue full source-aligned contour/optics/selected-ink validation for allvideo1/video2 gestures.
+   Repeated adjacent width20.64px nominal (~15bestalternative) and early endpoint cap recovery remain.
+4. Continue every open TODO: all edge/corner envelopes, Android optical equivalence, practical native
+   controllers/hosts across stacks, final Atlas visual acceptance, docs and protected final merge.
 
-## Long-tap evidence already available
+## Recovery
 
-- First clean long trip: `.local/tap-optics-long-audit`; public comparison in the tap-optics candidate packet.
-  At1.08s source selector38 onbar37, candidate14.45; at1.13s source29, candidate9.98. Worst error23.55RGB.
-- Independent repeat: `.local/motion-2026-10-08/video1-long-repeat` has38native frames2.63..3.263333s.
-  `.local/tap-optics-long-repeat-audit` has17inspected clear patches008..024 and overlays; selector stays
- 45..46 then fades39,36,33,30,27,24,21,19,18. Bar44..34. All patch ranges0..1RGB.
-  Firsttwo decoded frames contain private page text; NEVER publish them. Only inspected audit crops are clean.
-- `.local/measure-long-repeat-optics.py` reproduces patches. Existing production appearance CSV avoids
-  rerunning controller exports just to inspect current traces.
-- Hypothesis only: axial travel strain persists after area-driven appearance has decayed. It may need
-  its own contribution. Do not adopt an untested law; source brighter than the bar also shows tint-only
-  algebra omits optical transport. Original input duration and hidden backdrop are unknown.
-- Repeated adjacent-tap width error20.64px nominal/about15px best tested body alternative remains open.
-  Endpoint cap-radius recovery is still early (max12.59/11.58px). No full1:1 claim.
-
-## Earlier rejected assumptions and supplied context
-
-- Independent selector perpendicular squeeze was wrong; it belongs to the whole bar. Tap/landing
-  deformation remains legitimate. Layout/hit targets anchored; measured foreground drawing may deform.
-- Tap-only video1 is distinct from held/early/formed/soft/hard/reversal video2. Do not mix their references.
-- JGEY2190n176–182 is not an isolated tap. LOLL8185CFR1944–1988 still shows a lens, so old release timing is invalid.
-- Initial bounds test used wrong drawImage offset coordinates. Corrected static-image test passed both;
-  only deferred filtered-layer test reproduces old missing input and proves the fix.
-- No-mask/no-packed experiments retain seam; no-through/no-wide remove it but are invalid production fixes.
-- Competing sources already supplied: `archive/retired-workflows/2026-10-03/README.md` and
-  `C:/Users/shaya/.gemini/antigravity-ide/brain/779811df-5189-434e-b337-015a75295e06`.
-- Both chats read: Implement Astra iOS parity (`01a0cabb-a5f0-73e2-a03c-27cb059c2571`) and
-  IOS Astra (`01a120e8-b510-7e42-8143-a95f8d239e07`). Do not ask for sources again.
-
-## Recovery copies
-
-Verified825-file snapshot: `.local/handoffs/2026-10-12-after-wide-tests/verification.json`.
-Earlier679-file and155-file snapshots remain under11October folders. They contain exact dirty files,
-patches, reports, objectives and hashes. They are recovery material, not a release. All failed
-attempts and subsequent changes are in `research/analysis/MOTION-2026-10-08.md` throughStep179.
-
-Latest checkpoint recovery: `.local/handoffs/2026-10-12-verified-checkpoint/verification.json`
-includes the subsequent A/B, rejected crop, updated handoff and strict docs result. The earlier
-825-file snapshot remains unchanged. Repository links (38 targets), strict MkDocs and staged
-whitespace checks pass. Inspect Git/PR for the published revision and hosted check status.
+- Latest: `.local/handoffs/2026-10-13-long-tap-verified/verification.json` (current checkpoint snapshot).
+- Earlier77-file long-tap save,100-file in-progress validation snapshot and854-file ebc12d3 snapshot
+  remain intact, alongside825/679/155-file older recovery sets. Preserve newer work before restoring.
+- Full findings, rejected fits and checks are in research/analysis/MOTION-2026-10-08.md throughStep196.
