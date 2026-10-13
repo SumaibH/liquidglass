@@ -35,7 +35,8 @@ class AtlasDesktopTest {
             CompositionLocalProvider(LocalDensity provides Density(1f)) {
                 // Reduced motion: switching is checked without rendering every transition frame on the
                 // CPU test raster (an animated tap costs minutes there); motion is covered by the replay.
-                Box(Modifier.size(800.dp, 600.dp)) { LoupeScreen(reduceMotion = true, animateBackdrop = false) }
+                // 640 x 420 keeps the top bar, navigation and magnifier; the wide-only card is covered by the replay.
+                Box(Modifier.size(640.dp, 420.dp)) { LoupeScreen(reduceMotion = true, animateBackdrop = false) }
             }
         }
         waitForIdle()
@@ -64,7 +65,8 @@ class AtlasDesktopTest {
         val report = File("build/reports/atlas").apply { mkdirs() }
         setContent {
             CompositionLocalProvider(LocalDensity provides Density(1f)) {
-                Box(Modifier.size(800.dp, 600.dp)) { LoupeScreen(initialScene = 2, animateBackdrop = false) }
+                // Small and without elastic motion: every frame is shaded on the CPU test raster.
+                Box(Modifier.size(640.dp, 420.dp)) { LoupeScreen(initialScene = 2, reduceMotion = true, animateBackdrop = false) }
             }
         }
         waitForIdle()
