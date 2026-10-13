@@ -39,8 +39,9 @@ recordings through the real renderer and comparing **continuous sequences**, not
 
 ## Next, in order
 
-1. 9.9 s landing: iOS's lens arrives ~1.3x stretched and contracts through rest (42 px); ours
-   arrives shorter (10 px). More stretch conflicts with the measured IMG6735 pair.
+1. 9.9 s landing: iOS's held lens hits the wall at speed and protrudes, then contracts through
+   rest (42 px); ours is slowed by the held end-tab clamp before lift (~800 px/s) and narrows 10 px.
+   Needs a held-lens wall impact model.
 2. iOS's cap swirl is still somewhat stronger; fusion timing follows our later press.
 3. Owner visual acceptance of the selector and of the redesigned Atlas Studio.
 4. Then: Android verification when a device is available; native navigation selector for .NET.

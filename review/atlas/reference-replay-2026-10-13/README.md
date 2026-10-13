@@ -203,8 +203,9 @@ lens meets the wall, so it cannot show the finger beyond it. With this input the
 646). At 9.9 s ours narrows only about 10 px against iOS's 42. Frame by frame, iOS's lens arrives
 about two frames earlier and much more stretched (about 1.3 times its resting width, its leading
 end pressed past the bar's end), then contracts from behind straight through its resting width;
-ours arrives shorter, so its trailing edge has less to recover. Our travel stretch is held to the
-measured IMG6735 pair (pass 3), so this stays a documented difference rather than a refit. `tools/reference-replay/v2script.py` and
+ours is as long but is slowed by the held end-tab clamp before the finger lifts (about 800 px/s
+at release), so its trailing edge carries little momentum. iOS's held lens instead hits the wall
+at speed and protrudes past it. Modelling a held-lens wall impact is left open. `tools/reference-replay/v2script.py` and
 `v2-script.txt` are updated; the reversal episode is spliced in by the generator.
 
 ![Moving lens before and after pass 7 (our renders only)](cap-swirl.png)

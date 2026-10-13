@@ -131,8 +131,8 @@ trace was produced and no permission changes were made. See [performance](perfor
 
 ## What remains
 
-1. Remaining differences from the continuous comparison: iOS's lens arrives at the wall more
-   stretched, so one landing narrows less than iOS's; fusion timing; iOS's cap swirl is
+1. Remaining differences from the continuous comparison: iOS's held lens hits the wall at
+   speed, ours is slowed by the end-tab clamp, so one landing narrows less than iOS's; fusion timing; iOS's cap swirl is
    still somewhat stronger. Owner visual acceptance is pending.
 2. Verify all directional extreme envelopes and Android composition on appropriate hardware.
 3. Resolve ordinary interaction/display performance and final wide/narrow Atlas visual acceptance.
