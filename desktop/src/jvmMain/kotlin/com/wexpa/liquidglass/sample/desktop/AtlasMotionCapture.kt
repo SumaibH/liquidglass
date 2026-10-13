@@ -10,8 +10,13 @@ import org.jetbrains.skia.Image
 import org.jetbrains.skia.Bitmap
 import org.jetbrains.skia.IRect
 import org.jetbrains.skiko.SkiaLayer
+import org.jetbrains.skiko.SkikoRenderDelegate
+import org.jetbrains.skia.Canvas
 import java.awt.Component
 import java.awt.Container
+import java.awt.event.MouseAdapter
+import java.awt.event.WindowAdapter
+import java.awt.event.WindowEvent
 import java.awt.event.InputEvent
 import java.awt.event.MouseEvent
 import java.io.File
@@ -29,7 +34,9 @@ internal class AtlasMotionProbe {
 
 /** Own-window AWT input and own-buffer captures; no global cursor, screen grab or OS automation. */
 internal suspend fun captureAtlasMotion(window: Container, probe: AtlasMotionProbe, directory: File,
-                                       readback: Boolean = true, shortTapsOnly: Boolean = false) {
+                                       readback: Boolean = true, shortTapsOnly: Boolean = false,
+                                       observeFrames: Boolean = false) {
+    require(!observeFrames || !readback) { "Frame observation requires atlas.motionReadback=false" }
     check(SwingUtilities.isEventDispatchThread())
     fun descendants(component: Component): Sequence<Component> = sequence {
         yield(component)
@@ -67,7 +74,50 @@ internal suspend fun captureAtlasMotion(window: Container, probe: AtlasMotionPro
     check(directory.mkdirs() || directory.isDirectory)
     val scale = layer.contentScale
     val started = System.nanoTime()
-    val rows = arrayListOf("label,elapsed_ms,event,x_px,y_px,scene,render_ms,readback_ms")
+    // Pair the monotonic replay clock with wall time for external JVM/GPU profiles.
+    // Millisecond wall time is an alignment anchor, not a presentation timestamp.
+    val startedAtEpochMillis = System.currentTimeMillis()
+    val rows = arrayListOf("label,elapsed_ms,event,x_px,y_px,scene,render_ms,readback_ms,dispatch_ms")
+    val frameRows = arrayListOf("frame,elapsed_ms,record_ms,input_serial,input_started_ms,scene")
+    var inputSerial = 0
+    var inputStartedMs = -1.0
+    var replayDispatch = false
+    val ownWindow = SwingUtilities.getWindowAncestor(input)
+    val inputRows = arrayListOf("elapsed_ms,event,replay_serial,replay_dispatch,x,y,window_focused,showing")
+    fun observeInput(event: MouseEvent) {
+        inputRows += "${(System.nanoTime()-started)/1e6},${event.id},$inputSerial,$replayDispatch,${event.x},${event.y},${ownWindow?.isFocused},${input.isShowing}"
+    }
+    val inputObserver = object : MouseAdapter() {
+        override fun mousePressed(e: MouseEvent) = observeInput(e)
+        override fun mouseReleased(e: MouseEvent) = observeInput(e)
+        override fun mouseDragged(e: MouseEvent) = observeInput(e)
+        override fun mouseMoved(e: MouseEvent) = observeInput(e)
+        override fun mouseEntered(e: MouseEvent) = observeInput(e)
+        override fun mouseExited(e: MouseEvent) = observeInput(e)
+    }
+    val focusObserver = object : WindowAdapter() {
+        override fun windowGainedFocus(e: WindowEvent) = observeFocus(e)
+        override fun windowLostFocus(e: WindowEvent) = observeFocus(e)
+        fun observeFocus(e: WindowEvent) {
+            inputRows += "${(System.nanoTime()-started)/1e6},${e.id},$inputSerial,false,,,${ownWindow?.isFocused},${input.isShowing}"
+        }
+    }
+    if (observeFrames) {
+        input.addMouseListener(inputObserver)
+        input.addMouseMotionListener(inputObserver)
+        ownWindow?.addWindowFocusListener(focusObserver)
+    }
+    val originalDelegate = layer.renderDelegate
+    val observedDelegate = if (observeFrames) object : SkikoRenderDelegate {
+        override fun onRender(canvas: Canvas, width: Int, height: Int, nanoTime: Long) {
+            check(SwingUtilities.isEventDispatchThread()) { "Frame recorder requires the AWT event thread" }
+            val start = System.nanoTime()
+            checkNotNull(originalDelegate).onRender(canvas, width, height, nanoTime)
+            val end = System.nanoTime()
+            frameRows += "${frameRows.size},${(start-started)/1e6},${(end-start)/1e6},$inputSerial,$inputStartedMs,${probe.scene}"
+        }
+    } else null
+    if (observedDelegate != null) layer.renderDelegate = observedDelegate
     val frames = ArrayList<Pair<String, Bitmap>>()
     var pressed = false
     var lastPoint = Offset.Zero
@@ -76,7 +126,6 @@ internal suspend fun captureAtlasMotion(window: Container, probe: AtlasMotionPro
     val crop = IRect.makeLTRB(floor(bounds.left - bounds.height).toInt().coerceAtLeast(0),
         floor(bounds.top - bounds.height).toInt().coerceAtLeast(0),
         ceil(bounds.right + bounds.height).toInt(), ceil(bounds.bottom + bounds.height).toInt())
-    fun elapsed() = (System.nanoTime() - started) / 1_000_000.0
     fun fixedLayout() {
         val current = probe.navigation
         check(abs(current.left - bounds.left) < .01f && abs(current.top - bounds.top) < .01f &&
@@ -89,11 +138,18 @@ internal suspend fun captureAtlasMotion(window: Container, probe: AtlasMotionPro
         check(if (id == MouseEvent.MOUSE_PRESSED) !pressed else pressed) { "Invalid pointer transition: $id" }
         val local = SwingUtilities.convertPoint(layer,
             (point.x / scale).roundToInt(), (point.y / scale).roundToInt(), input)
-        input.dispatchEvent(MouseEvent(input, id, System.currentTimeMillis(),
-            if (down) InputEvent.BUTTON1_DOWN_MASK else 0, local.x, local.y,
-            if (id == MouseEvent.MOUSE_PRESSED || id == MouseEvent.MOUSE_RELEASED) 1 else 0,
-            false, if (id == MouseEvent.MOUSE_DRAGGED) MouseEvent.NOBUTTON else MouseEvent.BUTTON1))
-        rows += "input,${elapsed()},$id,${point.x},${point.y},${probe.scene},,"
+        val dispatchStarted = System.nanoTime()
+        inputSerial++
+        inputStartedMs = (dispatchStarted-started)/1e6
+        replayDispatch = true
+        try {
+            input.dispatchEvent(MouseEvent(input, id, System.currentTimeMillis(),
+                if (down) InputEvent.BUTTON1_DOWN_MASK else 0, local.x, local.y,
+                if (id == MouseEvent.MOUSE_PRESSED || id == MouseEvent.MOUSE_RELEASED) 1 else 0,
+                false, if (id == MouseEvent.MOUSE_DRAGGED) MouseEvent.NOBUTTON else MouseEvent.BUTTON1))
+        } finally { replayDispatch = false }
+        val dispatched = System.nanoTime()
+        rows += "input,${(dispatched-started)/1e6},$id,${point.x},${point.y},${probe.scene},,,${(dispatched-dispatchStarted)/1e6}"
         pressed = down
         lastPoint = point
     }
@@ -103,11 +159,11 @@ internal suspend fun captureAtlasMotion(window: Container, probe: AtlasMotionPro
         try {
             fixedLayout()
             val start = System.nanoTime()
-            layer.renderImmediately()
+            if (!observeFrames) layer.renderImmediately()
             val rendered = System.nanoTime()
             if (readback) frames += name to checkNotNull(layer.screenshot())
             val readbackMs = if (readback) (System.nanoTime()-rendered)/1e6 else 0.0
-            rows += "$name,${(start-started)/1e6},capture,,,${probe.scene},${(rendered-start)/1e6},$readbackMs"
+            rows += "$name,${(start-started)/1e6},capture,,,${probe.scene},${(rendered-start)/1e6},$readbackMs,"
         } finally { capturing = false }
     }
     val left = Offset(bounds.left + bounds.width / 6f, bounds.center.y)
@@ -271,16 +327,27 @@ internal suspend fun captureAtlasMotion(window: Container, probe: AtlasMotionPro
         checksPassed = true
     } finally {
         try {
+            if (observedDelegate != null && layer.renderDelegate === observedDelegate)
+                layer.renderDelegate = originalDelegate
+            if (observeFrames) {
+                input.removeMouseListener(inputObserver)
+                input.removeMouseMotionListener(inputObserver)
+                ownWindow?.removeWindowFocusListener(focusObserver)
+                File(directory, "input-observed.csv").writeText(inputRows.joinToString("\n") + "\n")
+            }
             // Do not leave a held pointer behind if a verification assertion fails.
             if (pressed) send(MouseEvent.MOUSE_RELEASED, lastPoint, false)
             File(directory, "events.csv").writeText(rows.joinToString("\n") + "\n")
+            if (observeFrames) File(directory, "frames.csv").writeText(frameRows.joinToString("\n") + "\n")
             File(directory, "capture.json").writeText("""{
               "backend":"${layer.renderApi}","scale":$scale,"readbackEnabled":$readback,"checksPassed":$checksPassed,
+              "forcedRedrawDuringGestures":${!observeFrames},"frameObservation":$observeFrames,
               "scenario":"${if (shortTapsOnly) "short-taps" else "full"}",
+              "startedAtEpochMillis":$startedAtEpochMillis,
               "requestedGpu":"${System.getProperty("skiko.gpu.priority", "auto")}","rendererInfo":"${atlasJsonText(layer.renderInfo)}",
               "navigation":{"left":${bounds.left},"top":${bounds.top},"width":${bounds.width},"height":${bounds.height}},
               "input":"AWT events dispatched only to this application's Compose component",
-              "timing":"Each phase uses a fresh gesture replay because native readback is slow. CSV capture timestamps are render-start times. PNG encoding follows input. Not a continuous video, presented FPS or measured iOS timing."
+              "timing":"Each phase replays a fresh gesture. Capture rows time forced redraws unless forcedRedrawDuringGestures=false, when they are only phase markers. frames.csv measures natural Compose picture-recording callbacks, not GPU presentation. Dispatch rows end after input delivery; startedAtEpochMillis anchors the monotonic replay clock to wall time. Not a continuous video, presented FPS or measured iOS timing."
             }""")
             // Encoding can take much longer than drawing. It must not pause an active gesture.
             // Release every owned bitmap even if an assertion or encoder fails.

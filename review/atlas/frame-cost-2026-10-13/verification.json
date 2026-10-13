@@ -1,0 +1,217 @@
+{
+  "productionCommit": "cea1913dba21dfbaabdac4beccab7bdd26d87685",
+  "diagnosticSource": "Sample-only source hashes describe the observed variant; preceding diagnostic variants differ as documented.",
+  "sources": {
+    "desktop/build.gradle.kts": "63b157e6502442e8d9be85731abad0246fa54357a93914e24076e3b96afdebf7",
+    "desktop/src/jvmMain/kotlin/com/wexpa/liquidglass/sample/desktop/AtlasMotionCapture.kt": "4d69e8ae8e8685418bcb586a027375ab590175444da134ffaaeb75a0f674d4b2",
+    "desktop/src/jvmMain/kotlin/com/wexpa/liquidglass/sample/desktop/Main.kt": "f21078301d4c69251de2eb7fdfffee1ae97f163fb9e2010c00afcb2e125dd08f",
+    "liquidglass/src/jvmMain/kotlin/com/wexpa/liquidglass/LiquidGlass.jvm.kt": "fcbeebfa59fff8a16ec8bce840491731312c2817c073a93007c81ef84acf19bf",
+    "liquidglass/src/commonMain/kotlin/com/wexpa/liquidglass/GlassPoseDynamics.kt": "9afe555345daa5df73c93cd03a233114ccb6db122aeded159cd31a8e55c75bb3"
+  },
+  "runs": [
+    {
+      "name": "noreadback",
+      "capture": {
+        "backend": "DIRECT3D",
+        "scale": 1.25,
+        "readbackEnabled": false,
+        "checksPassed": true,
+        "scenario": "full",
+        "requestedGpu": "discrete",
+        "rendererInfo": "GraphicsApi: DIRECT3D\nOS: windows x64\nVideo card: NVIDIA GeForce RTX 3050 6GB Laptop GPU\nTotal VRAM: 6001 MB\n",
+        "navigation": {
+          "left": 1515.0,
+          "top": 804.0,
+          "width": 350.0,
+          "height": 80.0
+        },
+        "input": "AWT events dispatched only to this application's Compose component",
+        "timing": "Each phase uses a fresh gesture replay because native readback is slow. CSV capture timestamps are render-start times. PNG encoding follows input. Not a continuous video, presented FPS or measured iOS timing."
+      }
+    },
+    {
+      "name": "profile",
+      "capture": {
+        "backend": "DIRECT3D",
+        "scale": 1.25,
+        "readbackEnabled": false,
+        "checksPassed": true,
+        "scenario": "full",
+        "startedAtEpochMillis": 1791847125651,
+        "requestedGpu": "discrete",
+        "rendererInfo": "GraphicsApi: DIRECT3D\nOS: windows x64\nVideo card: NVIDIA GeForce RTX 3050 6GB Laptop GPU\nTotal VRAM: 6001 MB\n",
+        "navigation": {
+          "left": 1515.0,
+          "top": 804.0,
+          "width": 350.0,
+          "height": 80.0
+        },
+        "input": "AWT events dispatched only to this application's Compose component",
+        "timing": "Each phase uses a fresh gesture replay because native readback is slow. CSV capture timestamps are render-start times. PNG encoding follows input. Not a continuous video, presented FPS or measured iOS timing."
+      }
+    },
+    {
+      "name": "opengl",
+      "capture": {
+        "backend": "OPENGL",
+        "scale": 1.25,
+        "readbackEnabled": false,
+        "checksPassed": true,
+        "scenario": "full",
+        "startedAtEpochMillis": 1791847341999,
+        "requestedGpu": "discrete",
+        "rendererInfo": "GraphicsApi: OPENGL\nOS: windows x64\nVendor: Intel\nModel: Intel(R) UHD Graphics\nTotal VRAM: 0 MB\n",
+        "navigation": {
+          "left": 1515.0,
+          "top": 804.0,
+          "width": 350.0,
+          "height": 80.0
+        },
+        "input": "AWT events dispatched only to this application's Compose component",
+        "timing": "Each phase uses a fresh gesture replay because native readback is slow. CSV capture timestamps are render-start times. PNG encoding follows input. Not a continuous video, presented FPS or measured iOS timing."
+      }
+    },
+    {
+      "name": "natural",
+      "capture": {
+        "backend": "DIRECT3D",
+        "scale": 1.25,
+        "readbackEnabled": false,
+        "checksPassed": false,
+        "forcedRedrawDuringGestures": false,
+        "frameObservation": true,
+        "scenario": "full",
+        "startedAtEpochMillis": 1791847534186,
+        "requestedGpu": "discrete",
+        "rendererInfo": "GraphicsApi: DIRECT3D\nOS: windows x64\nVideo card: NVIDIA GeForce RTX 3050 6GB Laptop GPU\nTotal VRAM: 6001 MB\n",
+        "navigation": {
+          "left": 1515.0,
+          "top": 804.0,
+          "width": 350.0,
+          "height": 80.0
+        },
+        "input": "AWT events dispatched only to this application's Compose component",
+        "timing": "Each phase replays a fresh gesture. Capture rows time forced redraws unless forcedRedrawDuringGestures=false, when they are only phase markers. frames.csv measures natural Compose picture-recording callbacks, not GPU presentation. Dispatch rows end after input delivery; startedAtEpochMillis anchors the monotonic replay clock to wall time. Not a continuous video, presented FPS or measured iOS timing."
+      },
+      "recording": {
+        "count": 5823,
+        "median_ms": 1.0978,
+        "p95_ms": 3.3226,
+        "max_ms": 16.3629
+      },
+      "dispatch": {
+        "count": 362,
+        "median_ms": 0.80565,
+        "p95_ms": 2.384,
+        "max_ms": 29.7195
+      },
+      "failure": "Window-bottom-right pull lost selection: 0; expected Lines2; unresolved"
+    },
+    {
+      "name": "natural-observed",
+      "capture": {
+        "backend": "DIRECT3D",
+        "scale": 1.25,
+        "readbackEnabled": false,
+        "checksPassed": true,
+        "forcedRedrawDuringGestures": false,
+        "frameObservation": true,
+        "scenario": "full",
+        "startedAtEpochMillis": 1791847866976,
+        "requestedGpu": "discrete",
+        "rendererInfo": "GraphicsApi: DIRECT3D\nOS: windows x64\nVideo card: NVIDIA GeForce RTX 3050 6GB Laptop GPU\nTotal VRAM: 6001 MB\n",
+        "navigation": {
+          "left": 1515.0,
+          "top": 804.0,
+          "width": 350.0,
+          "height": 80.0
+        },
+        "input": "AWT events dispatched only to this application's Compose component",
+        "timing": "Each phase replays a fresh gesture. Capture rows time forced redraws unless forcedRedrawDuringGestures=false, when they are only phase markers. frames.csv measures natural Compose picture-recording callbacks, not GPU presentation. Dispatch rows end after input delivery; startedAtEpochMillis anchors the monotonic replay clock to wall time. Not a continuous video, presented FPS or measured iOS timing."
+      },
+      "recording": {
+        "count": 4550,
+        "median_ms": 2.5268,
+        "p95_ms": 5.0214,
+        "max_ms": 34.266
+      },
+      "dispatch": {
+        "count": 536,
+        "median_ms": 1.29005,
+        "p95_ms": 2.7918,
+        "max_ms": 87.0834
+      },
+      "observedInput": {
+        "replayEvents": 536,
+        "otherMouseOrFocusEvents": 0,
+        "focusedThroughout": true
+      }
+    },
+    {
+      "name": "natural-no-jfr",
+      "capture": {
+        "backend": "DIRECT3D",
+        "scale": 1.25,
+        "readbackEnabled": false,
+        "checksPassed": true,
+        "forcedRedrawDuringGestures": false,
+        "frameObservation": true,
+        "scenario": "full",
+        "startedAtEpochMillis": 1791888634853,
+        "requestedGpu": "discrete",
+        "rendererInfo": "GraphicsApi: DIRECT3D\nOS: windows x64\nVideo card: NVIDIA GeForce RTX 3050 6GB Laptop GPU\nTotal VRAM: 6001 MB\n",
+        "navigation": {
+          "left": 1515.0,
+          "top": 804.0,
+          "width": 350.0,
+          "height": 80.0
+        },
+        "input": "AWT events dispatched only to this application's Compose component",
+        "timing": "Each phase replays a fresh gesture. Capture rows time forced redraws unless forcedRedrawDuringGestures=false, when they are only phase markers. frames.csv measures natural Compose picture-recording callbacks, not GPU presentation. Dispatch rows end after input delivery; startedAtEpochMillis anchors the monotonic replay clock to wall time. Not a continuous video, presented FPS or measured iOS timing."
+      },
+      "recording": {
+        "count": 8903,
+        "median_ms": 0.9028,
+        "p95_ms": 1.6017,
+        "max_ms": 15.016
+      },
+      "dispatch": {
+        "count": 536,
+        "median_ms": 0.6144000000000001,
+        "p95_ms": 2.5607,
+        "max_ms": 32.1551
+      },
+      "observedInput": {
+        "replayEvents": 536,
+        "otherMouseOrFocusEvents": 0,
+        "focusedThroughout": true
+      }
+    }
+  ],
+  "hosted": {
+    "run": 38320819316,
+    "conclusion": "success",
+    "libraryPasses": 344,
+    "optionalSkips": 27,
+    "atlasPasses": 3,
+    "atlasSeconds": 382.428
+  },
+  "limitations": [
+    "No presentation/FPS claim",
+    "No renderer performance fix adopted",
+    "First natural-run selection failure unresolved",
+    "87ms first-input JFR root cause unestablished",
+    "OpenGL used Intel, not NVIDIA"
+  ],
+  "presentationAttempt": {
+    "tool": "PresentMon2.6.0",
+    "sha256": "b2a706bc6ad475749e3b7e3409263aa1e6906d45bdcf993f6dbc0f660188f1af",
+    "authenticode": "valid Intel Corporation",
+    "exitCode": 6,
+    "reason": "ETW access denied",
+    "csvProduced": false,
+    "permissionChanges": false,
+    "inputTracking": false,
+    "target": "Atlas process only"
+  }
+}

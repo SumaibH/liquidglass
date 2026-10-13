@@ -1,7 +1,32 @@
 # Resume LiquidGlass / Atlas Studio
 
-Updated 13 October 2026. Full iOS parity remains unfinished. This is the current handoff;
-older exact snapshots and rejected experiments remain under `.local/handoffs/` and in research.
+Updated13October2026 after the saved handoff and resumed investigation. Full iOS parity remains
+unfinished. Read TODO.md and the full objective before work; preserve every local change.
+
+**Current A1 diagnostic checkpoint:** sample-only frame/input observation is verified locally;
+production library remains the cea1913 implementation. All local queues are terminal. Exact
+cea1913 hosted CI passes allten required checks; downloaded XML confirms344library passes,
+27optional skips and3Atlas passes. Diagnostic source publication is identified by git HEAD/status.
+
+- Forced redraw profiles found a491ms Direct3D lock wait during a555ms draw. This is not
+  measured ordinary input/display latency; forcing redraw itself takes that lock.
+- First natural replay failed bottom-right selection. Two subsequent observed33-phase replays
+  passed with zero outside mouse/focus events. The original failure remains unexplained.
+- Latest replay without JFR:8,903recording callbacks median.9028ms,p951.6017ms,max15.016ms;
+ 536dispatches,max32.1551ms. The preceding87ms first-input JFR interval is inconclusive.
+- Bitmap-construction probe measures about.11ms for three mutable field snapshots, a secondary
+  cost. No renderer/cache/quality/backend change was adopted.
+- PresentMon2.6.0 binary digest/signature verified, but Windows refused the ETWsession (exit6).
+  No presentationCSV or display metrics exist; no privileges/group settings changed.
+
+Read [the frame-cost packet](review/atlas/frame-cost-2026-10-13/README.md) and researchStep203–207.
+Next independent work: native.NET interaction/controller integration. Keep presentation timing,
+selection reliability and every M1/O1/P1 acceptance gap open. Do not repeat these completed probes
+or the unchanged library suite. Raw JFR/process metadata stays local.
+
+The earlier detailed chat handoff is `.local/A1-RESUME-2026-10-13.md`; its snapshot status predates
+this resumed work. Verified58-file save: `.local/handoffs/2026-10-13-a1-save/`. Preserve it and the
+older snapshots. `.local/active-goal-checkpoint.txt` records the latest publication/live-job state.
 
 ## Current checkpoint
 
@@ -94,4 +119,4 @@ the repeated episode must NOT be presented as held-out proof.
 - Latest: `.local/handoffs/2026-10-13-long-tap-verified/verification.json` (current checkpoint snapshot).
 - Earlier77-file long-tap save,100-file in-progress validation snapshot and854-file ebc12d3 snapshot
   remain intact, alongside825/679/155-file older recovery sets. Preserve newer work before restoring.
-- Full findings, rejected fits and checks are in research/analysis/MOTION-2026-10-08.md throughStep196.
+- Full findings, rejected fits and checks are in research/analysis/MOTION-2026-10-08.md throughStep207.

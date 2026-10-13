@@ -100,6 +100,14 @@ to the middle tab, and recovery. The default33-phase replay remains unchanged. B
 use the same app-owned input, stable-layout and selection assertions; their separate CSVs retain
 actual timestamps and readback overhead.
 
+To observe normal picture recording, add `-Patlas.motionObserveFrames=true` together with
+`-Patlas.motionReadback=false`, using a fresh output directory. This disables forced redraws
+during gestures and adds `frames.csv` plus an own-component input/focus trace in
+`input-observed.csv`. Initial layout stabilization still redraws before measurements. Callbacks
+measure Compose picture recording, not GPU/display presentation; unchanged input may need no
+new callback. Phase capture rows are markers in this mode. Read `checksPassed` and keep any
+failed trace. See the [frame-cost investigation](review/atlas/frame-cost-2026-10-13/README.md).
+
 ## Recovery and local evidence
 
 [Retired source history](archive/retired-workflows/2026-10-03/README.md) is committed

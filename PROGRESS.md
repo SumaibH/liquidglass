@@ -6,6 +6,20 @@ Read this first after an interruption. Detailed history lives in the
 
 ## Current state
 
+**Later13October resumed investigation:** allten required cea1913 checks pass; hosted XML has
+344library passes27optional skips and3Atlas passes. The87ms first-input profile is inconclusive.
+Another natural33-phase replay passes with zero external input/focus changes. Presentation trace
+is unavailable because Windows denied ETW permission; no permission changes made. Renderer is
+unchanged. See the [diagnostic evidence](review/atlas/frame-cost-2026-10-13/README.md). Full A1
+and selection reliability remain open; next independent implementation work is native.NET input.
+
+**13October usage-limit handoff:** sample-only performance instrumentation is uncommitted;
+production library remains cea1913. All local queues terminal. First natural replay failed
+bottom-right selection; repeat passed33phases with536replay inputs and no external input/focus
+loss. Failure cause remains unresolved. Repeat has87ms maximum input dispatch, requiring follow-up;
+picture recording/submission are not presentation timing. Full handoff and backup paths are in
+NEXT-SESSION.md. Exact-head hosted build38320819316 was still in progress at save time.
+
 **13October long-tap checkpoint:** area+axial appearance and critical pigment recovery pass
 all371library cases (344pass/27optional skips),3Atlas cases andAndroidassembly. All43NVIDIA
 native phases inspected; rest/recovery match the preceding wide-input renderer exactly.

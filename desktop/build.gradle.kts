@@ -48,6 +48,7 @@ compose.desktop {
         providers.gradleProperty("atlas.motionCapture").orNull?.let { jvmArgs += "-Datlas.motionCapture=$it" }
         providers.gradleProperty("atlas.motionReadback").orNull?.let { jvmArgs += "-Datlas.motionReadback=$it" }
         providers.gradleProperty("atlas.motionShortTaps").orNull?.let { jvmArgs += "-Datlas.motionShortTaps=$it" }
+        providers.gradleProperty("atlas.motionObserveFrames").orNull?.let { jvmArgs += "-Datlas.motionObserveFrames=$it" }
         nativeDistributions {
             targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
             packageName = "LiquidGlassStudio"

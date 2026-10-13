@@ -109,6 +109,9 @@ bounded completed work, **not completion of full iOS parity**. All open rows rem
 
 Current long-tap source is locally verified:344library passes/27optional skips,3Atlas passes,
 Androidassembly and43inspected native phases. Originaltimeout/retry provenance is preserved.
-All local queues are terminal. Confirm the checkpoint's exact-head hostedCI, then continue
-first-use/live performance and full gesture/optical parity; do not repeat unchanged local checks.
-See NEXT-SESSION.md and the13October verified snapshot for source hashes and exact case provenance.
+All local queues are terminal; allten cea1913 hosted checks pass. Sample-only A1 diagnostics
+retain one unexplained bottom-right selection failure and two observed33-phase passing repeats.
+The87ms first-input JFR is inconclusive; Windows denied the PresentMon ETW session, so display
+timing remains open. See NEXT-SESSION.md and the frame-cost packet. Next independent work is
+native.NET interaction/controller integration, then remaining full gesture/optical parity.
+Do not repeat unchanged library checks or these completed diagnostic probes.
