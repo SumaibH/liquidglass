@@ -519,7 +519,8 @@ internal fun Modifier.liquidGlassCore(
                         formation = lensFormation.coerceIn(0f, 1f),
                         heldLens = style.heldLens.coerceIn(0f, 1f),
                         heldMagnification = style.heldMagnification.coerceIn(0f, 0.6f),
-                        heldGlow = style.heldGlow.coerceIn(0f, 1f),
+                        heldGlow = style.heldGlow.coerceIn(0f, 2f),
+                        heldGlowReach = style.heldGlowReach.toPx().coerceAtLeast(0f),
                         heldEdgeRecovery = style.heldEdgeRecovery.toPx().coerceAtLeast(0f),
                         restMap = style.restMap.uniform,
                         body = body?.let {
@@ -1040,6 +1041,7 @@ internal fun GlassUniforms.scaledBy(s: Float): GlassUniforms =
             rimSoft = rimSoft * s,
             // A recovery length in layer pixels, compared against the scaled layer's depth.
             heldEdgeRecovery = heldEdgeRecovery * s,
+            heldGlowReach = heldGlowReach * s,
             fieldRange = fieldRange * s,
             fieldScale = fieldScale / s,
         )
@@ -1069,6 +1071,8 @@ internal data class GlassUniforms(
     val heldMagnification: Float = 0f,
     /** [GlassStyle.heldGlow]. */
     val heldGlow: Float = 1f,
+    /** [GlassStyle.heldGlowReach], px; 0 uses the bevel. */
+    val heldGlowReach: Float = 0f,
     /** [GlassStyle.heldEdgeRecovery], in layer pixels. */
     val heldEdgeRecovery: Float = 0f,
     /** Resting-corner source map: 0 the legacy map, 1 the measured table ([GlassRestMap]). */
@@ -1193,6 +1197,7 @@ internal data class GlassUniforms(
             rimSoft == other.rimSoft && tintAbsorb == other.tintAbsorb &&
             profile == other.profile && formation == other.formation && heldLens == other.heldLens &&
             heldMagnification == other.heldMagnification && heldGlow == other.heldGlow &&
+            heldGlowReach == other.heldGlowReach &&
             heldEdgeRecovery == other.heldEdgeRecovery &&
             restMap == other.restMap &&
             body.contentEquals(other.body) && bodyY == other.bodyY && bodyKind == other.bodyKind &&

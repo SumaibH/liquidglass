@@ -91,6 +91,33 @@ toward the bar's height. Remaining: iOS warps icons more strongly
 near the moving lens's ends; our lens still trails the inferred finger by about a frame at each
 turn; the hold onset relative to the (inferred) finger-down is later than iOS.
 
+### Pass 4: lens edge and interior optics
+
+![Held and moving lens before and after pass 4 (our renders only)](lens-edge.png)
+
+Measured in video 2 at full resolution, over columns where both pages are black outside the bar:
+
+| Region (grey level) | iOS | Before | After |
+| :-- | :-- | :-- | :-- |
+| Bar rim at rest, outermost 4 px | 82, 72, 64, 53 | 84, 117, 90, 61 | 82, 80, 68, 57 |
+| Held lens outer edge line | 62 | 27 (specular .2) | 63 |
+| Band inside it, 3 px steps | 29, 21, 17, 14, 11, 9 | 21, 4, 3, 3, 2, 2 | 29, 16, 13, 11, 10, 8 |
+| Page text inside the lens, p95 / p99 | 104 / 114 | 76 / 79 | 107 / 110 |
+
+The bright white outline seen in pass 1 was the **bar's own rim** (about twice too bright) seen
+through the lens, not the lens's specular; pass 1 had dimmed the wrong term. Changes (Calm):
+bar bevel peak and specular halved; held lens specular .26, glow ×2 with a new
+`GlassStyle.heldGlowReach` of 6 dp (new `uHeldGlowReach` shader uniform; 0 keeps the historical
+bevel-length glow, so every other preset is unchanged) and `rawShare` .28 (was .01) so the page
+shows through the lens as clearly as in iOS. Port shaders were regenerated; CanvasKit tests and
+the .NET checks pass.
+
+Not solved: near the ends of a **moving** lens iOS swirls and strongly magnifies the icons it
+passes over. On the pose path our band is a fixed measured map (0.6 R, stepped seam from the held
+stills), so this needs a different optical map in motion — the next optical task. Also visible:
+a vertical seam where that map hides part of the band, and a faint doubled copy of page content
+near the lens's left end (raw share over the mirrored band).
+
 ### Re-reading the landing evidence
 
 The removed impact model was calibrated to one frame, video 2 at 2.5567 s ("frame082": width

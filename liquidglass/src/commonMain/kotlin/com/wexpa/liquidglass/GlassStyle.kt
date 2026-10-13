@@ -150,7 +150,8 @@ data class GlassStyle(
      */
     val heldMagnification: Float = 0f,
     /**
-     * How much of the held lens's inward rim glow is drawn, 0 to 1. The glow is the measured
+     * How much of the held lens's inward rim glow is drawn, 0 to 2 (1 is the historical full
+     * amount; values above 1 are for a wider [heldGlowReach]). The glow is the measured
      * "+16 falling to +1 over 15 px" behind the lens's lit edge line; a lens that is meant to show
      * nothing but the exterior compressed into its band, with colour separation where content
      * crosses it, sets this to 0 together with [specular], [counterLight] and [edgeShadow].
@@ -399,6 +400,12 @@ data class GlassStyle(
      * is unaffected; this is one coordinate blend, not a blend of two glyph images.
      */
     val heldInkContinuous: Boolean = false,
+    /**
+     * How far inward the held lens's rim glow ([heldGlow]) reaches before falling to 1/e.
+     * Zero ties it to [bevel], the historical narrow glow. Video2's moving lens shows a glow of
+     * about +25 at the edge fading over roughly 6 pt across its band (2026-10-13).
+     */
+    val heldGlowReach: Dp = 0.dp,
 ) {
     companion object {
         /** Clear standalone lens. [magnification] is the centre zoom, gradually returning to

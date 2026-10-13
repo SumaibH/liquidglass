@@ -1393,9 +1393,14 @@ data class GlassTabBarStyle(
         fun Calm(dark: Boolean = true): GlassTabBarStyle = V3(
             dark = dark, spec = GlassSelectorSpec(response = GlassResponse.Calm),
         ).let { v3 -> v3.copy(
-            // The 2026-10-13 full-resolution side-by-side: iOS's held rim is a soft refractive
-            // band with a faint top highlight; V3's .49 specular read as a drawn white outline.
-            lens = v3.lens.copy(specular = 0.2f),
+            // The held lens's rim over black in video2 (x 190, 1.7 s): an outer edge line of 62,
+            // then a glow fading inward 29, 21, 17, 14, 11, 9 across the band; V3 read 88 and
+            // then black (specular .49 at .2 read 27). Now 63, then 29, 16, 13, 11, 10, 8. The
+            // bright inner line the owner saw was the bar's own rim seen through the lens.
+            // Inside the lens the page shows through crisply: text +27 to +37 over the interior
+            // (p95/p99 at 1.7 s) from 133-level page text, about 0.28 of the raw page; V3's .01
+            // left it as the bar's frost.
+            lens = v3.lens.copy(specular = 0.26f, heldGlow = 2f, heldGlowReach = 6.dp, rawShare = 0.28f),
             // Measured over the black page of the owner's primary references (docs/1.MP4,
             // docs/2.MP4, recorded brightness space, 2026-10-13): bar 45 at rest and 53 held,
             // resting selector 24-30 (about .58 of the bar). V3's 32/44 and "0.5 x bar - 10"
@@ -1403,7 +1408,12 @@ data class GlassTabBarStyle(
             // No straight-run fold on the bar: on a 62 pt bar the folds from both edges cover
             // most of its height and doubled, reversed page text into a garbled smear. Both
             // recordings show one soft, legible copy of the text beneath (13 October).
-            bar = (if (dark) v3.bar.copy(tintLift = 45f / 255f) else v3.bar).copy(edgeFold = 0f),
+            // The bar's rim: video2 at rest peaks +37 over its interior at the outermost pixel and
+            // fades over ~4 px (82, 72, 64, 53 on 45); the measured in-app bead gave +72 one
+            // pixel in, which the held lens also shows through itself as a bright inner line.
+            bar = (if (dark) v3.bar.copy(tintLift = 45f / 255f) else v3.bar).let {
+                it.copy(edgeFold = 0f, bevelPeak = it.bevelPeak * .5f, specular = it.specular * .5f)
+            },
             heldLift = if (dark) 8f / 255f else v3.heldLift,
             pill = if (dark) v3.pill.copy(tint = Color.Black.copy(alpha = 0.42f), tintLift = 0f) else v3.pill,
             // Original Phone ordinary hold: bar186 ->196px. Reuse the rounded 1.05 press

@@ -27,6 +27,7 @@ uniform float   uFormation;    // measured lens: 0 a committed pull (small inwar
 uniform float   uHeldLens;     // GlassProfile.Held: how far the tab-bar lens has formed, 0 to 1
 uniform float   uHeldMagnification; // interior zoom of the held lens at full formation (GlassStyle.heldMagnification)
 uniform float   uHeldGlow;     // share of the held lens inward rim glow that is drawn (GlassStyle.heldGlow)
+uniform float   uHeldGlowReach; // px the held glow reaches inward; 0 uses the bevel (GlassStyle.heldGlowReach)
 uniform float   uHeldEdgeRecovery; // layer-pixel recovery length; 0 preserves the narrow side contour
 uniform float   uRestMap;      // resting-corner source map: 0 legacy, 1 the measured table (GlassRestMap)
 uniform float   uWideStrip;    // layer row where a quarter-scale blurred copy of the backdrop starts; 0 disables it
@@ -1067,8 +1068,9 @@ half4 main(float2 coord) {
     // the pill +10 at 4 px falling to +3 at 8 (rim fit, 2026-09-12); on the held tab-bar lens
     // 16 -> 1 over 15 px (FINDINGS 19). Top and bottom alike, nothing at the sides.
     float glowAmt = ((uProfile >= 0.5 && uProfile < 2.5) ? mix(0.05, 0.063, heldAmt) : 0.0)
-        * mix(1.0, clamp(uHeldGlow, 0.0, 1.0), heldAmt);
-    float heldGlow = glowAmt * exp(-max(depth - 0.67 * uBevel, 0.0) / max(uBevel, 1.0))
+        * mix(1.0, clamp(uHeldGlow, 0.0, 2.0), heldAmt);
+    float glowReach = (uHeldGlowReach > 0.0) ? mix(max(uBevel, 1.0), uHeldGlowReach, heldAmt) : max(uBevel, 1.0);
+    float heldGlow = glowAmt * exp(-max(depth - 0.67 * uBevel, 0.0) / glowReach)
         * (max(facing, 0.0) + counterLight * max(-facing, 0.0));
     float highlight = ((key + counter) * uSpecular
         + edgeLine * uSpecular * uEdgeLight

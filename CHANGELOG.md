@@ -16,10 +16,15 @@ This file records user-visible development changes. Published artifacts are iden
 - Calm held travel follows video 2's fast reversals: the lens stays under the finger (grasp
   120/s, was 40) and a hold forms in about 80 ms (held formation rise 50/s; taps unchanged).
   Held stretch and squeeze are unchanged to keep the measured IMG6735 flattened pair.
+- Calm lens and bar edges measured against video 2: bar rim halved (the "white outline" was the
+  bar's rim seen through the lens), held lens edge line .26, a stronger and wider rim glow and
+  `rawShare` .28 so the page shows crisply through the lens.
 - Repository description and README rewritten for developers; lab detail moved to linked records.
 
 ### Added
 
+- `GlassStyle.heldGlowReach` (and the `uHeldGlowReach` shader uniform): how far the held lens's
+  rim glow reaches inward; 0 keeps the historical bevel-length glow. `heldGlow` now accepts 0–2.
 - `GlassTabBarAccessory` and `GlassTabBar(trailingAccessory = …)`: a separate neighbouring
   glass control (iOS 26 Phone's search button) that the bar fuses with through a liquid neck
   while held. `GlassFuse(anchored = true)` keeps a fused rect fixed while the material grows.

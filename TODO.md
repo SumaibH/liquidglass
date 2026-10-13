@@ -13,7 +13,9 @@ bounded completed work, **not completion of full iOS parity**. All open rows rem
   1.80 s. Neck timing follows our later press; finger-side bar growth not modelled.
 - [x] Fast held reversals: lens follows the sweeps (grasp, hold formation, rebuilt input; pass 3).
   End-of-lens icon warping is still weaker than iOS.
-- [ ] Hold onset (inferred input — confirm before tuning) and transit ink magnification.
+- [x] Lens rim, band glow and interior clarity measured and matched (pass 4).
+- [ ] Moving-lens end optics: iOS swirls and magnifies icons near the ends; needs a motion map.
+- [ ] Hold onset (inferred input — confirm before tuning).
 - [ ] Owner visual acceptance of the navigation selector.
 
 ## P0 — current visible failures
