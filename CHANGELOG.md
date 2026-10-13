@@ -27,13 +27,17 @@ This file records user-visible development changes. Published artifacts are iden
   video 2's measured 241 → 285 px recovery without growing taller; the leading edge no longer
   flies past the end. The previous landing is kept as `GlassPoseSpec.CalmFreeLanding`.
 - `PhoneScene` geometry: a 95 pt resting pill with 8 pt ends, measured in video 2.
-- Calm moving lens (14 October): a deeper reflective rim (`rimMirror` 0.8, up to 1 is now allowed)
+- Calm moving lens (14 October): a deeper reflective rim (`rimMirror` 1.0, the whole band; up to 1 is now allowed)
   gives a larger swirl at the caps, with a faint colour split confined to the mirrored band.
+- Calm dark bar reaches toward the finger while held (`GlassInteraction.pressReach` 0.03): the
+  finger's side grows further, the far side as before; edges within 2–5 px of iOS.
 - Atlas Studio redesigned: one full-window scene moving under all the glass, the Calm bar fused
   with a magnifier button as the only scene switcher, a glass top bar and an anchored card.
 - Repository description and README rewritten for developers; lab detail moved to linked records.
 
 ### Added
+
+- `GlassInteraction.pressReach`: while pressed, the side nearer the touch grows further; 0 by default.
 
 - `GlassStyle.rimMirror` and `GlassStyle.foldAtCorners` (`uRimMirror`, `uFoldCorners`): a
   reflective rim map for the measured family and a corner-only fold; both 0 by default.

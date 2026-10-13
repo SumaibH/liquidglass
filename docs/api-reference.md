@@ -573,6 +573,7 @@ data class GlassInteraction(
     val pullLimit: Float = Float.POSITIVE_INFINITY,
     val response: GlassResponse = GlassResponse.Expressive,
     val pullShape: GlassPullShape = GlassPullShape.Adaptive,
+    val pressReach: Float = 0f,
 ) {
     companion object {
         val Default = GlassInteraction()
@@ -585,6 +586,9 @@ data class GlassInteraction(
 
 Opt-in, as Apple makes it. `ReducedMotion` is what Apple's setting asks for: no scale, no
 bounce, no gel, glow at half — the feedback survives, the elasticity does not.
+`pressReach` (with `pull`): while pressed, the side nearer the touch grows by up to that share of
+the width more, the far side growing as before; dark Calm navigation's bar uses 0.03. Drawing
+only: layout and hit targets do not move.
 
 ### `GlassPressSource`
 

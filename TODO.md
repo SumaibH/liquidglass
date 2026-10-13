@@ -19,11 +19,10 @@ bounded completed work, **not completion of full iOS parity**. All open rows rem
 - [x] Wall landings press into the end and narrow from behind (pass 6); comparison scene's resting
   pill corrected to the measured 95 pt. Landings with an inferred stop-before-lift do not narrow.
 - [x] Inferred input corrected: hold onset aligned by construction (finger-down is invisible);
-  wall throws lift moving. 2.3/12.4/25.6 s now narrow like iOS; 9.9 s (lens stopped at the wall
-  before lift) does not.
-- [x] Larger cap swirl with faint fringes (rim mirror 0.8) (pass 7).
-- [ ] Finger-side, mostly horizontal bar growth: a shift toward the finger broke the measured
-  fusion neck; needs anisotropic press growth (pass 7).
+  wall throws lift moving. 2.3/12.4/25.6 s now narrow like iOS; 9.9 s narrows less (iOS's
+  lens arrives ~1.3x stretched; ours is held to the IMG6735 pair).
+- [x] Larger cap swirl with faint fringes (rim mirror 1.0) (pass 7).
+- [x] Finger-side bar growth: `pressReach` (far side anchored); edges within 2–5 px (pass 7).
 - [x] Atlas Studio redesign: moving full-window scene, one switcher, fused magnifier button.
 - [ ] Owner visual acceptance of the navigation selector.
 

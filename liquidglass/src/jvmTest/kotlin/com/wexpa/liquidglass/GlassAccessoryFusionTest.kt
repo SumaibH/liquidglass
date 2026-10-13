@@ -19,6 +19,8 @@ import androidx.compose.ui.unit.dp
 import java.awt.image.BufferedImage
 import kotlin.math.cos
 import kotlin.math.sin
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
 import kotlin.test.*
 import kotlin.time.Duration.Companion.minutes
 
@@ -93,5 +95,43 @@ class GlassAccessoryFusionTest {
         node.performTouchInput { up() }
         waitForIdle()
         assertTrue(gapLevel(onNodeWithTag("scene").captureToImage().toAwtImage()) < 8, "neck stayed after release")
+    }
+
+    /** pressReach (2026-10-14): holding the first tab grows that side further; the far edge stays
+     * where the ordinary press puts it. Bar edges are found on the bar's centre row over black. */
+    @Test fun aHeldBarReachesTowardTheFingerAndKeepsItsFarEdge() = runComposeUiTest(testTimeout = 6.minutes) {
+        var reach by mutableStateOf(true)
+        setContent {
+            CompositionLocalProvider(LocalDensity provides Density(1f)) {
+                val state = rememberLiquidGlassState(Color.Black, renderScale = .25f)
+                val calm = GlassTabBarStyle.Calm().copy(height = 62.dp)
+                val style = if (reach) calm else calm.copy(barInteraction = calm.barInteraction?.copy(pressReach = 0f))
+                Box(Modifier.size(400.dp, 160.dp).testTag("scene")) {
+                    Box(Modifier.fillMaxSize().background(Color.Black).liquidGlassSource(state))
+                    GlassTabBar(state, 3, 0, {}, Modifier.offset(60.dp, 49.dp).width(278.dp), style = style,
+                    ) { _, _ -> Box(Modifier.size(20.dp).background(Color.Gray)) }
+                }
+            }
+        }
+        fun heldEdges(): Pair<Int, Int> {
+            val node = onNodeWithTag(GlassTabBarSemantics.TAG, useUnmergedTree = true)
+            node.performTouchInput { down(Offset(46f, 31f)); advanceEventTime(800); moveTo(Offset(46f, 31f)) }
+            waitForIdle()
+            val image = onNodeWithTag("scene").captureToImage().toAwtImage()
+            node.performTouchInput { up() }
+            waitForIdle()
+            fun lit(x: Int) = ((image.getRGB(x, 80) shr 8) and 0xFF) > 12
+            val left = (0 until image.width).first { lit(it) }
+            val right = (image.width - 1 downTo 0).first { lit(it) }
+            return left to right
+        }
+        waitForIdle()
+        val (reachLeft, reachRight) = heldEdges()
+        reach = false
+        waitForIdle()
+        val (plainLeft, plainRight) = heldEdges()
+        println("PRESS_REACH reach=$reachLeft..$reachRight plain=$plainLeft..$plainRight")
+        assertTrue(plainLeft - reachLeft >= 3, "finger side did not reach: $reachLeft vs $plainLeft")
+        assertTrue(kotlin.math.abs(reachRight - plainRight) <= 1, "far edge moved: $reachRight vs $plainRight")
     }
 }

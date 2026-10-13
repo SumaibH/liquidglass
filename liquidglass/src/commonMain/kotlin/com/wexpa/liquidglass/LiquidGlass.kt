@@ -1,5 +1,7 @@
 package com.wexpa.liquidglass
 
+import kotlin.math.abs
+
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Immutable
@@ -386,7 +388,11 @@ internal fun Modifier.liquidGlassCore(
         } else if (pressDown) { if (growthPx > 0f) GlassMotion.BalloonDown else GlassMotion.PressDown } else GlassMotion.PressUp,
         label = "glass_press_scale",
     )
-    val animatedPressX = 1f + (balloonX - 1f) * pressAmount
+    // Reach toward the finger ([GlassInteraction.pressReach]): signed extra width share, the far
+    // side keeping its ordinary growth. Material drawing only; the touch is bounded to the panel.
+    val reach = interaction?.takeIf { it.pull && it.pressReach > 0f && press.x > -1e4f && measured.width > 0f }
+        ?.let { it.pressReach * pressAmount * ((press.x - measured.width / 2f) / (measured.width / 2f)).coerceIn(-1f, 1f) } ?: 0f
+    val animatedPressX = 1f + (balloonX - 1f) * pressAmount + abs(reach)
     val animatedPressY = 1f + (balloonY - 1f) * pressAmount
     val pressScaleX = if (interaction?.pull == true) glassPressScaleInViewport(
         animatedPressX, measured.width, panelPosition.x, viewportSize.width.toFloat()) else animatedPressX
@@ -425,7 +431,11 @@ internal fun Modifier.liquidGlassCore(
         val py = pullY
         val radius = shape.glassRadii(measured, direction, density).minOrNull() ?: 0f
         val deformation = glassMaterialPull(measured.width, measured.height, radius,
-            density.density, pressScaleX, pressScaleY, px, py, pullCentreLimit, interaction)
+            density.density, pressScaleX, pressScaleY, px, py, pullCentreLimit, interaction).let {
+            // Scaling the extra reach about the centre, then moving it toward the finger by half
+            // of it, leaves the far edge where the ordinary press puts it.
+            if (reach == 0f) it else it.copy(translationX = it.translationX + reach * measured.width / 2f)
+        }
         if (panelPosition.x.isFinite() && panelPosition.y.isFinite()) glassPullInViewport(
             deformation, measured.width, measured.height, radius, pressScaleX, pressScaleY,
             panelPosition.x + measured.width / 2f, panelPosition.y + measured.height / 2f,

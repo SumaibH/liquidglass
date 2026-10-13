@@ -200,16 +200,19 @@ aligned **by construction** and is no longer a test of the model. Into an end ta
 lifts one frame after the ink first reaches the tab, still moving: the ink stops there when the
 lens meets the wall, so it cannot show the finger beyond it. With this input the wall landings at
 2.3, 12.4 and 25.6 s narrow like iOS (trailing-edge peaks 670 / 647 / 655 px against 645 / 646 /
-646). At 9.9 s our lens is already stopped at the wall when released and does not narrow; iOS
-narrows by the same 42 px. That case is open. `tools/reference-replay/v2script.py` and
+646). At 9.9 s ours narrows only about 10 px against iOS's 42. Frame by frame, iOS's lens arrives
+about two frames earlier and much more stretched (about 1.3 times its resting width, its leading
+end pressed past the bar's end), then contracts from behind straight through its resting width;
+ours arrives shorter, so its trailing edge has less to recover. Our travel stretch is held to the
+measured IMG6735 pair (pass 3), so this stays a documented difference rather than a refit. `tools/reference-replay/v2script.py` and
 `v2-script.txt` are updated; the reversal episode is spliced in by the generator.
 
 ![Moving lens before and after pass 7 (our renders only)](cap-swirl.png)
 
 *Our renders only, the same rebuilt reversal input; `63d5d2b` above, this pass below.*
 
-**Cap swirl.** The moving lens's reflective rim now mirrors 0.8 of the band (was 0.3; the shader
-now allows up to the whole band), so icons near the caps wrap along a larger arc, as in iOS. A
+**Cap swirl.** The moving lens's reflective rim now mirrors the whole band (1.0; was 0.3; the shader
+now allows up to 1), so icons near the caps wrap along a larger arc, as in iOS. A
 faint colour split (0.025) is confined to the mirrored band. Authored; iOS's swirl is still
 somewhat stronger.
 
@@ -220,7 +223,24 @@ Shifting the pressed material toward the finger (an authored 0.04 share of the t
 gave 35 / 13 px, but it starved the far side, so the measured fusion neck to the search button
 (taken while holding this same tab) fell below its test, and two measured bar envelopes broke.
 Matching iOS needs anisotropic press growth, which would conflict with the measured 1.05 press;
-the shift was removed and this stays open.
+the shift was removed.
+
+**Finger-side growth (adopted).** A closer look at the same rows: iOS's far side grows exactly as
+a plain 1.05 press does (25 px against our 24); only the finger's side grows more (43 against 28).
+So the bar reaches toward the finger rather than moving. New opt-in
+`GlassInteraction.pressReach`: while pressed, the side nearer the touch grows by up to that share
+of the width more (scaled by the touch's offset from the centre), with the far edge held where
+the ordinary press puts it. Dark Calm's bar uses 0.03 (authored from these rows). Bar edges on
+three rows, our replay against iOS, in px:
+
+| Held tab (time) | iOS left / right | Before | After |
+| :-- | :-- | :-- | :-- |
+| Calls (1.80 s) | 58 / 883 | 73 / 882 | 62 / 881 |
+| Calls (5.75 s) | 58 / 883 | 77 / 881 | 63 / 880 |
+| Keypad (3.90 s) | 76 / 901 | 88 / 892 | 78 / 897 |
+
+The fusion neck, the bar-envelope tests and the extreme full-screen pulls are unchanged: the
+touch is bounded to the panel and the reach is drawing only.
 
 **Atlas Studio.** Redesigned around the material: one full-window scene moving under all the glass
 (a drifting night sky with a moon, a page of type that scrolls by, sliding coloured lines), the
@@ -242,8 +262,6 @@ the impact. The narrowing itself is real and is listed below.
   inferred finger stops before lifting do not narrow (likely an input artefact, see pass 6), and
   ours narrows about 100 ms earlier than iOS.
 - iOS's swirl at the ends of a moving lens is still somewhat stronger (pass 7).
-- iOS's held bar grows more horizontally (about 8%) than vertically (5%) and more on the finger's
-  side; ours grows a uniform 5% (pass 7, tried and not adopted).
 - The rebuilt reversal input and the full video 2 script (`v2-script.txt`) are inferred; the
   per-episode lag numbers above are relative to that inference.
 - Hold onset is aligned by construction (pass 7); it cannot be tested from these recordings.

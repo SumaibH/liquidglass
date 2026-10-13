@@ -100,6 +100,14 @@ data class GlassInteraction(
      * a bounded log-strain response instead; [pullFollow]/[pullLimit] still govern input resistance.
      * Choose the navigation preset normally; generic cards should keep Adaptive. */
     val pullShape: GlassPullShape = GlassPullShape.Adaptive,
+    /**
+     * While pressed, the side nearer the touch grows further, by this share of the width for a
+     * touch at the very end (proportionally less nearer the centre); the far side keeps its
+     * ordinary growth (requires [pull]). Zero, the default, grows symmetrically. Calm navigation
+     * uses 0.03 in its dark appearance: the iOS 26 Phone bar held at its first tab grows about
+     * 15 px more on that side while its far side grows as a plain 1.05 press (2026-10-14).
+     */
+    val pressReach: Float = 0f,
 ) {
     companion object {
         val Default = GlassInteraction()

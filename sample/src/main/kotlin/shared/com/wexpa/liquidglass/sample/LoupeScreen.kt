@@ -263,7 +263,7 @@ private fun DrawScope.type(t: Float, pan: Offset, measurer: TextMeasurer) {
         if (y > size.height) break
         val (text, colour) = Copy[((row % Copy.size) + Copy.size) % Copy.size]
         val headline = text.length < 8
-        if (headline) drawRect(colour.copy(alpha = .16f), Offset(left - 12.dp.toPx(), y + 6.dp.toPx()), Size(size.width, line - 12.dp.toPx()))
+        if (headline) drawRect(colour.copy(alpha = .16f), Offset(0f, y + 6.dp.toPx()), Size(size.width, line - 12.dp.toPx()))
         drawText(measurer, if (headline) text.uppercase() else text, Offset(left, y + if (headline) 2.dp.toPx() else 14.dp.toPx()),
             TextStyle(color = colour, fontSize = if (headline) 44.sp else 26.sp,
                 fontWeight = if (headline) FontWeight.Black else FontWeight.Normal, letterSpacing = if (headline) 6.sp else 0.sp))

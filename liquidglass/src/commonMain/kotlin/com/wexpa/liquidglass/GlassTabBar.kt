@@ -1445,6 +1445,8 @@ data class GlassTabBarStyle(
                 // V3 already applies its measured heldLift to the bar's material. Adding
                 // the generic control lift again changed the44-level Phone plateau to54.
                 pressLift = 0f,
+                // iOS's held bar reaches toward the finger; its far side grows as usual.
+                pressReach = if (dark) .03f else 0f,
             ),
         ) }
         // Declaration order matters here: the constructor's defaults read RestingInset and
@@ -1828,7 +1830,7 @@ internal fun glassSelectorMaterial(style: GlassTabBarStyle, formation: Float, tr
 }
 
 /** Rim-mirror band and its colour split for a moving Calm selector (authored, 2026-10-14). */
-internal const val GlassSelectorRimMirror = 0.8f
+internal const val GlassSelectorRimMirror = 1.0f
 internal const val GlassSelectorRimDispersion = 0.025f
 
 /** `lensFormation` for the selector: the transit fold while unheld, the held lens's travel
