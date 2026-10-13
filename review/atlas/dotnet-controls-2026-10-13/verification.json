@@ -1,0 +1,44 @@
+{
+  "sourceHashes": {
+    "ports/dotnet/LiquidGlass.WinForms/ControlBackdrop.cs": "be10a3c32ca1918fcdeaa4f6f8b13f6a334053ded02c2ff09ad112b4fe828c97",
+    "ports/dotnet/LiquidGlass.WinForms/LiquidGlass.WinForms.csproj": "2b7dcfcfdca8dedebde11e84d5680429dfafc3ad6f603a00cef9c42ca620361b",
+    "ports/dotnet/LiquidGlass.WinForms/packages.lock.json": "1df1db06c3cdebe07d1f08bb0fac21b3e21ed251fa83830ae971b7436587ee84",
+    "ports/dotnet/WinFormsDemo/ControlBackdropDemo.cs": "3f040371a84baeffa30b3ee15aca451256ec61441f9517fe9e26fe0215d65863",
+    "ports/dotnet/WinFormsDemo/Program.cs": "e70e40ffd05f8fc02f750e904745888cb64a98458d0831a7aa04ccce0719746c",
+    "ports/dotnet/WinFormsDemo/WinFormsDemo.csproj": "6fa1811c974767b445344b7b187ed783f34ca2cf66d4f5b7e0816c4bc8f6979a",
+    "ports/dotnet/WinFormsDemo/packages.lock.json": "ca54fcbe8fcc144077beeec150eeced238a32eab2286f14b60f4cd6d69881034"
+  },
+  "native": {
+    "passed": true,
+    "checks": [
+      {
+        "nativeControlUpdates": true,
+        "changedTextPixels": 1522,
+        "identityPixels": true,
+        "refraction": true,
+        "unsupportedRejected": true,
+        "retainedSource": true,
+        "wrongThreadRejected": true,
+        "resize": true
+      }
+    ],
+    "input": "Own Control.DrawToBitmap; no screen capture",
+    "limits": "WinForms Label/TextBox/CheckBox/Panel only verified; custom controls and overlapping Z-order require host validation."
+  },
+  "result": {
+    "exitCode": 0,
+    "finished": "2026-10-13T16:16:42.2333977+05:00"
+  },
+  "build": {
+    "lockedRestore": "passed",
+    "warnings": 0,
+    "errors": 0
+  },
+  "hosted": "Pending for this source; precedingaf333fa alltenrequiredchecks pass",
+  "limits": [
+    "Owned WinForms control rendering only",
+    "Panel Label TextBox CheckBox verified; unsupported RichTextBox and ActiveX rejected",
+    "Custom controls and overlapping Z-order remain unverified",
+    "No arbitrary-stack completion, GPU or display latency claim"
+  ]
+}

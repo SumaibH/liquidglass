@@ -6,6 +6,14 @@ Read this first after an interruption. Detailed history lives in the
 
 ## Current state
 
+**13October native control backdrop:** the new WinForms adapter and executable example capture
+real Panel/Label/TextBox/CheckBox content for the production painter. Native glyph updates,
+identity/refraction, resize, thread ownership and failed-capture retention pass. Known unsupported
+RichTextBox/ActiveX fail explicitly; custom control/Z-order limits remain. See the
+[native-control packet](review/atlas/dotnet-controls-2026-10-13/README.md). Alltenaf333fa checks
+pass; currentadapterhosted verification followspublication. This closes a concrete host path,
+not arbitrary-stack support. Return next to the original Video1 shape/optical mismatch.
+
 **13October native.NET interaction:** reusable timestamped CalmInteraction plus optional
 material-only painter feedback and real WinForms card input now pass144portable trajectory
 states,107520outline points,12native check groups and9native phases. Labels/hit targets stay

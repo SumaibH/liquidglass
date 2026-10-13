@@ -11,6 +11,11 @@ internal static class Program
     private static void Main(string[] args)
     {
         ApplicationConfiguration.Initialize();
+        if (args.Length > 0 && args[0] == "--controls")
+        {
+            ControlBackdropDemo.Run(args.Length == 3 && args[1] == "--capture" ? Path.GetFullPath(args[2]) : null);
+            return;
+        }
         var capture = args.Length == 2 && args[0] == "--capture" ? Path.GetFullPath(args[1]) : null;
         using var form = new Form { Text = "LiquidGlass · native .NET", ClientSize = new Size(960, 620), MinimumSize = new Size(640, 480) };
         using var view = new GlassView(capture is not null) { Dock = DockStyle.Fill, TabStop = true, AccessibleName = "Glass canvas. Drag the lens or use arrow keys. Hold and pull the card. Plus and minus change magnification." };

@@ -87,7 +87,8 @@ bounded completed work, **not completion of full iOS parity**. All open rows rem
 - [ ] Complete native .NET navigation motion/controller integration and practical host-owned
   backdrop/widget capture. Whole-surface CalmInteraction, painter feedback and WinForms card
   input now pass144portable states,107520outline probes,12check groups and9native phases.
-  Navigation-selector travel and arbitrary-widget capture are still missing.
+  WinForms standard-control capture now has executable native glyph/refraction/resize checks.
+  Navigation-selector travel, custom/other-framework capture are still missing.
 - [ ] Keep production shader contracts/packaging/licenses synchronized and validate each supported
   path with executable examples; documentation alone does not prove support.
 
@@ -111,10 +112,11 @@ bounded completed work, **not completion of full iOS parity**. All open rows rem
 
 Current long-tap source is locally verified:344library passes/27optional skips,3Atlas passes,
 Androidassembly and43inspected native phases. Originaltimeout/retry provenance is preserved.
-All local queues are terminal; allten04d9016 hosted checks pass. Sample-only A1 diagnostics
+All local queues are terminal; alltenaf333fa hosted checks pass. Sample-only A1 diagnostics
 retain one unexplained bottom-right selection failure and two observed33-phase passing repeats.
 The87ms first-input JFR is inconclusive; Windows denied the PresentMon ETW session, so display
 timing remains open. See NEXT-SESSION.md and the frame-cost packet. Native.NET whole-surface
-controller and host integration are locally verified; publish/check its own CI next, then
-continue navigation-controller/native capture and remaining full gesture/optical parity.
+controller/host integration are hosted verified. New WinForms control capture is locally verified;
+publish/check its ownCI next. Return to originalVideo1 repeated-short contour/width mismatch,
+thenVideo2optical/contour parity. Native navigation and other host paths remain open.
 Do not repeat unchanged library checks or these completed diagnostic probes.

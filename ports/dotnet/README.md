@@ -85,6 +85,48 @@ Record again when the page changes, not when only a glass control moves. Exclude
 from `DrawPage` to avoid recursive feedback. A failed recording leaves the preceding source usable.
 This API records your drawing callback; it does not capture WinForms/WPF/MAUI/Avalonia widgets.
 
+### Use existing Windows Forms controls as the backdrop
+
+Reference `LiquidGlass.WinForms/LiquidGlass.WinForms.csproj` for the Windows-specific adapter
+(.NET10/Windows10). On your UI thread, after handles and layout exist:
+
+```csharp
+using LiquidGlass.WinForms;
+
+// backdropPanel contains ordinary controls only; put glass overlays outside that subtree.
+SKImage next = ControlBackdrop.Capture(backdropPanel, backdropPanel.BackColor);
+try { glass.SetSource(next); }
+catch { next.Dispose(); throw; }
+SKImage? previous = currentBackdrop;
+currentBackdrop = next;
+previous?.Dispose();
+// Dispose currentBackdrop after the painter no longer borrows it.
+```
+
+This renders the specified control and its children through `Control.DrawToBitmap`. It never
+reads the desktop or another process. The output is opaque, with its origin at the control's
+outer top-left, including its border. Dimensions and renderer bounds are device pixels. Refresh
+after relevant content/layout changes; coalesce invalidations rather than capture every animated
+glass frame. This is CPU bitmap work and requires an intermediate GDI bitmap and Skia image.
+
+The returned image is caller-owned; a failed capture leaves your previous snapshot untouched.
+The source must be visible and have a handle, and the call must run on its owning UI thread.
+An opaque background is required. Known unsupported RichTextBox/ActiveX subtrees throw instead
+of returning an apparently successful incomplete image. Hidden children are omitted. Overlapping
+container order and custom/native controls need host validation; this is not a universal widget
+capture guarantee. See [Microsoft's DrawToBitmap limitations](https://learn.microsoft.com/en-us/dotnet/api/system.windows.forms.control.drawtobitmap?view=windowsdesktop-10.0).
+
+Try the executable example with editable native controls beside their glass preview:
+
+```sh
+dotnet run --project ports/dotnet/WinFormsDemo --no-restore -- --controls
+dotnet ports/dotnet/WinFormsDemo/bin/Debug/net10.0-windows10.0.19041.0/WinFormsDemo.dll --controls --capture controls-proof
+```
+
+The second command verifies actual TextBox glyph changes, identity/refraction pixels, retained
+source after rejection, thread ownership and resizing, then exits. Windows CI runs it; Linux
+continues to run the framework-independent painter/controller checks. [Native-control evidence](../../review/atlas/dotnet-controls-2026-10-13/README.md).
+
 ## Geometry, options and lifetime
 
 ### Calm press and pull
@@ -181,8 +223,9 @@ shared-source lens/card drawing and lifecycle checks. [Evidence and exact scope]
 Windows/Linux renderer checks and Windows host compilation are in CI. macOS, GPU hosts, Android/iOS
 SkiaSharp views, WPF, Avalonia and MAUI have not received native host verification here. SwiftUI,
 Flutter, React Native, Qt and Unity still need their own integration. Whole-surface calm interaction
-is supplied; navigation-selector dynamics,
-automatic arbitrary-widget capture and portable refracted foreground are not supplied by this painter.
+is supplied; navigation-selector dynamics and portable refracted foreground are not supplied by
+this painter. The separate WinForms adapter captures verified standard controls; automatic
+arbitrary-widget capture across frameworks remains incomplete.
 The full any-stack and iOS-parity goals remain open.
 
 The adapter is Apache-2.0; see [LICENSE](../../LICENSE) and [NOTICE](../../NOTICE). SkiaSharp is MIT

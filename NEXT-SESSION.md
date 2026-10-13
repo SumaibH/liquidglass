@@ -3,6 +3,15 @@
 Updated13October2026 after the saved handoff and resumed investigation. Full iOS parity remains
 unfinished. Read TODO.md and the full objective before work; preserve every local change.
 
+**Latest native backdrop work:** separate LiquidGlass.WinForms adapter captures an owned
+Panel/Label/TextBox/CheckBox subtree through DrawToBitmap, with opaque snapshot ownership,
+thread/handle guards and RichTextBox/ActiveX rejection. Actual native glyph changes, exact
+identity-lens pixels, refraction, resize and retained-source failure checks pass. Five native
+states inspected; locked restore/build0warnings0errors. See the dotnet-controls-2026-10-13
+packet. Allten af333fa checks pass; newadapter needs ownhostedconfirmation afterpublication.
+No local process running. Next return to source-aligned Video1 repeated-short contour/width
+mismatch, then remainingVideo2optics/contours. Native navigation/otherhosts remainopen.
+
 **Latest native.NET work:** CalmInteraction, optional painter feedback and WinForms card input
 are locally verified:144portable states,107520outline points,12native check groups and9native
 host phases. Release/recovery/reduced-motion pixel identities and1092anchored foreground pixels
@@ -129,4 +138,4 @@ the repeated episode must NOT be presented as held-out proof.
 - Latest: `.local/handoffs/2026-10-13-long-tap-verified/verification.json` (current checkpoint snapshot).
 - Earlier77-file long-tap save,100-file in-progress validation snapshot and854-file ebc12d3 snapshot
   remain intact, alongside825/679/155-file older recovery sets. Preserve newer work before restoring.
-- Full findings, rejected fits and checks are in research/analysis/MOTION-2026-10-08.md throughStep210.
+- Full findings, rejected fits and checks are in research/analysis/MOTION-2026-10-08.md throughStep213.

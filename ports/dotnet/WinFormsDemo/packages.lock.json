@@ -137,6 +137,12 @@
         "dependencies": {
           "SkiaSharp": "[4.153.1, )"
         }
+      },
+      "liquidglass.winforms": {
+        "type": "Project",
+        "dependencies": {
+          "LiquidGlass.Skia": "[1.0.0, )"
+        }
       }
     }
   }
