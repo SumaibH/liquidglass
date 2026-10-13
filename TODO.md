@@ -1,6 +1,6 @@
 # LiquidGlass / Atlas delivery checklist
 
-Updated 2026-10-13. Start with [NEXT-SESSION.md](NEXT-SESSION.md). Checked entries describe
+Updated 2026-10-14. Start with [NEXT-SESSION.md](NEXT-SESSION.md). Checked entries describe
 bounded completed work, **not completion of full iOS parity**. All open rows remain in scope.
 
 ## Now — continuous comparison against the recordings (13 October)
@@ -16,7 +16,9 @@ bounded completed work, **not completion of full iOS parity**. All open rows rem
 - [x] Lens rim, band glow and interior clarity measured and matched (pass 4).
 - [x] Moving-lens end optics: reflective rim at the caps and selected ink under the lens (pass 5).
   iOS's swirl is still larger and faintly rainbow-fringed.
-- [ ] Hold onset (inferred input — confirm before tuning).
+- [x] Wall landings press into the end and narrow from behind (pass 6); comparison scene's resting
+  pill corrected to the measured 95 pt. Landings with an inferred stop-before-lift do not narrow.
+- [ ] Hold onset and wall-throw lift timing (inferred input — confirm before tuning).
 - [ ] Owner visual acceptance of the navigation selector.
 
 ## P0 — current visible failures

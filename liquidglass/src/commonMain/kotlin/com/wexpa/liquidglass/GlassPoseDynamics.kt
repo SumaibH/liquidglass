@@ -280,6 +280,16 @@ internal data class GlassPoseSpec(
     /** Coupled landing recovery only; zero retains the preceding spine response. */
     val releaseRecoveryOmega: Float = 0f,
     val releaseRecoveryZeta: Float = 1f,
+    /**
+     * Opt-in endpoint landing with two edges: the leading edge recovers on the centre spring,
+     * the trailing edge on its own [releaseRecoveryOmega] spring, each from its actual position
+     * and velocity at release. The trailing edge carries its momentum toward the wall, so the
+     * landing pill narrows from behind without area exchange (no height growth) and widens
+     * back. Observed in six consecutive right-wall landings of video2 (2026-10-14): leading
+     * edge held at the wall, trailing edge about 42 px past its rest, back in about 0.35 s.
+     * The rate is authored; it replaces [releaseImpactGain] and its area exchange.
+     */
+    val releaseTrailingEdge: Boolean = false,
     /** Opt-in coupled-tap clock ratio for adjacent trips, blending back to the existing
      * rate by two slots. Authored output calibration; not an identified Apple spring. */
     val tapShortTripRate: Float = 1f,
@@ -346,16 +356,22 @@ internal data class GlassPoseSpec(
         val CalmImpact = CalmEndpoint.copy(releaseImpactGain = 4f, releaseEdgeAnchor = true,
             releaseRecoveryOmega = 14f, tapShortTripRate = .75f, tapAppearanceArea = .44f,
             tapAppearanceSpine = .13f, tapAppearanceFallOmega = 45f)
-        /** Current Calm. Changes from [CalmImpact], each from the 2026-10-13 continuous
+        /** The 2026-10-13 Calm, retained for comparison. Changes from [CalmImpact], each from the 2026-10-13 continuous
          * comparison with video2 (review/atlas/reference-replay-2026-10-13), all authored:
          * - no impact area exchange; thrown lenses stay formed while travelling;
          * - grasp 120/s (was 40): the lens stays under the finger through fast reversals;
          * - held formation rises at 50/s (taps keep 30/s): a hold forms in about 80 ms.
          * Held stretch and squeeze are unchanged: larger gains reproduced the reversals but broke
          * IMG6735's measured flattened pair (314 x 142 px) on the five-tab bar. */
-        val Calm = CalmImpact.copy(releaseImpactGain = 0f, releaseEdgeAnchor = false,
+        val CalmFreeLanding = CalmImpact.copy(releaseImpactGain = 0f, releaseEdgeAnchor = false,
             releaseRecoveryOmega = 0f, releaseFormationSpeed = 3f, graspOmega = 120f,
             heldFormRiseOmega = 50f)
+        /** Current Calm: [CalmFreeLanding] with a wall at the bar's end and the two-edge landing
+         * ([releaseTrailingEdge]). Trailing-edge rate 13/s, critically damped, authored against
+         * the measured consecutive landing widths (241 -> 285 px; rms 3.4 / 3.2 px right / left on
+         * the test throw; 12 and 14/s gave 4.0 / 7.3);
+         * 2026-10-14 pass in review/atlas/reference-replay-2026-10-13. */
+        val Calm = CalmFreeLanding.copy(releaseTrailingEdge = true, releaseRecoveryOmega = 13f)
     }
 }
 
@@ -434,6 +450,7 @@ internal class GlassPoseController(
     private var tapDistance = 0f
     private var releaseImpactActive = false
     private val releaseEdge = GlassSpring()
+    private val releaseTrail = GlassSpring()
     private var releaseEdgeActive = false
 
     // ------------------------------------------------------------------- the clock
@@ -764,7 +781,7 @@ internal class GlassPoseController(
         // A body released from a hold is outside the bar and regains contact later; a pill
         // released from a mere press never left it and keeps its contact throughout.
         releasedFromHold = mode == GlassPoseMode.Held
-        releaseImpactActive = releasedFromHold && spec.releaseImpactGain > 0f &&
+        releaseImpactActive = releasedFromHold && (spec.releaseImpactGain > 0f || spec.releaseTrailingEdge) &&
             (this.restIndex == 0 || this.restIndex == bar.count - 1) &&
             abs(velocity.cx) > reference.width * .6f
         mode = if (releasedFromHold) GlassPoseMode.Released else GlassPoseMode.TapTransit
@@ -942,7 +959,7 @@ internal class GlassPoseController(
         val coupleReleaseArea = motionEnabled && releaseImpactActive && mode == GlassPoseMode.Released
         // This coordinate is exact for the horizontal, unstrained Calm capsule. Historical
         // rotated/tapered/strain models keep their existing centre/contact law.
-        val coupleReleaseEdge = coupleReleaseArea && spec.releaseEdgeAnchor && spec.travelOnly &&
+        val coupleReleaseEdge = coupleReleaseArea && (spec.releaseEdgeAnchor || spec.releaseTrailingEdge) && spec.travelOnly &&
             spec.stretchGain == 0f && spec.taperFromAcceleration == 0f && spec.taperFromVelocity == 0f &&
             reference.accommodation == GlassAccommodation.Spine
         val endpointDirection = if (restIndex == 0) -1f else 1f
@@ -950,10 +967,14 @@ internal class GlassPoseController(
             releaseEdge.value = pose.cx + endpointDirection * landingHalfWidth()
             releaseEdge.velocity = velocity.cx + endpointDirection * landingHalfWidthVelocity()
             releaseEdge.target = bar.centreOf(restIndex) + endpointDirection * reference.width * .5f
+            releaseTrail.value = pose.cx - endpointDirection * landingHalfWidth()
+            releaseTrail.velocity = velocity.cx - endpointDirection * landingHalfWidthVelocity()
+            releaseTrail.target = bar.centreOf(restIndex) - endpointDirection * reference.width * .5f
         }
         releaseEdgeActive = coupleReleaseEdge
         val edgeVx = releaseEdge.velocity
-        val coupleArea = coupleTapArea || coupleReleaseArea
+        val twoEdge = coupleReleaseEdge && spec.releaseTrailingEdge
+        val coupleArea = coupleTapArea || (coupleReleaseArea && !spec.releaseTrailingEdge)
         if (coupleArea && !tapAreaActive) {
             // Seed from the actual material, including its velocity, at every ownership
             // transition. Never reset a moving body's area to the resting reference.
@@ -1259,7 +1280,32 @@ internal class GlassPoseController(
             velocity.cx = graspX.velocity - shapeVel[0]
             velocity.cy = spec.pullFollow * (1f - response * response) * graspY.velocity - shapeVel[1]
         } else if (coupleReleaseEdge) {
+            val leadBefore = releaseEdge.value
             releaseEdge.step(dt, spec.centreOmega, spec.centreZeta)
+            if (twoEdge) {
+                // The bar's end is a wall: the leading edge stops at it instead of flying past.
+                // A body already protruding at release holds where it is (no jump) until the
+                // spring draws it back. Resolved after the step, so the stop does not depend
+                // on the frame cadence.
+                val wall = if (endpointDirection > 0f) bar.width else 0f
+                if (endpointDirection * releaseEdge.velocity > 0f && endpointDirection * (releaseEdge.value - wall) > 0f) {
+                    releaseEdge.value = if (endpointDirection * (leadBefore - wall) > 0f) leadBefore else wall
+                    releaseEdge.velocity = 0f
+                }
+                releaseTrail.step(dt, spec.releaseRecoveryOmega, spec.releaseRecoveryZeta)
+                // The spine is what the two edges leave beside the caps; never shorter than a
+                // circle, which stops the trailing edge instead of inverting the capsule.
+                val caps = reference.r * exp(pose.p) + max(pose.acc, 0f)
+                val capsVelocity = reference.r * exp(pose.p) * velocity.p + if (pose.acc > 0f) velocity.acc else 0f
+                val minimum = caps + .002f
+                if (endpointDirection * (releaseEdge.value - releaseTrail.value) < 2f * minimum) {
+                    releaseTrail.value = releaseEdge.value - endpointDirection * 2f * minimum
+                    releaseTrail.velocity = releaseEdge.velocity - endpointDirection * 2f * capsVelocity
+                }
+                pose.dx = endpointDirection * (releaseEdge.value - releaseTrail.value) * .5f - caps
+                velocity.dx = endpointDirection * (releaseEdge.velocity - releaseTrail.velocity) * .5f - capsVelocity
+                pose.dy = 0f; velocity.dy = 0f
+            }
             pose.cx = releaseEdge.value - endpointDirection * landingHalfWidth()
             velocity.cx = releaseEdge.velocity - endpointDirection * landingHalfWidthVelocity()
             stepState(dt, pose.cy, velocity.cy, bar.centreY, spec.centreOmega, spec.centreZeta)
@@ -1278,7 +1324,7 @@ internal class GlassPoseController(
             }
         }
 
-        if (coupleReleaseArea) {
+        if (coupleReleaseArea && !twoEdge) {
             // Existing centre deceleration supplies a bounded shape impulse; no new
             // pointer force or off-axis squeeze is assigned to the selector.
             val driverBefore = if (coupleReleaseEdge) edgeVx else vx

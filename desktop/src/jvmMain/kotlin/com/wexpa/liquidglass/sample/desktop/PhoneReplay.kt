@@ -61,9 +61,11 @@ private fun replay(args: Array<String>) {
     val sceneWidth = 1170
     val sceneHeight = 702
     val style = when (variant) {
-        "v3" -> GlassTabBarStyle.V3()
-        else -> GlassTabBarStyle.Calm()
-    }.copy(height = PhoneGeometry.barHeight)
+        "v3" -> GlassTabBarStyle.V3().copy(height = PhoneGeometry.barHeight)
+        // The 2026-10-13 scene geometry (slot-wide pill, 6 dp ends), for before/after renders.
+        "calm-slot" -> GlassTabBarStyle.Calm().copy(height = PhoneGeometry.barHeight)
+        else -> PhoneGeometry.style(GlassTabBarStyle.Calm())
+    }
     // "natural" renders ordinary display colours for presentation; comparisons use the
     // recordings' own brightness space.
     val palette = if (variant.endsWith("natural")) PhonePalette.Natural else PhonePalette.Recorded

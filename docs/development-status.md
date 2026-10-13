@@ -51,7 +51,9 @@ neck, as iOS 26's Phone bar does. A third pass matched fast held reversals: the 
 the finger through Video 2's sweeps and a hold forms in about 80 ms. A fourth pass matched the lens's rim, band glow and
 interior clarity, and the bar's rim, to measured grey levels; a fifth gave the moving lens a
 reflective rim at its caps and selected ink under the whole lens: bar 45 at rest and 53 held, resting
-selector 28 against the reference's 24–30 (previously 6–8).
+selector 28 against the reference's 24–30 (previously 6–8). A sixth pass (14 October) made wall
+landings press into the bar's end and narrow from behind (241 → 285 px, as measured) instead of
+flying past it, and corrected the comparison scene's resting pill to the measured 95 pt.
 
 ![Before and after at the same replay instants](https://raw.githubusercontent.com/shayann07/liquidglass/codex/atlas-stabilization/review/atlas/reference-replay-2026-10-13/before-after.png)
 
@@ -128,7 +130,7 @@ trace was produced and no permission changes were made. See [performance](perfor
 
 1. Close the remaining differences found by the continuous comparison: the cap swirl's size and
    colour,
-   hold onset, post-landing narrowing, fusion timing and finger-side bar growth.
+   hold onset (and the inferred finger lift on wall throws), fusion timing and finger-side bar growth.
 2. Verify all directional extreme envelopes and Android composition on appropriate hardware.
 3. Resolve ordinary interaction/display performance and final wide/narrow Atlas visual acceptance.
 4. Complete native navigation and additional host integrations with executable evidence.

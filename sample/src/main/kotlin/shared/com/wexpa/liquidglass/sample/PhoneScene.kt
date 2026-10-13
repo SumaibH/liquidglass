@@ -57,6 +57,14 @@ object PhoneGeometry {
     val barHeight = 62.dp
     val barCentreY = 182.dp
     val searchLeft = 307.dp
+    /** Measured in video2 at eight resting landings (2026-10-14): the resting inset is 285 px
+     * (95 pt) wide and the end insets sit 8 pt from the bar's ends (centres 218/480/742 px). */
+    val pillWidth = 95.dp
+    val itemInset = 8.dp
+
+    /** [base] with this scene's bar height, end insets and resting pill width. */
+    fun style(base: GlassTabBarStyle): GlassTabBarStyle =
+        base.copy(height = barHeight, contentPadding = itemInset, pillWidth = pillWidth)
 }
 
 private val Names = listOf("Alex Morgan", "Jordan Lee", "Sam Rivera", "Taylor Kim", "Riley Chen", "Casey Park")
@@ -72,7 +80,7 @@ fun PhoneScene(
     onSelected: (Int) -> Unit,
     modifier: Modifier = Modifier,
     palette: PhonePalette = PhonePalette.Recorded,
-    style: GlassTabBarStyle = GlassTabBarStyle.Calm().copy(height = PhoneGeometry.barHeight),
+    style: GlassTabBarStyle = PhoneGeometry.style(GlassTabBarStyle.Calm()),
     scroll: Float = 0f,
 ) {
     val state = rememberLiquidGlassState(palette.page)

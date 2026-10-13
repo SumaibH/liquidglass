@@ -146,6 +146,52 @@ Adopted (Calm dark, authored):
 Both new uniforms default to 0, leaving every other preset unchanged. Still different: iOS's cap
 swirl is larger and carries faint rainbow fringes; ours is smaller and colourless.
 
+### Pass 6: wall landings and the resting inset (14 October)
+
+![Right-wall landing before and after pass 6 (our renders only)](landing.png)
+
+*Our renders only (`447d65e` above, this pass below), video 2's first formed throw into the right
+wall; 60 fps deterministic GPU replay of the inferred input. Crops 440 × 210 px around the end.*
+
+Measured on one clear row (y = 568 px, between the icons and labels) of video 2, across six
+consecutive right-wall landings (2.3, 9.9, 12.4, 14.9, 25.6 and 28.6 s) and eight resting
+positions:
+
+- **Resting inset:** 285 px (95 pt) wide; end insets sit 8 pt from the bar's ends (centres 218,
+  480 and 742 px). `PhoneScene` used a slot-wide 266 px pill with 6 pt ends, so every resting
+  frame was 19 px narrow. `PhoneGeometry` now sets `pillWidth = 95.dp`, `contentPadding = 8.dp`;
+  resting edges now match the reference to within 1 px (603 / 880 against 603 / 881).
+  This is scene geometry: library defaults are unchanged.
+- **Landing:** the pill reaches the wall and presses against it (its outer edge on the bar's end
+  for about 130 ms) while its trailing edge keeps moving toward the wall, about 42 px past its
+  rest (to 645 px), then returns over about 0.35 s without overshooting. The leading edge then
+  sits at its rest position. Width falls to about 237 px on this row (241 full width), and the
+  height never grows. Slower landings narrow less (28.6 s: 3 px; the early throw at 7.7 s: 11 px).
+- **Ours (`447d65e`):** the leading edge flew about 77 px past the bar's end (the free centre
+  spring overshooting) and the trailing edge never overshot; no narrowing.
+
+Adopted, Calm only (`GlassPoseSpec.Calm`; previous behaviour kept as `CalmFreeLanding`):
+
+- `GlassPoseSpec.releaseTrailingEdge`: after a fast release toward an end tab, the leading edge
+  recovers on the centre spring and stops at the bar's end (a wall, resolved after each step so
+  it does not depend on the frame cadence); the trailing edge recovers on its own spring from
+  its actual position and velocity. The spine is what the edges leave beside the caps, so the
+  pill narrows from behind without the impact model's area exchange (no tall circle).
+- Trailing-edge rate 13/s, critically damped, **authored** against the measured consecutive width
+  series already in `GlassPhoneLandingSequenceTest` (241 → 285 px over 0.47 s, both walls):
+  rms 3.4 / 3.2 px. 12/s and 14/s gave 4.0 and 7.3 px. Not a measured Apple constant.
+
+Tried and rejected: the impact model's spine impulse without its area exchange collapsed the
+pill into a 171 px circle; an underdamped trailing spring (ζ 0.35–0.7) cannot make a release at
+rest narrow without undershooting the fast case by 50+ px.
+
+In the full replay, landings where the inferred finger is still moving at lift (2.3, 12.4 s)
+now narrow like iOS (peak 660 / 637 px against 645 / 646), about 100 ms early. Landings where
+the inferred finger stops at the end tab before lifting (9.9, 25.6 s) release slowly and do not
+narrow, while iOS narrows by the same 42 px. The ink tracker cannot see the finger past the end
+tab (the ink stops when the lens reaches the wall), so the script's stop-before-lift is probably
+an input artefact on those throws; it is recorded here rather than tuned away.
+
 ### Re-reading the landing evidence
 
 The removed impact model was calibrated to one frame, video 2 at 2.5567 s ("frame082": width
@@ -156,8 +202,9 @@ the impact. The narrowing itself is real and is listed below.
 
 ## Remaining differences
 
-- After a hard landing the resting inset briefly narrows (242 px against 285 px at rest, about
-  0.3 s after impact) and recovers; ours stays at or above its rest width.
+- Post-landing narrowing (pass 6) is reproduced for fast releases; replay landings whose
+  inferred finger stops before lifting do not narrow (likely an input artefact, see pass 6), and
+  ours narrows about 100 ms earlier than iOS.
 - iOS's swirl at the ends of a moving lens is larger and faintly rainbow-fringed; ours is
   smaller and colourless (pass 5).
 - The rebuilt reversal input and the full video 2 script (`v2-script.txt`) are inferred; the
@@ -187,7 +234,7 @@ the impact. The narrowing itself is real and is listed below.
 
 ## Files
 
-- `before-after.png` — public, our renders only.
+- `before-after.png`, `lens-edge.png`, `moving-lens.png`, `landing.png` — public, our renders only.
 - Local only: `.local/comparisons/2026-10-13-baseline/` (first comparison, original scripts) and
   `.local/comparisons/2026-10-13-pass1/` (reference / before / after).
 - Harness: `desktop/src/jvmMain/.../PhoneReplay.kt`, `sample/.../PhoneScene.kt`; script generators

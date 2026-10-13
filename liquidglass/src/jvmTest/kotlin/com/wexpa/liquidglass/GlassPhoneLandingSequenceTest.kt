@@ -47,12 +47,13 @@ class GlassPhoneLandingSequenceTest {
         }
     }
 
-    /** The measured post-landing narrowing (241 -> 285 px) is reproduced only by the retained
-     * impact model; current Calm does not narrow yet (open in reference-replay-2026-10-13). */
-    private fun throwing(reverse: Boolean = false, hold: Float = .8f, duration: Float = .1f): GlassPoseController {
+    /** The measured post-landing narrowing (241 -> 285 px), reproduced by the retained impact
+     * model here and by current Calm's two-edge landing in calmLandsAgainstTheWall... below. */
+    private fun throwing(reverse: Boolean = false, hold: Float = .8f, duration: Float = .1f,
+                         spec: GlassPoseSpec = GlassPoseSpec.CalmImpact): GlassPoseController {
         val start=if(reverse)2 else 0
         val target=2-start
-        val c=GlassPoseController(GlassPoseSpec.CalmImpact)
+        val c=GlassPoseController(spec)
         c.attach(bar,null,null);c.snapToRest(start)
         c.pointerDown(bar.centreOf(start),bar.centreY,0.0,true)
         c.advanceTo(hold,.9f);c.beginDrag(bar.centreOf(start),bar.centreY)
@@ -100,6 +101,44 @@ class GlassPhoneLandingSequenceTest {
             val recovery=samples.drop(peak)
             assertTrue(recovery.maxOf { it[1] }<=285.5f,"unobserved broad width rebound")
         }
+    }
+
+    /** Calm's two-edge landing (2026-10-14): the same measured series, without the impact
+     * model's area exchange. The leading edge stops at the bar's end; the trailing edge carries
+     * on toward the wall and springs back, so the pill narrows from behind and never grows. */
+    @Test fun calmLandsAgainstTheWallAndNarrowsFromBehind() {
+        val right=floatArrayOf(241f,241f,242f,244f,247f,250f,253f,257f,261f,264f,267f,
+            271f,274f,276f,278f,281f,282f,283f,284f,285f,285f,285f,285f,284f,284f,284f,284f,284f,285f)
+        val left=floatArrayOf(239f,241f,242f,245f,248f,251f,255f,258f,262f,265f,269f,
+            272f,274f,277f,278f,281f,282f,283f,284f,283f,283f,284f,284f)
+        val held=bar.height*GlassPoseSpec.Calm.heldHeightRatio
+        for(reverse in listOf(false,true)) {
+            val c=throwing(reverse, spec=GlassPoseSpec.Calm)
+            val samples=mutableListOf<FloatArray>()
+            repeat(721) { i ->
+                c.advanceTo(.9f+i/480f)
+                assertFalse(c.solverFailed)
+                val e=GlassPoseExtents().also(c::extents)
+                samples+=floatArrayOf(i/480f,e.width,c.centreX,e.height)
+            }
+            val wall=if(reverse)0f else bar.width
+            val sign=if(reverse)-1f else 1f
+            for(s in samples) {
+                // Leading edge: at most a few pixels past the bar's end, never flying beyond it.
+                assertTrue(sign*(s[2]+sign*s[1]*.5f-wall)<4f,"reverse=$reverse t=${s[0]} leading edge past the wall")
+                assertTrue(s[3]<=held+1f,"reverse=$reverse t=${s[0]} landing grew taller than held")
+            }
+            val peak=samples.indices.filter { samples[it][0]>.05f && samples[it][0]<.5f }.minBy { samples[it][1] }
+            val expected=if(reverse)left else right
+            for(i in expected.indices) assertEquals(expected[i],samples[peak+i*8][1],7f,"reverse=$reverse sample=$i width")
+            assertTrue(samples.drop(peak).maxOf { it[1] }<=285.5f,"unobserved width rebound")
+            assertTrue(c.isIdle)
+        }
+        // The previous Calm never narrowed: its minimum after landing stayed near rest.
+        val free=throwing(spec=GlassPoseSpec.CalmFreeLanding)
+        var narrowest=Float.MAX_VALUE
+        repeat(240) { i -> free.advanceTo(1f+i/480f); narrowest=minOf(narrowest,GlassPoseExtents().also(free::extents).width) }
+        assertTrue(narrowest>270f,"CalmFreeLanding changed: $narrowest")
     }
 
     @Test fun regrabCarriesTheVelocityOfTheShapeAwareCentre() {

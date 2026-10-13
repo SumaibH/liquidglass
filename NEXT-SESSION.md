@@ -1,6 +1,6 @@
 # Resume LiquidGlass / Atlas Studio
 
-Updated 13 October 2026 (Claude takeover from Codex). The previous, longer handoff is preserved
+Updated 14 October 2026 (Claude takeover from Codex). The previous, longer handoff is preserved
 at commit `efcc3b5` and in `.local/handoffs/`. Full iOS parity and owner visual acceptance are
 **not** established. Read [TODO.md](TODO.md) and the full objective before changing source.
 
@@ -27,18 +27,22 @@ recordings through the real renderer and comparing **continuous sequences**, not
 - Pass 5 (13 Oct): moving-lens rim mirror at the caps (`rimMirror`, `foldAtCorners`), selected ink
   under the whole lens (`lensInkAll`), held lens blends to the mirror with travel (`heldTravel`).
 - Pass 4 (13 Oct): bar rim, lens edge line, band glow (`heldGlowReach`), lens interior clarity.
+- Pass 6 (14 Oct): two-edge wall landing (`releaseTrailingEdge`, 13/s; old Calm kept as
+  `CalmFreeLanding`) and `PhoneGeometry` 95 pt pill / 8 pt ends. Current renders:
+  `.local/sxs/land-v2`; landing clip `.local/sxs/landing-slow.mp4`.
 - Pass 3 (13 Oct): fast held reversals (grasp 120/s, held formation 50/s); reversal input
   rebuilt from turning points (`tools/reference-replay/reversal-script.txt`).
 - README and repository description rewritten (owner authorized the description/homepage).
 
 ## Next, in order
 
-1. After a hard landing iOS's inset briefly narrows (242 vs 285 px); ours does not.
-2. Hold onset ~150 ms later than reference (finger-down is inferred — check before tuning).
-3. iOS's cap swirl on a moving lens is larger and faintly rainbow-fringed; ours is smaller.
-4. iOS's bar grows more on the finger's side while held; ours grows symmetrically.
-5. Atlas Studio redesign around the material (content moving under glass, one scene switcher).
-6. Then: Android verification when a device is available; native navigation selector for .NET.
+1. Input inference: on wall throws the ink tracker parks the finger at the end tab before lift,
+   so those replays release slowly and do not narrow (iOS does). Hold onset ~150 ms late.
+   Check the inferred lift/down timing before tuning the model.
+2. iOS's cap swirl on a moving lens is larger and faintly rainbow-fringed; ours is smaller.
+3. iOS's bar grows more on the finger's side while held; ours grows symmetrically.
+4. Atlas Studio redesign around the material (content moving under glass, one scene switcher).
+5. Then: Android verification when a device is available; native navigation selector for .NET.
 
 ## Constraints (owner)
 

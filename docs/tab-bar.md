@@ -54,7 +54,8 @@ comparisons, authored choices and remaining limitations.
 
 Since 13 October, dark Calm's moving selector also shows the lens optics (`tapOptics`) while its
 pigment keeps its measured fade, a thrown lens stays formed until it settles, and wall landings
-stay flat against the end. See the
+stay flat against the end. Since 14 October a fast landing presses into the bar's end and the
+pill narrows briefly from behind before widening back, as in iOS. See the
 [continuous comparison](https://github.com/shayann07/liquidglass/blob/codex/atlas-stabilization/review/atlas/reference-replay-2026-10-13/README.md).
 
 ## A neighbouring control: the search button

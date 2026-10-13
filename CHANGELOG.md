@@ -22,6 +22,11 @@ This file records user-visible development changes. Published artifacts are iden
 - Calm moving lens: a reflective rim at its caps (icons wrap mirrored along the curve, as in
   iOS) instead of the clipped held map, and every icon under the lens shows its selected ink.
   A still held lens keeps the measured held map and blends to the rim mirror as it travels.
+- Calm wall landings (14 October): the pill presses against the bar's end and narrows from
+  behind before widening back (`GlassPoseSpec.releaseTrailingEdge`, trailing edge 13/s), matching
+  video 2's measured 241 → 285 px recovery without growing taller; the leading edge no longer
+  flies past the end. The previous landing is kept as `GlassPoseSpec.CalmFreeLanding`.
+- `PhoneScene` geometry: a 95 pt resting pill with 8 pt ends, measured in video 2.
 - Repository description and README rewritten for developers; lab detail moved to linked records.
 
 ### Added
