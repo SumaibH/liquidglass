@@ -66,6 +66,31 @@ crosses it where the button's edge lies, and during holds on Keypad iOS shows no
 frames (confounded by the overhanging lens; not resolved). iOS's bar also appears to grow more
 on the finger's side (48 vs 26 px at one row while holding Calls); ours grows symmetrically.
 
+### Pass 3: fast held reversals
+
+Video 2 at 18.7–22.4 s: the finger sweeps Calls ↔ Keypad about every 0.3 s. In iOS the lens stays
+under the finger, stretches to roughly 1.6–1.8 slots and flattens to about the bar's height, with
+strong refraction at its ends. The blue-ink centroid is a poor finger proxy here (it snaps between
+tabs mid-sweep), so this episode's input was rebuilt from its 24 unambiguous turning points (ink at
+Calls or Keypad) with cosine sweeps between them, plus one partial first stroke peaking at 627 px
+(`tools/reference-replay/reversal-script.txt`; **inferred**).
+
+With the rebuilt input, most of the difference was the model trailing the finger. Changes (Calm
+only, authored): grasp 120/s (was 40, then 78) and held formation rise 50/s (was 30; taps keep
+30/s). A larger stretch gain (0.45 slot at 16 slots/s, 60/s spine, squeeze 0.6) was tried: it
+matched the reversal length slightly better but broke the measured IMG6735 flattened pair
+(314 × 142 px on the five-tab bar) and the 136 px compression bound, so stretch and squeeze stay
+at 0.28 and 0.47.
+
+Like-for-like (same rebuilt input, previous commit `c65c212` against this one): the median gap
+between lens centre and inferred finger falls from 77 to 37 px during the reversals and from 97 to
+68 px during formed throws; maximum lens width is unchanged (394 px). Most of the earlier "too
+short, too far behind" impression therefore came from the ink-centroid input, not the model. With
+the rebuilt input the lens follows the sweeps, stretches across Contacts–Keypad and flattens
+toward the bar's height. Remaining: iOS warps icons more strongly
+near the moving lens's ends; our lens still trails the inferred finger by about a frame at each
+turn; the hold onset relative to the (inferred) finger-down is later than iOS.
+
 ### Re-reading the landing evidence
 
 The removed impact model was calibrated to one frame, video 2 at 2.5567 s ("frame082": width
@@ -78,7 +103,9 @@ the impact. The narrowing itself is real and is listed below.
 
 - After a hard landing the resting inset briefly narrows (242 px against 285 px at rest, about
   0.3 s after impact) and recovers; ours stays at or above its rest width.
-- Fast held reversals stretch and refract less than iOS.
+- iOS warps the icons more strongly near the ends of a fast-moving lens.
+- The rebuilt reversal input and the full video 2 script (`v2-script.txt`) are inferred; the
+  per-episode lag numbers above are relative to that inference.
 - Hold formation appears about 150 ms later than the reference; finger-down time is inferred,
   so part of this may be input, not model.
 - Selected ink inside a moving lens is magnified less than iOS.

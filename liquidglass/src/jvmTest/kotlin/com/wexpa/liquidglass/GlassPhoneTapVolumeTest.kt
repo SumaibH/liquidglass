@@ -101,7 +101,9 @@ class GlassPhoneTapVolumeTest {
             assertTrue(after.height in 130f..235f)
         }
         // A later stationary press must use ordinary press growth, not stale tap area.
-        val old=GlassPoseController(GlassPoseSpec.CalmIndependent)
+        // Same held formation rate, so only stale tap area could differ.
+        val old=GlassPoseController(GlassPoseSpec.CalmIndependent.copy(
+            heldFormRiseOmega=GlassPoseSpec.Calm.heldFormRiseOmega))
         old.attach(b,null,null); old.snapToRest(0)
         c.pointerDown(b.centreOf(0),b.centreY,3.0,true)
         old.pointerDown(b.centreOf(0),b.centreY,3.0,true)

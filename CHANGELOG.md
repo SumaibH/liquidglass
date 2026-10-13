@@ -13,6 +13,9 @@ This file records user-visible development changes. Published artifacts are iden
   `GlassPoseSpec.CalmImpact`); the grasp uses the default 78/s response; held-lens specular 0.2.
 - Calm dark material recalibrated to the owner's two iOS recordings: bar 45 at rest / 53 held,
   resting selector black 0.42 without negative lift. `V3()` and older presets are unchanged.
+- Calm held travel follows video 2's fast reversals: the lens stays under the finger (grasp
+  120/s, was 40) and a hold forms in about 80 ms (held formation rise 50/s; taps unchanged).
+  Held stretch and squeeze are unchanged to keep the measured IMG6735 flattened pair.
 - Repository description and README rewritten for developers; lab detail moved to linked records.
 
 ### Added

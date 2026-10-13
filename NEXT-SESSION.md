@@ -24,11 +24,13 @@ recordings through the real renderer and comparing **continuous sequences**, not
 - Baseline renders of the handoff build: `.local/sxs/base-v1`, `base-v2`; current: `fix4-v1`,
   `fix4-v2`. Comparisons: `.local/comparisons/2026-10-13-pass1/`.
 - Pass 2 (13 Oct): `GlassTabBarAccessory` bar/search fusion.
+- Pass 3 (13 Oct): fast held reversals (grasp 120/s, held formation 50/s); reversal input
+  rebuilt from turning points (`tools/reference-replay/reversal-script.txt`).
 - README and repository description rewritten (owner authorized the description/homepage).
 
 ## Next, in order
 
-1. Fast held reversals: iOS stretches into a long flattened, strongly refracting capsule.
+1. Moving-lens edge optics: iOS warps icons more strongly near the ends of a fast lens.
 2. Hold onset ~150 ms later than reference (finger-down is inferred — check before tuning).
 3. After a hard landing iOS's inset briefly narrows (242 vs 285 px); ours does not.
 4. iOS's bar grows more on the finger's side while held; ours grows symmetrically.

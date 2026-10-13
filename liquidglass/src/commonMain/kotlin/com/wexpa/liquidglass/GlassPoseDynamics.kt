@@ -77,6 +77,8 @@ internal data class GlassPoseSpec(
      * released lens takes about 250 ms to become the dark pill again (g14 n1333–1348).
      */
     val formRiseOmega: Float = 60f,
+    /** Rise rate once a press is a hold or drag; zero uses [formRiseOmega]. Taps keep theirs. */
+    val heldFormRiseOmega: Float = 0f,
     val formOmega: Float = 18f,
     val formZeta: Float = 1f,
     /** How long an eligible press must last before it becomes a hold. */
@@ -344,11 +346,16 @@ internal data class GlassPoseSpec(
         val CalmImpact = CalmEndpoint.copy(releaseImpactGain = 4f, releaseEdgeAnchor = true,
             releaseRecoveryOmega = 14f, tapShortTripRate = .75f, tapAppearanceArea = .44f,
             tapAppearanceSpine = .13f, tapAppearanceFallOmega = 45f)
-        /** Current Calm. Changes from [CalmImpact], each from the 2026-10-13 side-by-side:
-         * no impact area exchange, thrown lenses stay formed while travelling, and the grasp
-         * uses the default response instead of the authored 40/s that trailed fast throws. */
+        /** Current Calm. Changes from [CalmImpact], each from the 2026-10-13 continuous
+         * comparison with video2 (review/atlas/reference-replay-2026-10-13), all authored:
+         * - no impact area exchange; thrown lenses stay formed while travelling;
+         * - grasp 120/s (was 40): the lens stays under the finger through fast reversals;
+         * - held formation rises at 50/s (taps keep 30/s): a hold forms in about 80 ms.
+         * Held stretch and squeeze are unchanged: larger gains reproduced the reversals but broke
+         * IMG6735's measured flattened pair (314 x 142 px) on the five-tab bar. */
         val Calm = CalmImpact.copy(releaseImpactGain = 0f, releaseEdgeAnchor = false,
-            releaseRecoveryOmega = 0f, releaseFormationSpeed = 3f, graspOmega = 78f)
+            releaseRecoveryOmega = 0f, releaseFormationSpeed = 3f, graspOmega = 120f,
+            heldFormRiseOmega = 50f)
     }
 }
 
@@ -986,7 +993,8 @@ internal class GlassPoseController(
             1f - (1f - pressResponse) * (1f - spec.formFromMovement * sv)
         }
         form.target = formTarget
-        form.step(dt, if (formTarget > form.value) spec.formRiseOmega else spec.formOmega, spec.formZeta)
+        val riseOmega = if (heldNow && spec.heldFormRiseOmega > 0f) spec.heldFormRiseOmega else spec.formRiseOmega
+        form.step(dt, if (formTarget > form.value) riseOmega else spec.formOmega, spec.formZeta)
 
         // ---- equilibria
         // Trace-free strain and taper: kept in the state for the shader contract, both zero.
