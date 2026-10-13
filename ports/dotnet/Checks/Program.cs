@@ -7,6 +7,7 @@ using SkiaSharp;
 var output = Path.GetFullPath(args.FirstOrDefault() ?? "artifacts");
 Directory.CreateDirectory(output);
 var results = new List<object>();
+results.Add(MotionChecks.Run());
 void Check(bool condition, string message) { if (!condition) throw new Exception(message); }
 void Throws<T>(Action action) where T : Exception
 {
@@ -122,6 +123,35 @@ using (var painter = new GlassPainter())
     Check(before.SequenceEqual(Pixels(surface, 80, 80)), "Failed host recording replaced source");
 }
 results.Add(new { check = "host backdrop recording, owned snapshot and atomic failed callback", passed = true });
+
+using (var source = Image(400, 260, (x, y) => new SKColor((byte)(20 + x / 3), (byte)(30 + y / 2), 100)))
+using (var surface = SKSurface.Create(new SKImageInfo(400, 260, SKColorType.Rgba8888, SKAlphaType.Premul)))
+using (var painter = new GlassPainter())
+{
+    var bounds = SKRect.Create(40, 70, 300, 100);
+    painter.SetSource(source);
+    byte[] Render(GlassFeedback? feedback)
+    {
+        surface.Canvas.Clear(SKColors.Transparent);
+        painter.DrawSurface(surface.Canvas, bounds, 24, new(Dark: true), feedback);
+        return Pixels(surface, 400, 260);
+    }
+    var original = Render(null);
+    Check(original.SequenceEqual(Render(GlassFeedback.Identity)), "Identity feedback changed existing material pixels");
+    var motion = new CalmInteraction(new(300, 100, 24, 40, 70, 400, 260));
+    motion.Press(0, 1000, -1000); var held = motion.Sample(1);
+    var matrix = surface.Canvas.TotalMatrix; var saves = surface.Canvas.SaveCount;
+    var deformed = Render(held);
+    Check(!original.SequenceEqual(deformed), "Feedback did not change material drawing");
+    Check(matrix == surface.Canvas.TotalMatrix && saves == surface.Canvas.SaveCount, "Feedback leaked canvas state");
+    Check(Render(motion.Release(1)).SequenceEqual(deformed), "Release snapped material pixels");
+    Check(Render(motion.Sample(5)).SequenceEqual(original), "Recovered material retained deformation");
+    foreach (var invalid in new[] { held with { A = double.NaN }, held with { A = -1, D = 1, B = 0, C = 0 }, held with { OffsetX = double.MaxValue } })
+        Throws<ArgumentOutOfRangeException>(() => Render(invalid));
+    Check(matrix == surface.Canvas.TotalMatrix && saves == surface.Canvas.SaveCount, "Invalid feedback leaked canvas state");
+    Render(held); Save(surface, "calm-feedback.png");
+}
+results.Add(new { check = "feedback identity pixels, rendered deformation, continuous release, recovery and canvas ownership", passed = true });
 
 using (var backdrop = Image(640, 360, (x, y) =>
 {

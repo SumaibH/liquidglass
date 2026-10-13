@@ -84,8 +84,10 @@ bounded completed work, **not completion of full iOS parity**. All open rows rem
   fixture parity, source ownership and Linux visible-label guard.
 - [ ] Implement and verify remaining native integration paths; document exact prerequisites and
   gaps. Compose + web + .NET is not equivalent to arbitrary-stack support.
-- [ ] Complete native .NET motion/controller integration and practical host-owned backdrop/widget
-  capture paths; avoid requiring every implementer to rebuild the behavior themselves.
+- [ ] Complete native .NET navigation motion/controller integration and practical host-owned
+  backdrop/widget capture. Whole-surface CalmInteraction, painter feedback and WinForms card
+  input now pass144portable states,107520outline probes,12check groups and9native phases.
+  Navigation-selector travel and arbitrary-widget capture are still missing.
 - [ ] Keep production shader contracts/packaging/licenses synchronized and validate each supported
   path with executable examples; documentation alone does not prove support.
 
@@ -109,9 +111,10 @@ bounded completed work, **not completion of full iOS parity**. All open rows rem
 
 Current long-tap source is locally verified:344library passes/27optional skips,3Atlas passes,
 Androidassembly and43inspected native phases. Originaltimeout/retry provenance is preserved.
-All local queues are terminal; allten cea1913 hosted checks pass. Sample-only A1 diagnostics
+All local queues are terminal; allten04d9016 hosted checks pass. Sample-only A1 diagnostics
 retain one unexplained bottom-right selection failure and two observed33-phase passing repeats.
 The87ms first-input JFR is inconclusive; Windows denied the PresentMon ETW session, so display
-timing remains open. See NEXT-SESSION.md and the frame-cost packet. Next independent work is
-native.NET interaction/controller integration, then remaining full gesture/optical parity.
+timing remains open. See NEXT-SESSION.md and the frame-cost packet. Native.NET whole-surface
+controller and host integration are locally verified; publish/check its own CI next, then
+continue navigation-controller/native capture and remaining full gesture/optical parity.
 Do not repeat unchanged library checks or these completed diagnostic probes.

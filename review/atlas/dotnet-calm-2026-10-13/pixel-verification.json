@@ -1,0 +1,7 @@
+{
+  "rest_equals_recovered": true,
+  "reduced_motion_equals_rest": true,
+  "release_continuity": true,
+  "foreground_mask_anchored": true,
+  "foreground_pixels": 1092
+}

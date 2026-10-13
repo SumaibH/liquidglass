@@ -3,6 +3,16 @@
 Updated13October2026 after the saved handoff and resumed investigation. Full iOS parity remains
 unfinished. Read TODO.md and the full objective before work; preserve every local change.
 
+**Latest native.NET work:** CalmInteraction, optional painter feedback and WinForms card input
+are locally verified:144portable states,107520outline points,12native check groups and9native
+host phases. Release/recovery/reduced-motion pixel identities and1092anchored foreground pixels
+pass; allphases inspected. See `review/atlas/dotnet-calm-2026-10-13/README.md`. Kotlin/SkSL
+production source unchanged. Check git HEAD/status and current hostedCI for publication state.
+Allten04d9016 checks pass. The newimplementation needs its own hostedconfirmation.
+Next continue native navigation/controller/backdrop integration and full motion/optical scope;
+whole-surfacecontroller does not completeP1. The checklist retains27completed/22open entries
+of unequal size; no honest weightedcompletionpercentage or ETA has been established.
+
 **Current A1 diagnostic checkpoint:** sample-only frame/input observation is verified locally;
 production library remains the cea1913 implementation. All local queues are terminal. Exact
 cea1913 hosted CI passes allten required checks; downloaded XML confirms344library passes,
@@ -19,7 +29,7 @@ cea1913 hosted CI passes allten required checks; downloaded XML confirms344libra
 - PresentMon2.6.0 binary digest/signature verified, but Windows refused the ETWsession (exit6).
   No presentationCSV or display metrics exist; no privileges/group settings changed.
 
-Read [the frame-cost packet](review/atlas/frame-cost-2026-10-13/README.md) and researchStep203–207.
+Read [the frame-cost packet](review/atlas/frame-cost-2026-10-13/README.md) and researchStep203â€“207.
 Next independent work: native.NET interaction/controller integration. Keep presentation timing,
 selection reliability and every M1/O1/P1 acceptance gap open. Do not repeat these completed probes
 or the unchanged library suite. Raw JFR/process metadata stays local.
@@ -119,4 +129,4 @@ the repeated episode must NOT be presented as held-out proof.
 - Latest: `.local/handoffs/2026-10-13-long-tap-verified/verification.json` (current checkpoint snapshot).
 - Earlier77-file long-tap save,100-file in-progress validation snapshot and854-file ebc12d3 snapshot
   remain intact, alongside825/679/155-file older recovery sets. Preserve newer work before restoring.
-- Full findings, rejected fits and checks are in research/analysis/MOTION-2026-10-08.md throughStep207.
+- Full findings, rejected fits and checks are in research/analysis/MOTION-2026-10-08.md throughStep210.

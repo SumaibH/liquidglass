@@ -94,6 +94,8 @@ jobs:
       - run: npm ci --ignore-scripts
       - run: npm test
       - run: npm run example
+      - name: Verify native motion fixtures match the portable controller
+        run: node ../dotnet/generate-motion-fixtures.mjs --check
       - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
         if: always()
         with:

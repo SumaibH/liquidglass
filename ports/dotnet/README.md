@@ -37,7 +37,8 @@ dotnet run --project ports/dotnet/WinFormsDemo --no-restore
 
 Drag the lens, use arrow keys to move it, and use plus/minus to change magnification. Native checkboxes
 control dark glass, reduced transparency and contrast. Resizing rebuilds the backdrop and cancels a
-drag. `-- --capture <directory>` saves four app-owned canvas snapshots and a host verification report,
+drag. Hold and pull the card for calm material feedback; its labels and hit bounds stay anchored.
+The Reduce motion checkbox cancels feedback immediately. `-- --capture <directory>` saves nine app-owned canvas snapshots and a host verification report,
 then exits. Capture replay invokes the control's own mouse handlers; it never reads other windows
 or moves the OS cursor. These phase images do not establish continuous timing or presented FPS.
 
@@ -86,6 +87,61 @@ This API records your drawing callback; it does not capture WinForms/WPF/MAUI/Av
 
 ## Geometry, options and lifetime
 
+### Calm press and pull
+
+`CalmInteraction` supplies a reusable controller for whole cards, bars and other surfaces. It
+uses the same authored response as the portable controller, with cross-language trajectory
+checks. It does not implement navigation-selector travel or claim complete iOS timing parity.
+Construct it once per surface; pass **logical pixels** and **monotonic seconds**, not milliseconds:
+
+```csharp
+var motion = new CalmInteraction(new CalmGeometry(
+    Width: 300, Height: 100, Radius: 24, X: 40, Y: 70,
+    ViewportWidth: 800, ViewportHeight: 600));
+
+// Input callbacks: dx/dy are TOTAL displacement since this pointer went down.
+motion.Press(seconds, dx, dy);
+motion.Release(seconds); // pointer-up, cancellation or lost pointer capture
+
+// Paint callback: sample once; schedule another frame only while Active is true.
+GlassFeedback feedback = motion.Sample(seconds);
+glass.DrawSurface(canvas, devicePixelBounds, 24 * density,
+    new GlassSurfaceOptions(Dark: true, Density: density), feedback);
+// Draw labels afterward using their original bounds.
+```
+
+`GlassFeedback` is an immutable value containing a centre-based2×2 matrix, logical-pixel offset,
+press amount, held state and whether another animation frame is needed. The painter applies it
+only while drawing the material and restores the canvas. It transforms the material's sampled
+backdrop with that drawing, matching the portable scene contract; it is not arbitrary native
+widget refraction or an independent measurement of the original optics.
+
+Keep layout, text, accessibility and hit testing at their original bounds. The host must own
+one pointer, arbitrate with scrolling, and call `Release` when that pointer is cancelled. A
+stationary held controller can become idle; a later move must request a frame again. A queued
+`Sample` older than the latest input does not rewind state; out-of-order input events throw.
+`Resize(newGeometry, seconds)` cancels the old gesture. `SetReducedMotion(value, seconds)`
+clears deformation immediately and cancels gesture ownership; release the host's capture too.
+
+Both viewport dimensions are optional together. When supplied and the original bounds fit,
+the controller constrains the complete rounded outline to that viewport. Partly offscreen
+surfaces keep their authored shape; the host still owns clipping. Options allow per-edge press
+growth and `GlassPullShape.AreaPreserving` for whole-bar feedback. Defaults remain adaptive
+with3% maximum press growth and2logical pixels per edge. None of these parameters is a recovered
+Apple implementation.
+
+The [native motion evidence](../../review/atlas/dotnet-calm-2026-10-13/README.md) includes144
+cross-language states,107,520independent outline probes, frame-rate checks, real shader pixel
+checks and nine native host phases. Regenerate/check portable fixtures with:
+
+```sh
+node ports/dotnet/generate-motion-fixtures.mjs
+node ports/dotnet/generate-motion-fixtures.mjs --check
+```
+
+CI checks fixture freshness and runs the native checks on Windows and Linux. Native host
+capture remains Windows-specific; GPU and other host frameworks remain unverified.
+
 | API / option | Contract |
 | --- | --- |
 | `SetSource(image)` | Borrows a live opaque sRGB image; caller keeps it alive until replacement/disposal. Never disposed by the painter. |
@@ -97,6 +153,7 @@ This API records your drawing callback; it does not capture WinForms/WPF/MAUI/Av
 | `Materialize` | Default 1, range 0–1. This is appearance, not a gesture controller. |
 | `ReducedTransparency`, `IncreasedContrast` | Default 0, range 0–1; supply current host preferences. |
 | `Dispose()` | Releases owned images, paint and compiled material. Idempotent; later use throws. |
+| `DrawSurface(..., feedback)` | Optional calm material transform; controller offsets are logical pixels, scaled by `Density`. The default preserves existing pixels. |
 
 Draw in the backdrop's coordinate system, with a top-left origin and matching pixel density. Use
 an identity canvas matrix for device-pixel bounds; do not apply a logical-pixel scale a second time.
@@ -123,7 +180,8 @@ Verified locally: Windows CPU rendering, the interactive Windows Forms host, fou
 shared-source lens/card drawing and lifecycle checks. [Evidence and exact scope](../../review/atlas/dotnet-2026-10-10/README.md).
 Windows/Linux renderer checks and Windows host compilation are in CI. macOS, GPU hosts, Android/iOS
 SkiaSharp views, WPF, Avalonia and MAUI have not received native host verification here. SwiftUI,
-Flutter, React Native, Qt and Unity still need their own integration. Navigation-selector dynamics,
+Flutter, React Native, Qt and Unity still need their own integration. Whole-surface calm interaction
+is supplied; navigation-selector dynamics,
 automatic arbitrary-widget capture and portable refracted foreground are not supplied by this painter.
 The full any-stack and iOS-parity goals remain open.
 

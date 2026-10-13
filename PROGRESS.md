@@ -6,6 +6,14 @@ Read this first after an interruption. Detailed history lives in the
 
 ## Current state
 
+**13October native.NET interaction:** reusable timestamped CalmInteraction plus optional
+material-only painter feedback and real WinForms card input now pass144portable trajectory
+states,107520outline points,12native check groups and9native phases. Labels/hit targets stay
+anchored; release/recovery/reduced-motion pixel checks pass. See the
+[native interaction packet](review/atlas/dotnet-calm-2026-10-13/README.md). FullP1 remains open:
+navigation-selector travel, arbitrary-widget capture and additional native hosts are missing.
+Allten04d9016 hosted checks pass; this implementation's ownCI follows publication.
+
 **Later13October resumed investigation:** allten required cea1913 checks pass; hosted XML has
 344library passes27optional skips and3Atlas passes. The87ms first-input profile is inconclusive.
 Another natural33-phase replay passes with zero external input/focus changes. Presentation trace

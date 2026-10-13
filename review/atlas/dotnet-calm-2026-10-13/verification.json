@@ -1,0 +1,110 @@
+{
+  "sources": {
+    "ports/dotnet/LiquidGlass.Skia/CalmInteraction.cs": "58f78b9867b33d8665cc9950b59e268afc41cfa228668c9638d373ab02d340a1",
+    "ports/dotnet/LiquidGlass.Skia/GlassPainter.cs": "0ef12c815e93a7be769bca13f5735065fd912869c0c162010684be4decd5aaff",
+    "ports/dotnet/Checks/MotionChecks.cs": "e1a17476efb2bf0db4eb31dffcf487786afde0d069ca2deef44b38ef8b999ea2",
+    "ports/dotnet/Checks/Program.cs": "f0f46f3b735da51cbbc7e62ec3a8ea3785132f0d4365a0acc580faa9eeaff076",
+    "ports/dotnet/Checks/fixtures/calm-motion.json": "4c5a4233fd2f81f5ca18a1ffcbf9e66aac8578eb8616b6401617f2ba10db805a",
+    "ports/dotnet/generate-motion-fixtures.mjs": "3f4f262e1332e895ba7546cb2012b462ec870b137162a3b88c676079b32681be",
+    "ports/dotnet/WinFormsDemo/Program.cs": "32e529ae6feeed1eca9602a53d12bb60da77291c08b8d7dc29f500b9a3e501e5"
+  },
+  "nativeChecks": {
+    "runtime": "8.0.31",
+    "platform": "Microsoft Windows 10.0.26300",
+    "checks": [
+      {
+        "check": "native calm trajectories, containment, frame cadence, recovery and input guards",
+        "portableSamples": 144,
+        "outlinePoints": 107520,
+        "passed": true
+      },
+      {
+        "check": "three embedded production passes compile and match source",
+        "passed": true
+      },
+      {
+        "check": "profile0 versus independent JVM pixels",
+        "maxChannelError": 0,
+        "passed": true
+      },
+      {
+        "check": "profile1 versus independent JVM pixels",
+        "maxChannelError": 0,
+        "passed": true
+      },
+      {
+        "check": "profile2 versus independent JVM pixels",
+        "maxChannelError": 0,
+        "passed": true
+      },
+      {
+        "check": "profile3 versus independent JVM pixels",
+        "maxChannelError": 0,
+        "passed": true
+      },
+      {
+        "check": "invalid uniform, missing child and disposed effect rejected",
+        "passed": true
+      },
+      {
+        "check": "identity, zoom, monotonic source map, borrowed image and canvas state",
+        "passed": true
+      },
+      {
+        "check": "in-app material, cached redraw, source replacement, partial surface",
+        "passed": true
+      },
+      {
+        "check": "host backdrop recording, owned snapshot and atomic failed callback",
+        "passed": true
+      },
+      {
+        "check": "feedback identity pixels, rendered deformation, continuous release, recovery and canvas ownership",
+        "passed": true
+      },
+      {
+        "check": "native example and visible text rendered",
+        "passed": true
+      }
+    ]
+  },
+  "host": {
+    "backend": "SkiaSharp Windows Forms SKControl (CPU)",
+    "captures": 9,
+    "input": "app-owned OnMouseDown/Move/Up replay, including capture release",
+    "dragPassed": true,
+    "calmMotionPassed": true,
+    "phases": [
+      "rest",
+      "lens drag",
+      "early card press",
+      "held card pull",
+      "continuous release",
+      "recovered",
+      "reduced motion press",
+      "accessible material",
+      "resize cancellation"
+    ],
+    "resizePassed": true,
+    "limits": "Nine deterministic app-owned phases; no GPU, complete iOS motion, presented FPS or arbitrary native-widget backdrop claim."
+  },
+  "pixelChecks": {
+    "rest_equals_recovered": true,
+    "reduced_motion_equals_rest": true,
+    "release_continuity": true,
+    "foreground_mask_anchored": true,
+    "foreground_pixels": 1092
+  },
+  "build": {
+    "renderer": "passed",
+    "winforms": "passed",
+    "warnings": 0,
+    "errors": 0
+  },
+  "hosted": "Pending for this implementation; preceding04d9016 all ten required checks pass",
+  "limits": [
+    "Whole-surface feedback only; navigation-selector travel remains missing",
+    "Native capture is CPU Windows Forms",
+    "No GPU/presented FPS/full iOS parity or arbitrary-widget capture claim"
+  ]
+}

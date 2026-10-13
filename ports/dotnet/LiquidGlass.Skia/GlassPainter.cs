@@ -72,10 +72,12 @@ public sealed class GlassPainter : IDisposable
         Draw(canvas, values, shader, origin);
     }
 
-    public void DrawSurface(SKCanvas canvas, SKRect bounds, float radius = 20, GlassSurfaceOptions? options = null)
-        => DrawSurface(canvas, bounds, [radius, radius, radius, radius], options);
+    public void DrawSurface(SKCanvas canvas, SKRect bounds, float radius = 20, GlassSurfaceOptions? options = null,
+        GlassFeedback? feedback = null)
+        => DrawSurface(canvas, bounds, [radius, radius, radius, radius], options, feedback);
 
-    public void DrawSurface(SKCanvas canvas, SKRect bounds, IReadOnlyList<float> radii, GlassSurfaceOptions? options = null)
+    public void DrawSurface(SKCanvas canvas, SKRect bounds, IReadOnlyList<float> radii, GlassSurfaceOptions? options = null,
+        GlassFeedback? feedback = null)
     {
         Ready(canvas, bounds); ArgumentNullException.ThrowIfNull(radii);
         options ??= new();
@@ -100,7 +102,7 @@ public sealed class GlassPainter : IDisposable
         var origin = new SKPoint(bounds.Left - 2, bounds.Top - 2);
         using var shader = Backdrop(origin, 10 * o.Density, out var strip);
         Set(v, "uWideStrip", strip);
-        Draw(canvas, v, shader, origin);
+        Draw(canvas, v, shader, origin, bounds, feedback, o.Density);
     }
 
     public static Dictionary<string, float[]> ClearUniforms(GlassEffectPass effect, float width, float height,
@@ -145,13 +147,31 @@ public sealed class GlassPainter : IDisposable
         return BackdropEffect.ToShader(uniforms, children);
     }
 
-    private void Draw(SKCanvas canvas, Dictionary<string, float[]> v, SKShader backdrop, SKPoint origin)
+    private void Draw(SKCanvas canvas, Dictionary<string, float[]> v, SKShader backdrop, SKPoint origin,
+        SKRect bounds = default, GlassFeedback? feedback = null, float density = 1)
     {
+        var transform = SKMatrix.Identity;
+        if (feedback is GlassFeedback f)
+        {
+            var values = new[] { f.A, f.B, f.C, f.D, f.OffsetX * density, f.OffsetY * density };
+            if (values.Any(x => !double.IsFinite(x) || Math.Abs(x) > float.MaxValue) || f.A * f.D - f.B * f.C <= 0)
+                throw new ArgumentOutOfRangeException(nameof(feedback), "Finite orientation-preserving feedback required");
+            var tx = bounds.MidX + f.OffsetX * density - f.A * bounds.MidX - f.B * bounds.MidY;
+            var ty = bounds.MidY + f.OffsetY * density - f.C * bounds.MidX - f.D * bounds.MidY;
+            if (!double.IsFinite(tx) || !double.IsFinite(ty) || Math.Abs(tx) > float.MaxValue || Math.Abs(ty) > float.MaxValue)
+                throw new ArgumentOutOfRangeException(nameof(feedback));
+            transform = new SKMatrix((float)f.A, (float)f.B, (float)tx, (float)f.C, (float)f.D, (float)ty, 0, 0, 1);
+        }
         Set(v, "uBackdrop", -origin.X, -origin.Y, source!.Width - origin.X, source.Height - origin.Y);
         using var shader = material.CreateShader(v, new Dictionary<string, SKShader> { { "content", backdrop }, { "field", backdrop } });
         paint.Shader = shader;
         canvas.Save();
-        try { canvas.Translate(origin.X, origin.Y); canvas.DrawRect(0, 0, v["uSize"][0] + 2 * v["uPad"][0], v["uSize"][1] + 2 * v["uPad"][0], paint); }
+        try
+        {
+            if (feedback.HasValue) canvas.Concat(transform);
+            canvas.Translate(origin.X, origin.Y);
+            canvas.DrawRect(0, 0, v["uSize"][0] + 2 * v["uPad"][0], v["uSize"][1] + 2 * v["uPad"][0], paint);
+        }
         finally { canvas.Restore(); paint.Shader = null; }
     }
     private void Alive() => ObjectDisposedException.ThrowIf(disposed, this);
