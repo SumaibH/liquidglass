@@ -500,6 +500,7 @@ internal fun Modifier.liquidGlassCore(
                     drawContent()
                     return@drawWithContent
                 }
+                val fusePx = fuse?.toMaterialPx(size, this, pullDeformation, materialPressX, materialPressY)
                 val fullUniforms = GlassUniforms(
                         width = size.width,
                         height = size.height,
@@ -540,9 +541,9 @@ internal fun Modifier.liquidGlassCore(
                         inkSplit = if (style.inkDispersion.isNaN()) style.dispersion else style.inkDispersion,
                         heldInk = if (style.heldInkContinuous) 1f else 0f,
                         wideKernel = if (style.wideKernel.isSpecified) style.wideKernel.toPx() else 0f,
-                        fuse = fuse?.toPx(size, this)?.copyOf(4) ?: EMPTY_FUSE,
-                        fuseRadius = fuse?.toPx(size, this)?.get(4) ?: 0f,
-                        fuseWidth = fuse?.toPx(size, this)?.get(5) ?: 0f,
+                        fuse = fusePx?.copyOf(4) ?: EMPTY_FUSE,
+                        fuseRadius = fusePx?.get(4) ?: 0f,
+                        fuseWidth = fusePx?.get(5) ?: 0f,
                         fineShare = style.fineShare,
                         // The pressed interior lifts as a whole ([GlassInteraction.pressLift]).
                         tintLift = style.tintLift + press.amount * (interaction?.pressLift ?: 0f),
@@ -799,6 +800,13 @@ class GlassFuse(
     val bounds: DpRect,
     val cornerRadius: Dp,
     val smoothing: Dp = 16.dp,
+    /**
+     * Keep [bounds] fixed in layout while this element's material grows or strains under touch.
+     * Use it for a separate neighbouring control the material should reach for, such as a tab
+     * bar's search button: the press expansion closes the gap and the two join through a neck,
+     * while the neighbour itself stays put. False moves the rect with the material.
+     */
+    val anchored: Boolean = false,
 ) {
     /** centre x, centre y (relative to the element's centre), half width, half height, radius, smoothing. */
     internal fun toPx(size: Size, density: Density): FloatArray = with(density) {
@@ -816,12 +824,33 @@ class GlassFuse(
         )
     }
 
+    /**
+     * [toPx] in the material's own space: for an [anchored] fuse, undoes the press and pull
+     * transform the material is drawn with, so the rect lands where it was laid out.
+     */
+    internal fun toMaterialPx(
+        size: Size, density: Density, pull: GlassPullDeformation, pressX: Float, pressY: Float,
+    ): FloatArray {
+        val f = toPx(size, density)
+        if (!anchored) return f
+        val centre = glassMaterialPullInverse(pull, pressX, pressY, Offset(size.width / 2f, size.height / 2f),
+            Offset(f[0] + size.width / 2f, f[1] + size.height / 2f))
+        val a = pull.angleDegrees * kotlin.math.PI / 180.0
+        val c2 = (kotlin.math.cos(a) * kotlin.math.cos(a)).toFloat()
+        val s2 = 1f - c2
+        val ex = (pressX * (pull.along * c2 + pull.across * s2)).coerceAtLeast(1e-3f)
+        val ey = (pressY * (pull.along * s2 + pull.across * c2)).coerceAtLeast(1e-3f)
+        val e = kotlin.math.sqrt(ex * ey)
+        return floatArrayOf(centre.x - size.width / 2f, centre.y - size.height / 2f,
+            f[2] / ex, f[3] / ey, f[4] / e, f[5] / e)
+    }
+
     override fun equals(other: Any?): Boolean =
         other is GlassFuse && bounds == other.bounds && cornerRadius == other.cornerRadius &&
-            smoothing == other.smoothing
+            smoothing == other.smoothing && anchored == other.anchored
 
     override fun hashCode(): Int =
-        (bounds.hashCode() * 31 + cornerRadius.hashCode()) * 31 + smoothing.hashCode()
+        ((bounds.hashCode() * 31 + cornerRadius.hashCode()) * 31 + smoothing.hashCode()) * 31 + anchored.hashCode()
 }
 
 internal val EMPTY_FUSE = FloatArray(4)
@@ -1343,7 +1372,13 @@ internal fun GlassStyle.recordPad(
 ): Float {
     val bandPx = bandOverride ?: bandPx(radii, size, density)
     var pad = maxOf(padPx(density), if (profile == GlassProfile.Held) bandPx * 0.3f else 0f)
-    if (fuse != null) {
+    if (fuse != null && fuse.anchored) {
+        // Only the neck is ever this element's to draw; the neighbour covers its own body.
+        val f = fuse.toPx(size, density)
+        val gapX = maxOf((f[0] - f[2]) - size.width / 2f, -(f[0] + f[2]) - size.width / 2f, 0f)
+        val gapY = maxOf((f[1] - f[3]) - size.height / 2f, -(f[1] + f[3]) - size.height / 2f, 0f)
+        pad = maxOf(pad, maxOf(gapX, gapY) + f[5] + bandPx)
+    } else if (fuse != null) {
         val f = fuse.toPx(size, density)
         pad = maxOf(
             pad,
@@ -1425,6 +1460,23 @@ internal fun elementSizeFactor(size: Size, density: Density): Float {
 }
 
 /** Shared drawing operation. Generic foreground stays outside; navigation opts its ink in. */
+/** The inverse of [withGlassMaterialPull] for one point: where in the material it was drawn from. */
+internal fun glassMaterialPullInverse(
+    pull: GlassPullDeformation, pressX: Float, pressY: Float, pivot: Offset, point: Offset,
+): Offset {
+    var x = point.x - pull.translationX - pivot.x
+    var y = point.y - pull.translationY - pivot.y
+    val a = pull.angleDegrees * kotlin.math.PI / 180.0
+    val c = kotlin.math.cos(a).toFloat(); val s = kotlin.math.sin(a).toFloat()
+    // R(-a), then S^-1, then R(a): undo the rotated strain.
+    var u = c * x + s * y
+    var v = -s * x + c * y
+    u /= pull.along.coerceAtLeast(1e-3f); v /= pull.across.coerceAtLeast(1e-3f)
+    x = c * u - s * v
+    y = s * u + c * v
+    return Offset(pivot.x + x / pressX.coerceAtLeast(1e-3f), pivot.y + y / pressY.coerceAtLeast(1e-3f))
+}
+
 internal inline fun DrawScope.withGlassMaterialPull(
     pull: GlassPullDeformation, pressX: Float, pressY: Float,
     pivot: Offset = center, block: DrawScope.() -> Unit,

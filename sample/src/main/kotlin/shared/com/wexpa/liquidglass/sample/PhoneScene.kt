@@ -88,6 +88,9 @@ fun PhoneScene(
             state, 3, selected, onSelected,
             Modifier.offset(PhoneGeometry.barLeft, barTop).width(PhoneGeometry.barWidth).testTag("phone-bar"),
             style = style,
+            // The search button is separate glass the bar fuses with while pressed.
+            trailingAccessory = GlassTabBarAccessory(PhoneGeometry.barHeight,
+                gap = PhoneGeometry.searchLeft - PhoneGeometry.barLeft - PhoneGeometry.barWidth),
         ) { index, isSelected -> PhoneTab(index, if (isSelected) palette.accent else palette.ink) }
         Box(
             Modifier.offset(PhoneGeometry.searchLeft, barTop).size(PhoneGeometry.barHeight)

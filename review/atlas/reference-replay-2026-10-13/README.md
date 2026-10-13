@@ -50,6 +50,22 @@ Rows 1–5 and 7 are behaviour observed in continuous sequences; their rates and
 resting positions across both videos: selector 24–31 on a 42–45 bar). Values derived from older stills
 (V3's 32/44 plateau and "0.5 × bar − 10" selector law) are left unchanged in `V3()`.
 
+### Pass 2: the bar fuses with the search button
+
+Video 2 at 1.37–2.23 s: while held, the bar grows (about 5%), closes the 8 pt gap to the separate
+search button and joins it through a neck about 61 px (20 pt) tall at its narrowest; the neck
+carries the bar's material (52) right up to the button's edge, where the button's own glass (44)
+begins. It parts within about 70 ms of the bar shrinking. New opt-in API:
+`GlassTabBar(trailingAccessory = GlassTabBarAccessory(62.dp, gap = 8.dp))` makes the bar's outline a smooth union
+(6 dp) with the button's circle, anchored so only the bar's growth closes the gap.
+
+At 1.80 s the rendered top silhouette across the neck matches the reference within 1 px at every
+sampled column (x 840–936) and the narrowest neck is 59–61 px against 61 px. Differences: the
+neck forms later and parts later than iOS (it follows our bar press timing), a brighter rim line
+crosses it where the button's edge lies, and during holds on Keypad iOS shows no neck in some
+frames (confounded by the overhanging lens; not resolved). iOS's bar also appears to grow more
+on the finger's side (48 vs 26 px at one row while holding Calls); ours grows symmetrically.
+
 ### Re-reading the landing evidence
 
 The removed impact model was calibrated to one frame, video 2 at 2.5567 s ("frame082": width
@@ -62,7 +78,6 @@ the impact. The narrowing itself is real and is listed below.
 
 - After a hard landing the resting inset briefly narrows (242 px against 285 px at rest, about
   0.3 s after impact) and recovers; ours stays at or above its rest width.
-- The held bar fuses with the search button (a liquid neck) in iOS; ours does not.
 - Fast held reversals stretch and refract less than iOS.
 - Hold formation appears about 150 ms later than the reference; finger-down time is inferred,
   so part of this may be input, not model.

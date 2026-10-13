@@ -52,6 +52,41 @@ Light Calm and historical presets retain these defaults. See the [API reference]
 for the field contract and [current research](research/atlas-stabilization.md) for the measured
 comparisons, authored choices and remaining limitations.
 
+Since 13 October, dark Calm's moving selector also shows the lens optics (`tapOptics`) while its
+pigment keeps its measured fade, a thrown lens stays formed until it settles, and wall landings
+stay flat against the end. See the
+[continuous comparison](https://github.com/shayann07/liquidglass/blob/codex/atlas-stabilization/review/atlas/reference-replay-2026-10-13/README.md).
+
+## A neighbouring control: the search button
+
+iOS 26 places a separate round search button beside the Phone tab bar. It is its own glass, but
+while the bar is held, the bar's growth closes the 8 pt gap and the two join through a liquid
+neck that parts again on release. Describe the neighbour with `trailingAccessory` and lay it out
+yourself, after the bar so its glass draws on top:
+
+```kotlin
+Box {
+    GlassTabBar(
+        state = glass, itemCount = 3, selectedIndex = selected, onSelected = { selected = it },
+        style = GlassTabBarStyle.Calm(),
+        trailingAccessory = GlassTabBarAccessory(size = 62.dp, gap = 8.dp),
+        modifier = Modifier.offset(x = 21.dp).width(278.dp),
+    ) { index, isSelected -> Tab(index, isSelected) }
+
+    // 21 + 278 + 8 dp: the gap beyond the bar's trailing end, vertically centred on it.
+    Box(
+        Modifier.offset(x = 307.dp).size(62.dp)
+            .liquidGlass(glass, CircleShape, GlassTabBarStyle.Calm().bar)
+            .clickable(onClick = openSearch),
+        contentAlignment = Alignment.Center,
+    ) { SearchIcon() }
+}
+```
+
+The bar never draws or moves the accessory. Its outline is a smooth union with the accessory's
+circle (`fusion`, 6 dp by default), anchored so only the bar's own press growth closes the gap;
+a `fusion` under twice the `gap` keeps them apart at rest. Reduced motion disables the fusion.
+
 ## Historical horizontal selector
 
 `V3()` and `Calm()` use the pose controller by default. The following older two-disk controller

@@ -9,7 +9,8 @@ bounded completed work, **not completion of full iOS parity**. All open rows rem
   `tools/reference-replay/`); three-row reference/before/after comparisons kept local.
 - [x] Pass 1: tap transit optics, thrown-lens formation, wall landing shape, grasp lag, rim
   specular, dark material levels. `review/atlas/reference-replay-2026-10-13/`.
-- [ ] Held bar/search-button fusion (liquid neck) seen in video2.
+- [x] Held bar/search-button fusion (liquid neck): `GlassTabBarAccessory`; silhouette within 1 px at
+  1.80 s. Neck timing follows our later press; finger-side bar growth not modelled.
 - [ ] Fast held reversals: stretch and refraction weaker than iOS.
 - [ ] Hold onset (inferred input — confirm before tuning) and transit ink magnification.
 - [ ] Owner visual acceptance of the navigation selector.

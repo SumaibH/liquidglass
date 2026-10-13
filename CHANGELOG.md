@@ -17,6 +17,9 @@ This file records user-visible development changes. Published artifacts are iden
 
 ### Added
 
+- `GlassTabBarAccessory` and `GlassTabBar(trailingAccessory = …)`: a separate neighbouring
+  glass control (iOS 26 Phone's search button) that the bar fuses with through a liquid neck
+  while held. `GlassFuse(anchored = true)` keeps a fused rect fixed while the material grows.
 - `PhoneScene` and the `:desktop:phoneReplay` task: deterministic 60 fps GPU replay of scripted
   gestures for side-by-side comparison with reference recordings, plus the tracking and script
   tools in `tools/reference-replay/`.

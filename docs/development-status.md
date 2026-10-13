@@ -45,7 +45,9 @@ Five visible defects in the handoff build were corrected in `GlassTabBarStyle.Ca
 - the grasp follows a fast throw closely (default 78/s instead of the authored 40/s);
 - the held rim is a soft refractive band, not a white specular outline;
 
-and the dark material was recalibrated to the recordings: bar 45 at rest and 53 held, resting
+and the dark material was recalibrated to the recordings. A second pass added
+`GlassTabBarAccessory`: the held bar now fuses with a neighbouring search button through a liquid
+neck, as iOS 26's Phone bar does: bar 45 at rest and 53 held, resting
 selector 28 against the reference's 24–30 (previously 6–8).
 
 ![Before and after at the same replay instants](https://raw.githubusercontent.com/shayann07/liquidglass/codex/atlas-stabilization/review/atlas/reference-replay-2026-10-13/before-after.png)
@@ -121,8 +123,8 @@ trace was produced and no permission changes were made. See [performance](perfor
 
 ## What remains
 
-1. Close the remaining differences found by the continuous comparison: held bar/search fusion,
-   reversal stretch and refraction, hold onset, transit ink magnification, under-bar detail.
+1. Close the remaining differences found by the continuous comparison: reversal stretch and
+   refraction, hold onset, post-landing narrowing, fusion timing and finger-side bar growth.
 2. Verify all directional extreme envelopes and Android composition on appropriate hardware.
 3. Resolve ordinary interaction/display performance and final wide/narrow Atlas visual acceptance.
 4. Complete native navigation and additional host integrations with executable evidence.

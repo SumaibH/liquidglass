@@ -23,14 +23,15 @@ recordings through the real renderer and comparing **continuous sequences**, not
   specular and dark material levels. Record: `review/atlas/reference-replay-2026-10-13/README.md`.
 - Baseline renders of the handoff build: `.local/sxs/base-v1`, `base-v2`; current: `fix4-v1`,
   `fix4-v2`. Comparisons: `.local/comparisons/2026-10-13-pass1/`.
+- Pass 2 (13 Oct): `GlassTabBarAccessory` bar/search fusion.
 - README and repository description rewritten (owner authorized the description/homepage).
 
 ## Next, in order
 
-1. Held bar fuses with the search button in iOS (liquid neck); ours does not.
-2. Fast held reversals: iOS stretches into a long flattened, strongly refracting capsule.
-3. Hold onset ~150 ms later than reference (finger-down is inferred — check before tuning).
-4. Selected ink magnification inside a moving lens is weaker than iOS.
+1. Fast held reversals: iOS stretches into a long flattened, strongly refracting capsule.
+2. Hold onset ~150 ms later than reference (finger-down is inferred — check before tuning).
+3. After a hard landing iOS's inset briefly narrows (242 vs 285 px); ours does not.
+4. iOS's bar grows more on the finger's side while held; ours grows symmetrically.
 5. Atlas Studio redesign around the material (content moving under glass, one scene switcher).
 6. Then: Android verification when a device is available; native navigation selector for .NET.
 

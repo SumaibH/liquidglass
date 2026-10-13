@@ -30,6 +30,7 @@ an authored tap, hold and throw; shown at 30 fps). Placeholder content.</sub></p
 - **A selector that behaves like the iOS one.** At rest it is a tinted inset. Tapped, it travels
   as clear glass and lands back into the inset; held, it lifts into a lens that magnifies the
   tab under the finger; thrown, it stays glass until it settles against the end of the bar.
+  A separate search button beside the bar joins it through a liquid neck while the bar is held.
 - **Calm interaction.** Press and drag responses are restrained, large cards respond less than
   small controls, and layout and hit targets never move — only the material does.
 - **One backdrop, many surfaces.** Record the page once; every bar, card and lens on top samples it.

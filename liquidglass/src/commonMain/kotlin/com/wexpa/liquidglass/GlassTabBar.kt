@@ -52,6 +52,7 @@ import androidx.compose.ui.input.pointer.util.VelocityTracker
 import androidx.compose.ui.layout.layout
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.semantics.SemanticsPropertyKey
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.clearAndSetSemantics
@@ -61,6 +62,7 @@ import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.DpRect
 import androidx.compose.ui.unit.IntOffset
+import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.isSpecified
 import androidx.compose.ui.unit.lerp
@@ -123,6 +125,9 @@ fun GlassTabBar(
     motionEnabled: Boolean = true,
     /** 0 to 1, for the bar to materialize in and out. See [liquidGlass]. */
     materialize: Float = 1f,
+    /** A separate glass control beside the bar's trailing end that the bar fuses with while
+     * pressed, such as a search button. See [GlassTabBarAccessory]. */
+    trailingAccessory: GlassTabBarAccessory? = null,
     item: @Composable (index: Int, selected: Boolean) -> Unit,
 ) {
     require(itemCount > 0) { "GlassTabBar needs at least one item" }
@@ -145,6 +150,7 @@ fun GlassTabBar(
     // Nothing here clips: the lens stands proud of the bar while it is held.
     BoxWithConstraints(modifier = modifier.height(style.height)) {
         val density = LocalDensity.current
+        val rtl = LocalLayoutDirection.current == LayoutDirection.Rtl
         val barWidthDp: Dp = maxWidth
         val barHeightDp: Dp = maxHeight
         val barWidthPx = with(density) { barWidthDp.toPx() }
@@ -772,6 +778,25 @@ fun GlassTabBar(
             } else {
                 null
             }
+            // A neighbouring control the bar's material reaches for (iOS 26 Phone: the search
+            // button). Anchored, so the bar's own press growth closes the gap, not the rect.
+            val accessoryFuse = if (trailingAccessory != null && motionEnabled && barFuse == null) {
+                with(density) {
+                    val sizePx = trailingAccessory.size.toPx()
+                    val gapPx = trailingAccessory.gap.toPx()
+                    val plateOffset = barWidthPx * (barScale - 1f) / 2f
+                    val left = (if (rtl) -gapPx - sizePx else barWidthPx + gapPx) + plateOffset
+                    val top = (barHeightPx - sizePx) / 2f + barHeightPx * (barScale - 1f) / 2f
+                    GlassFuse(
+                        bounds = DpRect(left.toDp(), top.toDp(), (left + sizePx).toDp(), (top + sizePx).toDp()),
+                        cornerRadius = (sizePx / 2f).toDp(),
+                        smoothing = trailingAccessory.fusion,
+                        anchored = true,
+                    )
+                }
+            } else {
+                null
+            }
             val margin = (style.heldScale - 1f).coerceAtLeast(0f)
             val barStyle = if (style.heldLift != 0f) {
                 style.bar.copy(tintLift = style.bar.tintLift + style.heldLift * lift)
@@ -812,7 +837,7 @@ fun GlassTabBar(
                             // The lens is proud of the bar, and on the reference the bar's own
                             // outline does not simply end under it: it bows out to meet it, one
                             // liquid silhouette with no crease (measured model, section 2d).
-                            fuse = barFuse,
+                            fuse = barFuse ?: accessoryFuse,
                             refractContent = false,
                             through = null,
                             lensFormation = 0f,
@@ -1731,6 +1756,31 @@ private const val INK_VERTICAL_SHARE = 0.62f
  * lands a few frames late, short enough that a refused tab does not look selected.
  */
 private const val SELECTION_GRACE_MILLIS = 400L
+
+/**
+ * A separate glass control beside a [GlassTabBar]'s trailing end, such as a search button.
+ *
+ * The bar does not draw it. It reaches for it: the bar's outline is a smooth union with the
+ * accessory's circle, [fusion] wide, so the bar's own press growth closes [gap] and the two
+ * join through a liquid neck, then part again on release. This is what the iOS 26 Phone tab bar
+ * does with its search button (measured 2026-10-13: an 8 pt gap and a neck about 17 pt tall at
+ * full press; the neck carries the bar's material up to the button's edge).
+ *
+ * Lay the accessory out yourself, vertically centred on the bar, [gap] beyond its trailing end,
+ * [size] square, and compose it after the bar so its own glass draws on top. A [fusion] below
+ * twice the [gap] keeps the two apart at rest.
+ */
+@Immutable
+class GlassTabBarAccessory(
+    val size: Dp,
+    val gap: Dp = 8.dp,
+    val fusion: Dp = 6.dp,
+) {
+    override fun equals(other: Any?): Boolean =
+        other is GlassTabBarAccessory && size == other.size && gap == other.gap && fusion == other.fusion
+
+    override fun hashCode(): Int = (size.hashCode() * 31 + gap.hashCode()) * 31 + fusion.hashCode()
+}
 
 /**
  * The selector's material for a formation and tap transit appearance. Optics may form further

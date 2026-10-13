@@ -96,7 +96,7 @@ rim lighting.
 ### `GlassFuse`
 
 ```kotlin
-class GlassFuse(bounds: DpRect, cornerRadius: Dp, smoothing: Dp = 16.dp)
+class GlassFuse(bounds: DpRect, cornerRadius: Dp, smoothing: Dp = 16.dp, anchored: Boolean = false)
 ```
 
 Passed to `Modifier.liquidGlass(fuse = ...)`. Another rounded rect, in this element's own
@@ -113,6 +113,11 @@ the lens rather than as the lens rising out of the bar.
 Costs the closed-form normal, which cannot describe a fused outline, so the shader differences
 the distance field instead. Null leaves the outline alone.
 
+`anchored = true` keeps the rect where it was laid out while this element's material grows or
+strains under touch, for a separate neighbouring control the material should reach for rather
+than carry along; only the near side and the fusion are drawn by this element. `GlassTabBar`'s
+`trailingAccessory` uses it.
+
 ## Components
 
 ### `GlassTabBar`
@@ -128,9 +133,16 @@ fun GlassTabBar(
     style: GlassTabBarStyle = GlassTabBarStyle.Dark,
     motionEnabled: Boolean = true,
     materialize: Float = 1f,
+    trailingAccessory: GlassTabBarAccessory? = null,
     item: @Composable (index: Int, selected: Boolean) -> Unit,
 )
+
+class GlassTabBarAccessory(size: Dp, gap: Dp = 8.dp, fusion: Dp = 6.dp)
 ```
+
+`trailingAccessory` describes a separate glass control beside the bar's trailing end (iOS 26
+Phone's search button). The bar fuses with it through a liquid neck while held; you lay it out
+and draw it. See [the search button](tab-bar.md#a-neighbouring-control-the-search-button).
 
 A tab bar whose selection indicator is a piece of glass you can pick up: a flat inset at rest, a
 lens while held that stands proud of the bar and looks *through* it, dragged 1:1 and committed on
