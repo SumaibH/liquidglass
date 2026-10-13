@@ -1,79 +1,55 @@
 # LiquidGlass
 
-A refracting material for Compose UI, with a shared backdrop, shaped glass surfaces and restrained touch feedback.
+Apple-style Liquid Glass for Compose Multiplatform: real refraction of the content behind a
+surface, a navigation selector that turns into a moving lens, and calm touch response, from one
+shader that runs on Android 13+ and desktop JVM, with ports for CanvasKit and SkiaSharp.
 
 [![CI](https://github.com/shayann07/liquidglass/actions/workflows/ci.yml/badge.svg)](https://github.com/shayann07/liquidglass/actions/workflows/ci.yml)
 [![License](https://img.shields.io/badge/license-Apache--2.0-blue)](LICENSE)
-[Documentation](https://liquidglass.shayxo.dev/) · [Getting started](docs/getting-started.md) · [API](docs/api-reference.md) · [Research](docs/research/README.md)
+[![Maven Central](https://img.shields.io/maven-central/v/dev.shayxo.liquidglass/liquidglass)](https://central.sonatype.com/artifact/dev.shayxo.liquidglass/liquidglass)
 
-![Atlas Studio: native Windows grid and continuous magnifier](review/atlas/wide-input-2026-10-11/static.png)
+[Documentation](https://liquidglass.shayxo.dev/) · [Getting started](docs/getting-started.md) ·
+[API](docs/api-reference.md) · [How it is verified](#how-it-is-verified)
 
-**Unreleased development preview.** The source includes a continuous magnifier, calm navigation,
-Compose/CanvasKit scene APIs, a native .NET painter/controller and a WinForms control-backdrop
-adapter. These additions are not in the published `0.1.0` artifact. **Full 1:1 iOS parity and
-final visual acceptance remain unfinished.**
+<p align="center">
+  <img src="docs/assets/navigation.gif" width="780" alt="Calm navigation bar: a tapped selector travels as glass, a held selector lifts into a lens, a thrown lens lands against the end of the bar">
+</p>
+<p align="center"><sub>Rendered by the library (Calm navigation, desktop Skia, deterministic 60 fps replay of
+an authored tap, hold and throw; shown at 30 fps). Placeholder content.</sub></p>
 
-## What works now
+> **Status.** `0.1.0` is on Maven Central. The scene API, continuous magnifier and Calm
+> navigation shown here are on this branch and **unreleased**; their APIs may still change.
+> Motion and material are compared against real iOS 26 recordings and are close but **not yet
+> identical** — the [current differences](review/atlas/reference-replay-2026-10-13/README.md#remaining-differences)
+> are listed openly.
 
-| Area | Implemented behavior | Evidence / remaining scope |
-| --- | --- | --- |
-| Magnifier | Continuous source map shared by material and foreground | Rendered continuity checks; complete Apple optics remain unproven |
-| Navigation | Separate tap appearance, distance-dependent travel and endpoint recovery; off-axis strain belongs to the whole bar | Original/native comparisons; remaining contour, ink and timing mismatches |
-| Desktop sampling | Preserves clipped blur/ink inputs and confines resting tint to the actual bar | Native seam repair; Android composition differs |
-| Compose | One recorded backdrop, scene-bound surfaces and anchored controls | Android/JVM builds and renderer/gesture tests |
-| Web / CanvasKit | Lens preview or production shader painter, scenes and calm input controller | Browser/Skia tests, typed API and lifecycle checks |
-| Native .NET | Production SkiaSharp painter, calm controller, WinForms lens/card input and standard-control capture | Native pixel/input checks; navigation selector and other hosts still missing |
-| Atlas Studio | Sky/Type/Lines, movable lens, accessibility controls and verified NVIDIA selection | App-owned visual evidence; live/display performance remains unresolved |
+## What you get
 
-Read the **[visual development guide](docs/development-status.md)** for the full feature/evidence
-map, reproducible commands, checkpoint verification and remaining work. [TODO.md](TODO.md) is the
-complete delivery checklist; [NEXT-SESSION.md](NEXT-SESSION.md) is the recovery/startup handoff.
+- **Refraction, not blur-and-border.** Each surface bends, disperses and lights the actual pixels
+  behind it, through a signed-distance bevel with Snell refraction and a measured rim.
+- **A selector that behaves like the iOS one.** At rest it is a tinted inset. Tapped, it travels
+  as clear glass and lands back into the inset; held, it lifts into a lens that magnifies the
+  tab under the finger; thrown, it stays glass until it settles against the end of the bar.
+- **Calm interaction.** Press and drag responses are restrained, large cards respond less than
+  small controls, and layout and hit targets never move — only the material does.
+- **One backdrop, many surfaces.** Record the page once; every bar, card and lens on top samples it.
 
-### Visual evidence
-
-![Native adjacent-tap phases after the material and clipping corrections](review/atlas/long-tap-appearance-2026-10-12/native-short.png)
-
-These are ten independent native gesture phases, not a continuous recording or displayed-frame
-benchmark. [Tap appearance and exact verification](review/atlas/long-tap-appearance-2026-10-12/README.md).
-
-![Native .NET press, pull, release, reduced-motion and resize phases](review/atlas/dotnet-calm-2026-10-13/native-phases.png)
-
-The .NET host keeps text and hit targets anchored while its card responds.
-[Controller evidence](review/atlas/dotnet-calm-2026-10-13/README.md).
-
-![Actual native controls before an edit, after an edit, with glass and after resize](review/atlas/dotnet-controls-2026-10-13/comparison.png)
-
-The WinForms adapter captures the application's own controls, including real TextBox glyphs.
-[Backdrop ownership and supported-control limits](review/atlas/dotnet-controls-2026-10-13/README.md).
-
-## Start with one scene
-
-Record your page once, then place ordinary Compose controls over it. The scene connects each surface
-to its backdrop; click handling, layout and accessibility stay with your normal UI components.
+## Quick start
 
 ```kotlin
-import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.unit.dp
-import com.wexpa.liquidglass.*
-
 GlassScene(
     background = Color(0xFF09111E),
     modifier = Modifier.fillMaxSize(),
-    backdrop = { YourPage() },
+    backdrop = { YourPage() },          // what the glass refracts; keep it opaque
 ) {
+    // A floating toolbar: ordinary Compose content on a glass surface.
     Row(
-        Modifier.align(Alignment.BottomCenter)
-            .padding(24.dp)
+        Modifier.align(Alignment.BottomCenter).padding(24.dp)
             .glass(style = GlassStyle.DarkChrome)
             .padding(16.dp),
-    ) {
-        YourNavigationItems()
-    }
-    // A real magnifier over the recorded page: no duplicate labels or separate zoom layer.
+    ) { YourToolbarItems() }
+
+    // A magnifier: one continuous lens over the same recorded page.
     Box(
         Modifier.align(Alignment.Center).size(180.dp)
             .glass(CircleShape, GlassStyle.clearLens(magnification = 1.25f)),
@@ -81,161 +57,72 @@ GlassScene(
 }
 ```
 
-`YourPage` and `YourNavigationItems` are your composables. Size the scene explicitly, keep its
-backdrop opaque, and leave its glass overlays out of the backdrop. `glass()` uses calm feedback;
-pass `interaction = null` for a passive panel or `GlassInteraction.ReducedMotion` for reduced motion.
-
-Already manage a backdrop? Keep using `rememberLiquidGlassState`, `liquidGlassSource` and
-`Modifier.liquidGlass`. Existing presets and default behaviour are preserved.
-
-## Choose the right material
-
-| Need | API | What it does |
-| --- | --- | --- |
-| Floating card or toolbar | `GlassStyle.Regular` / `DarkChrome` | Refracted edge, softened background and tint |
-| Free magnifier | `GlassStyle.clearLens(1.25f)` | One continuous map for backdrop and foreground; no hidden inner band |
-| Restrained touch feedback | `GlassInteraction.Calm` | Separate press and drag, gradual resistance, fixed ordinary labels |
-| Navigation selector | `GlassTabBarStyle.Calm()` | Travel deformation on the selector; subtle drag deformation on the bar |
-| Accessibility | `GlassInteraction.ReducedMotion` | Feedback without elastic geometry; host supplies system preference |
-| Historical comparisons | `GlassTabBarStyle.V3()` / `GlassInteraction.Pullable` | Previous authored dynamics, preserved explicitly |
-
-Glass does not move your controls unless **your layout** moves them. Stretch belongs to the material.
-Long cards use a smaller drag response than compact controls. A navigation selector is a different
-optical role from a magnifier; using the held-selector map on a free lens caused the recurring split rim.
-Calm navigation keeps a reference-backed 5% whole-bar touch expansion, with its slower timing and
-restrained drag independent of that expansion. Generic cards retain the 3% / 2dp-per-edge press cap.
-Navigation couples mild stretch with narrowing through `GlassPullShape.AreaPreserving`; generic cards
-keep `Adaptive` and its absolute extension limit. Layout and hit targets remain anchored.
-The navigation material can bias slightly toward a pull, capped by the selected iOS reference;
-Calm navigation shares this drawing response with both ordinary and selected icons, as supported
-by the [original foreground trace](review/ATLAS-STABILIZATION.md#rejected-assumption-ordinary-ink-must-remain-visibly-fixed).
-Set `deformItemsWithBar = false` on the bar style for fixed visible items. Generic cards keep fixed
-foreground by default. Press alone does not introduce the directional bias.
-Resting tap travel also changes height before arrival; its geometry response is separate from optical
-formation. The [original midpoint comparison](review/ATLAS-STABILIZATION.md#resting-tap-midpoint-height-was-late)
-records the measured bounds, correction and remaining timing uncertainty. On arrival, slight width
-compression now produces height recovery instead of losing area. This Calm-only response is checked
-against [paired original stills](review/ATLAS-STABILIZATION.md#resting-tap-arrival-paired-recoil);
-the stills do not identify spring timing or prove a complete motion match.
-Held travel has its own response: moderate movement widens the selector, stronger travel flattens it,
-and a stationary hold recovers calmly. The [held-travel comparison](review/ATLAS-STABILIZATION.md#held-travel-two-shapes-instead-of-one-frame)
-records both original bounds and regression results. This changes along-bar travel; perpendicular
-squeeze still belongs to the whole bar. Its gains are authored, not recovered iOS timing.
-Moving releases into an endpoint now exchange spine length for cap growth as they slow;
-middle-tab and stationary releases retain their prior response. Disabling motion during recovery
-also clears stored deformation immediately. All of this is selected by `GlassTabBarStyle.Calm()`.
-
-Desktop Calm selectors also compose refracted ink and material together in the final shader, avoiding
-one intermediate rounding step. The [porting guide](docs/porting.md#combining-refracted-ink-with-glass)
-covers the shared compositor contract, GPU input bounds, memory cost and Android's remaining limitation.
-
-## Platforms and installation
-
-| Platform | Support |
-| --- | --- |
-| Android 13+ | AGSL shader renderer |
-| Android below 13, within the project's minimum SDK | Tinted fallback; no shader refraction |
-| Desktop JVM | Skia renderer; native Windows capture verified in the review record |
-| Compose iOS / native SwiftUI | No packaged renderer yet |
-| Web / JS frameworks | [Dependency-free lens preview](ports/web/README.md), or the [production Skia shader adapter](ports/skia/README.md); supply the backdrop explicitly |
-| .NET / SkiaSharp | [Native painter, calm controller and WinForms adapter](ports/dotnet/README.md); host-owned images or verified standard-control capture |
-| Other Skia hosts | Generated material, content and aperture shaders; native bindings still need host integration and tests |
-| Other frameworks | See the [porting contract](docs/porting.md); native adapters remain work in progress |
-
-The Skia preview's `createGlassScene` connects one source to many lenses/cards and owns their calm motion
-and drawing transforms. Add a surface, forward your normal input and call `scene.draw(canvas, time)`;
-no per-control matrix setup is needed. It handles logical pixel density, resize/cancellation and reduced
-motion while layout and accessible controls remain yours. High-level exports include strict-checked
-TypeScript declarations. [Scene integration and lifecycle](ports/skia/README.md#start-with-one-scene).
-
-For explicit draw calls, `createGlassPainter(CanvasKit)` sets one source image and draws lenses or rounded
-surfaces, then dispose. Production shaders are bundled; no manual shader loading is needed. It manages
-shader uniforms and temporary resources; you retain your own layout, input,
-accessible controls and backdrop capture. Run `npm ci --ignore-scripts && npm run example` in
-`ports/skia` for an executable example without Compose or a browser.
-`drawSurface(canvas, bounds, {dark: true, tintAmount: 50})` adds the production in-app material and
-cached wide-tone blur without manual shader setup. [Surface options and lifecycle](ports/skia/README.md#draw-a-custom-material).
-Shader layouts are inspected once at compilation; repeated draws reuse their binding metadata.
-Clamped tone sampling preserves opaque backdrops even at tiny sizes and screen edges.
-For motion, `createCalmInteraction` supplies framework-independent press/pull, cancellation, viewport
-containment and reduced motion. Feed timestamps and cumulative displacement; the scene applies the
-matrix, or your custom renderer can consume it. [Portable feedback API](docs/porting.md#portable-calm-feedback).
-
-For native .NET, `GlassPainter` draws those production shaders directly on an `SKCanvas`. A shared
-source image serves multiple lenses/cards; `RecordBackdrop` can own a host-drawing snapshot.
-`CalmInteraction` supplies timestamped whole-surface feedback; `DrawSurface(..., feedback)` applies it
-without moving text or hit bounds. The [Windows Forms example](ports/dotnet/WinFormsDemo/Program.cs)
-includes lens/card input, cancellation, resize and reduced motion. `LiquidGlass.WinForms` can capture
-an owned Panel/Label/TextBox/CheckBox subtree; RichTextBox/ActiveX are rejected and other controls
-retain documented limits. Four JVM profile fixtures match on the verified CPU backend. Navigation
-selector travel and additional native hosts remain open. [Setup, lifetime and examples](ports/dotnet/README.md).
-
-Published stable version, with the original API:
+Navigation with the iOS-style selector:
 
 ```kotlin
-implementation("dev.shayxo.liquidglass:liquidglass:0.1.0")
+val glass = rememberLiquidGlassState(background = Color.Black)
+Box {
+    Page(Modifier.fillMaxSize().liquidGlassSource(glass))
+    GlassTabBar(
+        state = glass, itemCount = 3, selectedIndex = selected, onSelected = { selected = it },
+        style = GlassTabBarStyle.Calm(),
+        modifier = Modifier.align(Alignment.BottomCenter).padding(20.dp).width(280.dp),
+    ) { index, isSelected -> Tab(index, tint = if (isSelected) Accent else Ink) }
+}
 ```
 
-For the new scene, lens and calm APIs, build this source revision:
+Draw each tab the same way whether or not it is selected and change only its colour: the row is
+drawn twice, once on the bar and once inside the lens, and the two must line up.
+More in the [tab bar guide](docs/tab-bar.md) and [getting started](docs/getting-started.md).
+
+## Install
+
+```kotlin
+implementation("dev.shayxo.liquidglass:liquidglass:0.1.0")   // published, original API
+```
+
+The APIs above (`GlassScene`, `GlassStyle.clearLens`, `GlassTabBarStyle.Calm`) are not in `0.1.0`
+yet. To use them, build this branch with `./gradlew publishToMavenLocal` and depend on the
+`VERSION_NAME` in [gradle.properties](gradle.properties) with `mavenLocal()` scoped to
+`dev.shayxo.liquidglass` — [step by step](docs/getting-started.md).
+
+## Platforms
+
+| Platform | Status |
+| :-- | :-- |
+| Android 13+ | Full shader (AGSL) |
+| Android below 13 | Tinted fallback with rim lighting; no refraction |
+| Desktop JVM | Full shader (Skia). Tested on Windows and Linux; macOS untested |
+| Web | [CanvasKit port](ports/skia/README.md) with the production shaders, scene API and input controller; [small WebGL lens preview](ports/web/README.md) |
+| .NET | [SkiaSharp painter and WinForms adapter](ports/dotnet/README.md); no navigation selector yet |
+| iOS (Compose or SwiftUI) | Not supported yet |
+| Anything else with Skia | Shaders are portable; follow the [porting contract](docs/porting.md) |
+
+## Atlas Studio
+
+A desktop demo of the material: a movable magnifier over sky, type and line backdrops, a calm
+note card and the navigation bar.
 
 ```sh
-./gradlew publishToMavenLocal
 ./gradlew :desktop:run
 ```
 
-Use the `VERSION_NAME` from `gradle.properties` in the consuming project, with `mavenLocal()` scoped
-to `dev.shayxo.liquidglass`. [Full installation and repository setup](docs/getting-started.md).
-JDK 21 and Android SDK 37 are used for this repository. The owner's Windows setup uses the isolated
-[workspace wrapper](WORKSPACE.md); contributors can use the checked-in Gradle wrapper directly.
+## How it is verified
 
-## Explore Atlas Studio
+The optical constants are measured from iOS captures and kept separate from authored motion
+parameters; [the research record](docs/research/README.md) says which is which. Motion is checked
+by replaying the gestures of two iOS screen recordings (taps, holds, throws into both walls,
+held reversals, soft landings) through the real renderer at a fixed 60 fps and comparing the
+sequences side by side — [latest comparison](review/atlas/reference-replay-2026-10-13/README.md).
+`./gradlew :liquidglass:jvmTest` compiles the production shaders and checks rendered pixels and
+gesture behaviour.
 
-Atlas is a standalone desktop demonstration, independent of Vitals. Drag the lens over the sky,
-fine type or a line grid. Change magnification, test the floating navigation bar, pull the anchored
-note card, or switch to reduced motion. The sky compositions are illustrative, not astronomical data.
+Known limits: [docs/limitations.md](docs/limitations.md). Work in progress:
+[docs/development-status.md](docs/development-status.md).
 
-```sh
-./gradlew :desktop:run
-# Capture only Atlas's native Skia buffer; no screenshots of other applications.
-./gradlew :desktop:run -Patlas.capture=/absolute/path/atlas.png -Patlas.scene=2
-```
+## License
 
-The capture command also writes static redraw timings. They measure renderer submission cost,
-not presented FPS, interaction latency or Android performance. [Atlas guide](docs/atlas-studio.md).
-
-## Validate a change
-
-```sh
-./gradlew :liquidglass:jvmTest --rerun
-./gradlew :desktop:desktopTest :sample:assembleDebug
-python -m pip install -r requirements-docs.txt
-python .github/scripts/check_repo_links.py
-python -m mkdocs build --strict
-```
-
-Tests compile the production shaders through Skia, exercise gesture ownership and inspect rendered
-pixels. They also distinguish ordinary travel from extreme drags. Native screenshots complement
-these tests; a passing build alone does not prove optical parity. [Contributing](CONTRIBUTING.md)
-describes evidence requirements and [security reporting](SECURITY.md) explains the trust boundaries.
-The 27 skipped cases in ordinary JVM runs are opt-in showcase exports. Enable them with
-`-Pliquidglass.showcase=<output-directory>` when producing that separate gallery.
-
-## Research and limitations
-
-Apple's public guidance describes the material's behaviour, not its private shader constants.
-The project keeps measured observations, inherited approximations and authored responses separate.
-A smooth magnifier source map is a mathematical continuity fix, not a claim to have recovered Apple's optics.
-
-- [Current stabilization record and desktop proof](review/ATLAS-STABILIZATION.md)
-- [Generic interaction and gesture ownership](docs/generic-interaction.md)
-- [Measured model and provenance](docs/research/measured-model.md)
-- [Platform, optical and performance limits](docs/limitations.md)
-- [Historical implementations and restoration](archive/retired-workflows/2026-10-03/README.md)
-
-## License and credits
-
-Original library and sample code are [Apache-2.0](LICENSE). Preserve the [NOTICE](NOTICE) when
-redistributing. Reference captures are research evidence, not runtime assets or an Apple asset license.
-No Apple shader, system binary or SF Symbols asset is used by the runtime. This project is independent
-and is not affiliated with or endorsed by Apple. See [contribution guidelines](CONTRIBUTING.md) and
-[the changelog](CHANGELOG.md).
+Apache-2.0 — see [LICENSE](LICENSE) and [NOTICE](NOTICE). Not affiliated with or endorsed by
+Apple. No Apple code, shaders or assets are used; reference recordings are research material
+and are not distributed. [Contributing](CONTRIBUTING.md) · [Security](SECURITY.md) ·
+[Changelog](CHANGELOG.md)

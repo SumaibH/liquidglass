@@ -1,7 +1,18 @@
 # LiquidGlass / Atlas delivery checklist
 
-Updated 2026-10-12. Start with [NEXT-SESSION.md](NEXT-SESSION.md). Checked entries describe
+Updated 2026-10-13. Start with [NEXT-SESSION.md](NEXT-SESSION.md). Checked entries describe
 bounded completed work, **not completion of full iOS parity**. All open rows remain in scope.
+
+## Now — continuous comparison against the recordings (13 October)
+
+- [x] Deterministic 60 fps GPU replay of both recordings' gestures (`:desktop:phoneReplay`,
+  `tools/reference-replay/`); three-row reference/before/after comparisons kept local.
+- [x] Pass 1: tap transit optics, thrown-lens formation, wall landing shape, grasp lag, rim
+  specular, dark material levels. `review/atlas/reference-replay-2026-10-13/`.
+- [ ] Held bar/search-button fusion (liquid neck) seen in video2.
+- [ ] Fast held reversals: stretch and refraction weaker than iOS.
+- [ ] Hold onset (inferred input — confirm before tuning) and transit ink magnification.
+- [ ] Owner visual acceptance of the navigation selector.
 
 ## P0 — current visible failures
 

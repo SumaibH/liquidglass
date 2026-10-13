@@ -68,8 +68,11 @@ class GlassPhoneThrowTest {
         return c
     }
 
+    /** Historical impact model, retained as [GlassPoseSpec.CalmImpact]. The continuous
+     * 13 October comparison reads frame082 as the dark inset ~0.33 s after impact, not a
+     * glass circle; current Calm does not use this exchange. */
     @Test fun hardLandingCanReachTheObservedNarrowBodyAndLargeCapTogether() {
-        val c=throwing()
+        val c=throwing(GlassPoseSpec.CalmImpact)
         var best=Float.POSITIVE_INFINITY
         var pair=FloatArray(3)
         for(i in 0..480) {
@@ -114,7 +117,9 @@ class GlassPhoneThrowTest {
     @Test fun middleLandingsAndStationaryHoldsKeepTheirPriorResponse() {
         for(target in listOf(0,1)) {
             val old=throwing(GlassPoseSpec.CalmVolume,target=target)
-            val current=throwing(target=target)
+            // The impact preset must leave middle landings untouched; current Calm also
+            // changes grasp and released formation, so it is checked by the replay instead.
+            val current=throwing(GlassPoseSpec.CalmImpact,target=target)
             for(i in 0..240) {
                 val t=.9f+i/120f
                 old.advanceTo(t);current.advanceTo(t)

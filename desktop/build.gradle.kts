@@ -65,3 +65,13 @@ tasks.withType<Test>().configureEach {
     // and serialize only when both tasks are requested (do not force library tests here).
     mustRunAfter(":liquidglass:jvmTest")
 }
+
+// Deterministic 60 fps GPU replay of PhoneScene for reference comparison (see PhoneReplay.kt).
+tasks.register<JavaExec>("phoneReplay") {
+    val main = kotlin.targets.getByName("desktop").compilations.getByName("main")
+    classpath = files(main.output.allOutputs, main.runtimeDependencyFiles)
+    mainClass.set("com.wexpa.liquidglass.sample.desktop.PhoneReplayKt")
+    jvmArgs("-Dskiko.gpu.priority=discrete")
+    args(providers.gradleProperty("atlas.replay.script").orNull ?: "", providers.gradleProperty("atlas.replay.out").orNull ?: "",
+        providers.gradleProperty("atlas.replay.variant").getOrElse("calm"))
+}

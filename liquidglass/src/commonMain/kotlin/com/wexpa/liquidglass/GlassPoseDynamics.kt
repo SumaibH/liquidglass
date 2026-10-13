@@ -289,6 +289,14 @@ internal data class GlassPoseSpec(
     val tapAppearanceSpine: Float = 0f,
     /** Critical recovery rate when tap pigment demand falls; zero follows demand directly. */
     val tapAppearanceFallOmega: Float = 0f,
+    /**
+     * Opt-in: a lens released from a hold keeps its formation while it is still travelling, in
+     * slots per second for the smooth speed term, and subsides with [formOmega] once it slows.
+     * Zero keeps the historical release, whose formation target drops to zero at lift-off.
+     * Observed in video2 (2026-10-13 side-by-side): formed throws stay clear glass through
+     * travel and the wall impact and become the pill about 170 ms after landing. Authored rate.
+     */
+    val releaseFormationSpeed: Float = 0f,
 ) {
     internal val spineLimitSlots: Float get() = max(elongationSlots, tapSpineLimitSlots)
 
@@ -330,9 +338,17 @@ internal data class GlassPoseSpec(
             tapAreaGain = .51f,
         )
         val CalmEndpoint = CalmVolume.copy(releaseImpactGain = 2.25f)
-        val Calm = CalmEndpoint.copy(releaseImpactGain = 4f, releaseEdgeAnchor = true,
+        /** The 2026-10-12 Calm release: endpoint speed converted into cap growth. Retained for
+         * comparison. The 2026-10-13 continuous side-by-side against video2 shows iOS landing
+         * as a wide, flattened capsule against the wall, not the tall circle this produces. */
+        val CalmImpact = CalmEndpoint.copy(releaseImpactGain = 4f, releaseEdgeAnchor = true,
             releaseRecoveryOmega = 14f, tapShortTripRate = .75f, tapAppearanceArea = .44f,
             tapAppearanceSpine = .13f, tapAppearanceFallOmega = 45f)
+        /** Current Calm. Changes from [CalmImpact], each from the 2026-10-13 side-by-side:
+         * no impact area exchange, thrown lenses stay formed while travelling, and the grasp
+         * uses the default response instead of the authored 40/s that trailed fast throws. */
+        val Calm = CalmImpact.copy(releaseImpactGain = 0f, releaseEdgeAnchor = false,
+            releaseRecoveryOmega = 0f, releaseFormationSpeed = 3f, graspOmega = 78f)
     }
 }
 
@@ -956,8 +972,16 @@ internal class GlassPoseController(
             pointerDownActive && pressEligible -> spec.pressFormation
             else -> 0f
         }
-        val formTarget = if (!motionEnabled || mode == GlassPoseMode.Released) {
+        val formTarget = if (!motionEnabled) {
             0f
+        } else if (mode == GlassPoseMode.Released) {
+            // A thrown lens stays formed while it travels; it only ever subsides here, so
+            // landing speed cannot re-inflate it.
+            val v = spec.releaseFormationSpeed
+            if (v > 0f && releasedFromHold) {
+                val rs = velocity.cx / slot
+                min(form.value, rs * rs / (v * v + rs * rs))
+            } else 0f
         } else {
             1f - (1f - pressResponse) * (1f - spec.formFromMovement * sv)
         }

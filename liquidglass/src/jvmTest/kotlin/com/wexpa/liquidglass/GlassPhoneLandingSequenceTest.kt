@@ -17,7 +17,7 @@ class GlassPhoneLandingSequenceTest {
         output.bufferedWriter().use { out ->
             out.appendLine("gain,recoveryOmega,recoveryZeta,hold,dragDuration,time,cx,width,height,formation")
             for(gain in listOf(1f,2f,3f,4f,6f)) for(omega in listOf(10f,14f,18f,22f)) {
-                val c=GlassPoseController(GlassPoseSpec.Calm.copy(releaseEdgeAnchor=true,
+                val c=GlassPoseController(GlassPoseSpec.CalmImpact.copy(releaseEdgeAnchor=true,
                     releaseImpactGain=gain,releaseRecoveryOmega=omega))
                 c.attach(bar,null,null);c.snapToRest(0)
                 c.pointerDown(bar.firstCentre,bar.centreY,0.0,true)
@@ -47,10 +47,12 @@ class GlassPhoneLandingSequenceTest {
         }
     }
 
+    /** The measured post-landing narrowing (241 -> 285 px) is reproduced only by the retained
+     * impact model; current Calm does not narrow yet (open in reference-replay-2026-10-13). */
     private fun throwing(reverse: Boolean = false, hold: Float = .8f, duration: Float = .1f): GlassPoseController {
         val start=if(reverse)2 else 0
         val target=2-start
-        val c=GlassPoseController(GlassPoseSpec.Calm)
+        val c=GlassPoseController(GlassPoseSpec.CalmImpact)
         c.attach(bar,null,null);c.snapToRest(start)
         c.pointerDown(bar.centreOf(start),bar.centreY,0.0,true)
         c.advanceTo(hold,.9f);c.beginDrag(bar.centreOf(start),bar.centreY)

@@ -33,25 +33,34 @@ No adapter silently captures the system desktop or another application.
 
 ## Navigation shape and appearance
 
-The source separates resting tap travel from held optical formation. Coupled area/spine motion
-allows short trips to round and longer trips to flatten. Adjacent timing was corrected against two
-recorded episodes; endpoint-facing edge recovery is coupled to changing width. Press expansion and
-whole-bar strain remain separate, and the selector gets no independent perpendicular squeeze.
-Generic cards keep fixed text; navigation may share measured bar drawing response with its icons
-while keeping layout and hit coordinates fixed.
+**13 October: first continuous comparison.** Both iOS recordings were replayed gesture by gesture
+through the real renderer at a deterministic 60 fps and compared as sequences (taps, stationary
+hold, early and formed throws into both walls, held reversals, the soft landing on Contacts).
+Five visible defects in the handoff build were corrected in `GlassTabBarStyle.Calm()`:
 
-![Native adjacent-tap phases](https://raw.githubusercontent.com/shayann07/liquidglass/b46207d665725a0aa841102bfbdcbe74aaf4ac3c/review/atlas/long-tap-appearance-2026-10-12/native-short.png)
+- a tapped selector now travels as refracting glass instead of fading to an invisible ghost;
+- a thrown lens stays formed through travel and the wall impact, then becomes the inset;
+- wall landings are a wide flattened capsule, not the tall circle of the former impact model
+  (kept as `GlassPoseSpec.CalmImpact` for comparison);
+- the grasp follows a fast throw closely (default 78/s instead of the authored 40/s);
+- the held rim is a soft refractive band, not a white specular outline;
 
-Ten phases from separate real-input replays. The initial rejected dark discs were not accepted:
-resting pigment now stays on the underlying bar and the clipped wide input no longer produces a hard
-vertical selector seam. Long-tap appearance follows area plus axial travel strain and recovers
-gradually. These25 calibrated interior patches improve within the stated gate while14,430 exported
-pose/formation/protrusion rows remain unchanged. All three colour episodes informed calibration;
-the repeated episode is not held-out validation.
+and the dark material was recalibrated to the recordings: bar 45 at rest and 53 held, resting
+selector 28 against the reference's 24–30 (previously 6–8).
 
-The repeated short-tap width still differs by up to 20.64 px under nominal input; original finger
-timing and hidden backdrop are uncertain. Complete contour, cap curvature, selected ink and optical
-timing across every supplied Video1/Video2 gesture remain open.
+![Before and after at the same replay instants](https://raw.githubusercontent.com/shayann07/liquidglass/codex/atlas-stabilization/review/atlas/reference-replay-2026-10-13/before-after.png)
+
+Our renders only; the private reference is not published. Finger timing is inferred from the
+recordings. Method, numbers and the remaining differences (bar/search fusion while held, weaker
+stretch on fast reversals, later hold onset, smaller ink magnification in transit, more smeared
+text under the bar) are in the
+[reference-replay record](https://github.com/shayann07/liquidglass/blob/codex/atlas-stabilization/review/atlas/reference-replay-2026-10-13/README.md).
+
+Earlier work this builds on: resting tap travel and held formation are separate; press expansion
+and whole-bar strain are separate, and the selector gets no independent perpendicular squeeze;
+layout and hit targets stay fixed. The 12 October tap-appearance calibration (25 interior patches,
+repeated short-tap width residual up to 20.64 px) predates this comparison and is superseded for
+tap optics by the change above.
 
 ### Evidence map
 
@@ -112,8 +121,8 @@ trace was produced and no permission changes were made. See [performance](perfor
 
 ## What remains
 
-1. Complete continuous shape/optical/ink agreement for short/long taps, stationary holds,
-   early/formed throws, held reversals, intermediate landings and impacts at both walls.
+1. Close the remaining differences found by the continuous comparison: held bar/search fusion,
+   reversal stretch and refraction, hold onset, transit ink magnification, under-bar detail.
 2. Verify all directional extreme envelopes and Android composition on appropriate hardware.
 3. Resolve ordinary interaction/display performance and final wide/narrow Atlas visual acceptance.
 4. Complete native navigation and additional host integrations with executable evidence.

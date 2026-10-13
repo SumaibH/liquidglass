@@ -350,8 +350,7 @@ fun GlassTabBar(
         val selectorWidthPx = with(density) { selectorWidth.toPx() }
         val selectorHeightPx = with(density) { selectorHeight.toPx() }
         val selectorRisePx = with(density) { style.lensRise.toPx() } * lift
-        val selectorStyle = glassTransitStyle(lerpGlassStyle(style.pill, style.lens, lift),
-            transitAppearance,style.tapTintFade)
+        val selectorStyle = glassSelectorMaterial(style, lift, transitAppearance)
 
         // The V3 body owns its own centre; offsetX follows it so semantics, the press glow and
         // the diagnostics all read one number.
@@ -1355,13 +1354,33 @@ data class GlassTabBarStyle(
     val tapTintFade: Float = 0f,
     /** Transient selected-ink emphasis around its own anchor, fading as held zoom takes over. */
     val tapSelectedScale: Float = 1f,
+    /**
+     * How much of the held lens's optics a resting selector shows while it travels after a tap,
+     * scaled by its transit appearance. Geometry is unaffected: the body keeps its tap size.
+     * 0 keeps the historical dark inset whose pigment fades. Calm uses 1: in video1 the moving
+     * selector refracts and magnifies the icons it crosses (2026-10-13 side-by-side).
+     */
+    val tapOptics: Float = 0f,
 ) {
     companion object {
         /** Recommended navigation preset. Material responds gently; the selector deforms
          * along travel only. Existing V3/Measured presets remain available for comparison. */
         fun Calm(dark: Boolean = true): GlassTabBarStyle = V3(
             dark = dark, spec = GlassSelectorSpec(response = GlassResponse.Calm),
-        ).copy(
+        ).let { v3 -> v3.copy(
+            // The 2026-10-13 full-resolution side-by-side: iOS's held rim is a soft refractive
+            // band with a faint top highlight; V3's .49 specular read as a drawn white outline.
+            lens = v3.lens.copy(specular = 0.2f),
+            // Measured over the black page of the owner's primary references (docs/1.MP4,
+            // docs/2.MP4, recorded brightness space, 2026-10-13): bar 45 at rest and 53 held,
+            // resting selector 24-30 (about .58 of the bar). V3's 32/44 and "0.5 x bar - 10"
+            // came from older stills and left the resting selector nearly black (6-8).
+            // No straight-run fold on the bar: on a 62 pt bar the folds from both edges cover
+            // most of its height and doubled, reversed page text into a garbled smear. Both
+            // recordings show one soft, legible copy of the text beneath (13 October).
+            bar = (if (dark) v3.bar.copy(tintLift = 45f / 255f) else v3.bar).copy(edgeFold = 0f),
+            heldLift = if (dark) 8f / 255f else v3.heldLift,
+            pill = if (dark) v3.pill.copy(tint = Color.Black.copy(alpha = 0.42f), tintLift = 0f) else v3.pill,
             // Original Phone ordinary hold: bar186 ->196px. Reuse the rounded 1.05 press
             // from Measured(), shared with visible ink using Calm timing. Generic 3%/2dp
             // feedback undershot it; weakening press is not a correction to drag strain.
@@ -1370,6 +1389,7 @@ data class GlassTabBarStyle(
             // New dark Phone tap patch/icon evidence. Light and historical presets are unchanged.
             tapTintFade = if (dark) 1f else 0f,
             tapSelectedScale = if (dark) 1.15f else 1f,
+            tapOptics = if (dark) 1f else 0f,
             barInteraction = GlassInteraction.Calm.copy(
                 pressScale = 1.05f, pressGrowth = 0.dp,
                 pullShape = GlassPullShape.AreaPreserving,
@@ -1377,7 +1397,7 @@ data class GlassTabBarStyle(
                 // the generic control lift again changed the44-level Phone plateau to54.
                 pressLift = 0f,
             ),
-        )
+        ) }
         // Declaration order matters here: the constructor's defaults read RestingInset and
         // HeldLens, so Dark has to come after them or it is built while they are still null.
 
@@ -1711,6 +1731,20 @@ private const val INK_VERTICAL_SHARE = 0.62f
  * lands a few frames late, short enough that a refused tab does not look selected.
  */
 private const val SELECTION_GRACE_MILLIS = 400L
+
+/**
+ * The selector's material for a formation and tap transit appearance. Optics may form further
+ * than geometry: a moving resting selector shows the lens's refraction and rim at its resting
+ * size ([GlassTabBarStyle.tapOptics]) while its pigment fades ([GlassTabBarStyle.tapTintFade]).
+ */
+internal fun glassSelectorMaterial(style: GlassTabBarStyle, formation: Float, transitAppearance: Float): GlassStyle {
+    val pigment = glassTransitStyle(lerpGlassStyle(style.pill, style.lens, formation), transitAppearance, style.tapTintFade)
+    if (style.tapOptics <= 0f) return pigment
+    // Optics follow the transit appearance; tint keeps its own measured fade and recovery, so
+    // adding refraction does not delay the pigment's return after landing.
+    val opticalLift = max(formation, transitAppearance * style.tapOptics).coerceIn(0f, 1f)
+    return lerpGlassStyle(style.pill, style.lens, opticalLift).copy(tint = pigment.tint, tintLift = pigment.tintLift)
+}
 
 /** The gesture's own pointer has lifted: a tap, as opposed to a pointer taken by another node. */
 private fun AwaitPointerEventScope.liftedWithoutDrag(id: PointerId): Boolean =

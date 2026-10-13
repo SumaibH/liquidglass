@@ -1,0 +1,15 @@
+# README hero: tap Keypad, tap Contacts, hold Contacts, throw into the Calls wall. Authored input.
+select 0
+400 down 742 546
+460 up 742 546
+1500 down 478 546
+1560 up 478 546
+2500 down 478 546
+3300 move 478 546
+3317 move 440 546
+3333 move 380 546
+3350 move 300 546
+3367 move 230 546
+3383 move 215 546
+3384 up 215 546
+end 4600

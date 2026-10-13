@@ -5,7 +5,21 @@ This file records user-visible development changes. Published artifacts are iden
 
 ## Unreleased — Atlas stabilization
 
+### Changed (13 October, continuous iOS comparison)
+
+- `GlassTabBarStyle.Calm()`: a tapped selector travels as refracting glass (`tapOptics`); a
+  thrown lens stays formed while travelling (`GlassPoseSpec.releaseFormationSpeed`); wall
+  landings no longer convert speed into a tall circle (previous model kept as
+  `GlassPoseSpec.CalmImpact`); the grasp uses the default 78/s response; held-lens specular 0.2.
+- Calm dark material recalibrated to the owner's two iOS recordings: bar 45 at rest / 53 held,
+  resting selector black 0.42 without negative lift. `V3()` and older presets are unchanged.
+- Repository description and README rewritten for developers; lab detail moved to linked records.
+
 ### Added
+
+- `PhoneScene` and the `:desktop:phoneReplay` task: deterministic 60 fps GPU replay of scripted
+  gestures for side-by-side comparison with reference recordings, plus the tracking and script
+  tools in `tools/reference-replay/`.
 
 - Native .NET/SkiaSharp painter and source ownership, executable Windows/Linux renderer checks
   and a Windows Forms host. `CalmInteraction`/`GlassFeedback` provide timestamped whole-surface

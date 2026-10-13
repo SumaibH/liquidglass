@@ -11,6 +11,15 @@ internal fun glassTransitStyle(style: GlassStyle, appearance: Float, fade: Float
 /** Ink emphasis is around each item's own anchor and never changes its layout or hit target. */
 internal fun glassTransitInkScale(style: GlassTabBarStyle, formation: Float, appearance: Float): Float {
     val f=formation.coerceIn(0f,1f)
-    return 1f+(style.selectedScale-1f)*f+
+    val scale=1f+(style.selectedScale-1f)*f+
         (style.tapSelectedScale-1f)*appearance.coerceIn(0f,.95f)*(1f-f*f)
+    if (style.tapOptics<=0f) return scale
+    // Transit optics magnify the ink themselves; keep the measured visible tap scale (video1
+    // 79/69 px) instead of compounding it. Equal optical and held formation is unchanged.
+    fun lensGain(x: Float): Float {
+        val m=lerpGlassStyle(style.pill,style.lens,x)
+        return 1f-m.heldMagnification*m.heldLens
+    }
+    val optical=maxOf(f,appearance*style.tapOptics).coerceIn(0f,1f)
+    return if (optical<=f) scale else scale*lensGain(optical)/lensGain(f)
 }
