@@ -967,7 +967,7 @@ fun GlassTabBar(
                             // The bar keeps its own outline. The node's declared envelope
                             // accommodates held growth and Calm's rounded moving taps.
                             fuse = null,
-                            lensFormation = 0f,
+                            lensFormation = glassSelectorFormation(style, lift, transitAppearance, poseHandle?.heldTravel ?: 0f),
                             body = handle?.body?.movedInto(nodeLeftPx.toFloat(), overflowTopPx.toFloat()),
                             poseBody = poseHandle?.render,
                             endpointComposite = lensCarriesInk,
@@ -1016,7 +1016,7 @@ fun GlassTabBar(
                             ItemRow(
                                 count = itemCount,
                                 inset = style.contentPadding,
-                                selectedFor = { index -> !usePose || index == activeIndex },
+                                selectedFor = { index -> !usePose || style.lensInkAll || index == activeIndex },
                                 onClick = null,
                                 item = item,
                                 emphasisIndex = activeIndex,
@@ -1085,7 +1085,7 @@ fun GlassTabBar(
                                 ItemRow(
                                     count = itemCount,
                                     inset = style.contentPadding,
-                                    selectedFor = { index -> !usePose || index == activeIndex },
+                                    selectedFor = { index -> !usePose || style.lensInkAll || index == activeIndex },
                                     onClick = null,
                                     item = item,
                                     emphasisIndex = activeIndex,
@@ -1386,6 +1386,18 @@ data class GlassTabBarStyle(
      * selector refracts and magnifies the icons it crosses (2026-10-13 side-by-side).
      */
     val tapOptics: Float = 0f,
+    /**
+     * With [tapOptics], how strongly a moving, unheld selector folds its band (the lens's own
+     * nearby content mirrored along the rim) instead of using the held map. 0 keeps the held
+     * map. Calm dark uses 1, from the 2026-10-13 comparison with video1 and video2.
+     */
+    val tapOpticsFold: Float = 0f,
+    /**
+     * The pose selector draws every item's selected ink inside its aperture, not only the
+     * active item's. Video1/video2 (2026-10-13): every icon under a travelling or held iOS lens
+     * shows its selected colour. False keeps the r13 behaviour.
+     */
+    val lensInkAll: Boolean = false,
 ) {
     companion object {
         /** Recommended navigation preset. Material responds gently; the selector deforms
@@ -1425,6 +1437,8 @@ data class GlassTabBarStyle(
             tapTintFade = if (dark) 1f else 0f,
             tapSelectedScale = if (dark) 1.15f else 1f,
             tapOptics = if (dark) 1f else 0f,
+            tapOpticsFold = if (dark) 1f else 0f,
+            lensInkAll = true,
             barInteraction = GlassInteraction.Calm.copy(
                 pressScale = 1.05f, pressGrowth = 0.dp,
                 pullShape = GlassPullShape.AreaPreserving,
@@ -1803,7 +1817,36 @@ internal fun glassSelectorMaterial(style: GlassTabBarStyle, formation: Float, tr
     // Optics follow the transit appearance; tint keeps its own measured fade and recovery, so
     // adding refraction does not delay the pigment's return after landing.
     val opticalLift = max(formation, transitAppearance * style.tapOptics).coerceIn(0f, 1f)
-    return lerpGlassStyle(style.pill, style.lens, opticalLift).copy(tint = pigment.tint, tintLift = pigment.tintLift)
+    val material = lerpGlassStyle(style.pill, style.lens, opticalLift).copy(tint = pigment.tint, tintLift = pigment.tintLift)
+    // A moving, unheld selector folds its band (see [glassSelectorFold]) instead of the held map.
+    return if (glassSelectorFold(style, formation, transitAppearance) > 0f)
+        material.copy(profile = GlassProfile.Measured, foldAtCorners = 1f, rimMirror = 0.3f, dispersion = 0f, inkDispersion = 0f)
+    // A held lens keeps the measured held map when still and blends toward the same rim mirror
+    // at its caps as it travels ([glassSelectorFormation] carries the travel amount).
+    else if (style.tapOpticsFold > 0f && formation >= 0.5f) material.copy(foldAtCorners = 1f, rimMirror = 0.3f, dispersion = 0f, inkDispersion = 0f)
+    else material
+}
+
+/** `lensFormation` for the selector: the transit fold while unheld, the held lens's travel
+ * (rim-mirror blend at its caps) while held. */
+internal fun glassSelectorFormation(style: GlassTabBarStyle, formation: Float, transitAppearance: Float,
+                                    heldTravel: Float): Float =
+    if (style.tapOpticsFold > 0f && formation >= 0.5f) (heldTravel * style.tapOpticsFold).coerceIn(0f, 1f)
+    else glassSelectorFold(style, formation, transitAppearance)
+
+/**
+ * The fold strength of a moving, unheld selector's band, for `lensFormation`: 0 unless
+ * [GlassTabBarStyle.tapOpticsFold] is on and transit optics lead held formation.
+ *
+ * Video1/video2 (2026-10-13): at the ends of a travelling lens iOS shows the lens's own nearby
+ * content mirrored and wrapped along the rim, blue icon strokes following the cap. That is the
+ * measured fold family's outer band (deeper content shown upside down), not the held map, which
+ * pulls the exterior in and was measured on stationary held stills.
+ */
+internal fun glassSelectorFold(style: GlassTabBarStyle, formation: Float, transitAppearance: Float): Float {
+    if (style.tapOptics <= 0f || style.tapOpticsFold <= 0f || formation >= 0.5f) return 0f
+    val transit = (transitAppearance * style.tapOptics).coerceIn(0f, 1f)
+    return if (transit > formation) transit * style.tapOpticsFold.coerceIn(0f, 1f) else 0f
 }
 
 /** The gesture's own pointer has lifted: a tap, as opposed to a pointer taken by another node. */

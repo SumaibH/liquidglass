@@ -406,6 +406,21 @@ data class GlassStyle(
      * about +25 at the edge fading over roughly 6 pt across its band (2026-10-13).
      */
     val heldGlowReach: Dp = 0.dp,
+    /**
+     * Confine the measured fold ([GlassProfile.Measured] at formation) to the outline's corner
+     * arcs, 0 to 1. Zero folds every edge as the measured cover sheet does. A moving tab-bar
+     * selector uses 1: video1/video2 show its rim mirroring content at the cap ends while its
+     * long top and bottom runs keep a thin band.
+     */
+    val foldAtCorners: Float = 0f,
+    /**
+     * With [GlassProfile.Measured] and a formation, replace the measured fold with a reflective
+     * rim: within this fraction b of the band a pixel at depth u shows the content at depth
+     * 2b - u, mirrored about b, and the interior is shown in place. Continuous, with no hidden
+     * seam. Zero keeps the measured fold. A moving tab-bar selector uses it (video1/video2,
+     * 2026-10-13: icon strokes near a travelling lens's ends wrap mirrored along its rim).
+     */
+    val rimMirror: Float = 0f,
 ) {
     companion object {
         /** Clear standalone lens. [magnification] is the centre zoom, gradually returning to

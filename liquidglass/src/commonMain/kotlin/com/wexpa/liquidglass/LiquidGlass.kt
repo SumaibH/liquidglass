@@ -521,6 +521,8 @@ internal fun Modifier.liquidGlassCore(
                         heldMagnification = style.heldMagnification.coerceIn(0f, 0.6f),
                         heldGlow = style.heldGlow.coerceIn(0f, 2f),
                         heldGlowReach = style.heldGlowReach.toPx().coerceAtLeast(0f),
+                        foldCorners = style.foldAtCorners.coerceIn(0f, 1f),
+                        rimMirror = style.rimMirror.coerceIn(0f, 0.5f),
                         heldEdgeRecovery = style.heldEdgeRecovery.toPx().coerceAtLeast(0f),
                         restMap = style.restMap.uniform,
                         body = body?.let {
@@ -1073,6 +1075,10 @@ internal data class GlassUniforms(
     val heldGlow: Float = 1f,
     /** [GlassStyle.heldGlowReach], px; 0 uses the bevel. */
     val heldGlowReach: Float = 0f,
+    /** [GlassStyle.foldAtCorners]. */
+    val foldCorners: Float = 0f,
+    /** [GlassStyle.rimMirror]. */
+    val rimMirror: Float = 0f,
     /** [GlassStyle.heldEdgeRecovery], in layer pixels. */
     val heldEdgeRecovery: Float = 0f,
     /** Resting-corner source map: 0 the legacy map, 1 the measured table ([GlassRestMap]). */
@@ -1197,7 +1203,8 @@ internal data class GlassUniforms(
             rimSoft == other.rimSoft && tintAbsorb == other.tintAbsorb &&
             profile == other.profile && formation == other.formation && heldLens == other.heldLens &&
             heldMagnification == other.heldMagnification && heldGlow == other.heldGlow &&
-            heldGlowReach == other.heldGlowReach &&
+            heldGlowReach == other.heldGlowReach && foldCorners == other.foldCorners &&
+            rimMirror == other.rimMirror &&
             heldEdgeRecovery == other.heldEdgeRecovery &&
             restMap == other.restMap &&
             body.contentEquals(other.body) && bodyY == other.bodyY && bodyKind == other.bodyKind &&

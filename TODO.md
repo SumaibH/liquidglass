@@ -14,7 +14,8 @@ bounded completed work, **not completion of full iOS parity**. All open rows rem
 - [x] Fast held reversals: lens follows the sweeps (grasp, hold formation, rebuilt input; pass 3).
   End-of-lens icon warping is still weaker than iOS.
 - [x] Lens rim, band glow and interior clarity measured and matched (pass 4).
-- [ ] Moving-lens end optics: iOS swirls and magnifies icons near the ends; needs a motion map.
+- [x] Moving-lens end optics: reflective rim at the caps and selected ink under the lens (pass 5).
+  iOS's swirl is still larger and faintly rainbow-fringed.
 - [ ] Hold onset (inferred input — confirm before tuning).
 - [ ] Owner visual acceptance of the navigation selector.
 

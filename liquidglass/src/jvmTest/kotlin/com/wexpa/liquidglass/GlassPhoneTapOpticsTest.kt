@@ -87,12 +87,14 @@ class GlassPhoneTapOpticsTest {
             tint=Triple(material.tint.red,material.tint.green,material.tint.blue),lift=material.tintLift,
             backdrop={_,_->0xff333333.toInt()})
         assertEquals(52.0,GlassRender.luma(pixels[154*448+224]),6.0)
-        val scale=glassTransitInkScale(style,c.formation,c.transitAppearance)/
-            (1f-material.heldMagnification*material.heldLens)
+        // The held family zooms its interior; the folding transit band (Measured) does not.
+        val zoom=if(material.profile==GlassProfile.Held) material.heldMagnification*material.heldLens else 0f
+        val scale=glassTransitInkScale(style,c.formation,c.transitAppearance)/(1f-zoom)
         assertEquals(79f/69f,scale,.025f,"visible icon scale; not a full font/edge fit")
         val sourceRadius=34.5f*glassTransitInkScale(style,c.formation,c.transitAppearance)
         val ink=GlassEndpointRender.render(width=400,height=260,pad=24,refractBand=1f,refractDepth=0f,
-            heldLens=material.heldLens,heldMagnification=material.heldMagnification,
+            heldLens=if(material.profile==GlassProfile.Held) material.heldLens else 0f,
+            heldMagnification=material.heldMagnification,
             backdrop={_,_->0xff333333.toInt()},ink1={x,y->
                 val dx=x-224f;val dy=y-154f
                 if(dx*dx+dy*dy<=sourceRadius*sourceRadius)0xff149cff.toInt() else 0

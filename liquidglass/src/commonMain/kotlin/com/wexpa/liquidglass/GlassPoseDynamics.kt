@@ -425,6 +425,10 @@ internal class GlassPoseController(
     private val transit = GlassSpring()
     /** Tap pigment/ink response; not held formation, bar growth, band optics or pointer ownership. */
     val transitAppearance: Float get() = transit.value.coerceIn(0f,.95f)
+    private val travel = GlassSpring()
+    /** How fast a held lens is travelling, 0 to 1 on the held speed curve; 0 when not held.
+     * Optics only: drives the rim mirror of a moving held lens, never geometry or ownership. */
+    val heldTravel: Float get() = travel.value.coerceIn(0f, 1f)
     private val tapArea = GlassSpring()
     private var tapAreaActive = false
     private var tapDistance = 0f
@@ -973,6 +977,9 @@ internal class GlassPoseController(
             else -> spec.referenceSpeed
         }, 1e-3f)
         val sv = speed2 / (vRef * vRef + speed2)
+        travel.target = if (mode == GlassPoseMode.Held && motionEnabled) sv else 0f
+        travel.step(dt, 60f, 1f)
+        if (abs(travel.value) < .0001f && abs(travel.velocity) < .002f && travel.target == 0f) travel.snapTo(0f)
         // A press that is not yet a hold already forms a little: the rim of n2045.
         val pressResponse = when {
             heldNow -> 1f
@@ -1769,7 +1776,7 @@ internal class GlassPoseController(
      */
     val isIdle: Boolean
         get() = mode != GlassPoseMode.PressPending && !tapAreaActive &&
-            transitAppearance < .0001f && quietSteps >= QUIET_STEPS
+            transitAppearance < .0001f && heldTravel < .0001f && quietSteps >= QUIET_STEPS
 
     private var quietSteps: Int = 0
     private val lastPublished = GlassPose()

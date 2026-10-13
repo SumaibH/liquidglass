@@ -41,6 +41,8 @@ uniform float   uScale;
 uniform float   uMaterialize;
 uniform float   uProfile;
 uniform float   uFormation;
+uniform float   uFoldCorners;
+uniform float   uRimMirror;
 uniform float   uHeldLens;     // GlassProfile.Held: how far the tab-bar lens has formed, 0 to 1
 uniform float   uHeldMagnification; // interior zoom of the held lens at full formation (GlassStyle.heldMagnification)
 uniform float   uRestMap;      // resting-corner source map: 0 legacy, 1 the measured table (GlassRestMap)
@@ -114,6 +116,25 @@ float snellShift(float slope, float ior) {
 }
 
 $GLASS_SOURCE_MAP_SKSL
+
+// The measured family's source map, or the reflective rim (GlassStyle.rimMirror): within b of
+// the band a pixel at depth u shows depth 2b - u, mirrored about b; inside it, identity.
+// A moving held lens (GlassStyle.rimMirror with the held family): blend the held map toward the
+// reflective rim at its caps by uFormation, here the lens's travel. Still lenses keep the map.
+float heldMirror(float u, float map, float corner) {
+    if (uRimMirror <= 0.0) return map;
+    float b = clamp(uRimMirror, 0.0, 0.5);
+    float mirrored = (u < b) ? (2.0 * b - u) : u;
+    float k = clamp(uFormation, 0.0, 1.0) * mix(1.0, corner, clamp(uFoldCorners, 0.0, 1.0));
+    return mix(map, mirrored, k);
+}
+
+float measuredSource(float u, float formation, float corner) {
+    if (uRimMirror <= 0.0) return foldSource(u, formation, corner);
+    float b = clamp(uRimMirror, 0.0, 0.5);
+    float mirrored = (u < b) ? (2.0 * b - u) : u;
+    return mix(u, mirrored, clamp(formation, 0.0, 1.0));
+}
 
 half4 main(float2 coord) {
     float2 local = coord - float2(uPad);
@@ -201,7 +222,7 @@ half4 main(float2 coord) {
         float heldFamily = step(1.5, uProfile);
         float held = heldFamily * clamp(uHeldLens, 0.0, 1.0);
         float heldMap = (uHeldInk > 0.5) ? heldSourceContinuous(u) : heldSource(u);
-        float src = mix(foldSource(u, uFormation, corner), mix(u, heldMap, held), heldFamily);
+        float src = mix(measuredSource(u, uFormation * mix(1.0, corner, clamp(uFoldCorners, 0.0, 1.0)), corner), mix(u, heldMirror(u, heldMap, corner), held), heldFamily);
         float shift = (depth < W) ? (src * W - depth) : 0.0;
         shift = mix(max(shift, 0.0), shift, heldFamily) * mat * axisFade * smoothstep(0.0, 1.5, depth);
         float mirrorZone = mix((1.0 - smoothstep(0.24, 0.32, u)) * clamp(uFormation, 0.0, 1.0),

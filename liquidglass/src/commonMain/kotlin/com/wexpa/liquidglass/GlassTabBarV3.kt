@@ -320,6 +320,7 @@ internal class GlassPoseHandle(val controller: GlassPoseController) {
     var render: GlassPoseRender? by mutableStateOf(null)
     var formation: Float by mutableFloatStateOf(0f)
     var transitAppearance: Float by mutableFloatStateOf(0f)
+    var heldTravel: Float by mutableFloatStateOf(0f)
     var held: Boolean by mutableStateOf(false)
     var centreX: Float by mutableFloatStateOf(0f)
     var centreY: Float by mutableFloatStateOf(0f)
@@ -362,6 +363,7 @@ internal class GlassPoseHandle(val controller: GlassPoseController) {
         right = extents.right
         formation = controller.formation
         transitAppearance = controller.transitAppearance
+        heldTravel = controller.heldTravel
         held = controller.isHeld
         taper = controller.taperX
         // Bar-local to the element's CENTRED frame, which is what the shaders work in:

@@ -118,6 +118,34 @@ stills), so this needs a different optical map in motion — the next optical ta
 a vertical seam where that map hides part of the band, and a faint doubled copy of page content
 near the lens's left end (raw share over the mirrored band).
 
+### Pass 5: the moving lens's map
+
+![Moving lens before and after pass 5 (our renders only)](moving-lens.png)
+
+At the ends of a travelling iOS lens the rim shows the lens's own nearby content **mirrored and
+wrapped along the cap** (blue icon strokes following the curve), and every icon under the lens
+shows its selected colour. Ours used the held map (exterior pulled in, measured on still holds)
+and drew only the active item's selected ink, so icons were clipped at the cap and the one being
+left stayed grey. Tried and rejected: a stronger, wider held band (no visible effect on the pose
+path), and the measured cover-sheet fold (its constant-source seam zone stretched labels into
+tall streaked glyphs, even when confined to the caps).
+
+Adopted (Calm dark, authored):
+
+- `GlassStyle.rimMirror` / `uRimMirror`: within a fraction b of the band a pixel at depth u shows
+  depth 2b − u (a reflective rim; continuous, no seam), identity inside. b = 0.3.
+- `GlassStyle.foldAtCorners` / `uFoldCorners`: confine that to the cap arcs; long top and bottom
+  runs keep a thin band, as iOS does.
+- An unheld moving selector (`tapOpticsFold`) uses it at its transit strength; a held lens keeps
+  the measured held map when still and blends toward the rim mirror at its caps with its travel
+  speed (new `heldTravel` signal, optics only).
+- `lensInkAll`: every item's selected ink inside the aperture.
+- Dispersion is off while the rim mirrors; with the band's split it produced saturated orange and
+  blue wedges where iOS shows faint fringes.
+
+Both new uniforms default to 0, leaving every other preset unchanged. Still different: iOS's cap
+swirl is larger and carries faint rainbow fringes; ours is smaller and colourless.
+
 ### Re-reading the landing evidence
 
 The removed impact model was calibrated to one frame, video 2 at 2.5567 s ("frame082": width
@@ -130,7 +158,8 @@ the impact. The narrowing itself is real and is listed below.
 
 - After a hard landing the resting inset briefly narrows (242 px against 285 px at rest, about
   0.3 s after impact) and recovers; ours stays at or above its rest width.
-- iOS warps the icons more strongly near the ends of a fast-moving lens.
+- iOS's swirl at the ends of a moving lens is larger and faintly rainbow-fringed; ours is
+  smaller and colourless (pass 5).
 - The rebuilt reversal input and the full video 2 script (`v2-script.txt`) are inferred; the
   per-episode lag numbers above are relative to that inference.
 - Hold formation appears about 150 ms later than the reference; finger-down time is inferred,

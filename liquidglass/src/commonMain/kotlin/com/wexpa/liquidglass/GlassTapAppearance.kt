@@ -21,5 +21,7 @@ internal fun glassTransitInkScale(style: GlassTabBarStyle, formation: Float, app
         return 1f-m.heldMagnification*m.heldLens
     }
     val optical=maxOf(f,appearance*style.tapOptics).coerceIn(0f,1f)
-    return if (optical<=f) scale else scale*lensGain(optical)/lensGain(f)
+    // A folding transit band has no interior zoom (the fold family ignores heldMagnification).
+    val gain=if (glassSelectorFold(style,f,appearance)>0f) 1f else lensGain(optical)
+    return if (optical<=f) scale else scale*gain/lensGain(f)
 }

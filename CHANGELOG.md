@@ -19,10 +19,16 @@ This file records user-visible development changes. Published artifacts are iden
 - Calm lens and bar edges measured against video 2: bar rim halved (the "white outline" was the
   bar's rim seen through the lens), held lens edge line .26, a stronger and wider rim glow and
   `rawShare` .28 so the page shows crisply through the lens.
+- Calm moving lens: a reflective rim at its caps (icons wrap mirrored along the curve, as in
+  iOS) instead of the clipped held map, and every icon under the lens shows its selected ink.
+  A still held lens keeps the measured held map and blends to the rim mirror as it travels.
 - Repository description and README rewritten for developers; lab detail moved to linked records.
 
 ### Added
 
+- `GlassStyle.rimMirror` and `GlassStyle.foldAtCorners` (`uRimMirror`, `uFoldCorners`): a
+  reflective rim map for the measured family and a corner-only fold; both 0 by default.
+  `GlassTabBarStyle.tapOpticsFold` and `lensInkAll` select them for Calm.
 - `GlassStyle.heldGlowReach` (and the `uHeldGlowReach` shader uniform): how far the held lens's
   rim glow reaches inward; 0 keeps the historical bevel-length glow. `heldGlow` now accepts 0–2.
 - `GlassTabBarAccessory` and `GlassTabBar(trailingAccessory = …)`: a separate neighbouring

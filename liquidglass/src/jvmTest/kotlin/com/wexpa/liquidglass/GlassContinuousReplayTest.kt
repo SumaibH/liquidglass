@@ -91,4 +91,40 @@ class GlassContinuousReplayTest {
         assertEquals(glassTransitStyle(lerpGlassStyle(v3.pill, v3.lens, .1f), .9f, v3.tapTintFade),
             glassSelectorMaterial(v3, .1f, .9f))
     }
+
+    @Test fun aMovingSelectorMirrorsItsCapsAndAStillHoldKeepsTheHeldMap() {
+        val style = GlassTabBarStyle.Calm()
+        // A tap in transit: the folding rim mirror at the caps, at its transit strength.
+        val transit = glassSelectorMaterial(style, 0.05f, 0.9f)
+        assertEquals(GlassProfile.Measured, transit.profile)
+        assertEquals(1f, transit.foldAtCorners); assertTrue(transit.rimMirror > 0f)
+        assertEquals(0.9f, glassSelectorFormation(style, 0.05f, 0.9f, 0f), 1e-6f)
+        // A held lens: the measured held map, blended toward the mirror only with travel.
+        val held = glassSelectorMaterial(style, 1f, 0f)
+        assertEquals(GlassProfile.Held, held.profile)
+        assertEquals(0f, glassSelectorFormation(style, 1f, 0f, 0f))
+        assertEquals(0.6f, glassSelectorFormation(style, 1f, 0f, 0.6f), 1e-6f)
+        assertTrue(style.lensInkAll)
+        // Historical styles never fold or mirror.
+        val v3 = GlassTabBarStyle.V3()
+        assertEquals(0f, glassSelectorFormation(v3, 0.05f, 0.9f, 0.6f))
+        assertEquals(0f, glassSelectorMaterial(v3, 0.05f, 0.9f).rimMirror)
+    }
+
+    @Test fun heldTravelRisesOnlyWhileTheHeldLensMoves() {
+        val c = GlassPoseController(GlassPoseSpec.Calm)
+        c.attach(bar, null, null); c.snapToRest(0)
+        c.pointerDown(bar.centreOf(0), bar.centreY, 0.0, true)
+        c.advanceTo(.6f); c.beginDrag(bar.centreOf(0), bar.centreY)
+        assertEquals(0f, c.heldTravel, 1e-4f, "a still hold is not travelling")
+        var peak = 0f
+        for (i in 1..48) {
+            val t = .6f + .1f * i / 48
+            c.pointerMove(bar.centreOf(0) + 2f * bar.slotWidth * i / 48, bar.centreY, t.toDouble())
+            c.advanceFrameTo(t); peak = maxOf(peak, c.heldTravel)
+        }
+        assertTrue(peak > .5f, "fast held travel never registered: $peak")
+        c.advanceTo(1.4f)
+        assertTrue(c.heldTravel < .05f, "travel stayed after the finger stopped: ${c.heldTravel}")
+    }
 }
