@@ -13,6 +13,7 @@ import androidx.compose.ui.scene.ComposeScene
 import androidx.compose.ui.scene.ComposeScenePointer
 import androidx.compose.ui.unit.Density
 import com.wexpa.liquidglass.GlassTabBarStyle
+import com.wexpa.liquidglass.sample.LoupeScreen
 import com.wexpa.liquidglass.sample.PhoneGeometry
 import com.wexpa.liquidglass.sample.PhonePalette
 import com.wexpa.liquidglass.sample.PhoneScene
@@ -58,8 +59,10 @@ private fun replay(args: Array<String>) {
     val initial = events.firstOrNull { it[0] == "select" }?.get(1)?.toInt() ?: 0
     val pointer = events.filter { it[0] !in setOf("end", "select") }
         .map { Triple(it[0].toDouble(), it[1], Offset(it[2].toFloat(), it[3].toFloat())) }
-    val sceneWidth = 1170
-    val sceneHeight = 702
+    // "atlas" renders Atlas Studio at 1200 x 750 dp (density 1.5) instead of the phone scene.
+    val atlas = variant.startsWith("atlas")
+    val sceneWidth = if (atlas) 1800 else 1170
+    val sceneHeight = if (atlas) 1125 else 702
     val style = when (variant) {
         "v3" -> GlassTabBarStyle.V3().copy(height = PhoneGeometry.barHeight)
         // The 2026-10-13 scene geometry (slot-wide pill, 6 dp ends), for before/after renders.
@@ -79,9 +82,12 @@ private fun replay(args: Array<String>) {
     val layer = SkiaLayer()
     val frame = JFrame("LiquidGlass reference replay")
     SwingUtilities.invokeAndWait {
-        scene = ImageComposeScene(sceneWidth, sceneHeight, Density(3f), Dispatchers.Unconfined) {
-            var selected by remember { mutableIntStateOf(initial) }
-            PhoneScene(selected, { selected = it }, palette = palette, style = style)
+        scene = ImageComposeScene(sceneWidth, sceneHeight, Density(if (atlas) 1.5f else 3f), Dispatchers.Unconfined) {
+            if (atlas) LoupeScreen(initialScene = initial)
+            else {
+                var selected by remember { mutableIntStateOf(initial) }
+                PhoneScene(selected, { selected = it }, palette = palette, style = style)
+            }
         }
         // ImageComposeScene draws into a CPU raster. Reuse its scene and frame clock, but draw
         // into this layer's GPU canvas instead.

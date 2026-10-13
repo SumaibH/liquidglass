@@ -123,15 +123,23 @@ $GLASS_SOURCE_MAP_SKSL
 // reflective rim at its caps by uFormation, here the lens's travel. Still lenses keep the map.
 float heldMirror(float u, float map, float corner) {
     if (uRimMirror <= 0.0) return map;
-    float b = clamp(uRimMirror, 0.0, 0.5);
+    float b = clamp(uRimMirror, 0.0, 1.0);
     float mirrored = (u < b) ? (2.0 * b - u) : u;
     float k = clamp(uFormation, 0.0, 1.0) * mix(1.0, corner, clamp(uFoldCorners, 0.0, 1.0));
     return mix(map, mirrored, k);
 }
 
+// The colour-split zone of the measured family: the fold's measured outer 0.28, or the
+// reflective rim's own mirrored band when GlassStyle.rimMirror is set.
+float rimZone(float u) {
+    if (uRimMirror <= 0.0) return 1.0 - smoothstep(0.24, 0.32, u);
+    float b = clamp(uRimMirror, 0.0, 1.0);
+    return 1.0 - smoothstep(b * 0.8, b * 1.1, u);
+}
+
 float measuredSource(float u, float formation, float corner) {
     if (uRimMirror <= 0.0) return foldSource(u, formation, corner);
-    float b = clamp(uRimMirror, 0.0, 0.5);
+    float b = clamp(uRimMirror, 0.0, 1.0);
     float mirrored = (u < b) ? (2.0 * b - u) : u;
     return mix(u, mirrored, clamp(formation, 0.0, 1.0));
 }
@@ -225,7 +233,7 @@ half4 main(float2 coord) {
         float src = mix(measuredSource(u, uFormation * mix(1.0, corner, clamp(uFoldCorners, 0.0, 1.0)), corner), mix(u, heldMirror(u, heldMap, corner), held), heldFamily);
         float shift = (depth < W) ? (src * W - depth) : 0.0;
         shift = mix(max(shift, 0.0), shift, heldFamily) * mat * axisFade * smoothstep(0.0, 1.5, depth);
-        float mirrorZone = mix((1.0 - smoothstep(0.24, 0.32, u)) * clamp(uFormation, 0.0, 1.0),
+        float mirrorZone = mix(rimZone(u) * clamp(uFormation, 0.0, 1.0),
             (1.0 - smoothstep(0.45, 0.55, u)) * held, heldFamily);
         float delta = uInkSplit * W * 0.5 * mirrorZone * mat;
         push = -n * shift;

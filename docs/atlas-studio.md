@@ -1,8 +1,16 @@
 # Atlas Studio
 
-Atlas is the shared standalone sample in `:desktop` and the Android loupe activity. It illustrates
-refraction over real backdrop pixels, including small labels and thin lines. It is not Vitals and
-its illustrative sky is not an astronomical catalogue.
+Atlas is the shared standalone sample in `:desktop` and the Android loupe activity. One full-window
+scene keeps moving under every piece of glass, so refraction is always visible over live pixels:
+small labels, thin lines and saturated colour. It is not Vitals and its illustrative sky is not an
+astronomical catalogue.
+
+![Atlas Studio, Sky scene](assets/atlas-sky.jpg)
+
+![Atlas Studio, Type scene](assets/atlas-type.jpg)
+
+*Deterministic GPU replay (`:desktop:phoneReplay` with `atlas.replay.variant=atlas`, 1200 × 750 dp
+at 1.5×), 14 October 2026. Not a performance measurement.*
 
 ## Run and inspect
 
@@ -10,10 +18,14 @@ its illustrative sky is not an astronomical catalogue.
 ./gradlew :desktop:run
 ```
 
-Choose a composition on wide windows, switch Sky / Type / Lines, drag the magnifier to an edge, change
-its centre magnification or hide it. The floating navigation control uses `GlassTabBarStyle.Calm()`.
-The note card uses the generic scene modifier; pull it in any direction to see subtle surface strain
-while its words remain anchored. Motion reduced disables elasticity, including navigation fling.
+The Calm navigation bar (`GlassTabBarStyle.Calm()`) is the only scene switcher: Sky (a drifting
+night sky with a moon), Type (a page that scrolls by) and Lines (sliding coloured stripes). It
+fuses with the round button beside it while held (`GlassTabBarAccessory`); that button shows or
+hides the magnifier. Drag the magnifier or the page itself; change magnification from the top bar.
+On wide windows a card shows the generic scene modifier: hold and pull it to see subtle surface
+strain while its words and position stay put. Motion reduced stops the drift and disables
+elasticity, including navigation fling. The magnifier is dragged without press glow or press
+scale, which would haze and resample the view it exists to show.
 
 The lens has one source image. Labels are part of the recorded backdrop and are magnified with their
 surroundings; no duplicate foreground text is drawn inside it. Its position is clamped in canvas-local

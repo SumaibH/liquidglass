@@ -15,9 +15,9 @@ Pillow. Run from a scratch directory such as `.local/sxs/`.
 | Paired strips | `python strip.py ../../docs/2.MP4 out-v2 2.10 2.60 0.0333 throw.png` |
 | Three-row video | `./sxs3.sh ../../docs/2.MP4 before-v2 out-v2 cmp-v2.mp4` (local only: contains the reference) |
 
-`v1-script.txt`, `v2-script.txt` and `v2-catalogue.txt` are the inferred scripts used on
-13 October. The held-reversal episode (18.7–22.4 s) in `v2-script.txt` is replaced by
-`reversal-script.txt`, rebuilt from the episode's turning points because the ink centroid snaps
+`v1-script.txt`, `v2-script.txt` and `v2-catalogue.txt` are the inferred scripts (v2 revised on
+14 October: held presses begin 137 ms before the visible shift, wall throws lift moving). The
+generator splices the held-reversal episode (18.7–22.4 s) from `reversal-script.txt`, rebuilt from the episode's turning points because the ink centroid snaps
 between tabs mid-sweep. They hold only finger times and x positions; **the timing is inferred, not recorded**.
 Script format: `select <tab>`, then `<ms> down|move|up <x> <y>` in scene pixels at 3 px/pt, and
 `end <ms>`.

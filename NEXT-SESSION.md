@@ -30,18 +30,20 @@ recordings through the real renderer and comparing **continuous sequences**, not
 - Pass 6 (14 Oct): two-edge wall landing (`releaseTrailingEdge`, 13/s; old Calm kept as
   `CalmFreeLanding`) and `PhoneGeometry` 95 pt pill / 8 pt ends. Current renders:
   `.local/sxs/land-v2`; landing clip `.local/sxs/landing-slow.mp4`.
+- Pass 7 (14 Oct): input fixes (`v2script.py`: HOLD 137 ms, wall lifts moving), rim mirror 0.8
+  with fringes, Atlas Studio redesign (`LoupeScreen`, replay variant
+  `atlas`). Renders: `.local/sxs/p7-v2`, `.local/atlas/demo2`.
 - Pass 3 (13 Oct): fast held reversals (grasp 120/s, held formation 50/s); reversal input
   rebuilt from turning points (`tools/reference-replay/reversal-script.txt`).
 - README and repository description rewritten (owner authorized the description/homepage).
 
 ## Next, in order
 
-1. Input inference: on wall throws the ink tracker parks the finger at the end tab before lift,
-   so those replays release slowly and do not narrow (iOS does). Hold onset ~150 ms late.
-   Check the inferred lift/down timing before tuning the model.
-2. iOS's cap swirl on a moving lens is larger and faintly rainbow-fringed; ours is smaller.
-3. iOS's bar grows more on the finger's side while held; ours grows symmetrically.
-4. Atlas Studio redesign around the material (content moving under glass, one scene switcher).
+1. A release with the lens already stopped at the wall (9.9 s) does not narrow; iOS does.
+2. iOS's held bar grows ~8% wide vs 5% tall, more on the finger's side; a plain shift broke the
+   measured fusion neck (pass 7). Needs anisotropic press growth.
+3. iOS's cap swirl is still somewhat stronger; fusion timing follows our later press.
+4. Owner visual acceptance of the selector and of the redesigned Atlas Studio.
 5. Then: Android verification when a device is available; native navigation selector for .NET.
 
 ## Constraints (owner)

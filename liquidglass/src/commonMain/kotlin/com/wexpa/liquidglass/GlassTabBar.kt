@@ -1820,12 +1820,16 @@ internal fun glassSelectorMaterial(style: GlassTabBarStyle, formation: Float, tr
     val material = lerpGlassStyle(style.pill, style.lens, opticalLift).copy(tint = pigment.tint, tintLift = pigment.tintLift)
     // A moving, unheld selector folds its band (see [glassSelectorFold]) instead of the held map.
     return if (glassSelectorFold(style, formation, transitAppearance) > 0f)
-        material.copy(profile = GlassProfile.Measured, foldAtCorners = 1f, rimMirror = 0.3f, dispersion = 0f, inkDispersion = 0f)
+        material.copy(profile = GlassProfile.Measured, foldAtCorners = 1f, rimMirror = GlassSelectorRimMirror, dispersion = GlassSelectorRimDispersion, inkDispersion = GlassSelectorRimDispersion)
     // A held lens keeps the measured held map when still and blends toward the same rim mirror
     // at its caps as it travels ([glassSelectorFormation] carries the travel amount).
-    else if (style.tapOpticsFold > 0f && formation >= 0.5f) material.copy(foldAtCorners = 1f, rimMirror = 0.3f, dispersion = 0f, inkDispersion = 0f)
+    else if (style.tapOpticsFold > 0f && formation >= 0.5f) material.copy(foldAtCorners = 1f, rimMirror = GlassSelectorRimMirror, dispersion = GlassSelectorRimDispersion, inkDispersion = GlassSelectorRimDispersion)
     else material
 }
+
+/** Rim-mirror band and its colour split for a moving Calm selector (authored, 2026-10-14). */
+internal const val GlassSelectorRimMirror = 0.8f
+internal const val GlassSelectorRimDispersion = 0.025f
 
 /** `lensFormation` for the selector: the transit fold while unheld, the held lens's travel
  * (rim-mirror blend at its caps) while held. */

@@ -101,8 +101,14 @@ yet. To use them, build this branch with `./gradlew publishToMavenLocal` and dep
 
 ## Atlas Studio
 
-A desktop demo of the material: a movable magnifier over sky, type and line backdrops, a calm
-note card and the navigation bar.
+![Atlas Studio: a magnifier, a top bar, a card and the navigation bar over a moving night sky](docs/assets/atlas-sky.jpg)
+
+The demo app (desktop, and Android as the Loupe activity). One full-window scene keeps moving
+under every piece of glass: a drifting night sky, a page of type that scrolls by, and sliding
+coloured lines. The Calm navigation bar, fused with a round magnifier button, is the only scene
+switcher; drag the loupe, the page, or hold and pull the card. Motion can be reduced from the top
+bar. [A 9-second recording](review/atlas/reference-replay-2026-10-13/atlas-studio.mp4) (our
+deterministic GPU replay).
 
 ```sh
 ./gradlew :desktop:run

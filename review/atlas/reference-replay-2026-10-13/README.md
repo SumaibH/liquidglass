@@ -192,6 +192,42 @@ narrow, while iOS narrows by the same 42 px. The ink tracker cannot see the fing
 tab (the ink stops when the lens reaches the wall), so the script's stop-before-lift is probably
 an input artefact on those throws; it is recorded here rather than tuned away.
 
+### Pass 7: input, cap swirl, finger-side growth and Atlas Studio (14 October)
+
+**Inferred input.** Finger-down is invisible in the recordings, so a held press now begins 137 ms
+before the ink's visible held shift (our 120 ms hold threshold plus a frame): hold onset is
+aligned **by construction** and is no longer a test of the model. Into an end tab the finger now
+lifts one frame after the ink first reaches the tab, still moving: the ink stops there when the
+lens meets the wall, so it cannot show the finger beyond it. With this input the wall landings at
+2.3, 12.4 and 25.6 s narrow like iOS (trailing-edge peaks 670 / 647 / 655 px against 645 / 646 /
+646). At 9.9 s our lens is already stopped at the wall when released and does not narrow; iOS
+narrows by the same 42 px. That case is open. `tools/reference-replay/v2script.py` and
+`v2-script.txt` are updated; the reversal episode is spliced in by the generator.
+
+![Moving lens before and after pass 7 (our renders only)](cap-swirl.png)
+
+*Our renders only, the same rebuilt reversal input; `63d5d2b` above, this pass below.*
+
+**Cap swirl.** The moving lens's reflective rim now mirrors 0.8 of the band (was 0.3; the shader
+now allows up to the whole band), so icons near the caps wrap along a larger arc, as in iOS. A
+faint colour split (0.025) is confined to the mirrored band. Authored; iOS's swirl is still
+somewhat stronger.
+
+**Finger-side growth (tried, not adopted).** Holding Calls, the iOS bar's top row grows 43 px on
+the finger's side and 25 px on the other, about 8% wider overall against 5% taller: iOS grows
+the bar more horizontally than vertically, with a bias toward the finger. Ours grows 28 / 24 px.
+Shifting the pressed material toward the finger (an authored 0.04 share of the touch offset)
+gave 35 / 13 px, but it starved the far side, so the measured fusion neck to the search button
+(taken while holding this same tab) fell below its test, and two measured bar envelopes broke.
+Matching iOS needs anisotropic press growth, which would conflict with the measured 1.05 press;
+the shift was removed and this stays open.
+
+**Atlas Studio.** Redesigned around the material: one full-window scene moving under all the glass
+(a drifting night sky with a moon, a page of type that scrolls by, sliding coloured lines), the
+Calm bar fused with a round magnifier button as the only scene switcher, a glass top bar and an
+anchored card. A clear magnifier being dragged now takes no press glow or press scale: both
+hazed and resampled its view. [Recording](atlas-studio.mp4) (deterministic GPU replay, 9 s).
+
 ### Re-reading the landing evidence
 
 The removed impact model was calibrated to one frame, video 2 at 2.5567 s ("frame082": width
@@ -205,12 +241,12 @@ the impact. The narrowing itself is real and is listed below.
 - Post-landing narrowing (pass 6) is reproduced for fast releases; replay landings whose
   inferred finger stops before lifting do not narrow (likely an input artefact, see pass 6), and
   ours narrows about 100 ms earlier than iOS.
-- iOS's swirl at the ends of a moving lens is larger and faintly rainbow-fringed; ours is
-  smaller and colourless (pass 5).
+- iOS's swirl at the ends of a moving lens is still somewhat stronger (pass 7).
+- iOS's held bar grows more horizontally (about 8%) than vertically (5%) and more on the finger's
+  side; ours grows a uniform 5% (pass 7, tried and not adopted).
 - The rebuilt reversal input and the full video 2 script (`v2-script.txt`) are inferred; the
   per-episode lag numbers above are relative to that inference.
-- Hold formation appears about 150 ms later than the reference; finger-down time is inferred,
-  so part of this may be input, not model.
+- Hold onset is aligned by construction (pass 7); it cannot be tested from these recordings.
 - Selected ink inside a moving lens is magnified less than iOS.
 - Page text under the bar is slightly more smeared than iOS.
 - Calibration conflict, unresolved: an earlier early-transit patch (video1 frame 6) reads the
@@ -234,7 +270,8 @@ the impact. The narrowing itself is real and is listed below.
 
 ## Files
 
-- `before-after.png`, `lens-edge.png`, `moving-lens.png`, `landing.png` — public, our renders only.
+- `before-after.png`, `lens-edge.png`, `moving-lens.png`, `landing.png`, `cap-swirl.png`,
+  `atlas-studio.mp4` — public, our renders only.
 - Local only: `.local/comparisons/2026-10-13-baseline/` (first comparison, original scripts) and
   `.local/comparisons/2026-10-13-pass1/` (reference / before / after).
 - Harness: `desktop/src/jvmMain/.../PhoneReplay.kt`, `sample/.../PhoneScene.kt`; script generators

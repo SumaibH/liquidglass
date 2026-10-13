@@ -18,7 +18,13 @@ bounded completed work, **not completion of full iOS parity**. All open rows rem
   iOS's swirl is still larger and faintly rainbow-fringed.
 - [x] Wall landings press into the end and narrow from behind (pass 6); comparison scene's resting
   pill corrected to the measured 95 pt. Landings with an inferred stop-before-lift do not narrow.
-- [ ] Hold onset and wall-throw lift timing (inferred input — confirm before tuning).
+- [x] Inferred input corrected: hold onset aligned by construction (finger-down is invisible);
+  wall throws lift moving. 2.3/12.4/25.6 s now narrow like iOS; 9.9 s (lens stopped at the wall
+  before lift) does not.
+- [x] Larger cap swirl with faint fringes (rim mirror 0.8) (pass 7).
+- [ ] Finger-side, mostly horizontal bar growth: a shift toward the finger broke the measured
+  fusion neck; needs anisotropic press growth (pass 7).
+- [x] Atlas Studio redesign: moving full-window scene, one switcher, fused magnifier button.
 - [ ] Owner visual acceptance of the navigation selector.
 
 ## P0 — current visible failures
