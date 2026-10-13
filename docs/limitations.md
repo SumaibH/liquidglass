@@ -1,5 +1,14 @@
 # Limitations
 
+## Current development gaps
+
+See the [visual status guide](development-status.md) for the exact tested checkpoints. Current
+open items include complete motion/contour/ink agreement across the supplied gestures, Android
+endpoint equivalence, ordinary input/display performance and final Atlas acceptance. Native.NET
+has whole-surface feedback and a standard WinForms control-capture path; it does not yet supply
+the navigation-selector controller or universal native-widget capture. Other native frameworks
+remain integration work. Historical measurements below must not be read as current device proof.
+
 This page separates current integration limits from historical measurement gaps. Full iOS parity
 is not established. New renderers and capture paths may change these limits; support requires tests
 on the actual host, not only a successful shader compilation.
@@ -20,8 +29,9 @@ the backdrop into a layer and hand it to the shader. Consequences:
 - An extra full-screen layer per backdrop, and a `RenderEffect` per glass element.
 - Glass can only sample **what your app drew**. Never the wallpaper, never another app, never
   the system UI beneath. A "translucent" status bar is not available to you.
-- **Glass cannot sample glass.** Apple's rule against stacking is a guideline; here it is a hard
-  constraint of the capture model. Stacked panels will not see each other.
+- Glass does not automatically discover other glass. The explicit `through` composition path
+  records specified intervening glass (used by navigation); arbitrary stacking without that
+  recorded input will not reproduce its appearance. It also adds rendering cost.
 
 ## Glass inside a scroll
 

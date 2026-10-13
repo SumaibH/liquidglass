@@ -1,5 +1,10 @@
 # API reference
 
+This page covers the Kotlin API. Native and portable APIs are documented in the
+[cross-stack guide](porting.md), with [current capabilities and visuals](development-status.md).
+The .NET guide includes `GlassPainter`, `CalmInteraction`, `GlassFeedback` and `ControlBackdrop`;
+these are source-preview APIs, not additions to the published Maven artifact.
+
 Every public symbol in the library. The guides explain *why*; this is *what*.
 
 ---

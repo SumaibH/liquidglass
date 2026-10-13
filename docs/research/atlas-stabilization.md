@@ -1,5 +1,10 @@
 # Atlas stabilization: continuous optics and separate motion roles
 
+**13October update:** the [visual status/evidence index](../development-status.md) covers the
+later short-trip timing, substrate tint, clipped wide-input repair, long-tap appearance, frame
+diagnostics and native.NET integrations. The sections below retain the progression and original
+measurement limits; the earlier baseline failures are not claims about the current implementation.
+
 This is an authored refinement informed by the owner's original iPhone captures. It does not replace
 historical measured presets or claim recovery of Apple's private rendering implementation.
 

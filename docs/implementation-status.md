@@ -1,5 +1,10 @@
 # Astra implementation status
 
+**Current overview,13 October 2026:** use the [visual development guide](development-status.md)
+for the complete feature/evidence map. Native.NET now includes production material, calm
+whole-surface input and verified standard WinForms-control capture. Historical r13/r14 results
+below retain their original scope; full iOS parity remains unfinished.
+
 Astra is the selected development approach for the unreleased Liquid Glass parity work.
 It combines original iPhone reference measurements, independently tested corrections and
 useful techniques assessed from the Fable and Antigravity implementations. Review of
@@ -24,7 +29,7 @@ redraw figures are not Android performance. Vitals and the following physical ca
 For other stacks, [porting](porting.md) covers the dependency-free WebGL preview and the production
 CanvasKit shader kit. Its high-level painter draws clear lenses and rounded in-app surfaces, including
 the two-kernel material setup, without manual uniform binding. Full native framework adapters and
-automatic backdrop capture are not implemented.
+universal backdrop capture remain incomplete. The native.NET painter/controller and WinForms standard-control adapter are now available; see the current visual guide.
 
 ## Historical follow-up: r14
 

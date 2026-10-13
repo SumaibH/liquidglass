@@ -7,6 +7,18 @@ This file records user-visible development changes. Published artifacts are iden
 
 ### Added
 
+- Native .NET/SkiaSharp painter and source ownership, executable Windows/Linux renderer checks
+  and a Windows Forms host. `CalmInteraction`/`GlassFeedback` provide timestamped whole-surface
+  press/pull, release/re-grab, viewport containment, cancellation and reduced-motion/resize reset.
+  The host keeps labels and hit targets anchored; native selector travel remains separate work.
+- `LiquidGlass.WinForms.ControlBackdrop.Capture`: owned standard-control subtree snapshots,
+  explicit UI-thread/lifetime rules and known-unsupported-control rejection. The executable
+  example verifies real TextBox glyph updates and production-lens refraction without screen capture.
+- Opt-in natural Atlas frame-recording and own-input/focus traces, separate from forced redraw
+  and screenshot readback. Includes a retained intermittent selection failure and performance limits.
+- Visual development/evidence index, native.NET guide and ongoing documentation/visual requirements
+  in contributor and agent instructions. Historical/source measurements remain explicitly labelled.
+
 - Opt-in Atlas native motion playback using its own AWT input component, with selection/layout
   assertions, app-owned phase snapshots and actual event/render timestamps. Each phase replays
   independently to keep slow readback out of subsequent input; an optional contact-sheet tool
@@ -45,6 +57,16 @@ This file records user-visible development changes. Published artifacts are iden
   need no manual shader loading; CI checks the generated module for drift. Explicit sources remain supported.
 
 ### Fixed
+
+- JVM clipping no longer discards the offscreen wide-tone input, removing a hard vertical selector
+  seam in native replays while retaining the kernel and through-bar/substrate behavior.
+- Resting tint is limited to the actual bar substrate, avoiding rejected opaque protruding discs.
+- Calm adjacent taps use a slower coupled travel/shape rate. Remaining repeated width/contour
+  error is retained; centre-timing agreement alone is not full motion proof.
+- Separate tap pigment/ink appearance follows projected area plus axial travel strain and gradual
+  recovery. Long-tap calibration improves while exported pose/formation/protrusion stays unchanged.
+- Atlas prefers a discrete adapter and reports the actual renderer. NVIDIA selection is verified;
+  this does not claim that ordinary interaction lag or presentation timing is solved.
 
 - Calm held travel now reaches both intermediate and flattened original selector shapes with less
   maximum horizontal extension. Travel contraction is separate from ordinary touch growth and forms

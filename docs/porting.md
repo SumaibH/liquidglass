@@ -12,7 +12,7 @@ Separate the material, motion and host integration instead of duplicating a samp
 | Android Views | Place a ComposeView over a Compose-recorded backdrop, or supply an independent renderer | Bridge work required for a View-owned backdrop; no transparent capture of arbitrary Views |
 | React, Vue, Svelte, Angular, vanilla HTML | ES module with a supplied canvas/image/video texture | Continuous lens preview in `ports/web`; not the full measured material |
 | CanvasKit / another Skia RuntimeEffect host | Generated production material, content and aperture shaders in `ports/skia` | CanvasKit software rendering verified against JVM pixels; host capture/input remain explicit |
-| .NET / SkiaSharp | `GlassPainter` on an `SKCanvas`, plus a runnable Windows Forms host | Native Windows CPU fixture/lifecycle/input checks passed; Windows/Linux renderer jobs in CI; additional native hosts unverified |
+| .NET / SkiaSharp | `GlassPainter`, `CalmInteraction`, optional feedback and WinForms `ControlBackdrop` | CPU fixtures, input and standard-control capture verified; navigation-selector/other hosts remain open |
 | Electron, Tauri, browser WebViews | Same web module, where WebGL and origin-clean textures are available | Host lifecycle/permissions must be tested |
 | SwiftUI, Flutter, React Native, Qt, Unity, other native hosts | Implement the renderer contract below or embed a supported surface | No dedicated native adapter shipped for these hosts; not a claim of drop-in support |
 
@@ -64,16 +64,24 @@ snapshot of a host-supplied drawing callback, excluding glass overlays. Its Wind
 demonstrates actual control painting, dragging, keyboard movement, resize and preference controls.
 The renderer targets .NET 8; the desktop example needs .NET 10 and Windows. Native Windows CPU
 pixels match the four independent JVM profile fixtures exactly. The adapter has Windows/Linux
-renderer CI and Windows host compilation; additional native hosts/GPU execution are not verified.
-It does not yet port selector motion, capture arbitrary native widgets or wire separate foreground
-passes at the high level. See its README for build commands, resource ownership and native assets.
+renderer/controller CI and Windows host/control-capture checks; additional hosts/GPU execution
+are not verified. `CalmInteraction` supplies timestamped whole-surface press/pull with viewport,
+release/re-grab, reduced-motion and resize handling. `DrawSurface(..., feedback)` applies the
+material transform while preserving labels/hit targets.
+
+The separate `LiquidGlass.WinForms` adapter captures an application's own Panel/Label/TextBox/
+CheckBox subtree after layout on its UI thread. Returned opaque images are caller-owned and can
+be borrowed by the painter. Refresh after content/layout changes, keeping glass outside the
+subtree. RichTextBox/ActiveX are rejected; custom controls/overlapping order need host verification.
+Navigation-selector motion, arbitrary-widget capture across stacks and high-level separate
+foreground passes remain open. See the native guide for build commands, ownership and examples.
 
 For a CanvasKit host, start with `createGlassScene` from the local `liquidglass-skia-preview` package.
 It combines one borrowed source image, multiple lenses/cards, calm interaction and drawing transforms.
 This removes per-widget matrix setup and uses logical coordinates with an explicit `pixelRatio`.
 The host still supplies input, labels, accessible controls, frame scheduling and a matching source/canvas.
 The root scene, painter and interaction exports have TypeScript declarations; additional native
-bindings and a .NET motion controller remain separate work. See the
+bindings and native navigation-selector motion remain separate work. Whole-surface .NET calm feedback is now implemented. See the
 [scene example and lifecycle](https://github.com/shayann07/liquidglass/blob/main/ports/skia/README.md#start-with-one-scene).
 
 ```js

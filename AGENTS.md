@@ -32,6 +32,25 @@ Never put capture material, APKs or frame dumps under `docs/` — mkdocs builds 
 
 ## Rules
 
+### Keep documentation and visuals current
+
+The owner requires documentation on the go. Every meaningful API/behavior change must update
+its user guide, CHANGELOG, `docs/development-status.md`, and any affected README/support table
+in the same checkpoint. Update PROGRESS/TODO/NEXT-SESSION as work proceeds, including failures.
+Do not postpone these until final delivery. This requirement also applies to future goal work.
+
+For visible changes, include inspected app-owned visual evidence under `review/`, with captions
+stating source revision/backend, capture method and limits. Link/embed it in relevant guides;
+do not copy raw/private recordings into `docs/`. Distinguish source measurements, authored
+parameters, calibrated comparisons, regression passes and owner acceptance. Keep old evidence
+labelled rather than silently replacing a failed baseline. Reuse unchanged valid tests.
+
+Before publication run strict MkDocs, repository-link/visual-reference checks and staged whitespace
+checks. Keep `research/README.md` and `docs/research/the-record.md` synchronized when either changes.
+If the private generator is unavailable, apply the matching addendum manually as documented below.
+
+### Repository changes
+
 1. **No commits, pushes, tags or releases unless the owner asks in that session.** Leaving the tree
    dirty is normal here; a release is a tag, and tags publish to Maven Central.
 2. **Change the material only in this repository**, never in a consumer. Then

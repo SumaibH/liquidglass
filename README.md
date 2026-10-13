@@ -6,45 +6,45 @@ A refracting material for Compose UI, with a shared backdrop, shaped glass surfa
 [![License](https://img.shields.io/badge/license-Apache--2.0-blue)](LICENSE)
 [Documentation](https://liquidglass.shayxo.dev/) · [Getting started](docs/getting-started.md) · [API](docs/api-reference.md) · [Research](docs/research/README.md)
 
-![Atlas Studio running on Windows](review/atlas/after-desktop.png)
+![Atlas Studio: native Windows grid and continuous magnifier](review/atlas/wide-input-2026-10-11/static.png)
 
-**Development preview.** The current work adds continuous magnifier optics, calmer press and drag feedback,
-a simpler scene API and a redesigned Atlas Studio. These additions are not in the published `0.1.0` artifact.
-They are authored models informed by iPhone references; **full 1:1 iOS parity is not established**.
-See the [verification record](review/ATLAS-STABILIZATION.md) for rendered evidence and remaining work.
-The [native motion phases](review/ATLAS-STABILIZATION.md#native-motion-phase-captures) show real
-desktop input, travel, release and extreme pulls. The [measurement correction](review/ATLAS-STABILIZATION.md#native-diagnostic-correction-isolate-redraw-from-playback)
-documents a rejected timing method and verified replacement; screenshots do not establish frame rate.
-The [progress tracker](PROGRESS.md) lists the verified checkpoint, unfinished requirements and next steps.
-The [new labelled motion audit](research/analysis/MOTION-2026-10-08.md) preserves native timestamps,
-original measurements and a failing production baseline. The [coupled tap candidate](review/atlas/phone-tap-volume-2026-10-09/README.md)
-exchanges area between the rounded ends and horizontal spine, improving short/long travel shapes.
-Its record includes the remaining early-frame mismatch; these spatial checks do not establish motion parity.
-The [endpoint landing comparison](review/atlas/phone-throw-2026-10-09/README.md) adds compression
-near a hard landing, with measured source width, partial-cap curvature and reproducible input sweeps.
-The [consecutive recovery audit](review/atlas/phone-landing-sequence-2026-10-09/README.md) records
-remaining trajectory errors in both directions; matching one compression frame is insufficient.
-The [shape-aware landing candidate](review/atlas/phone-edge-2026-10-09/README.md) couples the
-endpoint-facing edge to changing width and preserves the remaining cap-curvature mismatch.
-The [inset material correction](review/atlas/inset-material-2026-10-10/README.md) records the
-rejected dark-disc appearance and the native before/after: resting tint now stays on the bar
-while the recovering glass can extend beyond it.
-The [consecutive short-tap candidate](review/atlas/short-tap-timing-2026-10-10/README.md) slows adjacent
-travel while preserving its deformation and long-trip response. Two recorded partial trips improve
-from roughly13–16px to2.5px centre RMS with one time alignment each. The remaining width mismatch
-and current verification status are explicit; this is not full motion or optical parity.
-The [tap optical audit](review/atlas/tap-optics-audit-2026-10-11/README.md) identifies a remaining
-opacity and icon-size mismatch using original patches and production shader probes. The separate
-[appearance candidate](review/atlas/tap-optics-candidate-2026-10-11/README.md) improves short-tap
-pigment and selected ink without granting held ownership. The subsequent
-[long-tap candidate](review/atlas/long-tap-appearance-2026-10-12/README.md) adds axial travel strain
-and gradual pigment recovery: measured interior errors improve, with unchanged pose/held formation.
-Its 344 library passes, 27 optional skips, three Atlas tests and Android build are verified;
-one original gesture timeout and its unchanged-source retry are documented. Full optical parity remains open.
-The [desktop sampling repair](review/atlas/wide-input-2026-10-11/README.md) removes a vertical selector
-seam by retaining offscreen blur input. Its measured rendering cost and remaining performance work
-are documented alongside the native before/after. Atlas can prefer the discrete GPU and records
-the adapter actually selected; see the [GPU comparison](review/atlas/gpu-2026-10-11/README.md).
+**Unreleased development preview.** The source includes a continuous magnifier, calm navigation,
+Compose/CanvasKit scene APIs, a native .NET painter/controller and a WinForms control-backdrop
+adapter. These additions are not in the published `0.1.0` artifact. **Full 1:1 iOS parity and
+final visual acceptance remain unfinished.**
+
+## What works now
+
+| Area | Implemented behavior | Evidence / remaining scope |
+| --- | --- | --- |
+| Magnifier | Continuous source map shared by material and foreground | Rendered continuity checks; complete Apple optics remain unproven |
+| Navigation | Separate tap appearance, distance-dependent travel and endpoint recovery; off-axis strain belongs to the whole bar | Original/native comparisons; remaining contour, ink and timing mismatches |
+| Desktop sampling | Preserves clipped blur/ink inputs and confines resting tint to the actual bar | Native seam repair; Android composition differs |
+| Compose | One recorded backdrop, scene-bound surfaces and anchored controls | Android/JVM builds and renderer/gesture tests |
+| Web / CanvasKit | Lens preview or production shader painter, scenes and calm input controller | Browser/Skia tests, typed API and lifecycle checks |
+| Native .NET | Production SkiaSharp painter, calm controller, WinForms lens/card input and standard-control capture | Native pixel/input checks; navigation selector and other hosts still missing |
+| Atlas Studio | Sky/Type/Lines, movable lens, accessibility controls and verified NVIDIA selection | App-owned visual evidence; live/display performance remains unresolved |
+
+Read the **[visual development guide](docs/development-status.md)** for the full feature/evidence
+map, reproducible commands, checkpoint verification and remaining work. [TODO.md](TODO.md) is the
+complete delivery checklist; [NEXT-SESSION.md](NEXT-SESSION.md) is the recovery/startup handoff.
+
+### Visual evidence
+
+![Native adjacent-tap phases after the material and clipping corrections](review/atlas/long-tap-appearance-2026-10-12/native-short.png)
+
+These are ten independent native gesture phases, not a continuous recording or displayed-frame
+benchmark. [Tap appearance and exact verification](review/atlas/long-tap-appearance-2026-10-12/README.md).
+
+![Native .NET press, pull, release, reduced-motion and resize phases](review/atlas/dotnet-calm-2026-10-13/native-phases.png)
+
+The .NET host keeps text and hit targets anchored while its card responds.
+[Controller evidence](review/atlas/dotnet-calm-2026-10-13/README.md).
+
+![Actual native controls before an edit, after an edit, with glass and after resize](review/atlas/dotnet-controls-2026-10-13/comparison.png)
+
+The WinForms adapter captures the application's own controls, including real TextBox glyphs.
+[Backdrop ownership and supported-control limits](review/atlas/dotnet-controls-2026-10-13/README.md).
 
 ## Start with one scene
 
@@ -138,7 +138,7 @@ covers the shared compositor contract, GPU input bounds, memory cost and Android
 | Desktop JVM | Skia renderer; native Windows capture verified in the review record |
 | Compose iOS / native SwiftUI | No packaged renderer yet |
 | Web / JS frameworks | [Dependency-free lens preview](ports/web/README.md), or the [production Skia shader adapter](ports/skia/README.md); supply the backdrop explicitly |
-| .NET / SkiaSharp | [Native painter and runnable Windows Forms example](ports/dotnet/README.md); Windows CPU rendering verified, host backdrop explicit |
+| .NET / SkiaSharp | [Native painter, calm controller and WinForms adapter](ports/dotnet/README.md); host-owned images or verified standard-control capture |
 | Other Skia hosts | Generated material, content and aperture shaders; native bindings still need host integration and tests |
 | Other frameworks | See the [porting contract](docs/porting.md); native adapters remain work in progress |
 
@@ -163,10 +163,12 @@ matrix, or your custom renderer can consume it. [Portable feedback API](docs/por
 
 For native .NET, `GlassPainter` draws those production shaders directly on an `SKCanvas`. A shared
 source image serves multiple lenses/cards; `RecordBackdrop` can own a host-drawing snapshot.
-The [Windows Forms example](ports/dotnet/WinFormsDemo/Program.cs) includes mouse/keyboard lens controls,
-resize and transparency/contrast options. Four JVM profile fixtures match exactly on the verified
-Windows CPU backend. This adapter does not yet provide the navigation controller or capture arbitrary
-native widgets. [Setup, lifecycle and remaining platform gaps](ports/dotnet/README.md).
+`CalmInteraction` supplies timestamped whole-surface feedback; `DrawSurface(..., feedback)` applies it
+without moving text or hit bounds. The [Windows Forms example](ports/dotnet/WinFormsDemo/Program.cs)
+includes lens/card input, cancellation, resize and reduced motion. `LiquidGlass.WinForms` can capture
+an owned Panel/Label/TextBox/CheckBox subtree; RichTextBox/ActiveX are rejected and other controls
+retain documented limits. Four JVM profile fixtures match on the verified CPU backend. Navigation
+selector travel and additional native hosts remain open. [Setup, lifetime and examples](ports/dotnet/README.md).
 
 Published stable version, with the original API:
 

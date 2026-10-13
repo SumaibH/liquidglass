@@ -1,5 +1,9 @@
 # liquidglass — the research record
 
+**13 October 2026 development index:** [visual status and evidence](../development-status.md)
+covers subsequent motion/material corrections, native Atlas verification and cross-stack adapters.
+The original research and parameter provenance below remain historical; no full parity claim is made.
+
 **The optics in this library are measured, not styled.** This document is the complete record: the
 instrument the measurements were made with, the model fitted from them, the mathematics of the V3
 deformable selector as its controlling design states it, the code that implements all of it, the

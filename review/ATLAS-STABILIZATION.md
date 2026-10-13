@@ -1,5 +1,10 @@
 # Atlas and material stabilization — 2026-10-03
 
+**Current index,13October2026:** [development status with visuals](../docs/development-status.md)
+maps all later corrections, integrations, verification and open limits. This record is chronological;
+an earlier baseline or failed candidate is not the current accepted checkpoint. See
+[PROGRESS](../PROGRESS.md) and [TODO](../TODO.md) for current scope.
+
 ## Plan and acceptance gates
 
 Scope: LiquidGlass and Atlas Studio only. Work from `dd52d12`; preserve measured

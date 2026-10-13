@@ -99,6 +99,7 @@ extra:
 
 nav:
   - Home: README.md
+  - Development & visuals: development-status.md
   - Using it:
       - Getting started: getting-started.md
       - How it works: how-it-works.md
@@ -107,6 +108,7 @@ nav:
       - Generic interaction: generic-interaction.md
       - Atlas Studio: atlas-studio.md
       - Other UI stacks: porting.md
+      - Native .NET & WinForms: native-dotnet.md
       - Adaptation: adaptation.md
       - Tab bar: tab-bar.md
       - Accessibility: accessibility.md

@@ -1,5 +1,10 @@
 # Roadmap
 
+For work completed through13 October 2026 and the remaining delivery groups, use the
+[current visual status](development-status.md). The source contains native.NET calm feedback
+and a standard WinForms-control backdrop adapter in addition to Compose and portable paths.
+The historical strategy below does not supersede the current requirement checklist.
+
 **Historical strategy, September 2026.** Implementation notes below describe the original audit.
 For current delivered behavior, use [implementation status](implementation-status.md). The Atlas
 stabilization now includes continuous magnifiers, calm interaction, desktop visual evidence and

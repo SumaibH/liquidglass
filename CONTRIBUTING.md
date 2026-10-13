@@ -66,6 +66,23 @@ must be obtained. Dependency bots propose changes; they do not approve or merge 
 
 ## Documentation, licensing and provenance
 
+Document changes as they happen, in the same checkpoint as the implementation. For every public
+API/behavior change, update its guide, support matrix, CHANGELOG and
+[development status/evidence map](docs/development-status.md). Keep [PROGRESS](PROGRESS.md),
+[TODO](TODO.md) and [NEXT-SESSION](NEXT-SESSION.md) useful for resuming without repeating work.
+
+Visible changes need inspected app-owned screenshots or plots under `review/`, embedded in the
+relevant guide with a short caption: exact revision/backend, input/capture method, what changed,
+what was checked and what remains unproven. Prefer a small before/after or state sequence over an
+uncaptioned image dump. Pin historical evidence links to its source revision. Record failures and
+rejected attempts; never relabel calibrated samples as independent validation or screenshots as FPS.
+Keep private recordings/profile metadata local. Update current claims when a new result contradicts
+them, while preserving the historical record.
+
+Run `python .github/scripts/check_repo_links.py`, `python -m mkdocs build --strict` and
+`git diff --check` before publication. Runtime tests may be reused when source and inputs are
+unchanged; a docs-only update does not require repeating the renderer suite.
+
 User documentation belongs in `docs/`, which builds the public site. Update README, the API reference
 and CHANGELOG for new public features. If the research record is edited, keep its generated site twin
 in sync. Check all links, including GitHub links to assets that must actually be tracked.

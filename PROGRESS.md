@@ -6,6 +6,13 @@ Read this first after an interruption. Detailed history lives in the
 
 ## Current state
 
+**13 October documentation/pause checkpoint:** README and the documentation now provide a
+current visual/evidence index, native.NET guide, updated platform/performance/limit statements,
+Atlas diagnostic commands and changelog. Future changes must update documentation and inspected
+visuals in the same checkpoint. Strict site/link checks and desktop/narrow rendered previews pass;
+all ten b46207d runtime checks are green, including native Windows control capture. The owner
+requested a pause once these docs are published. NEXT-SESSION records the exact resume point.
+
 **13October native control backdrop:** the new WinForms adapter and executable example capture
 real Panel/Label/TextBox/CheckBox content for the production painter. Native glyph updates,
 identity/refraction, resize, thread ownership and failed-capture retention pass. Known unsupported

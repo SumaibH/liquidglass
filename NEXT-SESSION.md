@@ -3,6 +3,25 @@
 Updated13October2026 after the saved handoff and resumed investigation. Full iOS parity remains
 unfinished. Read TODO.md and the full objective before work; preserve every local change.
 
+## Owner-requested pause checkpoint
+
+The owner asked to update all README/documentation and visuals, maintain them on the go, then
+pause at a stable checkpoint. That documentation refresh is complete: README gallery,
+`docs/development-status.md`, `docs/native-dotnet.md`, current support/performance/limitations,
+Atlas diagnostics, changelog and synchronized research addendum. AGENTS/CONTRIBUTING/PR template
+now require same-checkpoint docs and inspected visual evidence for future changes.
+
+Strict MkDocs, 74 repository/visual links, 21 pinned source targets and rendered desktop/narrow
+previews pass. All seven image placements load. No runtime source changed in this docs checkpoint.
+All ten required b46207d runtime checks pass; its hosted Windows native-control report was inspected.
+The new docs checkpoint's commit/CI/pause status is recorded in `.local/active-goal-checkpoint.txt`
+and `.local/handoffs/2026-10-13-documentation-pause/publication.json` after publication.
+
+Resume only at the owner's request. Full goal remains unfinished (27 completed/22 open checklist
+entries of unequal size). Next substantive work: original Video1 repeated-short contour/width
+mismatch and remaining Video2 optics/contours. Do not restart verified native integrations or
+repeat unchanged Kotlin tests. No local test/capture queue remains running.
+
 **Latest native backdrop work:** separate LiquidGlass.WinForms adapter captures an owned
 Panel/Label/TextBox/CheckBox subtree through DrawToBitmap, with opaque snapshot ownership,
 thread/handle guards and RichTextBox/ActiveX rejection. Actual native glyph changes, exact
@@ -138,4 +157,4 @@ the repeated episode must NOT be presented as held-out proof.
 - Latest: `.local/handoffs/2026-10-13-long-tap-verified/verification.json` (current checkpoint snapshot).
 - Earlier77-file long-tap save,100-file in-progress validation snapshot and854-file ebc12d3 snapshot
   remain intact, alongside825/679/155-file older recovery sets. Preserve newer work before restoring.
-- Full findings, rejected fits and checks are in research/analysis/MOTION-2026-10-08.md throughStep213.
+- Full findings, rejected fits and checks are in research/analysis/MOTION-2026-10-08.md throughStep214.
