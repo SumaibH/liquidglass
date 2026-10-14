@@ -1,6 +1,6 @@
 import type {Canvas, CanvasKit, Image} from 'canvaskit-wasm';
 import {createGlassScene, createGlassPainter, createCalmInteraction, calmSelectorBar, createCalmNavigation,
-  CalmSelectorController} from 'liquidglass-skia-preview';
+  CalmSelectorController, calmSelectorMaterial, calmBarMaterial} from 'liquidglass-skia-preview';
 import {createGlassScene as subpathScene} from 'liquidglass-skia-preview/scene';
 import {createCalmInteraction as subpathInteraction} from 'liquidglass-skia-preview/interaction';
 
@@ -32,6 +32,9 @@ lens.setMaterial({dark: true});
 const nav = scene.addNavigation({x: 20, y: 250, width: 300, height: 62}, {count: 3, onSelect: i => nav.select(i)});
 nav.down(60, 280, .4); nav.up(60, 280, .45); const formed: number = nav.selector.formation;
 painter.drawSelector(canvas, {x: 0, y: 0, width: 300, height: 62}, nav.selector);
+painter.drawCalmBar(canvas, {x: 0, y: 0, width: 300, height: 62}, {dark: true, formation: nav.selector.formation});
+const calm: number = calmSelectorMaterial({formation: .5, transit: .2}).uFormation;
+void calm; void calmBarMaterial({dark: false});
 const bar = calmSelectorBar({width: 834, height: 186, count: 3, density: 3});
 const standalone = createCalmNavigation({bar}); standalone.frame(.1);
 new CalmSelectorController().attach(bar);

@@ -96,3 +96,85 @@ test('reduced motion snaps to rest and never holds', () => {
   nav.up(700, 93, .5); nav.frame(.52);
   assert.equal(nav.state().formation, 0);
 });
+
+// ---- material: the Compose Calm selector's own uniforms (GlassSelectorPortMaterialTest)
+import {calmSelectorMaterial} from './selector-material.mjs';
+import {createGlassPainter} from './painter.mjs';
+import CanvasKitInit from 'canvaskit-wasm';
+
+const material = JSON.parse(await readFile(new URL('./fixtures/selector-material.json', import.meta.url), 'utf8'));
+
+test('material: every Kotlin-computed selector material is reproduced', () => {
+  let worst = 0;
+  for (const s of material.samples) {
+    const ours = calmSelectorMaterial({dark: s.dark, formation: s.formation, transit: s.transit, heldTravel: s.heldTravel});
+    assert.ok(Math.abs(ours.uFormation - s.uFormation) <= 1e-6, `uFormation at ${JSON.stringify(s)}`);
+    for (const [key, value] of Object.entries(s.values)) {
+      const a = [].concat(value), b = [].concat(ours.values[key]);
+      assert.equal(b.length, a.length, key);
+      a.forEach((x, i) => { const e = Math.abs(x - b[i]); worst = Math.max(worst, e);
+        assert.ok(e <= 1e-5, `${key} at f=${s.formation} t=${s.transit} dark=${s.dark}: ${b[i]} vs ${x}`); });
+    }
+  }
+  assert.ok(material.samples.length >= 96 && worst <= 1e-5);
+});
+
+test('material: the lens looks through the bar it sits on', async () => {
+  const kit = await CanvasKitInit();
+  const w = 360, h = 140, surface = kit.MakeSurface(w, h), canvas = surface.getCanvas();
+  const pixels = new Uint8Array(w * h * 4);
+  for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) {
+    // A dark page, as in the recordings: the bar's lifted glass is what the lens sees.
+    const i = (y * w + x) * 4; pixels[i] = x % 24; pixels[i + 1] = y % 24; pixels[i + 2] = (x + y) % 24; pixels[i + 3] = 255;
+  }
+  const image = kit.MakeImage({width: w, height: h, alphaType: kit.AlphaType.Unpremul, colorType: kit.ColorType.RGBA_8888,
+    colorSpace: kit.ColorSpace.SRGB}, pixels, w * 4);
+  const painter = createGlassPainter(kit);
+  const c = new CalmSelectorController(); c.attach(calmSelectorBar({width: 300, height: 62, count: 3}));
+  c.snapToRest(0);
+  const rect = {x: 20, y: 40, width: 300, height: 62};
+  const read = () => canvas.readPixels(0, 0, {width: w, height: h, colorType: kit.ColorType.RGBA_8888,
+    alphaType: kit.AlphaType.Premul, colorSpace: kit.ColorSpace.SRGB});
+  try {
+    painter.setSource(image);
+    canvas.drawImage(image, 0, 0); painter.drawCalmBar(canvas, rect, {dark: true});
+    const through = surface.makeImageSnapshot();
+    try {
+      painter.drawSelector(canvas, rect, {pose: c.render(), formation: 0}, {dark: true, through});
+      const seen = read();
+      canvas.drawImage(through, 0, 0); painter.drawSelector(canvas, rect, {pose: c.render(), formation: 0}, {dark: true});
+      const bare = read();
+      const lum = (p, x, y) => { const i = (y * w + x) * 4; return p[i] + p[i + 1] + p[i + 2]; };
+      // Inside the resting pill the bar's own glass (lift 45/255) shows through the selector.
+      assert.ok([[70, 60], [80, 80], [100, 70]].every(([x, y]) => lum(seen, x, y) > lum(bare, x, y) + 20),
+        'the lens did not look through the bar');
+      assert.equal(lum(seen, 290, 71), lum(bare, 290, 71), 'the selector changed the far end of the bar');
+    } finally { through.delete(); }
+  } finally { painter.dispose(); image.delete(); surface.delete(); }
+});
+
+test('ink: the selected ink shows only inside the selector', async () => {
+  const kit = await CanvasKitInit();
+  const w = 360, h = 140, surface = kit.MakeSurface(w, h), canvas = surface.getCanvas();
+  const page = new Uint8Array(w * h * 4).fill(10); for (let i = 3; i < page.length; i += 4) page[i] = 255;
+  const info = {width: w, height: h, alphaType: kit.AlphaType.Unpremul, colorType: kit.ColorType.RGBA_8888, colorSpace: kit.ColorSpace.SRGB};
+  const image = kit.MakeImage(info, page, w * 4);
+  // The bar's items in their selected colour: a blue dot at every tab centre, bar-sized, transparent ground.
+  const ink = new Uint8Array(300 * 62 * 4);
+  for (const cx of [50, 150, 250]) for (let y = 21; y < 41; y++) for (let x = cx - 10; x < cx + 10; x++) ink.set([40, 110, 255, 255], (y * 300 + x) * 4);
+  const inkImage = kit.MakeImage({...info, width: 300, height: 62}, ink, 300 * 4);
+  const painter = createGlassPainter(kit);
+  const c = new CalmSelectorController(); c.attach(calmSelectorBar({width: 300, height: 62, count: 3})); c.snapToRest(0);
+  const rect = {x: 20, y: 40, width: 300, height: 62};
+  try {
+    painter.setSource(image); canvas.drawImage(image, 0, 0);
+    painter.drawCalmBar(canvas, rect, {dark: true});
+    painter.drawSelector(canvas, rect, {pose: c.render()}, {dark: true});
+    painter.drawSelectorInk(canvas, rect, {pose: c.render()}, inkImage, {dark: true});
+    const p = canvas.readPixels(0, 0, {...info, alphaType: kit.AlphaType.Premul});
+    const at = (x, y) => { const i = (y * w + x) * 4; return [p[i], p[i + 1], p[i + 2]]; };
+    const under = at(20 + 50, 40 + 31), beyond = at(20 + 250, 40 + 31);
+    assert.ok(under[2] > 200 && under[2] > under[0] + 120, `selected ink missing inside the selector: ${under}`);
+    assert.ok(beyond[2] < 120, `selected ink leaked outside the selector: ${beyond}`);
+  } finally { painter.dispose(); inkImage.delete(); image.delete(); surface.delete(); }
+});

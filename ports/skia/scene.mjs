@@ -80,6 +80,28 @@ export function createGlassScene(kit, options) {
       remove() { layers.delete(layer); },
     };
   }
+  // The Compose Calm bar and selector material; `dark` and accessibility preferences carry over.
+  function navMaterial(layer, ratio) {
+    const m = layer.material;
+    return {dark: m.dark ?? true, density: (m.density ?? 1) * ratio, formation: layer.nav.state().formation,
+      materialize: m.materialize ?? 1, reducedTransparency: m.reducedTransparency ?? 0, increasedContrast: m.increasedContrast ?? 0};
+  }
+  function barThrough(canvas, layer, deviceBounds, ratio) {
+    const surface = canvas.makeSurface({width: image.width(), height: image.height(), colorType: kit.ColorType.RGBA_8888,
+      alphaType: kit.AlphaType.Premul, colorSpace: kit.ColorSpace.SRGB});
+    if (!surface) return null;
+    try {
+      const target = surface.getCanvas(); target.drawImage(image, 0, 0);
+      const [a, b, c, d] = layer.state.matrix;
+      const cx = deviceBounds.x + deviceBounds.width / 2, cy = deviceBounds.y + deviceBounds.height / 2;
+      target.save();
+      target.translate(cx + layer.state.offset[0] * ratio, cy + layer.state.offset[1] * ratio);
+      target.concat([a, b, 0, c, d, 0, 0, 0, 1]); target.translate(-cx, -cy);
+      painter.drawCalmBar(target, deviceBounds, navMaterial(layer, ratio));
+      target.restore(); surface.flush();
+      return surface.makeImageSnapshot();
+    } finally { surface.delete(); }
+  }
   /** A Calm navigation bar: bar glass, the ported selector and its gestures. Logical px. */
   function addNavigation(input, {count, selected = 0, inset = 6, pillWidth, pillInset = 4,
     onSelect = () => {}, material = {dark: true}} = {}) {
@@ -113,6 +135,9 @@ export function createGlassScene(kit, options) {
       cancel(time) { attached(); const t = timeAt(time); nav.cancel(t); layer.state = motion.release(t); down = null; clock = t; },
       /** The host's selection (after onSelect, or from elsewhere). */
       select(index) { attached(); nav.select(index); },
+      /** The bar's items drawn in their selected appearance (transparent ground, device px, bar
+       * origin), shown through the selector; null removes it. Borrowed: keep it alive while set. */
+      setSelectedInk(image) { attached(); layer.ink = image ?? null; },
       remove() { layers.delete(layer); },
     };
   }
@@ -162,6 +187,7 @@ export function createGlassScene(kit, options) {
           canvas.concat([a, b, 0, c, d, 0, 0, 0, 1]);
           canvas.translate(-cx, -cy);
           if (layer.kind === 'lens') painter.drawLens(canvas, deviceBounds);
+          else if (layer.nav) painter.drawCalmBar(canvas, deviceBounds, navMaterial(layer, ratio));
           else painter.drawSurface(canvas, deviceBounds,
             {...layer.material, density: (layer.material.density ?? 1) * ratio});
         } finally { canvas.restore(); }
@@ -170,8 +196,14 @@ export function createGlassScene(kit, options) {
           const s = layer.nav.state(), p = s.pose, r = ratio;
           const pose = {a: p.a, aInv: p.aInv, c: [p.c[0] * r, p.c[1] * r, p.c[2] / r, p.c[3] / r],
             d: [p.d[0] * r, p.d[1] * r, p.d[2], p.d[3] * r]};
-          painter.drawSelector(canvas, {x: bounds.x * r, y: bounds.y * r, width: bounds.width * r, height: bounds.height * r},
-            {pose, formation: s.formation}, {...layer.material, density: (layer.material.density ?? 1) * r});
+          // As in Compose, the lens looks through the bar: the page with the bar's glass over it.
+          const through = barThrough(canvas, layer, deviceBounds, ratio);
+          const barRect = {x: bounds.x * r, y: bounds.y * r, width: bounds.width * r, height: bounds.height * r};
+          const state = {pose, formation: s.formation, transit: s.transitAppearance, heldTravel: s.heldTravel};
+          try {
+            painter.drawSelector(canvas, barRect, state, {...navMaterial(layer, ratio), through});
+            if (layer.ink) painter.drawSelectorInk(canvas, barRect, state, layer.ink, navMaterial(layer, ratio));
+          } finally { through?.delete(); }
         }
       }
       return active;

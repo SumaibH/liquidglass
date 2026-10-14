@@ -687,6 +687,11 @@ fun GlassTabBar(
                                 }
                                 tracker.addPosition(change.uptimeMillis, change.position)
                                 liveVelocity = tracker.calculateVelocity().x
+                                // The press now drags the lens (a hold alone does not): the bar keeps
+                                // only its drag share ([GlassInteraction.dragPressShare]).
+                                if (!barPress.dragging && abs(change.position.x - down.position.x) > viewConfiguration.touchSlop) {
+                                    barPress.dragging = true
+                                }
                                 handle?.controller?.pointerMove(change.position.x, change.uptimeMillis / 1000.0)
                                 handle?.wake()
                                 poseHandle?.controller?.pointerMove(
@@ -790,7 +795,10 @@ fun GlassTabBar(
                     GlassFuse(
                         bounds = DpRect(left.toDp(), top.toDp(), (left + sizePx).toDp(), (top + sizePx).toDp()),
                         cornerRadius = (sizePx / 2f).toDp(),
-                        smoothing = trailingAccessory.fusion,
+                        smoothing = if (trailingAccessory.yieldsToLens && poseHandle != null) {
+                            val endEdge = if (rtl) barWidthPx - poseHandle.left else poseHandle.right
+                            trailingAccessory.fusion * (1f - glassAccessoryYield(poseHandle.formation, endEdge, barWidthPx, barHeightPx))
+                        } else trailingAccessory.fusion,
                         anchored = true,
                     )
                 }
@@ -1449,6 +1457,8 @@ data class GlassTabBarStyle(
                 pressReach = if (dark) .03f else 0f,
                 // iOS's bar snaps back after lift (0.12 s, ~10% overshoot) and parts from the button.
                 releaseStiffness = if (dark) 530f else 0f, releaseDamping = if (dark) .6f else 1f,
+                // Once its lens is dragged, iOS's bar keeps about 10 px of growth a side.
+                dragPressShare = if (dark) .7f else 1f,
             ),
         ) }
         // Declaration order matters here: the constructor's defaults read RestingInset and
@@ -1797,17 +1807,36 @@ private const val SELECTION_GRACE_MILLIS = 400L
  * Lay the accessory out yourself, vertically centred on the bar, [gap] beyond its trailing end,
  * [size] square, and compose it after the bar so its own glass draws on top. A [fusion] below
  * twice the [gap] keeps the two apart at rest.
+ *
+ * [yieldsToLens] (opt-in): a formed pose selector pressing into the accessory's end takes the
+ * neck's place, so the bar and the button part as the lens arrives rather than when the finger
+ * lifts. Observed in video2 (2026-10-14): on every throw into the search-button end the neck
+ * disappears as the lens reaches the end (12.43 s, before the 12.455 s lift). Authored ramp.
  */
 @Immutable
 class GlassTabBarAccessory(
     val size: Dp,
     val gap: Dp = 8.dp,
     val fusion: Dp = 6.dp,
+    val yieldsToLens: Boolean = false,
 ) {
     override fun equals(other: Any?): Boolean =
-        other is GlassTabBarAccessory && size == other.size && gap == other.gap && fusion == other.fusion
+        other is GlassTabBarAccessory && size == other.size && gap == other.gap && fusion == other.fusion &&
+            yieldsToLens == other.yieldsToLens
 
-    override fun hashCode(): Int = (size.hashCode() * 31 + gap.hashCode()) * 31 + fusion.hashCode()
+    override fun hashCode(): Int = ((size.hashCode() * 31 + gap.hashCode()) * 31 + fusion.hashCode()) * 31 +
+        yieldsToLens.hashCode()
+}
+
+/**
+ * How much of the accessory's neck a formed pose selector has taken over, 0 to 1: its formation
+ * times how far its trailing-end edge has reached the bar's end, ramped over a tenth of the bar
+ * height either side. Zero for every other selector.
+ */
+internal fun glassAccessoryYield(formation: Float, endEdge: Float, barWidth: Float, barHeight: Float): Float {
+    val span = (.1f * barHeight).coerceAtLeast(1e-3f)
+    val reach = ((endEdge - (barWidth - span)) / (2f * span)).coerceIn(0f, 1f)
+    return formation.coerceIn(0f, 1f) * reach * reach * (3f - 2f * reach)
 }
 
 /**
@@ -1824,16 +1853,18 @@ internal fun glassSelectorMaterial(style: GlassTabBarStyle, formation: Float, tr
     val material = lerpGlassStyle(style.pill, style.lens, opticalLift).copy(tint = pigment.tint, tintLift = pigment.tintLift)
     // A moving, unheld selector folds its band (see [glassSelectorFold]) instead of the held map.
     return if (glassSelectorFold(style, formation, transitAppearance) > 0f)
-        material.copy(profile = GlassProfile.Measured, foldAtCorners = 1f, rimMirror = GlassSelectorRimMirror, dispersion = GlassSelectorRimDispersion, inkDispersion = GlassSelectorRimDispersion)
+        material.copy(profile = GlassProfile.Measured, foldAtCorners = 1f, rimMirror = GlassSelectorRimMirror, rimMirrorGain = GlassSelectorRimGain, dispersion = GlassSelectorRimDispersion, inkDispersion = GlassSelectorRimDispersion)
     // A held lens keeps the measured held map when still and blends toward the same rim mirror
     // at its caps as it travels ([glassSelectorFormation] carries the travel amount).
-    else if (style.tapOpticsFold > 0f && formation >= 0.5f) material.copy(foldAtCorners = 1f, rimMirror = GlassSelectorRimMirror, dispersion = GlassSelectorRimDispersion, inkDispersion = GlassSelectorRimDispersion)
+    else if (style.tapOpticsFold > 0f && formation >= 0.5f) material.copy(foldAtCorners = 1f, rimMirror = GlassSelectorRimMirror, rimMirrorGain = GlassSelectorRimGain, dispersion = GlassSelectorRimDispersion, inkDispersion = GlassSelectorRimDispersion)
     else material
 }
 
 /** Rim-mirror band and its colour split for a moving Calm selector (authored, 2026-10-14). */
 internal const val GlassSelectorRimMirror = 1.0f
-internal const val GlassSelectorRimDispersion = 0.025f
+/** Radial draw of the moving selector's mirrored caps (authored, 2026-10-14 second pass). */
+internal const val GlassSelectorRimGain = 0.4f
+internal const val GlassSelectorRimDispersion = 0.05f
 
 /** `lensFormation` for the selector: the transit fold while unheld, the held lens's travel
  * (rim-mirror blend at its caps) while held. */

@@ -261,3 +261,32 @@ internal fun glassSurfacePull(
     return pull.copy(along = 1f + (pull.along - 1f) * gain,
         across = 1f + (pull.across - 1f) * gain)
 }
+
+/** One 60 Hz frame: how far a release animation starts in ([GlassInteraction.releaseStiffness]). */
+internal const val GLASS_RELEASE_LEAD_NANOS = 16_666_667L
+
+/**
+ * [base], already [leadNanos] in: its first frame shows the value [leadNanos] after the start.
+ * For a response to an event the frame that observes it is already late for, so the animation
+ * does not add a frame of its own on top. Continuous; the remaining duration shortens by the lead.
+ */
+internal class GlassLeadingSpec<T>(
+    private val base: androidx.compose.animation.core.FiniteAnimationSpec<T>,
+    private val leadNanos: Long,
+) : androidx.compose.animation.core.FiniteAnimationSpec<T> {
+    override fun <V : androidx.compose.animation.core.AnimationVector> vectorize(
+        converter: androidx.compose.animation.core.TwoWayConverter<T, V>,
+    ): androidx.compose.animation.core.VectorizedFiniteAnimationSpec<V> {
+        val spec = base.vectorize(converter)
+        return object : androidx.compose.animation.core.VectorizedFiniteAnimationSpec<V> {
+            override fun getValueFromNanos(playTimeNanos: Long, initialValue: V, targetValue: V, initialVelocity: V): V =
+                spec.getValueFromNanos(playTimeNanos + leadNanos, initialValue, targetValue, initialVelocity)
+            override fun getVelocityFromNanos(playTimeNanos: Long, initialValue: V, targetValue: V, initialVelocity: V): V =
+                spec.getVelocityFromNanos(playTimeNanos + leadNanos, initialValue, targetValue, initialVelocity)
+            override fun getDurationNanos(initialValue: V, targetValue: V, initialVelocity: V): Long =
+                (spec.getDurationNanos(initialValue, targetValue, initialVelocity) - leadNanos).coerceAtLeast(0L)
+        }
+    }
+    override fun equals(other: Any?): Boolean = other is GlassLeadingSpec<*> && other.base == base && other.leadNanos == leadNanos
+    override fun hashCode(): Int = base.hashCode() * 31 + leadNanos.hashCode()
+}

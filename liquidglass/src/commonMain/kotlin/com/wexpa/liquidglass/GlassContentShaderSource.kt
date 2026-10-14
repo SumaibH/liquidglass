@@ -43,6 +43,7 @@ uniform float   uProfile;
 uniform float   uFormation;
 uniform float   uFoldCorners;
 uniform float   uRimMirror;
+uniform float   uRimMirrorGain;
 uniform float   uHeldLens;     // GlassProfile.Held: how far the tab-bar lens has formed, 0 to 1
 uniform float   uHeldMagnification; // interior zoom of the held lens at full formation (GlassStyle.heldMagnification)
 uniform float   uRestMap;      // resting-corner source map: 0 legacy, 1 the measured table (GlassRestMap)
@@ -117,6 +118,10 @@ float snellShift(float slope, float ior) {
 
 $GLASS_SOURCE_MAP_SKSL
 
+// GlassStyle.rimMirrorGain: how much deeper content the mirrored rim reaches per unit of band.
+// 1 (or unset) is the plain mirror; below 1 the cap content is drawn out radially toward the rim.
+float rimGain() { return (uRimMirrorGain > 0.0) ? clamp(uRimMirrorGain, 0.05, 1.0) : 1.0; }
+
 // The measured family's source map, or the reflective rim (GlassStyle.rimMirror): within b of
 // the band a pixel at depth u shows depth 2b - u, mirrored about b; inside it, identity.
 // A moving held lens (GlassStyle.rimMirror with the held family): blend the held map toward the
@@ -124,7 +129,7 @@ $GLASS_SOURCE_MAP_SKSL
 float heldMirror(float u, float map, float corner) {
     if (uRimMirror <= 0.0) return map;
     float b = clamp(uRimMirror, 0.0, 1.0);
-    float mirrored = (u < b) ? (2.0 * b - u) : u;
+    float mirrored = (u < b) ? (b + (b - u) * rimGain()) : u;
     float k = clamp(uFormation, 0.0, 1.0) * mix(1.0, corner, clamp(uFoldCorners, 0.0, 1.0));
     return mix(map, mirrored, k);
 }
@@ -140,7 +145,7 @@ float rimZone(float u) {
 float measuredSource(float u, float formation, float corner) {
     if (uRimMirror <= 0.0) return foldSource(u, formation, corner);
     float b = clamp(uRimMirror, 0.0, 1.0);
-    float mirrored = (u < b) ? (2.0 * b - u) : u;
+    float mirrored = (u < b) ? (b + (b - u) * rimGain()) : u;
     return mix(u, mirrored, clamp(formation, 0.0, 1.0));
 }
 

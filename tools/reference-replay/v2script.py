@@ -5,14 +5,58 @@
 # early. The finger follows the ink centroid while it travels. A throw releases when the ink has
 # settled within 22 px of a tab for 3 frames: into the middle tab the finger stops first; into
 # an end tab it lifts still moving, because the ink stops at the tab when the lens meets the
-# wall and cannot show the finger beyond it (2026-10-14). A stationary hold releases 50 ms
-# before the held shift disappears. 0.35 s after each release is ignored (landing recovery is
-# not a new press). The held-reversal episode is spliced in from reversal-script.txt.
-import csv
+# wall and cannot show the finger beyond it (2026-10-14). A stationary hold lifts where the
+# bar starts to return (the bar is pressed only while touched: its far edge, on a row above the
+# search-button neck, from v2-row495.gray / v2-pts.txt when present), less our own bar's
+# release latency of 43 ms; without those files, 50 ms before the held shift disappears.
+# The finger leads the ink by LEAD (33 ms) through every throw: the selected-ink centroid trails
+# the lens's leading edge (the lens reaches the end tab about three frames before the ink does);
+# 33 ms is the lead the ten right-wall landings fit best (2026-10-14).
+# 0.35 s after each release is ignored (landing recovery is not a new press). The
+# held-reversal episode is spliced in from reversal-script.txt.
+import csv, os
+BAR = None
+if os.path.exists('v2-row495.gray') and os.path.exists('v2-pts.txt'):
+    import numpy as np
+    BAR = (np.fromfile('v2-row495.gray', np.uint8).reshape(-1, 6, 1170),
+           np.array([float(l.strip().strip(',')) for l in open('v2-pts.txt') if l.strip()]))
+BAR_LATENCY = 0.043
+def bar_release(t_end, finger_x):
+    """The first frame the bar's far edge returns toward rest by 2 px and keeps going, within
+    0.3 s before the held shift disappears; None if it cannot be seen."""
+    if BAR is None: return None
+    rows, pts = BAR
+    ks = [k for k in range(len(pts)) if t_end - .3 <= pts[k] <= t_end + .05]
+    def edge(k):
+        r = rows[k, 0:5].astype(float).mean(0)
+        if finger_x < 480:
+            x = 925
+            while x > 600 and r[x] <= 20: x -= 1
+            return -x
+        return next((x for x in range(0, 300) if r[x] > 20), -1)
+    e = [edge(k) for k in ks]
+    for i in range(1, len(e) - 2):
+        if e[i] - e[i-1] >= 2 and e[i+1] - e[i] >= 1 and e[i+2] - e[i+1] >= 1:
+            return pts[ks[i-1]]
+    return None
 r=[(float(x['t']),float(x['cx'])) for x in csv.DictReader(open('v2.csv'))]
 REST=[217,479,742]; Y=546; N=len(r)
 cxs=[c for _,c in r]
 med=[sorted(cxs[max(0,i-1):i+2])[len(cxs[max(0,i-1):i+2])//2] for i in range(N)]
+# Mid-throw the centroid snaps to the middle tab's ink while the lens passes over it: a plateau of
+# at most four samples at that tab, entered and left in the same direction at speed, is the lens
+# travelling on. Interpolate through it (34.7 s; 2026-10-14).
+i=1
+while i<N-1:
+    if abs(med[i]-REST[1])<=12 and abs(med[i-1]-REST[1])>20:
+        j=i
+        while j+1<N and abs(med[j+1]-REST[1])<=12 and j-i<4: j+=1
+        if j+1<N and j-i<4 and abs(med[j+1]-REST[1])>20 and (med[i-1]-REST[1])*(med[j+1]-REST[1])<0:
+            t0,x0,t1,x1=r[i-1][0],med[i-1],r[j+1][0],med[j+1]
+            if abs(x1-x0)/(t1-t0)>1500:
+                for q in range(i,j+1): med[q]=x0+(x1-x0)*(r[q][0]-t0)/(t1-t0)
+        i=j+1
+    else: i+=1
 def tab(cx,tol):
     k=min(range(3),key=lambda k:abs(cx-REST[k])); return k if abs(cx-REST[k])<=tol else None
 def settled(i,tol=22):
@@ -22,6 +66,7 @@ def settled(i,tol=22):
     return k
 REV=(18.7,22.3)
 HOLD=0.137
+LEAD=0.033
 WALL=[63,897]
 ev=[]; cat=[]; at=0; i=0; quiet=-1
 while i<N:
@@ -61,11 +106,15 @@ while i<N:
                 cat.append(f"{start:6.2f}-{tj:6.2f}  {kind:15s} {origin}->{d}" + ("  wall" if d in (0,2) and not rev else "  intermediate" if not rev else ""))
                 at=d; quiet=tj+0.35; break
         elif all(tab(med[q],3.5)==origin for q in range(j,min(N,j+4))):
-            ev.append((tj-0.05,'up',REST[origin]))
+            onset = bar_release(tj, REST[origin])
+            ev.append(((onset - BAR_LATENCY) if onset is not None else tj-0.05,'up',REST[origin],'stationary'))
             cat.append(f"{start:6.2f}-{tj:6.2f}  stationary hold {origin}")
             quiet=tj+0.1; break
         j+=1
     i=j+1
+# Throw moves and lifts lead the ink; a stationary hold's bar-timed lift is already the finger's.
+ev=[(t-LEAD,k,x) if k=='move' or (k=='up' and not stationary) else (t,k,x) for t,k,x,stationary in
+    [(e[0],e[1],e[2],len(e)>3) for e in ev]]
 for c in cat: print(c)
 # Splice the rebuilt held-reversal episode (its times are relative to 18.5 s).
 ev=[e for e in ev if not 18.5<=e[0]<22.6]

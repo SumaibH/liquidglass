@@ -44,8 +44,12 @@ public sealed record CalmSelectorSpec
     public double ReleaseImpactGain { get; init; } = 0; public bool ReleaseEdgeAnchor { get; init; }
     public double ReleaseRecoveryOmega { get; init; } = 0; public double ReleaseRecoveryZeta { get; init; } = 1;
     public bool ReleaseTrailingEdge { get; init; } public double TapShortTripRate { get; init; } = 1;
+    public double ReleaseTrailingInOmega { get; init; } = 0; public double ReleaseTrailingInZeta { get; init; } = 1;
+    public double ReleaseTrailingCarry { get; init; } = 1; public double ReleaseWallGive { get; init; } = 0;
+    public double ReleaseTrailingStiffening { get; init; } = 0;
     public double TapAppearanceArea { get; init; } = 0; public double TapAppearanceSpine { get; init; } = 0;
     public double TapAppearanceFallOmega { get; init; } = 0; public double ReleaseFormationSpeed { get; init; } = 0;
+    public double ReleaseStillHoldSeconds { get; init; } = 0;
 
     /// <summary>GlassPoseSpec.Calm.</summary>
     public static CalmSelectorSpec Calm { get; } = new()
@@ -59,6 +63,8 @@ public sealed record CalmSelectorSpec
         TapSpineLimitSlots = .45, TapAreaGain = .51, TapShortTripRate = .75, TapAppearanceArea = .44,
         TapAppearanceSpine = .13, TapAppearanceFallOmega = 45, ReleaseFormationSpeed = 3,
         GraspOmega = 120, HeldFormRiseOmega = 50, ReleaseTrailingEdge = true, ReleaseRecoveryOmega = 13,
+        ReleaseTrailingInOmega = 9, ReleaseTrailingInZeta = .3, ReleaseTrailingCarry = .1, ReleaseWallGive = .35,
+        ReleaseTrailingStiffening = .5, ReleaseStillHoldSeconds = .18,
     };
 }
 
@@ -257,7 +263,10 @@ public sealed class CalmSelectorController
     private const int ContourSamples = 256, QuietSteps = 8, MaxContactIterations = 24;
     private const double QuietPx = .02, ContactTolerance = .05, MaxContactStep = 12, MaxContactPressureStep = .06,
         ContactRegainMargin = 0, ContactRegainAccommodation = 1, AccommodationResolvePx = 1,
-        AccommodationResolvePressure = .01, CoverageEpsilon = .5, ContactRegainFormation = .02, RegrabFormation = .15;
+        AccommodationResolvePressure = .01, CoverageEpsilon = .5, ContactRegainFormation = .02, RegrabFormation = .15,
+        WallPullHeights = 20, ReleaseImpactReach = .3, ReleaseStillSlots = .5;
+    private double releasedAt; private bool releasedStill;
+    private bool trailImpact;
 
     private readonly SelectorPose pose = new(), velocity = new(), equilibrium = new(), lastGood = new(), lastGoodVelocity = new(),
         lastPublished = new(), probePose = new(), scratchPose = new();
@@ -291,7 +300,10 @@ public sealed class CalmSelectorController
     public double CentreY => pose.Cy;
     public CalmSelectorBar Bar => bar ?? throw new InvalidOperationException("Attach a bar first");
     public bool IsIdle => Mode != CalmSelectorMode.PressPending && !tapAreaActive && TransitAppearance < 1e-4 &&
-        HeldTravel < 1e-4 && quietSteps >= QuietSteps;
+        HeldTravel < 1e-4 && quietSteps >= QuietSteps &&
+        // A still release keeping its glass: nothing moves yet, but the formation still has to fall.
+        !(Mode == CalmSelectorMode.Released && releasedFromHold && releasedStill && form.Value > .01 &&
+          now - releasedAt < Spec.ReleaseStillHoldSeconds + .05);
     private bool started;
 
     public void Attach(CalmSelectorBar bar, IReadOnlyList<double>? itemBounds = null, IReadOnlyList<double>? itemCentres = null, double? inkHalfHeight = null)
@@ -392,7 +404,8 @@ public sealed class CalmSelectorController
     {
         var b = Bar; var s = Spec;
         quietSteps = 0; requestedIndex = restIndex; RestIndex = Math.Clamp(restIndex, 0, Math.Max(b.Count - 1, 0));
-        releasedFromHold = Mode == CalmSelectorMode.Held;
+        releasedFromHold = Mode == CalmSelectorMode.Held; releasedAt = now;
+        releasedStill = Math.Abs(velocity.Cx) < ReleaseStillSlots * Math.Max(Bar.SlotWidth, 1);
         releaseImpactActive = releasedFromHold && (s.ReleaseImpactGain > 0 || s.ReleaseTrailingEdge) &&
             (RestIndex == 0 || RestIndex == b.Count - 1) && Math.Abs(velocity.Cx) > reference.Width * .6;
         Mode = releasedFromHold ? CalmSelectorMode.Released : CalmSelectorMode.TapTransit;
@@ -488,7 +501,7 @@ public sealed class CalmSelectorController
         {
             releaseEdge.Value = pose.Cx + dir * LandingHalfWidth(); releaseEdge.Velocity = velocity.Cx + dir * LandingHalfWidthVelocity();
             releaseEdge.Target = b.CentreOf(RestIndex) + dir * refr.Width * .5;
-            releaseTrail.Value = pose.Cx - dir * LandingHalfWidth(); releaseTrail.Velocity = velocity.Cx - dir * LandingHalfWidthVelocity();
+            releaseTrail.Value = pose.Cx - dir * LandingHalfWidth(); releaseTrail.Velocity = velocity.Cx - dir * LandingHalfWidthVelocity(); trailImpact = false;
             releaseTrail.Target = b.CentreOf(RestIndex) - dir * refr.Width * .5;
         }
         releaseEdgeActive = coupleReleaseEdge;
@@ -516,7 +529,11 @@ public sealed class CalmSelectorController
         else if (Mode == CalmSelectorMode.Released)
         {
             var v = s.ReleaseFormationSpeed;
-            if (v > 0 && releasedFromHold) { var rs = velocity.Cx / slot; formTarget = Math.Min(form.Value, rs * rs / (v * v + rs * rs)); }
+            if (v > 0 && releasedFromHold)
+            {
+                var rs = velocity.Cx / slot;
+                formTarget = releasedStill && now - releasedAt < s.ReleaseStillHoldSeconds ? form.Value : Math.Min(form.Value, rs * rs / (v * v + rs * rs));
+            }
             else formTarget = 0;
         }
         else formTarget = 1 - (1 - pressResponse) * (1 - s.FormFromMovement * sv);
@@ -670,10 +687,31 @@ public sealed class CalmSelectorController
             releaseEdge.Step(dt, s.CentreOmega, s.CentreZeta);
             if (twoEdge)
             {
-                var wall = dir > 0 ? b.Width : 0;
-                if (dir * releaseEdge.Velocity > 0 && dir * (releaseEdge.Value - wall) > 0)
+                var give = s.ReleaseWallGive * b.Height;
+                var wall = (dir > 0 ? b.Width : 0) + dir * give * Math.Clamp(form.Value, 0, 1);
+                var wallVelocity = form.Value > 0 && form.Value < 1 ? dir * give * form.Velocity : 0;
+                if (give > 0)
+                {
+                    if (dir * (releaseEdge.Value - wall) > 0)
+                    {
+                        var from = dir * (leadBefore - wall) > 0 ? leadBefore : wall;
+                        var pull = Math.Min(dir * (from - wall), WallPullHeights * b.Height * dt);
+                        releaseEdge.Value = from - dir * pull;
+                        releaseEdge.Velocity = from == wall ? wallVelocity
+                            : pull < dir * (from - wall) ? -dir * WallPullHeights * b.Height : wallVelocity;
+                    }
+                }
+                else if (dir * releaseEdge.Velocity > 0 && dir * (releaseEdge.Value - wall) > 0)
                 { releaseEdge.Value = dir * (leadBefore - wall) > 0 ? leadBefore : wall; releaseEdge.Velocity = 0; }
-                releaseTrail.Step(dt, s.ReleaseRecoveryOmega, s.ReleaseRecoveryZeta);
+                // The leading edge meets the bar's end: the impact takes the trailing edge's speed, once.
+                if (!trailImpact && dir * (releaseEdge.Value - (dir > 0 ? b.Width : 0)) >= -ReleaseImpactReach * b.Height)
+                { trailImpact = true; releaseTrail.Velocity *= s.ReleaseTrailingCarry; }
+                if (s.ReleaseTrailingInOmega > 0 && dir * releaseTrail.Velocity > 0)
+                {
+                    var behind = Math.Max(0, -dir * (releaseTrail.Value - releaseTrail.Target)) / Math.Max(refr.Width, 1);
+                    releaseTrail.Step(dt, s.ReleaseTrailingInOmega * (1 + s.ReleaseTrailingStiffening * behind), s.ReleaseTrailingInZeta);
+                }
+                else releaseTrail.Step(dt, s.ReleaseRecoveryOmega, s.ReleaseRecoveryZeta);
                 var caps = refr.R * Math.Exp(pose.P) + Math.Max(pose.Acc, 0);
                 var capsVelocity = refr.R * Math.Exp(pose.P) * velocity.P + (pose.Acc > 0 ? velocity.Acc : 0);
                 var minimum = caps + .002;

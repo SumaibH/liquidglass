@@ -36,25 +36,36 @@ recordings through the real renderer and comparing **continuous sequences**, not
 - Pass 3 (13 Oct): fast held reversals (grasp 120/s, held formation 50/s); reversal input
   rebuilt from turning points (`tools/reference-replay/reversal-script.txt`).
 - README and repository description rewritten (owner authorized the description/homepage).
+- PR6 merged into `main` (02f74a4, 14 Oct, owner: "permission granted for all ... merge already").
+- Pass 9 (14 Oct, branch `claude/ios-gaps`): every wall landing scored (`.local/sxs/wallscore.py`:
+  trailing edge underdamped toward the wall, carry .1, wall give .35; rms 4.9 px over nine
+  landings, was 15.4; old Calm kept as `CalmCriticalLanding`); rim-mirror clamp bug fixed and
+  `rimMirrorGain` 0.4 (cap petals); neck yields to an arriving lens (`yieldsToLens`) and the
+  stationary-hold lift follows the iOS bar's release (`neck.py`: median 33 ms late, was 67); finger
+  leads the ink 33 ms (`v2script.py` LEAD); ports use the exact Compose Calm material
+  (`selector-material.json`). Renders: `.local/sxs/p13-v2`.
 
 ## Next, in order
 
-1. 9.9 s landing: iOS's held lens hits the wall at speed and protrudes, then contracts through
-   rest (42 px); ours is slowed by the held end-tab clamp before lift (~800 px/s) and narrows 10 px.
-   Finger-momentum hand-off was tried (0.6/0.8/1.0) and rejected; needs a held-lens wall impact model.
-2. iOS's cap swirl is still somewhat stronger. Neck parts 60–70 ms late (inferred lift; pass 8).
-3. Owner visual acceptance of the selector and of the redesigned Atlas Studio.
+1. Owner visual acceptance of the selector (pass 9) and of the redesigned Atlas Studio.
+2. Pass 11 (14 Oct): dragPressShare .7 (bar relaxes while its lens is dragged), neck median 0 ms,
+   rim dispersion .05, ported selected ink, mid-throw centroid stalls interpolated. Owner review
+   videos: `.local/comparisons/2026-10-14-pass11/`. Residuals (pass 10, still current): 9.9 s landing passes rest by 36.5 px vs 41; left width series' first
+   frames narrow up to 11.2 px less; iOS's cap petals carry stronger rainbow fringes; neck median
+   17 ms late, 34.8 s 133 ms (bar and lens disagree on that lift). 28.66 s landing is an input
+   artefact (source frame gap). Left landings: `.local/sxs/wallscorel.py` (rows 495–498).
+3. Ports draw no selected ink (content pass); hosts own labels and ink.
 4. CI: Atlas UI tests now take ~2.6 min locally (density 0.75, reduced motion, no per-move waits;
    they took 14 min on CI before). Hosted runner speed varies ~2x (36 min on 31bd210 with
    unchanged classes 1.9x slower), so the build job limit is 55 min.
 5. Android: verified on an API 37 emulator (software GPU, AVD `lg_verify_37`,
-   `review/atlas/android-emulator-2026-10-14`); a physical-device check remains open. Ports: the
-   Calm selector is done for CanvasKit and .NET; its material is approximate.
+   `review/atlas/android-emulator-2026-10-14`); a physical-device check remains open.
 
 ## Constraints (owner)
 
 Work alone: no subagents, no computer-use. Atlas only, not Vitals. JDK 21 at
 `C:/Program Files/Microsoft/jdk-21.0.12.101-hotspot`, Gradle via `tools/workspace.ps1`.
-Commits/pushes authorized; no packages, tags or releases; no admin bypass for PR6. Keep private
+Commits/pushes authorized; no packages, tags or releases (PR6 was merged with the owner's
+explicit go-ahead; ask again for any later admin merge). Keep private
 recordings, page content and credentials off GitHub. Do not run the GPU replay while the JVM test
 suite is running (CPU contention caused a historical test timeout).

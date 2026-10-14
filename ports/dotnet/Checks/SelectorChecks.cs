@@ -78,22 +78,49 @@ internal static class SelectorChecks
         nav.Down(417, 93, 3); nav.Move(417, 140, 3.05); nav.Up(417, 140, 3.08);
         Check(picks.Count == 1 && nav.Selected == 2, "Vertical scroll selected a tab");
 
-        // Drawing: the resting selector darkens the bar under it and nothing beyond its node.
+        // Material: every selector material the Kotlin factory computed is reproduced.
+        using var materialJson = JsonDocument.Parse(File.ReadAllText(Path.Combine(AppContext.BaseDirectory, "fixtures", "selector-material.json")));
+        var samples = 0; double worstMaterial = 0;
+        foreach (var sample in materialJson.RootElement.GetProperty("samples").EnumerateArray())
+        {
+            var ours = CalmSelectorMaterial.Selector(sample.GetProperty("dark").GetBoolean(), sample.GetProperty("formation").GetDouble(),
+                sample.GetProperty("transit").GetDouble(), sample.GetProperty("heldTravel").GetDouble());
+            Check(Math.Abs(ours.Formation - sample.GetProperty("uFormation").GetDouble()) <= 1e-5, $"Selector material band at {sample}");
+            foreach (var field in sample.GetProperty("values").EnumerateObject())
+            {
+                var expected = field.Value.ValueKind == JsonValueKind.Array ? field.Value.EnumerateArray().Select(x => x.GetDouble()).ToArray() : [field.Value.GetDouble()];
+                var actual = ours.Values[field.Name];
+                Check(actual.Length == expected.Length, $"Selector material {field.Name} length");
+                for (var i = 0; i < expected.Length; i++)
+                {
+                    var error = Math.Abs(actual[i] - expected[i]); worstMaterial = Math.Max(worstMaterial, error);
+                    Check(error <= 1e-5, $"Selector material {field.Name} at {sample.GetProperty("formation")}/{sample.GetProperty("transit")}: {actual[i]} vs {expected[i]}");
+                }
+            }
+            samples++;
+        }
+        Check(samples >= 96, "Selector material samples missing");
+
+        // Drawing: over a dark page the resting selector shows the bar's own glass through itself
+        // (the lens looks through the bar, as in Compose) and nothing beyond its node changes.
         const int w = 360, h = 140;
         using var bitmap = new SKBitmap(new SKImageInfo(w, h, SKColorType.Rgba8888, SKAlphaType.Opaque));
         for (var y = 0; y < h; y++) for (var x = 0; x < w; x++)
-            bitmap.SetPixel(x, y, new SKColor((byte)(30 + x % 180), (byte)(25 + y % 180), (byte)((x + y) % 220)));
+            bitmap.SetPixel(x, y, new SKColor((byte)(x % 24), (byte)(y % 24), (byte)((x + y) % 24)));
         using var image = SKImage.FromBitmap(bitmap);
         using var painter = new GlassPainter(); painter.SetSource(image);
         var small = CalmSelectorBar.Create(300, 62, 3, 6, null, 4, 1);
         var selector = new CalmSelectorController(); selector.Attach(small); selector.SnapToRest(0);
         var rect = SKRect.Create(20, 40, 300, 62);
-        byte[] Render(bool withSelector)
+        byte[] Render(bool withSelector, bool lookThrough = true)
         {
             using var surface = SKSurface.Create(new SKImageInfo(w, h, SKColorType.Rgba8888, SKAlphaType.Premul));
             surface.Canvas.DrawImage(image, 0, 0, new SKSamplingOptions(SKFilterMode.Linear, SKMipmapMode.None));
-            painter.DrawSurface(surface.Canvas, rect, 31, new GlassSurfaceOptions(Dark: true));
-            if (withSelector) painter.DrawSelector(surface.Canvas, rect, selector.Render(), (float)selector.Formation);
+            painter.DrawCalmBar(surface.Canvas, rect, 0, new GlassSurfaceOptions(Dark: true));
+            surface.Canvas.Flush();
+            using var through = surface.Snapshot();
+            if (withSelector) painter.DrawSelector(surface.Canvas, rect, selector.Render(), (float)selector.Formation,
+                new GlassSurfaceOptions(Dark: true), through: lookThrough ? through : null);
             surface.Canvas.Flush();
             using var read = new SKBitmap(new SKImageInfo(w, h, SKColorType.Rgba8888, SKAlphaType.Premul));
             Check(surface.ReadPixels(read.Info, read.GetPixels(), read.RowBytes, 0, 0), "Pixel read failed");
@@ -101,12 +128,38 @@ internal static class SelectorChecks
             Marshal.Copy(read.GetPixels(), pixels, 0, pixels.Length);
             return pixels;
         }
-        var bare = Render(false); var with = Render(true);
+        var bare = Render(false); var with = Render(true); var blind = Render(true, false);
         int Lum(byte[] p, int x, int y) { var i = (y * w + x) * 4; return p[i] + p[i + 1] + p[i + 2]; }
-        Check(new[] { (70, 60), (80, 80), (100, 70) }.All(q => Lum(with, q.Item1, q.Item2) - Lum(bare, q.Item1, q.Item2) < -6),
-            "Native resting selector did not darken its bar");
+        var pill = new[] { (70, 60), (80, 80), (100, 70) };
+        Check(pill.All(q => Lum(with, q.Item1, q.Item2) > Lum(blind, q.Item1, q.Item2) + 20), "Native selector did not look through its bar");
+        Check(pill.All(q => Lum(with, q.Item1, q.Item2) < Lum(bare, q.Item1, q.Item2)), "Native resting selector did not darken its bar");
         Check(Lum(with, 290, 71) == Lum(bare, 290, 71), "Native selector changed the far end of the bar");
 
-        return new { check = "Calm selector matches Kotlin trajectories; navigation and drawing", scenarios, frames, worstPx, passed = true };
+        // Ink: the selected ink shows inside the selector and nowhere else.
+        using var inkBitmap = new SKBitmap(new SKImageInfo(300, 62, SKColorType.Rgba8888, SKAlphaType.Premul));
+        inkBitmap.Erase(SKColors.Transparent);
+        foreach (var dot in new[] { 50, 150, 250 }) for (var y = 21; y < 41; y++) for (var x = dot - 10; x < dot + 10; x++)
+            inkBitmap.SetPixel(x, y, new SKColor(40, 110, 255));
+        using var inkImage = SKImage.FromBitmap(inkBitmap);
+        byte[] Inked()
+        {
+            using var surface = SKSurface.Create(new SKImageInfo(w, h, SKColorType.Rgba8888, SKAlphaType.Premul));
+            surface.Canvas.DrawImage(image, 0, 0, new SKSamplingOptions(SKFilterMode.Linear, SKMipmapMode.None));
+            painter.DrawCalmBar(surface.Canvas, rect, 0, new GlassSurfaceOptions(Dark: true));
+            painter.DrawSelector(surface.Canvas, rect, selector.Render(), 0, new GlassSurfaceOptions(Dark: true));
+            painter.DrawSelectorInk(surface.Canvas, rect, selector.Render(), inkImage, 0, new GlassSurfaceOptions(Dark: true));
+            surface.Canvas.Flush();
+            using var read = new SKBitmap(new SKImageInfo(w, h, SKColorType.Rgba8888, SKAlphaType.Premul));
+            Check(surface.ReadPixels(read.Info, read.GetPixels(), read.RowBytes, 0, 0), "Pixel read failed");
+            var pixels = new byte[w * h * 4]; Marshal.Copy(read.GetPixels(), pixels, 0, pixels.Length); return pixels;
+        }
+        var inked = Inked();
+        (int R, int G, int B) Px(byte[] p, int x, int y) { var i = (y * w + x) * 4; return (p[i], p[i + 1], p[i + 2]); }
+        var under = Px(inked, 20 + 50, 40 + 31); var beyond = Px(inked, 20 + 250, 40 + 31);
+        Check(under.B > 200 && under.B > under.R + 120, $"Native selected ink missing inside the selector: {under}");
+        Check(beyond.B < 120, $"Native selected ink leaked outside the selector: {beyond}");
+
+        return new { check = "Calm selector matches Kotlin trajectories and material; navigation and drawing", scenarios, frames, worstPx,
+            materialSamples = samples, worstMaterial, passed = true };
     }
 }

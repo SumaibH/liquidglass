@@ -173,7 +173,7 @@ fun LoupeScreen(reduceMotion: Boolean = false, modifier: Modifier = Modifier,
             GlassTabBar(glassState, Scenes.size, scene, selectScene,
                 modifier = Modifier.width(barWidth).testTag("atlas-navigation").onGloballyPositioned { onNavigationLayout?.invoke(it.boundsInRoot()) },
                 style = barStyle, motionEnabled = moving,
-                trailingAccessory = GlassTabBarAccessory(BarHeight, gap = gap)) { index, selected ->
+                trailingAccessory = GlassTabBarAccessory(BarHeight, gap = gap, yieldsToLens = true)) { index, selected ->
                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
                     Label(listOf("✦", "Aa", "▦")[index], 18, if (selected) Accent else Ink)
                     Label(Scenes[index], 10, if (selected) Accent else Muted, FontWeight.SemiBold)
