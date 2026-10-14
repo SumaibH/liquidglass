@@ -32,8 +32,9 @@ const DEFAULT_SPEC = Object.freeze({
   tapAreaSpineOmega: 40, tapAreaSpineZeta: .38, tapAreaBodySpeed: 10.2, releaseImpactGain: 0,
   releaseEdgeAnchor: false, releaseRecoveryOmega: 0, releaseRecoveryZeta: 1,
   releaseTrailingEdge: false, releaseTrailingInOmega: 0, releaseTrailingInZeta: 1, releaseTrailingCarry: 1, releaseWallGive: 0,
+  releaseTrailingStiffening: 0,
   tapShortTripRate: 1, tapAppearanceArea: 0, tapAppearanceSpine: 0,
-  tapAppearanceFallOmega: 0, releaseFormationSpeed: 0,
+  tapAppearanceFallOmega: 0, releaseFormationSpeed: 0, releaseStillHoldSeconds: 0,
 });
 
 /** GlassPoseSpec.Calm: CalmIndependent -> CalmVolume -> CalmEndpoint -> CalmImpact -> CalmFreeLanding -> Calm. */
@@ -49,6 +50,7 @@ export const CALM_SELECTOR_SPEC = Object.freeze({
   tapAppearanceSpine: .13, tapAppearanceFallOmega: 45, releaseFormationSpeed: 3,
   graspOmega: 120, heldFormRiseOmega: 50, releaseTrailingEdge: true, releaseRecoveryOmega: 13,
   releaseTrailingInOmega: 9, releaseTrailingInZeta: .3, releaseTrailingCarry: .1, releaseWallGive: .35,
+  releaseTrailingStiffening: .5, releaseStillHoldSeconds: .18,
 });
 
 const MODE = Object.freeze({Rest: 'rest', TapTransit: 'tap', PressPending: 'pending', Held: 'held', Released: 'released'});
@@ -56,7 +58,7 @@ const CONTOUR_SAMPLES = 256, QUIET_PX = .02, QUIET_STEPS = 8, CONTACT_TOLERANCE 
 const MAX_CONTACT_ITERATIONS = 24, MAX_CONTACT_STEP = 12, MAX_CONTACT_PRESSURE_STEP = .06;
 const CONTACT_REGAIN_MARGIN = 0, CONTACT_REGAIN_ACCOMMODATION = 1, ACCOMMODATION_RESOLVE_PX = 1;
 const ACCOMMODATION_RESOLVE_PRESSURE = .01, COVERAGE_EPSILON = .5, CONTACT_REGAIN_FORMATION = .02;
-const REGRAB_FORMATION = .15, GEOMETRY_EPSILON = 1e-3, BEVEL_RATIO = .6, WALL_PULL_HEIGHTS = 20, RELEASE_IMPACT_REACH = .3;
+const REGRAB_FORMATION = .15, GEOMETRY_EPSILON = 1e-3, BEVEL_RATIO = .6, WALL_PULL_HEIGHTS = 20, RELEASE_IMPACT_REACH = .3, RELEASE_STILL_SLOTS = .5;
 
 class Spring {
   constructor(value = 0, velocity = 0) { this.value = value; this.velocity = velocity; this.target = value; }
@@ -264,6 +266,7 @@ export class CalmSelectorController {
     this.form = new Spring(); this.transit = new Spring(); this.travel = new Spring(); this.tapArea = new Spring();
     this.tapAreaActive = false; this.tapDistance = 0; this.releaseImpactActive = false;
     this.releaseEdge = new Spring(); this.releaseTrail = new Spring(); this.releaseEdgeActive = false; this.trailImpact = false;
+    this.releasedAt = 0; this.releasedStill = false;
     this.now = 0; this.pressStart = 0; this.downX = 0; this.downY = 0; this.downOnBody = false;
     this.pressEligible = false; this.pointerDownActive = false; this.lastSampleAt = 0;
     this.graspQx = 0; this.graspQy = 0; this.hasGrasp = false; this.graspY0 = 0; this.slowFor = 0;
@@ -291,7 +294,10 @@ export class CalmSelectorController {
   get centreVelocityX() { return this.velocity.cx; }
   get isIdle() {
     return this.mode !== MODE.PressPending && !this.tapAreaActive && this.transitAppearance < 1e-4 &&
-      this.heldTravel < 1e-4 && this.quietSteps >= QUIET_STEPS;
+      this.heldTravel < 1e-4 && this.quietSteps >= QUIET_STEPS &&
+      // A still release keeping its glass: nothing moves yet, but the formation still has to fall.
+      !(this.mode === MODE.Released && this.releasedFromHold && this.releasedStill && this.form.value > .01 &&
+        this.now - this.releasedAt < this.spec.releaseStillHoldSeconds + .05);
   }
 
   attach(bar, itemBounds = null, itemCentres = null, inkHalfHeight = this.inkHalfHeight) {
@@ -394,7 +400,8 @@ export class CalmSelectorController {
   pointerUp(restIndex) {
     this.quietSteps = 0; this.interactionId++; this.requestedIndex = restIndex;
     this.restIndex = clamp(restIndex, 0, Math.max(this.bar.count - 1, 0));
-    this.releasedFromHold = this.mode === MODE.Held;
+    this.releasedFromHold = this.mode === MODE.Held; this.releasedAt = this.now;
+    this.releasedStill = Math.abs(this.velocity.cx) < RELEASE_STILL_SLOTS * Math.max(this.bar.slotWidth, 1);
     const s = this.spec;
     this.releaseImpactActive = this.releasedFromHold && (s.releaseImpactGain > 0 || s.releaseTrailingEdge) &&
       (this.restIndex === 0 || this.restIndex === this.bar.count - 1) &&
@@ -525,7 +532,11 @@ export class CalmSelectorController {
     if (!this.motionEnabled) formTarget = 0;
     else if (this.mode === MODE.Released) {
       const v = s.releaseFormationSpeed;
-      if (v > 0 && this.releasedFromHold) { const rs = vel.cx / slot; formTarget = Math.min(this.form.value, rs * rs / (v * v + rs * rs)); }
+      if (v > 0 && this.releasedFromHold) {
+        const rs = vel.cx / slot;
+        formTarget = this.releasedStill && this.now - this.releasedAt < s.releaseStillHoldSeconds
+          ? this.form.value : Math.min(this.form.value, rs * rs / (v * v + rs * rs));
+      }
       else formTarget = 0;
     } else formTarget = 1 - (1 - pressResponse) * (1 - s.formFromMovement * sv);
     this.form.target = formTarget;
@@ -687,7 +698,8 @@ export class CalmSelectorController {
           this.trailImpact = true; this.releaseTrail.velocity *= s.releaseTrailingCarry;
         }
         if (s.releaseTrailingInOmega > 0 && dir * this.releaseTrail.velocity > 0) {
-          this.releaseTrail.step(dt, s.releaseTrailingInOmega, s.releaseTrailingInZeta);
+          const behind = Math.max(0, -dir * (this.releaseTrail.value - this.releaseTrail.target)) / Math.max(this.reference.width, 1);
+          this.releaseTrail.step(dt, s.releaseTrailingInOmega * (1 + s.releaseTrailingStiffening * behind), s.releaseTrailingInZeta);
         } else this.releaseTrail.step(dt, s.releaseRecoveryOmega, s.releaseRecoveryZeta);
         const caps = ref.r * Math.exp(pose.p) + Math.max(pose.acc, 0);
         const capsVelocity = ref.r * Math.exp(pose.p) * vel.p + (pose.acc > 0 ? vel.acc : 0);

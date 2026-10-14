@@ -112,7 +112,10 @@ data class GlassInteraction(
      * Release spring for the press, overriding [response]'s when positive: stiffness and damping
      * ratio of the return to rest after the finger lifts. Zero keeps the response's own release.
      * Dark Calm navigation uses 530 / 0.6: the iOS 26 Phone bar returns to rest about 0.12 s
-     * after lift with about 10% overshoot (video2, three releases, 2026-10-14).
+     * after lift with about 10% overshoot (video2, three releases, 2026-10-14). The spring starts
+     * one frame in: the finger lifted before the frame that observes it, and Compose shows an
+     * animation's first change a frame after its target moves, so without it the return began
+     * about 45 ms after the lift where iOS's begins at it.
      */
     val releaseStiffness: Float = 0f,
     val releaseDamping: Float = 1f,

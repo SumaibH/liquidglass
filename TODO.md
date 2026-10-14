@@ -39,6 +39,9 @@ bounded completed work, **not completion of full iOS parity**. All open rows rem
   neck parts a median 33 ms late (was 67). Two releases still 150–200 ms late.
 - [x] Pass 9: ports use the Compose Calm bar/selector material (96 Kotlin samples, ≤2e-7) and look
   through the bar. Selected ink in the ports remains host-owned.
+- [x] Pass 10: left-wall landings scored (rows 495–498); stretch-stiffened trailing edge (rms 4.1 px
+  left, 5.5 right); reversal end lifts moving; release spring one frame in; neck median 17 ms;
+  still release keeps its glass .18 s (stationary hold darkens on time again).
 - [ ] Owner visual acceptance of the navigation selector.
 
 ## P0 — current visible failures

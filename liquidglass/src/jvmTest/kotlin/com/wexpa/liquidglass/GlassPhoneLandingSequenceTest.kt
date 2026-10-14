@@ -158,7 +158,7 @@ class GlassPhoneLandingSequenceTest {
      * narrowest frame. The trailing edge travels on underdamped toward the wall
      * ([GlassPoseSpec.releaseTrailingInOmega]) and keeps a tenth of its speed at the impact; the
      * earlier critical landing narrowed about 0.15 s early (rms 14.4 / 21.5 px on these series;
-     * now 3.0 / 6.8). The finger leads the ink by 33 ms (v2script.py LEAD).
+     * now 3.0 / 6.3). The finger leads the ink by 33 ms (v2script.py LEAD).
      */
     @Test fun calmLandsAgainstTheWallAndNarrowsFromBehind() {
         val right = floatArrayOf(241f,241f,242f,244f,247f,250f,253f,257f,261f,264f,267f,
@@ -175,7 +175,7 @@ class GlassPhoneLandingSequenceTest {
             Triple(4240,"move",217f), Triple(4256,"move",153f), Triple(4257,"up",153f))
         val held = phoneBar.height * GlassPoseSpec.Calm.heldHeightRatio
         for ((events, series, start, tolerance) in listOf(
-            Quad(rightThrow, right, 2.523333, 7f), Quad(leftThrow, left, 4.573333, 15f))) {
+            Quad(rightThrow, right, 2.523333, 7f), Quad(leftThrow, left, 4.573333, 12f))) {
             val target = if (series === right) 2 else 0
             val c = GlassPoseController(GlassPoseSpec.Calm)
             c.attach(phoneBar, null, null); c.snapToRest(2 - target)
@@ -218,13 +218,42 @@ class GlassPhoneLandingSequenceTest {
                 squares += (ours - series[i]).toDouble().let { it * it }
             }
             val rms = kotlin.math.sqrt(squares / series.size)
-            // Left: its first frames narrow up to 14.5 px less than iOS (253 against 239 px at its narrowest).
+            // Left: its first frames narrow up to 11.2 px less than iOS.
             assertTrue(rms < (if (target == 2) 3.5 else 7.0), "target=$target width rms $rms")
             assertTrue(widths.filter { it.first > start }.maxOf { it.second } <= 285.5f, "unobserved width rebound")
         }
     }
 
     private data class Quad<A, B, C, D>(val a: A, val b: B, val c: C, val d: D)
+
+    /** A lens released still keeps its glass briefly ([GlassPoseSpec.releaseStillHoldSeconds]),
+     * then loses it; the controller must not report idle in between, or a host's frame loop
+     * sleeps with the lens formed (found in the GPU replay, 2026-10-14). */
+    @Test fun aStillReleaseKeepsItsGlassBrieflyThenLosesIt() {
+        val c = GlassPoseController(GlassPoseSpec.Calm)
+        c.attach(phoneBar, null, null); c.snapToRest(0)
+        c.pointerDown(phoneBar.centreOf(0), phoneBar.centreY, 0.0, true)
+        c.advanceTo(.6f, .9f)
+        assertTrue(c.isHeld && c.formation > .99f)
+        c.pointerUp(0)
+        var t = .6f
+        while (t < .6f + GlassPoseSpec.Calm.releaseStillHoldSeconds - .02f) {
+            t += 1f / 60f; c.advanceFrameTo(t)
+            assertTrue(c.formation > .95f, "still release lost its glass early at $t")
+            assertFalse(c.isIdle, "idle while holding its glass at $t")
+        }
+        while (c.formation > .01f && t < 2f) {
+            assertFalse(c.isIdle, "idle with the lens still formed (${c.formation}) at $t")
+            t += 1f / 60f; c.advanceFrameTo(t)
+        }
+        assertTrue(c.formation <= .01f, "the still-released lens never lost its glass")
+        // The previous Calm loses it at once.
+        val old = GlassPoseController(GlassPoseSpec.CalmCriticalLanding)
+        old.attach(phoneBar, null, null); old.snapToRest(0)
+        old.pointerDown(phoneBar.centreOf(0), phoneBar.centreY, 0.0, true); old.advanceTo(.6f, .9f)
+        old.pointerUp(0); old.advanceTo(.7f)
+        assertTrue(old.formation < .9f)
+    }
 
     @Test fun regrabCarriesTheVelocityOfTheShapeAwareCentre() {
         for(reverse in listOf(false,true)) for(time in listOf(.96f,1.05f,1.14f,1.3f)) {

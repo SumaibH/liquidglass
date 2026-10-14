@@ -300,6 +300,10 @@ internal data class GlassPoseSpec(
      */
     val releaseTrailingInOmega: Float = 0f,
     val releaseTrailingInZeta: Float = 1f,
+    /** With [releaseTrailingInOmega]: the in-spring's rate grows by this share per resting width
+     * the trailing edge is still behind its rest, so a more stretched lens closes faster. Zero
+     * keeps a constant rate. Authored (2026-10-14, left- and right-wall landings of video2). */
+    val releaseTrailingStiffening: Float = 0f,
     /** Share of the trailing edge's own velocity it keeps once the leading edge meets the bar's end
      * (within 0.3 bar heights of it): the impact takes the rest ([releaseTrailingEdge]). One carries
      * all of it (the historical landing); authored. */
@@ -331,6 +335,13 @@ internal data class GlassPoseSpec(
      * travel and the wall impact and become the pill about 170 ms after landing. Authored rate.
      */
     val releaseFormationSpeed: Float = 0f,
+    /**
+     * Opt-in, with [releaseFormationSpeed]: a lens released still (under half a slot per second)
+     * keeps its formation this long before subsiding. Zero subsides at once. Observed in video2
+     * (2026-10-14): after the stationary hold the iOS bar starts returning about 240 ms before the
+     * lens loses its glass; after a throw the travel keeps it formed anyway. Authored.
+     */
+    val releaseStillHoldSeconds: Float = 0f,
 ) {
     internal val spineLimitSlots: Float get() = max(elongationSlots, tapSpineLimitSlots)
 
@@ -403,7 +414,8 @@ internal data class GlassPoseSpec(
          * formed lens presses up to .35 bar heights past the end ([releaseWallGive]), as iOS's clear
          * lens does, which also covers the bar/search fusion neck while the lens is there. */
         val Calm = CalmCriticalLanding.copy(releaseTrailingInOmega = 9f, releaseTrailingInZeta = .3f,
-            releaseTrailingCarry = .1f, releaseWallGive = .35f)
+            releaseTrailingCarry = .1f, releaseWallGive = .35f, releaseTrailingStiffening = .5f,
+            releaseStillHoldSeconds = .18f)
     }
 }
 
@@ -519,6 +531,8 @@ internal class GlassPoseController(
     private var accommodating: Boolean = false
     /** Whether the current release came from a hold (a body outside the bar) or a mere press. */
     private var releasedFromHold: Boolean = false
+    private var releasedAt = 0f
+    private var releasedStill = false
     /** The rendered grasp position and its velocity: one fast response, not a chain of filters. */
     private val graspX = GlassSpring()
     private val graspY = GlassSpring()
@@ -815,6 +829,8 @@ internal class GlassPoseController(
         // A body released from a hold is outside the bar and regains contact later; a pill
         // released from a mere press never left it and keeps its contact throughout.
         releasedFromHold = mode == GlassPoseMode.Held
+        releasedAt = now
+        releasedStill = abs(velocity.cx) < RELEASE_STILL_SLOTS * max(bar.slotWidth, 1f)
         releaseImpactActive = releasedFromHold && (spec.releaseImpactGain > 0f || spec.releaseTrailingEdge) &&
             (this.restIndex == 0 || this.restIndex == bar.count - 1) &&
             abs(velocity.cx) > reference.width * .6f
@@ -1050,7 +1066,8 @@ internal class GlassPoseController(
             val v = spec.releaseFormationSpeed
             if (v > 0f && releasedFromHold) {
                 val rs = velocity.cx / slot
-                min(form.value, rs * rs / (v * v + rs * rs))
+                if (releasedStill && now - releasedAt < spec.releaseStillHoldSeconds) form.value
+                else min(form.value, rs * rs / (v * v + rs * rs))
             } else 0f
         } else {
             1f - (1f - pressResponse) * (1f - spec.formFromMovement * sv)
@@ -1352,7 +1369,10 @@ internal class GlassPoseController(
                     releaseTrail.velocity *= spec.releaseTrailingCarry
                 }
                 if (spec.releaseTrailingInOmega > 0f && endpointDirection * releaseTrail.velocity > 0f) {
-                    releaseTrail.step(dt, spec.releaseTrailingInOmega, spec.releaseTrailingInZeta)
+                    val behind = (-endpointDirection * (releaseTrail.value - releaseTrail.target)).coerceAtLeast(0f) /
+                        max(reference.width, 1f)
+                    releaseTrail.step(dt, spec.releaseTrailingInOmega * (1f + spec.releaseTrailingStiffening * behind),
+                        spec.releaseTrailingInZeta)
                 } else {
                     releaseTrail.step(dt, spec.releaseRecoveryOmega, spec.releaseRecoveryZeta)
                 }
@@ -1885,7 +1905,13 @@ internal class GlassPoseController(
      */
     val isIdle: Boolean
         get() = mode != GlassPoseMode.PressPending && !tapAreaActive &&
-            transitAppearance < .0001f && heldTravel < .0001f && quietSteps >= QUIET_STEPS
+            transitAppearance < .0001f && heldTravel < .0001f && quietSteps >= QUIET_STEPS && !holdingStill
+
+    /** A still release keeping its glass ([GlassPoseSpec.releaseStillHoldSeconds]): nothing moves
+     * yet, but the formation still has to fall, so the frame loop must not sleep. */
+    private val holdingStill: Boolean
+        get() = mode == GlassPoseMode.Released && releasedFromHold && releasedStill && form.value > .01f &&
+            now - releasedAt < spec.releaseStillHoldSeconds + .05f
 
     private var quietSteps: Int = 0
     private val lastPublished = GlassPose()
@@ -1997,6 +2023,8 @@ internal class GlassPoseController(
         const val WALL_PULL_HEIGHTS = 20f
         /** How close to the bar's end, in bar heights, the leading edge counts as meeting it. */
         const val RELEASE_IMPACT_REACH = .3f
+        /** Below this centre speed, in slots per second, a release counts as still. */
+        const val RELEASE_STILL_SLOTS = .5f
         /** A body still this formed when a finger lands on it is re-grabbed, not pressed anew. */
         const val REGRAB_FORMATION = 0.15f
     }

@@ -48,7 +48,11 @@ This file records user-visible development changes. Published artifacts are iden
 - Calm moving selector: cap content is drawn out radially toward the rim (`rimMirrorGain` 0.4), the
   stronger swirl of iOS's moving lens.
 - Phone and Atlas Studio: the search button's neck gives way to a lens pressing into its end
-  (`GlassTabBarAccessory.yieldsToLens`); the neck now parts a median 33 ms after iOS's (67 before).
+  (`GlassTabBarAccessory.yieldsToLens`); with the bar's release spring now starting one frame in,
+  the neck parts a median 17 ms after iOS's (67 before).
+- Calm landings: a more stretched lens closes faster (`releaseTrailingStiffening`), scored on the
+  left-wall landings too (rms 4.1 px left, 5.5 right); a lens released still keeps its glass
+  briefly (`releaseStillHoldSeconds`), as iOS's does after a stationary hold.
 - CanvasKit and .NET selectors use the Compose Calm bar and selector material itself
   (`calmSelectorMaterial`, `drawCalmBar`, `through`), checked value by value against the Kotlin
   factory; the resting inset reads 33 over a dark page (12 with the earlier approximation).
@@ -63,7 +67,8 @@ This file records user-visible development changes. Published artifacts are iden
 - `GlassStyle.rimMirrorGain` (`uRimMirrorGain`): how much deeper content the mirrored rim reaches
   per unit of band; 1 (default) is the plain mirror.
 - `GlassPoseSpec.releaseTrailingInOmega`, `releaseTrailingInZeta`, `releaseTrailingCarry`,
-  `releaseWallGive` and the `CalmCriticalLanding` preset; all off by default.
+  `releaseTrailingStiffening`, `releaseWallGive`, `releaseStillHoldSeconds` and the
+  `CalmCriticalLanding` preset; all off by default.
 - `GlassTabBarAccessory(yieldsToLens = true)`: a formed pose selector takes the neck's place; off by default.
 - CanvasKit `calmSelectorMaterial`, `calmBarMaterial`, `painter.drawCalmBar`; .NET
   `CalmSelectorMaterial`, `GlassPainter.DrawCalmBar`; `drawSelector` / `DrawSelector` take transit,

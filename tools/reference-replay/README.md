@@ -19,7 +19,9 @@ Pillow. Run from a scratch directory such as `.local/sxs/`.
 14 October: held presses begin 137 ms before the visible shift, wall throws lift moving; second
 revision: the finger leads the ink by 33 ms through throws, and a stationary hold lifts where the
 iOS bar starts to return, read from a row dump of the recording when `v2-row495.gray` and
-`v2-pts.txt` are present). The
+`v2-pts.txt` are present). The rebuilt reversal episode ends with a lift while the finger is
+still sweeping toward Calls (22.288 s): the iOS bar is back at rest by 22.40 s and the lens
+darkens on a throw's timing. The
 generator splices the held-reversal episode (18.7–22.4 s) from `reversal-script.txt`, rebuilt from the episode's turning points because the ink centroid snaps
 between tabs mid-sweep. They hold only finger times and x positions; **the timing is inferred, not recorded**.
 Script format: `select <tab>`, then `<ms> down|move|up <x> <y>` in scene pixels at 3 px/pt, and

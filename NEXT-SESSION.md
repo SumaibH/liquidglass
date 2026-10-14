@@ -48,9 +48,10 @@ recordings through the real renderer and comparing **continuous sequences**, not
 ## Next, in order
 
 1. Owner visual acceptance of the selector (pass 9) and of the redesigned Atlas Studio.
-2. Residuals (pass 9): 9.9 s landing passes rest by 33 px vs 41; left landing narrows up to 14.5 px
-   less; iOS's cap petals carry stronger rainbow fringes; neck 150–200 ms late at the reversal end
-   and 34.8 s. 28.66 s landing is an input artefact (source frame gap).
+2. Residuals (pass 10): 9.9 s landing passes rest by 36.5 px vs 41; left width series' first
+   frames narrow up to 11.2 px less; iOS's cap petals carry stronger rainbow fringes; neck median
+   17 ms late, 34.8 s 133 ms (bar and lens disagree on that lift). 28.66 s landing is an input
+   artefact (source frame gap). Left landings: `.local/sxs/wallscorel.py` (rows 495–498).
 3. Ports draw no selected ink (content pass); hosts own labels and ink.
 4. CI: Atlas UI tests now take ~2.6 min locally (density 0.75, reduced motion, no per-move waits;
    they took 14 min on CI before). Hosted runner speed varies ~2x (36 min on 31bd210 with
