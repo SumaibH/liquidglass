@@ -28,6 +28,7 @@ class GlassSelectorPortMaterialTest {
         "uRimMirrorGain" to listOf(s.rimMirrorGain.coerceIn(.05f, 1f)),
         "uHeldEdgeRecovery" to listOf(s.heldEdgeRecovery.value.coerceAtLeast(0f)),
         "uHeldEdgeTone" to listOf(s.heldEdgeTone.coerceIn(0f, 1f)),
+        "uHeldGlowFloor" to listOf(s.heldGlowFloor.coerceIn(0f, 1f)),
         "uRestMap" to listOf(s.restMap.uniform),
         "uEdgeFold" to listOf(s.edgeFold.coerceIn(0f, 2f)),
         "uInkSplit" to listOf(if (s.inkDispersion.isNaN()) s.dispersion else s.inkDispersion),

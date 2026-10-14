@@ -61,6 +61,7 @@ uniform float   uHeldGlow;     // share of the held lens inward rim glow that is
 uniform float   uFoldCorners;  // 0 folds every edge, 1 only corner arcs (GlassStyle.foldAtCorners)
 uniform float   uRimMirror;    // reflective rim band fraction for the measured family; 0 the fold (GlassStyle.rimMirror)
 uniform float   uRimMirrorGain; // mirrored depth per unit of band; 0 or 1 the plain mirror (GlassStyle.rimMirrorGain)
+uniform float   uHeldGlowFloor; // 0 adds the held glow, 1 lays it as a floor under darker glass (GlassStyle.heldGlowFloor)
 uniform float   uHeldEdgeTone; // grey of the held lens's outermost pixels, drawn as a line; 0 off (GlassStyle.heldEdgeTone)
 uniform float   uHeldGlowReach; // px the held glow reaches inward; 0 uses the bevel (GlassStyle.heldGlowReach)
 uniform float   uHeldEdgeRecovery; // layer-pixel recovery length; 0 preserves the narrow side contour
@@ -719,11 +720,14 @@ half4 main(float2 coord) {
     float glowReach = (uHeldGlowReach > 0.0) ? mix(max(uBevel, 1.0), uHeldGlowReach, heldAmt) : max(uBevel, 1.0);
     float heldGlow = glowAmt * exp(-max(depth - 0.67 * uBevel, 0.0) / glowReach)
         * (max(facing, 0.0) + counterLight * max(-facing, 0.0));
+    float glowFloor = clamp(uHeldGlowFloor, 0.0, 1.0);
     float highlight = ((key + counter) * uSpecular
         + edgeLine * uSpecular * uEdgeLight
         + fresnel * uFresnel * bevelBand
-        + heldGlow) * mat;
+        + heldGlow * (1.0 - glowFloor)) * mat;
     col = applyHighlight(col, highlight, uHiChroma);
+    // The floor share of the glow lifts only glass darker than it (GlassStyle.heldGlowFloor).
+    if (glowFloor > 0.0) col = max(col, half3(half(heldGlow * glowFloor * mat)));
 
     // The dark contour that separates glass from its backdrop. Apple's 2026 revision pairs it
     // with a brighter specular; the 2025 material has none, so this is 0 on every preset here.
@@ -751,8 +755,9 @@ half4 main(float2 coord) {
     // The held lens's outline as a line of a fixed grey (GlassStyle.heldEdgeTone): it reads dark
     // over the bar and light over a black page, as the reference's does, never a white ring.
     if (uHeldEdgeTone > 0.0 && heldAmt > 0.0) {
-        float line = smoothstep(2.4, 0.6, depth) * heldAmt * mat;
-        col = mix(col, half3(half(uHeldEdgeTone)), half(0.85 * line));
+        // Two pixels wide, as the reference's: the outermost one is partly covered.
+        float line = smoothstep(3.0, 1.5, depth) * heldAmt * mat;
+        col = mix(col, half3(half(uHeldEdgeTone)), half(0.9 * line));
     }
 
     // Illumination from within, under the fingertip. A sixth of a stop at the peak: measured

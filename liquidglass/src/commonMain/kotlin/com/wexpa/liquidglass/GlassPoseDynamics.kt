@@ -121,7 +121,7 @@ internal data class GlassPoseSpec(
      * constant area, rather than lengthening its spine. It builds at [heldTravelStrainOmega],
      * so a sustained drag strains and a short flick releases nearly unstrained, and it relaxes
      * on the shape spring once the finger lifts. Zero (default) keeps every existing path. Calm
-     * uses .5: video2's travelling lens at the 19.0 s reversal is 458 x 145 px from a held
+     * uses .6: video2's travelling lens at the 19.0 s reversal is 458 x 145 px from a held
      * 340 x 215 (2026-10-14 pass 12).
      */
     val heldTravelStrain: Float = 0f,
@@ -431,13 +431,14 @@ internal data class GlassPoseSpec(
         /** Current Calm: [CalmWallLanding] whose held lens widens and flattens as it travels, as
          * video2's does. At the 19.0 s reversal (finger about 15 slots/s) iOS's travelling lens is
          * 458 x 145 px on a 192 px bar (0.755 of its height) where this one was 375 x 182: a held
-         * travel strain of .5 built at 10/s ([heldTravelStrain]), held reference speed 8 slots/s
-         * (was 12) and squeeze .52 (was .47) give 427 x 144 (port probe, bar 186). Authored
-         * against video2 18.85-19.05 s; the wall-landing scores move from 5.3 / 4.3 to 5.7 / 5.1 px
-         * rms right / left, the first two landing width series from 3.1 / 6.7 to 3.1 / 6.1
-         * (2026-10-14 pass 12). Taps are unchanged. */
-        val Calm = CalmWallLanding.copy(heldTravelStrain = .5f, heldTravelStrainOmega = 10f,
-            heldReferenceSpeed = 8f, squeeze = .52f)
+         * travel strain of .6 built at 10/s ([heldTravelStrain]) and held reference speed
+         * 8 slots/s (was 12), squeeze unchanged, give 444 x 145 (port probe, bar 186). Authored
+         * against video2 18.85-19.05 s; the wall-landing scores move from 5.3 / 4.3 to 6.0 / 5.4 px
+         * rms right / left, the first two landing width series from 3.1 / 6.7 to 2.8 / 5.2
+         * (2026-10-14/15 passes 12-13; pass 12 used .5 and squeeze .52: 427 x 144). Taps are
+         * unchanged. */
+        val Calm = CalmWallLanding.copy(heldTravelStrain = .6f, heldTravelStrainOmega = 10f,
+            heldReferenceSpeed = 8f)
     }
 }
 

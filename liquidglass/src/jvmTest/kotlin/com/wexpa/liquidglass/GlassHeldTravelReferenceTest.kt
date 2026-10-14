@@ -182,7 +182,7 @@ class GlassHeldTravelReferenceTest {
         assertEquals(.755f, h1 / bar.height, .05f, "travelling lens height against the bar")
         assertTrue(w1 >= 410f, "travelling lens width $w1")
         // Bounding-box area against the held still lens: iOS (458 x 145) / (340 x 215) = 0.91;
-        // ours 427 x 144 / 346 x 223 = 0.80, about 12 % smaller (pass 12).
+        // ours 444 x 145 / 346 x 223 = 0.83 (pass 13; our still lens is 2-4 % larger than iOS's).
         assertEquals(.91f, w1 * h1 / (w0 * h0), .12f, "travelling lens area against the held still lens")
         // Without the strain the same reversal stays nearly full height (the pass 11 Calm: 368 x 185).
         run(GlassPoseSpec.CalmWallLanding, 18580, 19000, 0) { t, c ->

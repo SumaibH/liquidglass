@@ -98,14 +98,16 @@ class GlassAccessoryFusionTest {
     }
 
     /** pressReach (2026-10-14): holding the first tab grows that side further; the far edge stays
-     * where the ordinary press puts it. Bar edges are found on the bar's centre row over black. */
+     * where the ordinary press puts it. Bar edges are found on the bar's centre row over black.
+     * Calm no longer reaches (pass 13: its lens, centred on the pressed tab, does), so the
+     * reaching bar here is Calm with the opt-in .03. */
     @Test fun aHeldBarReachesTowardTheFingerAndKeepsItsFarEdge() = runComposeUiTest(testTimeout = 6.minutes) {
         var reach by mutableStateOf(true)
         setContent {
             CompositionLocalProvider(LocalDensity provides Density(1f)) {
                 val state = rememberLiquidGlassState(Color.Black, renderScale = .25f)
                 val calm = GlassTabBarStyle.Calm().copy(height = 62.dp)
-                val style = if (reach) calm else calm.copy(barInteraction = calm.barInteraction?.copy(pressReach = 0f))
+                val style = calm.copy(barInteraction = calm.barInteraction?.copy(pressReach = if (reach) .03f else 0f))
                 Box(Modifier.size(400.dp, 160.dp).testTag("scene")) {
                     Box(Modifier.fillMaxSize().background(Color.Black).liquidGlassSource(state))
                     GlassTabBar(state, 3, 0, {}, Modifier.offset(60.dp, 49.dp).width(278.dp), style = style,

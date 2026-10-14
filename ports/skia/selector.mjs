@@ -43,14 +43,14 @@ export const CALM_SELECTOR_SPEC = Object.freeze({
   centreOmega: 24, spineOmega: 30, spineZeta: .78, tapSpineOmega: 26, tapSpineZeta: .45,
   tapElongationSlots: .36, tapReferenceSpeed: 10, spineReleaseOmega: 22, pressureOmega: 22,
   pressureFallOmega: 14, formRiseOmega: 30, tapPressureOmega: 45, heldHeightRatio: 1.2,
-  heldReferenceSpeed: 8, elongationSlots: .28, squeeze: .52, pullStrainPerDp: 0,
+  heldReferenceSpeed: 8, elongationSlots: .28, squeeze: .47, pullStrainPerDp: 0,
   pullPressurePerDp: 0, pullFollow: 0, endTravelCapRatio: .025, maxAccommodationSlots: .15,
   travelOnly: true, releaseTravel: true, tapRecoilArea: true, heldTravelPressureOmega: 60,
   tapSpineLimitSlots: .45, tapAreaGain: .51, tapShortTripRate: .75, tapAppearanceArea: .44,
   tapAppearanceSpine: .13, tapAppearanceFallOmega: 45, releaseFormationSpeed: 3,
   graspOmega: 120, heldFormRiseOmega: 50, releaseTrailingEdge: true, releaseRecoveryOmega: 13,
   releaseTrailingInOmega: 9, releaseTrailingInZeta: .3, releaseTrailingCarry: .1, releaseWallGive: .35,
-  releaseTrailingStiffening: .5, releaseStillHoldSeconds: .18, heldTravelStrain: .5, heldTravelStrainOmega: 10,
+  releaseTrailingStiffening: .5, releaseStillHoldSeconds: .18, heldTravelStrain: .6, heldTravelStrainOmega: 10,
 });
 
 const MODE = Object.freeze({Rest: 'rest', TapTransit: 'tap', PressPending: 'pending', Held: 'held', Released: 'released'});

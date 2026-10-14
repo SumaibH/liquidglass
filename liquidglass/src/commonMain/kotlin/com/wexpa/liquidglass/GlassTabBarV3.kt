@@ -342,6 +342,16 @@ internal class GlassPoseHandle(val controller: GlassPoseController) {
     var barPointerY: Float = Float.NaN
     var pressSource: GlassPressSource? = null
     val barCache = GlassSelectorBarCache()
+    /**
+     * How far the bar's own press moves the body at a bar-local x, or null: the drawn body then
+     * sits where the bar's pressed content puts that point, as its tab does. iOS's held lens
+     * at Calls is centred on the pressed tab (203 px), not on the finger (219; video2 1.8 s,
+     * 2026-10-15 pass 13). Navigation, touch and selection stay in the controller's frame.
+     */
+    var barShift: ((Float) -> Float)? = null
+    /** The current [barShift] at the controller's centre, applied by [publish]. */
+    var barShiftX: Float = 0f
+        private set
 
     private val extents = GlassPoseExtents()
 
@@ -357,10 +367,11 @@ internal class GlassPoseHandle(val controller: GlassPoseController) {
 
     fun publish() {
         controller.extents(extents)
-        centreX = controller.centreX
+        barShiftX = barShift?.invoke(controller.centreX) ?: 0f
+        centreX = controller.centreX + barShiftX
         centreY = controller.centreY
-        left = extents.left
-        right = extents.right
+        left = extents.left + barShiftX
+        right = extents.right + barShiftX
         formation = controller.formation
         transitAppearance = controller.transitAppearance
         heldTravel = controller.heldTravel
@@ -374,7 +385,7 @@ internal class GlassPoseHandle(val controller: GlassPoseController) {
         // renders nothing at all and the bar shows through with its own ink.
         render = glassPoseRenderOf(
             controller.frame,
-            dx = nodeLeft().toFloat() + envelopeWidth / 2f,
+            dx = nodeLeft().toFloat() + envelopeWidth / 2f - barShiftX,
             dy = nodeTop().toFloat() + nodeHeight / 2f,
         )
         resolvePress()

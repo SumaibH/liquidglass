@@ -485,6 +485,47 @@ a fifth of a frame. A faster grasp (220/s) was tried first; it overshot and wors
 **For owner review (local only, contains the private recordings).**
 `.local/comparisons/2026-10-14-pass12/v1.mp4` and `v2.mp4`: iOS / main (8cb49ec) / pass 12.
 
+### Pass 13: the pass 12 residuals (15 October)
+
+**Where the held lens sits.** Brightened, iOS's held lens at Calls shows a dark band 23 px wide
+inside its left cap (outer edge 30, bar material from 52); ours showed bar material out to the
+lens edge, a lighter crescent beyond the lens's own outline. Hiding our lens showed why: our bar
+grew 37 px on the finger side (63 to 26) against 22-26 on the far side, which matches iOS's far side
+(+24-28). Inverting the held map at iOS's cap puts its bar end about 39, an even 1.05 press. iOS's
+lens is centred on the pressed tab (203 px, where its icon is), not on the finger (ours 219), so it
+is the lens, not the bar, that extends toward the finger. Now the drawn body follows the bar's
+pressed content (`GlassPoseHandle.barShift`, from the bar's own drawing transform; navigation,
+touch and selection stay in the controller's frame) and Calm's bar has no reach (`pressReach` 0,
+was .03). The cap reads 33 / dark to 48 / bar from 51-54 against iOS's 30 / 33-48 / 51-54. The
+neck to the search button is unchanged (medians within half a frame, 21 of 22 within 67 ms).
+
+**The band glow.** Between the lens edge and the bar iOS glows inward over the black page: 36, 22,
+20, 17, 15, 13, 12, 10, 9 at the top, the same at the bottom, but a travelling lens adds nothing
+over its bar. Pass 12 turned the glow off because, added over the bar, it drew bright lines on a
+moving lens. New opt-in `GlassStyle.heldGlowFloor` lays it as a floor instead: Calm glow 1.5 over
+5 dp gives 26, 25, 22, 19, 17, 15, 14, 12, 11, 10, and the 19.0 s lens has no inner lines. The edge
+line is two pixels wide (bottom 54 against iOS's 76; 38 before).
+
+**The page through the lens.** Text under the held lens read p95/p99 108/112 against iOS's
+84/109: the lens adds its raw page share on top of a bar that already shows the page. Re-scored,
+`rawShare` .05 (was .28) reads 82/105.
+
+**The travelling lens.** Measured at one bar size, our still held lens is 2-4 % larger than
+iOS's, so pass 12's shortfall at 19.0 s was width alone. Strain .6 with the squeeze back at its
+earlier .47 gives 444 x 145 (iOS about 444 x 141 at this bar), landing series 2.8 / 5.2 px rms
+(pass 12 3.1 / 6.1) and wall landings 6.0 / 5.4 (5.7 / 5.1).
+
+**Timing over the whole video.** The selected-ink centroid of every moving frame, ours against
+iOS's at its own timestamps (`.local/sxs/inklag.py`): pass 13 is best aligned 4 ms late (main
+8cb49ec: 20 ms late).
+
+![Held still lens at 1.8 s, pass 12 and pass 13, levels x2.4 (our renders only, desktop Direct3D replay, deterministic 60 fps, inferred input)](pass13-held.png)
+
+![The reversal at 18.90 and 19.00 s, pass 12 and pass 13 (our renders only, same replay)](pass13-moving.png)
+
+**For owner review (local only).** `.local/comparisons/2026-10-15-pass13/v1.mp4` and `v2.mp4`:
+iOS / main (8cb49ec) / pass 13.
+
 ### Re-reading the landing evidence
 
 The removed impact model was calibrated to one frame, video 2 at 2.5567 s ("frame082": width
@@ -495,11 +536,11 @@ the impact. The narrowing itself is real and is listed below.
 
 ## Remaining differences
 
-- Pass 12: the held lens's bottom edge reads 100 against iOS's 83, and iOS's soft halo outside a
-  held lens over the black page (35-50 levels) is missing. The travelling lens is about 12 %
-  smaller in bounding-box area than iOS's and its ends are capsule caps, where iOS's look
-  elliptical. Throws now run on time; mid-throw our lens can lead iOS's by up to about 30 px.
-- Wall landings (pass 12): rms 5.7 px right / 5.1 px left (pass 10: 5.5 / 4.1); the 9.9 s landing passes its rest by
+- Pass 13: the page avatar under a held lens reads +18 brighter than iOS's (98 against 80 at 1.8 s);
+  at the 19.0 s reversal our lens is about 65 px ahead of iOS's, although whole-video ink timing
+  is within 4 ms. Pass 12's "halo" was the band glow (fixed) and its 12 % area shortfall was
+  partly a unit slip (fixed: width).
+- Wall landings (pass 13): rms 6.0 px right / 5.4 px left (pass 10: 5.5 / 4.1); the 9.9 s landing passes its rest by
   36.5 px against 41; the left width series' first frames narrow up to 11.2 px less; the 28.66 s
   landing is an input artefact (source frame gap).
 - Cap swirl (pass 9, fringes pass 11): comparable petals and fringes, judged by eye.
@@ -539,7 +580,8 @@ the impact. The narrowing itself is real and is listed below.
 
 - `before-after.png`, `lens-edge.png`, `moving-lens.png`, `landing.png`, `cap-swirl.png`,
   `landing-99.png`, `landing-left.png`, `drag-bar.png`, `swirl-gain.png`, `neck-timing.png`,
-  `pass12-held.png`, `pass12-moving.png`, `pass12-tap.png`, `pass12-throw.png`, `atlas-studio.mp4` —
+  `pass12-held.png`, `pass12-moving.png`, `pass12-tap.png`, `pass12-throw.png`, `pass13-held.png`,
+  `pass13-moving.png`, `atlas-studio.mp4` —
   public, our renders only.
 - Pass 9 scoring (local, reads the private recording's row dumps): `.local/sxs/wallscore.py`
   (right landings), `wallscorel.py` (left landings), `neck.py` (neck timing), `liftonset.py` and

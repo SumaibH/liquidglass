@@ -61,6 +61,10 @@ recordings through the real renderer and comparing **continuous sequences**, not
    frames late), placeholder scene page. Renders `.local/sxs/p12d-v1`/`p12d-v2`, baseline
    `main-v1`/`main-v2` (from a temporary 8cb49ec worktree, `.local/sxs/rrm.sh`); owner videos `.local/comparisons/2026-10-14-pass12/`.
    Residuals in the review record's "Remaining differences".
+4. Pass 13 (15 Oct, same branch): `GlassPoseHandle.barShift` puts the held lens on the bar's
+   pressed tab, Calm `pressReach` 0, `heldGlowFloor` 1 with glow 1.5 / 5 dp, `rawShare` .05,
+   strain .6 / squeeze .47. Renders `.local/sxs/p13-v1`, `p13-v2`; `.local/sxs/inklag.py` scores
+   whole-video ink timing (p13 +4 ms, main +20 ms).
 4. CI: Atlas UI tests now take ~2.6 min locally (density 0.75, reduced motion, no per-move waits;
    they took 14 min on CI before). Hosted runner speed varies ~2x (36 min on 31bd210 with
    unchanged classes 1.9x slower), so the build job limit is 55 min.

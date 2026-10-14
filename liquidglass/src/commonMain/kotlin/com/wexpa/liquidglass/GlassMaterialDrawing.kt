@@ -43,6 +43,22 @@ internal class GlassMaterialDrawingState {
     var drawing by mutableStateOf(GlassMaterialDrawing())
 }
 
+/** Where the material's content draws the point [x], [y] (its own frame): the forward map of
+ * [glassMaterialForeground]'s transform, the press and pull without the reach. */
+internal fun GlassMaterialDrawing.contentPoint(x: Float, y: Float): Offset {
+    val pull = contentPull
+    var px = (x - centre.x) * contentPressX
+    var py = (y - centre.y) * pressY
+    val a = pull.angleDegrees * kotlin.math.PI / 180.0
+    val c = kotlin.math.cos(a).toFloat(); val s = kotlin.math.sin(a).toFloat()
+    // R(a) S R(-a), as withGlassMaterialPull applies it, then the translation.
+    val u = (c * px + s * py) * pull.along
+    val v = (-s * px + c * py) * pull.across
+    px = c * u - s * v
+    py = s * u + c * v
+    return Offset(centre.x + px + pull.translationX, centre.y + py + pull.translationY)
+}
+
 /** Independent native-resolution alpha input. A transparent border makes out-of-bounds
  * samples empty; no read from offscreen storage in another shader's dynamic input. */
 @Composable

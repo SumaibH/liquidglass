@@ -79,6 +79,17 @@ This file records user-visible development changes. Published artifacts are iden
   - A tapped selector's fold also runs, at a quarter strength, along its straight top and bottom
     (`foldAtCorners` .75 in transit), bending icons and labels at those edges as iOS's does.
   - Comparison scene: neutral placeholder page with iOS-like call-log typography and glyphs.
+- Pass 13 (15 October), the pass 12 residuals:
+  - The held lens sits where the bar's press puts its tab (203 px at Calls, was the finger's 219),
+    and the bar no longer reaches toward the finger (`pressReach` 0, was .03): its cap now shows
+    iOS's dark band between the lens edge and the bar's end instead of the bar poking past it.
+  - The held lens's inward glow is back as a floor (`GlassStyle.heldGlowFloor`; glow 1.5, 5 dp):
+    the measured band over the black page (ours 26, 25, 22 ... 10 against iOS's 36, 22, 20 ... 9)
+    without bright lines over the bar. The outline is two pixels wide.
+  - The lens shows less of the raw page (`rawShare` .05, was .28): text under it reads p95/p99
+    82/105 against iOS's 84/109 (108/112 before).
+  - Held travel strain .6 with squeeze back at .47: 444 x 145 at the 19.0 s reversal (iOS about
+    444 x 141 at this bar size). Wall landings 6.0 / 5.4 px rms; landing series 2.8 / 5.2.
 
 ### Added
 
@@ -95,6 +106,8 @@ This file records user-visible development changes. Published artifacts are iden
 - `GlassInteraction.dragPressShare`: the share of a press that remains while it drags something; 1 by default.
 - `GlassStyle.heldEdgeTone` (`uHeldEdgeTone`): the held lens's outermost pixels as a grey line of
   this level; 0 (default) keeps the additive rim.
+- `GlassStyle.heldGlowFloor` (`uHeldGlowFloor`): 0 (default) adds the held glow, 1 lays it as a
+  floor that lifts only darker glass.
 - `GlassPoseSpec.heldTravelStrain` / `heldTravelStrainOmega` and the `CalmWallLanding` preset; the
   strain is off by default. CanvasKit and .NET selector specs carry the same fields.
 - `GlassTabBarAccessory(yieldsToLens = true)`: a formed pose selector takes the neck's place; off by default.

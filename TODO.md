@@ -48,8 +48,10 @@ bounded completed work, **not completion of full iOS parity**. All open rows rem
   held outline (`heldEdgeTone`, glow off); moving lens widens and flattens (`heldTravelStrain`,
   427 x 144 vs iOS 458 x 145); tap fold along the runs (.75); frame-loop wake lag fixed (throws on
   time); neutral scene page. Landings 5.7 / 5.1 px rms. Evidence: `review/atlas/reference-replay-2026-10-13`.
-- [ ] Pass 12 residuals: held bottom edge bright (100 vs 83); no halo outside a held lens; moving
-  lens 12 % small, capsule rather than elliptical ends.
+- [x] Pass 13: held lens on the pressed tab, bar reach removed (cap band as iOS); glow as a floor
+  (band 26..10 vs 36..9); rawShare .05 (text p95 82 vs 84); strain .6 (444 x 145 vs ~444 x 141).
+- [ ] Pass 13 residuals: page avatar under a held lens reads +18 brighter than iOS; mid-reversal
+  (19.0 s) lens about 65 px ahead of iOS's although the whole-video ink timing is within 4 ms.
 - [ ] Owner visual acceptance of the navigation selector.
 
 ## P0 — current visible failures

@@ -172,6 +172,14 @@ data class GlassStyle(
      */
     val heldEdgeTone: Float = 0f,
     /**
+     * Opt-in: how the held lens's inward rim glow ([heldGlow]) composes, from 0 (default: added
+     * to whatever is behind) to 1 (a floor: the glow only shows where the glass is darker than
+     * it). iOS's held lens glows inward from its edge over the black page (36, 22, 20, 17 ... 9
+     * levels) but adds nothing over its bar, where a travelling lens shows no bright line
+     * (video2 1.8 s and 19.0 s, 2026-10-15 pass 13). Calm's lens uses 1.
+     */
+    val heldGlowFloor: Float = 0f,
+    /**
      * A share of the raw backdrop added on top of the glass this element looks
      * [through][liquidGlass], 0 to 1. The measured tab-bar lens shows the bar's output plus
      * 0.11 of the content behind the bar, which is what makes its interior read clearer than

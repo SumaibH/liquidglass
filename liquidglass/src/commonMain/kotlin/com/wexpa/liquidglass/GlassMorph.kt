@@ -61,6 +61,7 @@ fun lerpGlassStyle(start: GlassStyle, stop: GlassStyle, fraction: Float): GlassS
         rimMirrorGain = f(start.rimMirrorGain, stop.rimMirrorGain),
         heldEdgeRecovery = d(start.heldEdgeRecovery, stop.heldEdgeRecovery),
         heldEdgeTone = f(start.heldEdgeTone, stop.heldEdgeTone),
+        heldGlowFloor = f(start.heldGlowFloor, stop.heldGlowFloor),
         rawShare = f(start.rawShare, stop.rawShare),
         mirror = f(start.mirror, stop.mirror),
         bevel = d(start.bevel, stop.bevel),

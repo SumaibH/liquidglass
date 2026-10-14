@@ -28,6 +28,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableIntStateOf
@@ -942,6 +943,17 @@ fun GlassTabBar(
                 // big its node is, so that first snapshot carries a translation built from zeros.
                 // Republish now that the frame is known, or one frame renders from it.
                 if (poseHandle != null && (poseFrameChanged || poseHandle.render == null)) poseHandle.publish()
+                // The drawn body follows the bar's pressed content, as its tab does (barShift);
+                // republish when the bar's press moves while the pose loop may be asleep.
+                if (poseHandle != null) {
+                    val barFrame = barDrawing
+                    poseHandle.barShift = barFrame?.let { state ->
+                        { x: Float -> state.drawing.contentPoint(x, barHeightPx / 2f).x - x }
+                    }
+                    LaunchedEffect(poseHandle, barFrame) {
+                        if (barFrame != null) snapshotFlow { barFrame.drawing }.collect { poseHandle.publish() }
+                    }
+                }
                 val nodeLeftPx = handle?.nodeLeft() ?: poseHandle!!.nodeLeft()
                 val nodeTopPx = poseHandle?.nodeTop() ?: -overflowTopPx
                 Box(
@@ -1425,8 +1437,14 @@ data class GlassTabBarStyle(
             // left it as the bar's frost.
             // The outline is a ~65-level line over any ground (video2 held/moving lens, 14 October):
             // drawn as such (heldEdgeTone) with the additive lobe lowered, so it is no white ring.
-            lens = v3.lens.copy(specular = 0.08f, heldGlow = 0f, heldGlowReach = 6.dp, rawShare = 0.28f,
-                heldEdgeTone = 65f / 255f),
+            // The inward glow is a floor (heldGlowFloor): over the black page it is the measured
+            // 36, 22, 20 ... 9 band (ours 26, 25, 22 ... 10 at 1.5, 5 dp), over the bar it adds
+            // nothing (pass 13; pass 12 had turned it off because added over the bar it drew
+            // bright lines on a travelling lens). Raw page share .05, re-scored in pass 13 on the
+            // page text under the held lens at 1.8 s: p95/p99 82/105 against iOS's 84/109 (.28
+            // read 108/112 once the lens looked through the bar, which already shows the page).
+            lens = v3.lens.copy(specular = 0.08f, heldGlow = 1.5f, heldGlowReach = 5.dp, rawShare = 0.05f,
+                heldEdgeTone = 65f / 255f, heldGlowFloor = 1f),
             // Measured over the black page of the owner's primary references (docs/1.MP4,
             // docs/2.MP4, recorded brightness space, 2026-10-13): bar 45 at rest and 53 held,
             // resting selector 24-30 (about .58 of the bar). V3's 32/44 and "0.5 x bar - 10"
@@ -1459,8 +1477,11 @@ data class GlassTabBarStyle(
                 // V3 already applies its measured heldLift to the bar's material. Adding
                 // the generic control lift again changed the44-level Phone plateau to54.
                 pressLift = 0f,
-                // iOS's held bar reaches toward the finger; its far side grows as usual.
-                pressReach = if (dark) .03f else 0f,
+                // No reach toward the finger: iOS's held bar grows evenly (its far end +24-28 px,
+                // its finger end about the same under the lens), and its lens, centred on the
+                // pressed tab, is what extends toward the finger (video2 1.8 s; pass 13). The
+                // .03 reach of pass 7 pushed our bar 13 px past the lens's cap.
+                pressReach = 0f,
                 // iOS's bar snaps back after lift (0.12 s, ~10% overshoot) and parts from the button.
                 releaseStiffness = if (dark) 530f else 0f, releaseDamping = if (dark) .6f else 1f,
                 // Once its lens is dragged, iOS's bar keeps about 10 px of growth a side.

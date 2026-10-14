@@ -63,7 +63,8 @@ lens dragged quickly widens and flattens at constant area (`GlassPoseSpec.heldTr
 reaching about 0.75 of the bar's height at iOS's fast reversals; a quick flick releases before the
 strain has built, so wall landings keep their shape. Its outline is a thin grey line
 (`GlassStyle.heldEdgeTone`) rather than a white ring, and a tapped selector's fold also bends what
-lies under its straight top and bottom. See the
+lies under its straight top and bottom. Since pass 13 a held lens sits where the bar's press puts
+its tab, as iOS's does, and its inward glow shows only over darker ground (`GlassStyle.heldGlowFloor`). See the
 [continuous comparison](https://github.com/shayann07/liquidglass/blob/main/review/atlas/reference-replay-2026-10-13/README.md).
 
 ## A neighbouring control: the search button
