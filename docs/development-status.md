@@ -58,7 +58,10 @@ pass corrected the inferred input (hold onset and wall-throw lift), enlarged the
 cap swirl with faint fringes, made the held bar reach toward the finger (edges within 2–5 px of
 iOS) and redesigned Atlas Studio. An eighth pass matched the bar's release after lift, so the
 search-button neck parts on time. The Calm selector's motion and gestures are now ported to the
-CanvasKit and .NET packages, checked frame by frame against the Kotlin controller.
+CanvasKit and .NET packages, checked frame by frame against the Kotlin controller. On Android, the
+selector and Atlas Studio were verified on an API 37 emulator through the AGSL path
+([emulator record](https://github.com/shayann07/liquidglass/blob/codex/atlas-stabilization/review/atlas/android-emulator-2026-10-14/README.md));
+no physical device was available.
 
 ![Before and after at the same replay instants](https://raw.githubusercontent.com/shayann07/liquidglass/codex/atlas-stabilization/review/atlas/reference-replay-2026-10-13/before-after.png)
 

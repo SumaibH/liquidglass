@@ -47,8 +47,9 @@ recordings through the real renderer and comparing **continuous sequences**, not
 4. CI: Atlas UI tests now take ~2.6 min locally (density 0.75, reduced motion, no per-move waits;
    they took 14 min on CI before). Hosted runner speed varies ~2x (36 min on 31bd210 with
    unchanged classes 1.9x slower), so the build job limit is 55 min.
-5. Then: Android verification when a device is available. (Ports: the Calm selector is done for
-   CanvasKit and .NET, 14 Oct; its material is approximate.)
+5. Android: verified on an API 37 emulator (software GPU, AVD `lg_verify_37`,
+   `review/atlas/android-emulator-2026-10-14`); a physical-device check remains open. Ports: the
+   Calm selector is done for CanvasKit and .NET; its material is approximate.
 
 ## Constraints (owner)
 

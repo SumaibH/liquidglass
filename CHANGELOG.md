@@ -26,6 +26,7 @@ This file records user-visible development changes. Published artifacts are iden
   behind before widening back (`GlassPoseSpec.releaseTrailingEdge`, trailing edge 13/s), matching
   video 2's measured 241 → 285 px recovery without growing taller; the leading edge no longer
   flies past the end. The previous landing is kept as `GlassPoseSpec.CalmFreeLanding`.
+- Sample: `PhoneActivity` hosts the Calm comparison scene on Android (verified on an API 37 emulator).
 - `PhoneScene` geometry: a 95 pt resting pill with 8 pt ends, measured in video 2.
 - Calm moving lens (14 October): a deeper reflective rim (`rimMirror` 1.0, the whole band; up to 1 is now allowed)
   gives a larger swirl at the caps, with a faint colour split confined to the mirrored band.

@@ -287,7 +287,7 @@ the impact. The narrowing itself is real and is listed below.
   inset at 0.38 of the bar, against 0.57–0.69 at rest. Its test keeps the previous pill law.
 - The repeated long tap's pigment returns about 50 ms (≈7 grey levels) later than the measured
   patches with the corrected pill; its test also keeps the previous pill law.
-- Android is not re-verified; no physical device is available.
+- Android was verified on an API 37 emulator through the AGSL path ([record](../android-emulator-2026-10-14/README.md)); no physical device was available.
 
 ## Verification
 

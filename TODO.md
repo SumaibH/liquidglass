@@ -27,6 +27,8 @@ bounded completed work, **not completion of full iOS parity**. All open rows rem
 - [x] Bar release after lift matched (0.12 s, ~10% overshoot); neck parts 60–70 ms after iOS
   (inferred lift) instead of 70–180 ms (pass 8).
 - [x] Atlas UI tests made cheap enough for CI's 40 min limit (~2.6 min locally).
+- [x] Android verified on an API 37 emulator (AGSL path, software GPU): tap, hold, throw and Atlas
+  Studio render correctly (`review/atlas/android-emulator-2026-10-14`). Physical device still open.
 - [x] Calm navigation selector ported to CanvasKit and .NET, checked against Kotlin-exported
   trajectories (5 scenarios, worst 0.035 px); approximate selector material.
 - [ ] Owner visual acceptance of the navigation selector.
