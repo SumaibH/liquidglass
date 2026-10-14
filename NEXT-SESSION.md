@@ -44,7 +44,9 @@ recordings through the real renderer and comparing **continuous sequences**, not
    Needs a held-lens wall impact model.
 2. iOS's cap swirl is still somewhat stronger; fusion timing follows our later press.
 3. Owner visual acceptance of the selector and of the redesigned Atlas Studio.
-4. Then: Android verification when a device is available; native navigation selector for .NET.
+4. CI: the build job took 42 min on f479fef (library tests 26, Atlas UI tests 14 on the CPU test
+   raster; limit now 55). Make the Atlas UI tests cheaper before they grow further.
+5. Then: Android verification when a device is available; native navigation selector for .NET.
 
 ## Constraints (owner)
 
