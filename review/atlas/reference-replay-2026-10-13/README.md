@@ -61,7 +61,7 @@ begins. It parts within about 70 ms of the bar shrinking. New opt-in API:
 
 At 1.80 s the rendered top silhouette across the neck matches the reference within 1 px at every
 sampled column (x 840–936) and the narrowest neck is 59–61 px against 61 px. Differences: the
-neck forms later and parts later than iOS (it follows our bar press timing), a brighter rim line
+neck forms later and parts later than iOS (it follows our bar press timing; see pass 8), a brighter rim line
 crosses it where the button's edge lies, and during holds on Keypad iOS shows no neck in some
 frames (confounded by the overhanging lens; not resolved). iOS's bar also appears to grow more
 on the finger's side (48 vs 26 px at one row while holding Calls); ours grows symmetrically.
@@ -205,7 +205,10 @@ about two frames earlier and much more stretched (about 1.3 times its resting wi
 end pressed past the bar's end), then contracts from behind straight through its resting width;
 ours is as long but is slowed by the held end-tab clamp before the finger lifts (about 800 px/s
 at release), so its trailing edge carries little momentum. iOS's held lens instead hits the wall
-at speed and protrudes past it. Modelling a held-lens wall impact is left open. `tools/reference-replay/v2script.py` and
+at speed and protrudes past it. Tried: handing a share of the finger's own (unclamped) speed to the
+trailing edge at release. At 0.8 the 9.9 s landing matched (peak 645 px against 645) but the
+2.3, 12.4 and 25.6 s landings overshot by 20–40 px; at 0.6 the 9.9 s landing moved only 5 px.
+Neither was a net gain, so it was not adopted. Modelling the held lens striking the wall is open. `tools/reference-replay/v2script.py` and
 `v2-script.txt` are updated; the reversal episode is spliced in by the generator.
 
 ![Moving lens before and after pass 7 (our renders only)](cap-swirl.png)
@@ -248,6 +251,18 @@ touch is bounded to the panel and the reach is drawing only.
 Calm bar fused with a round magnifier button as the only scene switcher, a glass top bar and an
 anchored card. A clear magnifier being dragged now takes no press glow or press scale: both
 hazed and resampled its view. [Recording](atlas-studio.mp4) (deterministic GPU replay, 9 s).
+
+### Pass 8: bar release and fusion timing (14 October)
+
+After the finger lifts, iOS's bar returns from its grown width to rest in about 0.12 s with about
+10% overshoot (left edge 44 → 65 → 63 px at three releases); ours took 0.3–0.35 s with none, and
+the bar/search neck followed it, parting 70–180 ms after iOS's. New opt-in
+`GlassInteraction.releaseStiffness` / `releaseDamping` (a release spring overriding the
+response's own); dark Calm's bar uses 530 / 0.6, authored from that overshoot and time. The bar
+now returns at iOS's rate and the neck parts 60–70 ms after iOS's. That residual is the same as
+the delay of our bar's first shrink at every release, so it is attributed to the inferred lift
+time, not tuned away. Also tried and rejected: handing the finger's own speed to the trailing
+edge at an end-tab release (see pass 7).
 
 ### Re-reading the landing evidence
 

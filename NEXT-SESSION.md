@@ -41,8 +41,8 @@ recordings through the real renderer and comparing **continuous sequences**, not
 
 1. 9.9 s landing: iOS's held lens hits the wall at speed and protrudes, then contracts through
    rest (42 px); ours is slowed by the held end-tab clamp before lift (~800 px/s) and narrows 10 px.
-   Needs a held-lens wall impact model.
-2. iOS's cap swirl is still somewhat stronger; fusion timing follows our later press.
+   Finger-momentum hand-off was tried (0.6/0.8/1.0) and rejected; needs a held-lens wall impact model.
+2. iOS's cap swirl is still somewhat stronger. Neck parts 60–70 ms late (inferred lift; pass 8).
 3. Owner visual acceptance of the selector and of the redesigned Atlas Studio.
 4. CI: Atlas UI tests now take ~2.6 min locally (density 0.75, reduced motion, no per-move waits;
    they took 14 min on CI before). The build job is back to its 40 min limit.

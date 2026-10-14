@@ -24,6 +24,9 @@ bounded completed work, **not completion of full iOS parity**. All open rows rem
 - [x] Larger cap swirl with faint fringes (rim mirror 1.0) (pass 7).
 - [x] Finger-side bar growth: `pressReach` (far side anchored); edges within 2–5 px (pass 7).
 - [x] Atlas Studio redesign: moving full-window scene, one switcher, fused magnifier button.
+- [x] Bar release after lift matched (0.12 s, ~10% overshoot); neck parts 60–70 ms after iOS
+  (inferred lift) instead of 70–180 ms (pass 8).
+- [x] Atlas UI tests made cheap enough for CI's 40 min limit (~2.6 min locally).
 - [ ] Owner visual acceptance of the navigation selector.
 
 ## P0 — current visible failures

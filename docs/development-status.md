@@ -56,7 +56,8 @@ landings press into the bar's end and narrow from behind (241 → 285 px, as mea
 flying past it, and corrected the comparison scene's resting pill to the measured 95 pt. A seventh
 pass corrected the inferred input (hold onset and wall-throw lift), enlarged the moving lens's
 cap swirl with faint fringes, made the held bar reach toward the finger (edges within 2–5 px of
-iOS) and redesigned Atlas Studio.
+iOS) and redesigned Atlas Studio. An eighth pass matched the bar's release after lift, so the
+search-button neck parts on time.
 
 ![Before and after at the same replay instants](https://raw.githubusercontent.com/shayann07/liquidglass/codex/atlas-stabilization/review/atlas/reference-replay-2026-10-13/before-after.png)
 
@@ -132,7 +133,7 @@ trace was produced and no permission changes were made. See [performance](perfor
 ## What remains
 
 1. Remaining differences from the continuous comparison: iOS's held lens hits the wall at
-   speed, ours is slowed by the end-tab clamp, so one landing narrows less than iOS's; fusion timing; iOS's cap swirl is
+   speed, ours is slowed by the end-tab clamp, so one landing narrows less than iOS's; iOS's cap swirl is
    still somewhat stronger. Owner visual acceptance is pending.
 2. Verify all directional extreme envelopes and Android composition on appropriate hardware.
 3. Resolve ordinary interaction/display performance and final wide/narrow Atlas visual acceptance.

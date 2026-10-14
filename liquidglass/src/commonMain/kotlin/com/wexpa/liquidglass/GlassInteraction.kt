@@ -108,6 +108,14 @@ data class GlassInteraction(
      * 15 px more on that side while its far side grows as a plain 1.05 press (2026-10-14).
      */
     val pressReach: Float = 0f,
+    /**
+     * Release spring for the press, overriding [response]'s when positive: stiffness and damping
+     * ratio of the return to rest after the finger lifts. Zero keeps the response's own release.
+     * Dark Calm navigation uses 530 / 0.6: the iOS 26 Phone bar returns to rest about 0.12 s
+     * after lift with about 10% overshoot (video2, three releases, 2026-10-14).
+     */
+    val releaseStiffness: Float = 0f,
+    val releaseDamping: Float = 1f,
 ) {
     companion object {
         val Default = GlassInteraction()

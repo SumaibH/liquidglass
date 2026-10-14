@@ -1447,6 +1447,8 @@ data class GlassTabBarStyle(
                 pressLift = 0f,
                 // iOS's held bar reaches toward the finger; its far side grows as usual.
                 pressReach = if (dark) .03f else 0f,
+                // iOS's bar snaps back after lift (0.12 s, ~10% overshoot) and parts from the button.
+                releaseStiffness = if (dark) 530f else 0f, releaseDamping = if (dark) .6f else 1f,
             ),
         ) }
         // Declaration order matters here: the constructor's defaults read RestingInset and

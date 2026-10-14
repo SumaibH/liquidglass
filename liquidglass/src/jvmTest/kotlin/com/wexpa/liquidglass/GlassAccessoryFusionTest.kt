@@ -134,4 +134,43 @@ class GlassAccessoryFusionTest {
         assertTrue(plainLeft - reachLeft >= 3, "finger side did not reach: $reachLeft vs $plainLeft")
         assertTrue(kotlin.math.abs(reachRight - plainRight) <= 1, "far edge moved: $reachRight vs $plainRight")
     }
+
+    /** releaseStiffness (2026-10-14): iOS's bar is back about 0.12 s after lift, so its neck to
+     * the search button parts promptly; the historical Calm release still holds it at 150 ms. */
+    @Test fun theNeckPartsPromptlyAfterLift() = runComposeUiTest(testTimeout = 6.minutes) {
+        var fast by mutableStateOf(true)
+        setContent {
+            CompositionLocalProvider(LocalDensity provides Density(1f)) {
+                val state = rememberLiquidGlassState(Color.Black, renderScale = .25f)
+                val calm = GlassTabBarStyle.Calm().copy(height = 62.dp)
+                val style = if (fast) calm else calm.copy(barInteraction = calm.barInteraction?.copy(releaseStiffness = 0f))
+                Box(Modifier.size(400.dp, 160.dp).testTag("scene")) {
+                    Box(Modifier.fillMaxSize().background(Color.Black).liquidGlassSource(state))
+                    GlassTabBar(state, 3, 0, {}, Modifier.offset(20.dp, 49.dp).width(278.dp), style = style,
+                        trailingAccessory = GlassTabBarAccessory(62.dp, gap = 8.dp),
+                    ) { _, _ -> Box(Modifier.size(20.dp).background(Color.Gray)) }
+                    Box(Modifier.offset(306.dp, 49.dp).size(62.dp).liquidGlass(state, CircleShape, calm.bar))
+                }
+            }
+        }
+        fun neckAfterLift(): Int {
+            waitForIdle()
+            val node = onNodeWithTag(GlassTabBarSemantics.TAG, useUnmergedTree = true)
+            node.performTouchInput { down(Offset(46f, 31f)); advanceEventTime(800); moveTo(Offset(46f, 31f)) }
+            waitForIdle()
+            mainClock.autoAdvance = false
+            node.performTouchInput { up() }
+            mainClock.advanceTimeBy(150)
+            val level = (onNodeWithTag("scene").captureToImage().toAwtImage().getRGB(302, 80) shr 8) and 0xFF
+            mainClock.autoAdvance = true
+            waitForIdle()
+            return level
+        }
+        val prompt = neckAfterLift()
+        fast = false
+        val slow = neckAfterLift()
+        println("NECK_RELEASE prompt=$prompt slow=$slow")
+        assertTrue(prompt < 12, "neck still joined 150 ms after lift: $prompt")
+        assertTrue(slow > 20, "historical release changed: $slow")
+    }
 }

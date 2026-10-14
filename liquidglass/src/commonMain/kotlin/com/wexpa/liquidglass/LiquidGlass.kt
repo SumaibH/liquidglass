@@ -383,7 +383,10 @@ internal fun Modifier.liquidGlassCore(
     val pressDown = glassPressIsDown(interaction, press)
     val pressAmount by animateFloatAsState(
         targetValue = if (pressDown) 1f else 0f,
-        animationSpec = if (interaction?.response == GlassResponse.Calm) {
+        animationSpec = if (!pressDown && (interaction?.releaseStiffness ?: 0f) > 0f) {
+            androidx.compose.animation.core.spring(dampingRatio = interaction!!.releaseDamping.coerceIn(.05f, 2f),
+                stiffness = interaction.releaseStiffness)
+        } else if (interaction?.response == GlassResponse.Calm) {
             if (pressDown) GlassMotion.CalmDown else GlassMotion.CalmUp
         } else if (pressDown) { if (growthPx > 0f) GlassMotion.BalloonDown else GlassMotion.PressDown } else GlassMotion.PressUp,
         label = "glass_press_scale",

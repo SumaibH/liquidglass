@@ -31,12 +31,15 @@ This file records user-visible development changes. Published artifacts are iden
   gives a larger swirl at the caps, with a faint colour split confined to the mirrored band.
 - Calm dark bar reaches toward the finger while held (`GlassInteraction.pressReach` 0.03): the
   finger's side grows further, the far side as before; edges within 2–5 px of iOS.
+- Calm dark bar snaps back after lift like iOS's (0.12 s, slight overshoot), so the search-button
+  neck parts on time (`GlassInteraction.releaseStiffness` / `releaseDamping`).
 - Atlas Studio redesigned: one full-window scene moving under all the glass, the Calm bar fused
   with a magnifier button as the only scene switcher, a glass top bar and an anchored card.
 - Repository description and README rewritten for developers; lab detail moved to linked records.
 
 ### Added
 
+- `GlassInteraction.releaseStiffness` / `releaseDamping`: an optional release spring for the press.
 - `GlassInteraction.pressReach`: while pressed, the side nearer the touch grows further; 0 by default.
 
 - `GlassStyle.rimMirror` and `GlassStyle.foldAtCorners` (`uRimMirror`, `uFoldCorners`): a
