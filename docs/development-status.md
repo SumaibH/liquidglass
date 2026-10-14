@@ -57,7 +57,8 @@ flying past it, and corrected the comparison scene's resting pill to the measure
 pass corrected the inferred input (hold onset and wall-throw lift), enlarged the moving lens's
 cap swirl with faint fringes, made the held bar reach toward the finger (edges within 2–5 px of
 iOS) and redesigned Atlas Studio. An eighth pass matched the bar's release after lift, so the
-search-button neck parts on time.
+search-button neck parts on time. The Calm selector's motion and gestures are now ported to the
+CanvasKit and .NET packages, checked frame by frame against the Kotlin controller.
 
 ![Before and after at the same replay instants](https://raw.githubusercontent.com/shayann07/liquidglass/codex/atlas-stabilization/review/atlas/reference-replay-2026-10-13/before-after.png)
 

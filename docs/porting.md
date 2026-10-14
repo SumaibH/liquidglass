@@ -12,7 +12,7 @@ Separate the material, motion and host integration instead of duplicating a samp
 | Android Views | Place a ComposeView over a Compose-recorded backdrop, or supply an independent renderer | Bridge work required for a View-owned backdrop; no transparent capture of arbitrary Views |
 | React, Vue, Svelte, Angular, vanilla HTML | ES module with a supplied canvas/image/video texture | Continuous lens preview in `ports/web`; not the full measured material |
 | CanvasKit / another Skia RuntimeEffect host | Generated production material, content and aperture shaders in `ports/skia` | CanvasKit software rendering verified against JVM pixels; host capture/input remain explicit |
-| .NET / SkiaSharp | `GlassPainter`, `CalmInteraction`, optional feedback and WinForms `ControlBackdrop` | CPU fixtures, input and standard-control capture verified; navigation-selector/other hosts remain open |
+| .NET / SkiaSharp | `GlassPainter`, `CalmInteraction`, `CalmNavigation` / `CalmSelectorController`, optional feedback and WinForms `ControlBackdrop` | CPU fixtures, input, the Calm selector against Kotlin trajectories and standard-control capture verified; other hosts remain open |
 | Electron, Tauri, browser WebViews | Same web module, where WebGL and origin-clean textures are available | Host lifecycle/permissions must be tested |
 | SwiftUI, Flutter, React Native, Qt, Unity, other native hosts | Implement the renderer contract below or embed a supported surface | No dedicated native adapter shipped for these hosts; not a claim of drop-in support |
 
@@ -73,15 +73,17 @@ The separate `LiquidGlass.WinForms` adapter captures an application's own Panel/
 CheckBox subtree after layout on its UI thread. Returned opaque images are caller-owned and can
 be borrowed by the painter. Refresh after content/layout changes, keeping glass outside the
 subtree. RichTextBox/ActiveX are rejected; custom controls/overlapping order need host verification.
-Navigation-selector motion, arbitrary-widget capture across stacks and high-level separate
-foreground passes remain open. See the native guide for build commands, ownership and examples.
+The Calm navigation selector is ported to CanvasKit and .NET (see below); arbitrary-widget capture
+across stacks and high-level separate foreground passes remain open. See the native guide for build commands, ownership and examples.
 
 For a CanvasKit host, start with `createGlassScene` from the local `liquidglass-skia-preview` package.
 It combines one borrowed source image, multiple lenses/cards, calm interaction and drawing transforms.
 This removes per-widget matrix setup and uses logical coordinates with an explicit `pixelRatio`.
 The host still supplies input, labels, accessible controls, frame scheduling and a matching source/canvas.
 The root scene, painter and interaction exports have TypeScript declarations; additional native
-bindings and native navigation-selector motion remain separate work. Whole-surface .NET calm feedback is now implemented. See the
+bindings remain separate work. Whole-surface .NET calm feedback and the Calm navigation selector
+(`scene.addNavigation`; .NET `CalmNavigation`) are implemented and checked against Kotlin-exported
+trajectories; their selector material is an approximation of the Compose Calm one. See the
 [scene example and lifecycle](https://github.com/shayann07/liquidglass/blob/main/ports/skia/README.md#start-with-one-scene).
 
 ```js
@@ -259,7 +261,8 @@ hit testing and accessibility outside both transforms. Generic cards also keep o
 outside. To match Calm navigation, apply this same drawing transform to both ordinary and selected
 ink before selector optics, around the **bar** centre even when a selector node has a different
 origin. Compose does this through `deformItemsWithBar`; the portable host owns its ink layers.
-The portable painter does not provide a complete tab-navigation widget. For a CanvasKit canvas:
+For a complete Calm navigation bar use `scene.addNavigation` (CanvasKit) or `CalmNavigation` (.NET);
+the host still draws labels and selected ink. For a CanvasKit canvas with your own surfaces:
 
 ```js
 const [a, b, c, d] = state.matrix;

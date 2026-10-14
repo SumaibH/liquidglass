@@ -77,6 +77,41 @@ export function createGlassPainter(kit, sources = glassShaderSources) {
       draw(canvas,uniforms,backdrop,originX,originY);
     },
 
+    /**
+     * Draw a navigation selector's deformed body (a CalmSelectorController frame) over the bar
+     * at device rect `bar`. `pose` is `controller.render()` in the same device px as `bar`.
+     * Material: the in-app surface, blended toward the held lens profile by `formation`. This is
+     * the shared shader's pose body; it is an approximation of the Compose Calm selector's
+     * tuned material, not its measured grey levels. Labels and selected ink stay with the host.
+     */
+    drawSelector(canvas,{x,y,width,height},{pose,formation=0},options={}) {
+      checkAlive();
+      if(!source)throw new Error('Call setSource before drawing glass');
+      if(![x,y,width,height,formation].every(Number.isFinite)||width<=0||height<=0)
+        throw new RangeError('Selector requires a finite bar rect and formation');
+      if(!pose||![pose.a,pose.aInv,pose.c,pose.d].every(v=>Array.isArray(v)&&v.length===4&&v.every(Number.isFinite)))
+        throw new TypeError('Selector requires a pose from CalmSelectorController.render()');
+      // The body may stand proud of the bar while held and protrude past its ends in transit.
+      const mx=height*.6,my=height*.4,nodeW=width+2*mx,nodeH=height+2*my,pad=2;
+      const originX=x-mx-pad,originY=y-my-pad,f=Math.min(Math.max(formation,0),1);
+      const uniforms=inAppMaterialUniforms(effects,{...options,width:nodeW,height:nodeH,radius:height/2,pad});
+      // Pose c is bar-local; the node is centred on the bar, as the shader expects.
+      const [cx,cy,bx,by]=pose.c;
+      Object.assign(uniforms,{
+        uBodyKind:2,uPoseA:pose.a,uPoseAInv:pose.aInv,uPoseD:pose.d,
+        uPoseC:[cx-width/2,cy-height/2,bx,by],uRefractBand:pose.d[3],
+        uProfile:2,uHeldLens:f,uHeldMagnification:.12*f,uHeldGlow:1,
+        uTint:[uniforms.uTint[0],uniforms.uTint[1],uniforms.uTint[2],uniforms.uTint[3]*(1-.85*f)],
+        // Calm dark: the resting inset carries no material lift, so it sits darker than its bar.
+        uLift:uniforms.uLift*f,uBlur:uniforms.uBlur*(1-f),uFineShare:uniforms.uFineShare+(1-uniforms.uFineShare)*f,
+        uRadii:Array(4).fill(Math.min(nodeW,nodeH)/2),
+      });
+      sampler??=createBackdropSampler(kit);
+      const backdrop=sampler.shader(canvas,source,originX,originY,uniforms.uWideKernel);
+      uniforms.uWideStrip=backdrop.strip;
+      draw(canvas,uniforms,backdrop.shader,originX,originY);
+    },
+
     dispose() {
       if (!disposed) {
         disposed = true;

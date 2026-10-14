@@ -1,4 +1,7 @@
 import type {Canvas, CanvasKit, Image} from 'canvaskit-wasm';
+import type {CalmSelectorPose, CalmSelectorState} from './selector.mjs';
+export type {CalmSelectorPose, CalmSelectorState, CalmSelectorBar, CalmNavigation} from './selector.mjs';
+export {CalmSelectorController, calmSelectorBar, createCalmNavigation} from './selector.mjs';
 
 export interface GlassShaderSources { material: string; content: string; endpoint: string }
 export type CornerRadii = number | readonly [number, number, number, number];
@@ -37,6 +40,8 @@ export interface GlassPainter {
   /** Low-level painter coordinates are device pixels. */
   drawLens(canvas: Canvas, bounds: GlassLensBounds): void;
   drawSurface(canvas: Canvas, bounds: GlassSurfaceBounds, material?: GlassMaterial): void;
+  /** A navigation selector's pose body over the bar rect (device px); approximate Calm material. */
+  drawSelector(canvas: Canvas, bar: GlassRect, selector: {pose: CalmSelectorPose; formation?: number}, material?: GlassMaterial): void;
   dispose(): void;
 }
 export function createGlassPainter(kit: CanvasKit, sources?: GlassShaderSources): GlassPainter;
@@ -54,6 +59,22 @@ export interface GlassSurfaceLayer extends GlassLayer<GlassSurfaceBounds> {
   setMaterial(material: Partial<GlassMaterial>): void;
 }
 export interface GlassLensLayer extends GlassLayer<GlassRect & {magnification: number}> {}
+export interface GlassNavigationOptions {
+  count: number; selected?: number; inset?: number; pillWidth?: number; pillInset?: number;
+  onSelect?: (index: number) => void; material?: GlassMaterial;
+}
+/** A Calm navigation bar: logical page coordinates and monotonic seconds. */
+export interface GlassNavigationLayer {
+  readonly bounds: Readonly<GlassRect>;
+  readonly selected: number;
+  readonly selector: CalmSelectorState;
+  down(x: number, y: number, time: number): void;
+  move(x: number, y: number, time: number): void;
+  up(x: number, y: number, time: number): void;
+  cancel(time: number): void;
+  select(index: number): void;
+  remove(): void;
+}
 export interface GlassViewport { width: number; height: number; pixelRatio?: number }
 export interface GlassSceneOptions extends GlassViewport { reducedMotion?: boolean; sources?: GlassShaderSources }
 export interface GlassScene {
@@ -61,6 +82,7 @@ export interface GlassScene {
   /** Scene bounds and input displacements are logical pixels. */
   addSurface(bounds: GlassSurfaceBounds, material?: GlassMaterial): GlassSurfaceLayer;
   addLens(bounds: GlassLensBounds): GlassLensLayer;
+  addNavigation(bounds: GlassRect, options: GlassNavigationOptions): GlassNavigationLayer;
   resize(viewport: Partial<GlassViewport>, time: number): void;
   setReducedMotion(reduced: boolean, time: number): void;
   /** True requests another animation frame. Draw labels after this, then flush the host surface. */

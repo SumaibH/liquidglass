@@ -160,3 +160,44 @@ test('bundled package interaction preserves original timestamps and extreme feed
     ['press', [.3, -10000, 10000]], ['sample', [.4]], ['release', [.4]], ['sample', [3]]])
     assert.deepEqual(bundled[method](...args), original[method](...args));
 });
+
+test('navigation: a tap selects, the selector settles under the bar, and drawing stops asking for frames', () => {
+  const f = fixture(360, 140), scene = createGlassScene(kit, {width: 360, height: 140, pixelRatio: 1});
+  try {
+    scene.setSource(f.image);
+    const picks = [];
+    const nav = scene.addNavigation({x: 20, y: 40, width: 300, height: 62},
+      {count: 3, onSelect: i => { picks.push(i); nav.select(i); }});
+    scene.draw(f.canvas, 0);
+    const restX = nav.selector.centreX;
+    nav.down(270, 70, .1); nav.up(270, 70, .16);
+    assert.deepEqual(picks, [2]);
+    let t = .16, frames = 0;
+    // Ten frames a second: the controller integrates its own substeps, and CPU shading is slow.
+    while (scene.draw(f.canvas, t) && t < 3) { t += .1; frames++; }
+    assert.ok(frames >= 3 && t < 2, `tap animated ${frames} frames until ${t}`);
+    assert.equal(nav.selected, 2);
+    assert.ok(nav.selector.centreX > restX + 150, 'selector did not travel to the tapped tab');
+    assert.equal(scene.draw(f.canvas, t + 1), false, 'a settled navigation bar still requests frames');
+  } finally { scene.dispose(); f.close(); }
+});
+
+test('navigation: the drawn selector darkens the bar where it rests and leaves the rest untouched', () => {
+  const f = fixture(360, 140), scene = createGlassScene(kit, {width: 360, height: 140, pixelRatio: 1});
+  try {
+    scene.setSource(f.image);
+    scene.addSurface({x: 20, y: 40, width: 300, height: 62, radius: 31}, {dark: true});
+    scene.draw(f.canvas, 0);
+    const bar = f.read();
+    const s2 = createGlassScene(kit, {width: 360, height: 140, pixelRatio: 1});
+    s2.setSource(f.image); s2.addNavigation({x: 20, y: 40, width: 300, height: 62}, {count: 3});
+    s2.draw(f.canvas, 0);
+    const both = f.read();
+    const lum = (img, x, y) => { const i = (y * 360 + x) * 4; return img[i] + img[i + 1] + img[i + 2]; };
+    // The resting selector sits over the first tab (centre near x = 20 + 6 + 48 logical, y = 71).
+    const inPill = [[70, 60], [80, 80], [100, 70]].map(([x, y]) => lum(both, x, y) - lum(bar, x, y));
+    assert.ok(inPill.every(d => d < -6), `resting selector did not darken the bar: ${inPill}`);
+    assert.equal(lum(both, 290, 71), lum(bar, 290, 71), 'the selector changed the far end of the bar');
+    s2.dispose();
+  } finally { scene.dispose(); f.close(); }
+});

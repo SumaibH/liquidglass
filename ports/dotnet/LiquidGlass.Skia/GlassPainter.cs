@@ -82,10 +82,18 @@ public sealed class GlassPainter : IDisposable
         Ready(canvas, bounds); ArgumentNullException.ThrowIfNull(radii);
         options ??= new();
         if (radii.Count != 4 || radii.Any(r => !float.IsFinite(r) || r < 0)) throw new ArgumentException("Four nonnegative radii required", nameof(radii));
-        var o = options;
+        var v = SurfaceUniforms(bounds, radii, options);
+        var origin = new SKPoint(bounds.Left - 2, bounds.Top - 2);
+        using var shader = Backdrop(origin, 10 * options.Density, out var strip);
+        Set(v, "uWideStrip", strip);
+        Draw(canvas, v, shader, origin, bounds, feedback, options.Density);
+    }
+
+    private Dictionary<string, float[]> SurfaceUniforms(SKRect bounds, IReadOnlyList<float> radii, GlassSurfaceOptions o)
+    {
         if (!float.IsFinite(o.Density) || o.Density <= 0 || !float.IsFinite(o.TintAmount) || o.TintAmount is < 0 or > 100 ||
             new[] { o.Materialize, o.ReducedTransparency, o.IncreasedContrast }.Any(v => !float.IsFinite(v) || v is < 0 or > 1))
-            throw new ArgumentOutOfRangeException(nameof(options));
+            throw new ArgumentOutOfRangeException(nameof(o));
         var v = ClearUniforms(material, bounds.Width, bounds.Height, 2, 1);
         var r = radii.Select(x => Math.Min(x, Math.Min(bounds.Width, bounds.Height) / 2)).ToArray();
         var t = o.TintAmount / 100;
@@ -99,10 +107,37 @@ public sealed class GlassPainter : IDisposable
         Set(v, "uSpecular", .25f); Set(v, "uSpecularPow", 6); Set(v, "uEdgeLight", 0); Set(v, "uLegibility", .6f);
         Set(v, "uScale", Math.Clamp((Math.Min(bounds.Width, bounds.Height) / o.Density - 56) / 264, 0, 1));
         Set(v, "uMaterialize", o.Materialize); Set(v, "uFrost", o.ReducedTransparency); Set(v, "uContrast", o.IncreasedContrast);
-        var origin = new SKPoint(bounds.Left - 2, bounds.Top - 2);
-        using var shader = Backdrop(origin, 10 * o.Density, out var strip);
+        return v;
+    }
+
+    /// <summary>Draw a navigation selector's deformed body over the bar rect (device px). <paramref name="pose"/>
+    /// comes from <see cref="CalmSelectorController.Render"/> in the same device px as <paramref name="bar"/>.
+    /// Material: the in-app surface, blended toward the held lens profile by <paramref name="formation"/>;
+    /// an approximation of the Compose Calm selector's tuned material, not its measured grey levels.</summary>
+    public void DrawSelector(SKCanvas canvas, SKRect bar, CalmSelectorPose pose, float formation = 0, GlassSurfaceOptions? options = null)
+    {
+        Ready(canvas, bar);
+        if (!float.IsFinite(formation)) throw new ArgumentOutOfRangeException(nameof(formation));
+        if (new[] { pose.A, pose.AInv, pose.C, pose.D }.Any(v => v is null || v.Length != 4 || v.Any(x => !float.IsFinite(x))))
+            throw new ArgumentException("Pose from CalmSelectorController.Render required", nameof(pose));
+        options ??= new(Dark: true);
+        // The body may stand proud of the bar while held and protrude past its ends in transit.
+        float mx = bar.Height * .6f, my = bar.Height * .4f;
+        var node = SKRect.Create(bar.Left - mx, bar.Top - my, bar.Width + 2 * mx, bar.Height + 2 * my);
+        var f = Math.Clamp(formation, 0, 1);
+        var v = SurfaceUniforms(node, [bar.Height / 2, bar.Height / 2, bar.Height / 2, bar.Height / 2], options);
+        Set(v, "uBodyKind", 2); Set(v, "uPoseA", pose.A); Set(v, "uPoseAInv", pose.AInv); Set(v, "uPoseD", pose.D);
+        Set(v, "uPoseC", pose.C[0] - bar.Width / 2, pose.C[1] - bar.Height / 2, pose.C[2], pose.C[3]);
+        Set(v, "uRefractBand", pose.D[3]); Set(v, "uProfile", 2); Set(v, "uHeldLens", f); Set(v, "uHeldMagnification", .12f * f);
+        var tint = v["uTint"]; Set(v, "uTint", tint[0], tint[1], tint[2], tint[3] * (1 - .85f * f));
+        // Calm dark: the resting inset carries no material lift, so it sits darker than its bar.
+        Set(v, "uLift", v["uLift"][0] * f); Set(v, "uBlur", v["uBlur"][0] * (1 - f));
+        Set(v, "uFineShare", v["uFineShare"][0] + (1 - v["uFineShare"][0]) * f);
+        Set(v, "uRadii", Enumerable.Repeat(Math.Min(node.Width, node.Height) / 2, 4).ToArray());
+        var origin = new SKPoint(node.Left - 2, node.Top - 2);
+        using var shader = Backdrop(origin, 10 * options.Density, out var strip);
         Set(v, "uWideStrip", strip);
-        Draw(canvas, v, shader, origin, bounds, feedback, o.Density);
+        Draw(canvas, v, shader, origin);
     }
 
     public static Dictionary<string, float[]> ClearUniforms(GlassEffectPass effect, float width, float height,

@@ -94,8 +94,8 @@ yet. To use them, build this branch with `./gradlew publishToMavenLocal` and dep
 | Android 13+ | Full shader (AGSL) |
 | Android below 13 | Tinted fallback with rim lighting; no refraction |
 | Desktop JVM | Full shader (Skia). Tested on Windows and Linux; macOS untested |
-| Web | [CanvasKit port](ports/skia/README.md) with the production shaders, scene API and input controller; [small WebGL lens preview](ports/web/README.md) |
-| .NET | [SkiaSharp painter and WinForms adapter](ports/dotnet/README.md); no navigation selector yet |
+| Web | [CanvasKit port](ports/skia/README.md) with the production shaders, scene API, Calm navigation selector and input controller; [small WebGL lens preview](ports/web/README.md) |
+| .NET | [SkiaSharp painter, Calm navigation selector and WinForms adapter](ports/dotnet/README.md) |
 | iOS (Compose or SwiftUI) | Not supported yet |
 | Anything else with Skia | Shaders are portable; follow the [porting contract](docs/porting.md) |
 

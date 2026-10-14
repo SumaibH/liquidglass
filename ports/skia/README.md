@@ -85,7 +85,8 @@ size; the scene does not stretch it to cover a differently sized canvas. Source 
 `scene.draw` paints the source followed by glass in insertion order; `{drawBackdrop: false}` skips the
 source draw when your host already painted it. Glass samples the supplied backdrop, excluding other
 glass overlays. Labels, layout, hit testing, semantics and gesture arbitration remain in the host.
-It owns no DOM listeners, automatic screenshot capture, timers, navigation selection or render surface.
+It owns no DOM listeners, automatic screenshot capture, timers or render surface; a navigation layer
+reports selection through `onSelect` and never owns it.
 `layer.bounds` and `layer.feedback` are defensive snapshots; feedback never writes layout. Use `remove()`
 when a layer leaves your UI. Dispose the scene once its graphics context is lost and recreate it on
 restoration, as the browser example does.
@@ -95,6 +96,30 @@ maintained implementation. After changing `ports/web/core.mjs` or `interaction.m
 `npm run generate:interaction` here. An isolation test copies only package runtime files to a temporary
 directory and renders without the sibling web checkout. LICENSE/NOTICE are included and checked against
 the repository copies. This is a reusable CanvasKit integration, not a native binding for every framework.
+
+## Navigation: the Calm selector
+
+`scene.addNavigation(bounds, {count, selected, onSelect})` adds a Calm navigation bar: the bar
+glass, the selector that travels on a tap, lifts into a lens on a hold, follows a drag and lands
+against the bar's end, and the gesture protocol of the Compose `GlassTabBar` (touch-down aims, a
+hold or horizontal slop starts a drag, a vertical scroll before the hold cancels, a flick carries one
+tab further). Feed `down`, `move`, `up` or `cancel` with logical page coordinates and monotonic
+seconds; `onSelect(index)` reports a tap or committed drag and the host answers with `select(index)`.
+`layer.selector` exposes the body's extents, formation and pose for drawing ink or labels.
+
+```js
+const nav = scene.addNavigation({x: 24, y: 520, width: 300, height: 62},
+  {count: 3, onSelect: index => { route(index); nav.select(index); }});
+canvas.addEventListener('pointerdown', e => nav.down(e.offsetX, e.offsetY, e.timeStamp / 1000));
+```
+
+The motion is a line-by-line port of the Compose pose controller (`selector.mjs`:
+`CalmSelectorController`, `calmSelectorBar`, `createCalmNavigation`), checked frame by frame against
+trajectories the Kotlin controller exports (`fixtures/selector-calm.json`: taps, a held throw into
+the wall, held reversals, a stationary hold; 0.05 px). The selector is drawn through the production
+shader's pose body (`painter.drawSelector`), with the in-app material blended toward the held-lens
+profile by formation: an approximation of the Compose Calm selector's tuned material, not its
+measured grey levels. Selected ink inside the lens, labels and accessibility stay with the host. [Evidence](../../review/atlas/ports-selector-2026-10-14/README.md).
 
 ## Draw a lens without managing uniforms
 

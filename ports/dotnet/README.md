@@ -127,13 +127,33 @@ The second command verifies actual TextBox glyph changes, identity/refraction pi
 source after rejection, thread ownership and resizing, then exits. Windows CI runs it; Linux
 continues to run the framework-independent painter/controller checks. [Native-control evidence](../../review/atlas/dotnet-controls-2026-10-13/README.md).
 
+## Navigation: the Calm selector
+
+`CalmNavigation` runs the Compose `GlassTabBar` gesture protocol over `CalmSelectorController`, a
+line-by-line port of the Compose pose controller checked against the Kotlin-exported trajectories in
+`ports/skia/fixtures/selector-calm.json` (worst 0.035 px over 456 frames). Feed bar-local pixels and
+monotonic seconds; draw the body with `GlassPainter.DrawSelector` after the bar:
+
+```csharp
+var bar = CalmSelectorBar.Create(width: 300, height: 62, count: 3);
+var nav = new CalmNavigation(bar, selected: 0, onSelect: index => Route(index));
+nav.Down(x, y, seconds); nav.Move(x, y, seconds); nav.Up(x, y, seconds);
+if (nav.Frame(seconds)) RequestRedraw();
+painter.DrawSurface(canvas, barRect, 31, new GlassSurfaceOptions(Dark: true));
+painter.DrawSelector(canvas, barRect, nav.Controller.Render(), (float)nav.Controller.Formation);
+```
+
+The selector's material is the in-app surface blended toward the held-lens profile by formation,
+an approximation of the Compose Calm selector's tuned material. Selected ink, labels, accessibility
+and the WinForms control wiring stay with the host.
+
 ## Geometry, options and lifetime
 
 ### Calm press and pull
 
 `CalmInteraction` supplies a reusable controller for whole cards, bars and other surfaces. It
 uses the same authored response as the portable controller, with cross-language trajectory
-checks. It does not implement navigation-selector travel or claim complete iOS timing parity.
+checks. It is not navigation-selector travel (see below) and claims no complete iOS timing parity.
 Construct it once per surface; pass **logical pixels** and **monotonic seconds**, not milliseconds:
 
 ```csharp
@@ -223,7 +243,8 @@ shared-source lens/card drawing and lifecycle checks. [Evidence and exact scope]
 Windows/Linux renderer checks and Windows host compilation are in CI. macOS, GPU hosts, Android/iOS
 SkiaSharp views, WPF, Avalonia and MAUI have not received native host verification here. SwiftUI,
 Flutter, React Native, Qt and Unity still need their own integration. Whole-surface calm interaction
-is supplied; navigation-selector dynamics and portable refracted foreground are not supplied by
+is supplied, and so are the Calm navigation-selector dynamics (`CalmSelectorController`,
+`CalmNavigation`, `GlassPainter.DrawSelector`); portable refracted foreground is not supplied by
 this painter. The separate WinForms adapter captures verified standard controls; automatic
 arbitrary-widget capture across frameworks remains incomplete.
 The full any-stack and iOS-parity goals remain open.

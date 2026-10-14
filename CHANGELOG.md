@@ -39,6 +39,12 @@ This file records user-visible development changes. Published artifacts are iden
 
 ### Added
 
+- Calm navigation selector for the CanvasKit and .NET ports: `CalmSelectorController`,
+  `createCalmNavigation` / `CalmNavigation`, `scene.addNavigation`, `painter.drawSelector` /
+  `GlassPainter.DrawSelector`. A port of the Compose pose controller and gesture protocol, checked
+  against Kotlin-exported trajectories (`ports/skia/fixtures/selector-calm.json`); its material is
+  an approximation of the Compose Calm selector.
+
 - `GlassInteraction.releaseStiffness` / `releaseDamping`: an optional release spring for the press.
 - `GlassInteraction.pressReach`: while pressed, the side nearer the touch grows further; 0 by default.
 

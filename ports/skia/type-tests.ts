@@ -1,5 +1,6 @@
 import type {Canvas, CanvasKit, Image} from 'canvaskit-wasm';
-import {createGlassScene, createGlassPainter, createCalmInteraction} from 'liquidglass-skia-preview';
+import {createGlassScene, createGlassPainter, createCalmInteraction, calmSelectorBar, createCalmNavigation,
+  CalmSelectorController} from 'liquidglass-skia-preview';
 import {createGlassScene as subpathScene} from 'liquidglass-skia-preview/scene';
 import {createCalmInteraction as subpathInteraction} from 'liquidglass-skia-preview/interaction';
 
@@ -28,4 +29,12 @@ card.setMaterial({dark: 'dark'});
 card.bounds.x = 50;
 // @ts-expect-error Lens appearance is controlled through its magnification bounds.
 lens.setMaterial({dark: true});
-scene.dispose(); painter.dispose(); void nextFrame;
+const nav = scene.addNavigation({x: 20, y: 250, width: 300, height: 62}, {count: 3, onSelect: i => nav.select(i)});
+nav.down(60, 280, .4); nav.up(60, 280, .45); const formed: number = nav.selector.formation;
+painter.drawSelector(canvas, {x: 0, y: 0, width: 300, height: 62}, nav.selector);
+const bar = calmSelectorBar({width: 834, height: 186, count: 3, density: 3});
+const standalone = createCalmNavigation({bar}); standalone.frame(.1);
+new CalmSelectorController().attach(bar);
+// @ts-expect-error A navigation layer needs its item count.
+scene.addNavigation({x: 0, y: 0, width: 100, height: 40}, {});
+scene.dispose(); painter.dispose(); void nextFrame; void formed;

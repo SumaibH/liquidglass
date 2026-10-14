@@ -19,7 +19,9 @@
     "NOTICE",
     "index.d.mts",
     "scene.d.mts",
-    "interaction.d.mts"
+    "interaction.d.mts",
+    "selector.mjs",
+    "selector.d.mts"
   ],
   "exports": {
     ".": {
@@ -34,6 +36,10 @@
       "types": "./interaction.d.mts",
       "default": "./interaction.mjs"
     },
+    "./selector": {
+      "types": "./selector.d.mts",
+      "default": "./selector.mjs"
+    },
     "./renderer": "./renderer.mjs",
     "./shaders": "./shaders.mjs"
   },
@@ -41,7 +47,7 @@
     "generate:shaders": "node generate-shaders.mjs",
     "generate:interaction": "node generate-interaction.mjs",
     "test:types": "tsc -p tsconfig.types.json",
-    "test": "node generate-shaders.mjs --check && node generate-interaction.mjs --check && npm run test:types && node --test renderer.test.mjs painter.test.mjs scene.test.mjs",
+    "test": "node generate-shaders.mjs --check && node generate-interaction.mjs --check && npm run test:types && node --test renderer.test.mjs painter.test.mjs scene.test.mjs selector.test.mjs",
     "example": "node example.mjs"
   },
   "dependencies": {

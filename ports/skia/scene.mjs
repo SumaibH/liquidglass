@@ -1,6 +1,7 @@
 /** Apache-2.0. One backdrop, many calm glass surfaces, independent of UI framework. */
 import {createGlassPainter} from './painter.mjs';
 import {createCalmInteraction} from './interaction.mjs';
+import {calmSelectorBar, createCalmNavigation} from './selector.mjs';
 
 const copyBounds = bounds => ({...bounds, ...(Array.isArray(bounds.radius) ? {radius: [...bounds.radius]} : {})});
 function viewport({width, height, pixelRatio = 1}) {
@@ -79,7 +80,45 @@ export function createGlassScene(kit, options) {
       remove() { layers.delete(layer); },
     };
   }
+  /** A Calm navigation bar: bar glass, the ported selector and its gestures. Logical px. */
+  function addNavigation(input, {count, selected = 0, inset = 6, pillWidth, pillInset = 4,
+    onSelect = () => {}, material = {dark: true}} = {}) {
+    alive();
+    const bounds = boundsFor('surface', {...input, radius: input.height / 2});
+    const bar = calmSelectorBar({width: bounds.width, height: bounds.height, count, inset, pillWidth, pillInset, density: 1});
+    const nav = createCalmNavigation({bar, selected, onSelect, motion: !reduced});
+    const motion = createCalmInteraction({...geometry(bounds), reducedMotion: reduced, pressScale: 1.05, pressGrowth: 0});
+    const layer = {kind: 'navigation', bounds, material: {...material}, motion, nav, state: motion.sample(clock)};
+    layers.add(layer);
+    function attached() { alive(); if (!layers.has(layer)) throw new Error('Glass layer removed'); }
+    const local = (x, y) => [x - layer.bounds.x, y - layer.bounds.y];
+    let down = null;
+    return {
+      get bounds() { attached(); return copyBounds(layer.bounds); },
+      get selected() { attached(); return nav.selected; },
+      get selector() { attached(); return nav.state(); },
+      /** Logical page coordinates and monotonic seconds, as for other layers. */
+      down(x, y, time) {
+        attached(); const t = timeAt(time); const [lx, ly] = local(x, y); down = [x, y];
+        nav.down(lx, ly, t); layer.state = motion.press(t, 0, 0); clock = t;
+      },
+      move(x, y, time) {
+        attached(); const t = timeAt(time); const [lx, ly] = local(x, y);
+        nav.move(lx, ly, t); if (down) layer.state = motion.press(t, x - down[0], y - down[1]); clock = t;
+      },
+      up(x, y, time) {
+        attached(); const t = timeAt(time); const [lx, ly] = local(x, y);
+        nav.up(lx, ly, t); layer.state = motion.release(t); down = null; clock = t;
+      },
+      cancel(time) { attached(); const t = timeAt(time); nav.cancel(t); layer.state = motion.release(t); down = null; clock = t; },
+      /** The host's selection (after onSelect, or from elsewhere). */
+      select(index) { attached(); nav.select(index); },
+      remove() { layers.delete(layer); },
+    };
+  }
+
   return {
+    addNavigation,
     setSource(source) { alive(); painter.setSource(source); image = source; },
     addSurface(bounds, material = {}) { return add('surface', bounds, material); },
     addLens(bounds) { return add('lens', bounds); },
@@ -90,7 +129,10 @@ export function createGlassScene(kit, options) {
     },
     setReducedMotion(value, time) {
       const current = timeAt(time);
-      for (const layer of layers) layer.state = layer.motion.setReducedMotion(!!value, current);
+      for (const layer of layers) {
+        layer.state = layer.motion.setReducedMotion(!!value, current);
+        layer.nav?.setMotion(!value);
+      }
       reduced = !!value; clock = current;
     },
     /** Draw in insertion order. True requests another frame; a settled hold can stop drawing. */
@@ -102,6 +144,7 @@ export function createGlassScene(kit, options) {
       for (const layer of layers) {
         layer.state = layer.motion.sample(current);
         active ||= layer.state.active;
+        if (layer.nav) active = layer.nav.frame(current) || active;
       }
       clock = current;
       if (drawBackdrop) canvas.drawImage(image, 0, 0);
@@ -122,6 +165,14 @@ export function createGlassScene(kit, options) {
           else painter.drawSurface(canvas, deviceBounds,
             {...layer.material, density: (layer.material.density ?? 1) * ratio});
         } finally { canvas.restore(); }
+        if (layer.nav) {
+          // The selector in device px: positions and lengths scale, the dimensionless map does not.
+          const s = layer.nav.state(), p = s.pose, r = ratio;
+          const pose = {a: p.a, aInv: p.aInv, c: [p.c[0] * r, p.c[1] * r, p.c[2] / r, p.c[3] / r],
+            d: [p.d[0] * r, p.d[1] * r, p.d[2], p.d[3] * r]};
+          painter.drawSelector(canvas, {x: bounds.x * r, y: bounds.y * r, width: bounds.width * r, height: bounds.height * r},
+            {pose, formation: s.formation}, {...layer.material, density: (layer.material.density ?? 1) * r});
+        }
       }
       return active;
     },
