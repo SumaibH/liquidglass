@@ -45,7 +45,8 @@ recordings through the real renderer and comparing **continuous sequences**, not
 2. iOS's cap swirl is still somewhat stronger. Neck parts 60–70 ms late (inferred lift; pass 8).
 3. Owner visual acceptance of the selector and of the redesigned Atlas Studio.
 4. CI: Atlas UI tests now take ~2.6 min locally (density 0.75, reduced motion, no per-move waits;
-   they took 14 min on CI before). The build job is back to its 40 min limit.
+   they took 14 min on CI before). Hosted runner speed varies ~2x (36 min on 31bd210 with
+   unchanged classes 1.9x slower), so the build job limit is 55 min.
 5. Then: Android verification when a device is available; native navigation selector for .NET.
 
 ## Constraints (owner)
