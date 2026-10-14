@@ -37,6 +37,21 @@ This file records user-visible development changes. Published artifacts are iden
 - Atlas Studio redesigned: one full-window scene moving under all the glass, the Calm bar fused
   with a magnifier button as the only scene switcher, a glass top bar and an anchored card.
 - Repository description and README rewritten for developers; lab detail moved to linked records.
+- Calm wall landings, second pass (14 October): after the lift the trailing edge travels on to the
+  wall underdamped and keeps a tenth of its speed once the leading edge meets the end (`GlassPoseSpec.releaseTrailingInOmega` /
+  `releaseTrailingInZeta` / `releaseTrailingCarry`), and a still-formed lens may press past the
+  bar's end (`releaseWallGive`). Scored on all ten right-wall landings of video 2: rms 4.9 px
+  (15.4 before); the 9.9 s landing now narrows like the others. The first two-edge landing is
+  kept as `GlassPoseSpec.CalmCriticalLanding`.
+- Fixed: `GlassStyle.rimMirror` above 0.5 was clamped to 0.5 when building uniforms, so the moving
+  selector's rim mirrored half the band intended since 14 October.
+- Calm moving selector: cap content is drawn out radially toward the rim (`rimMirrorGain` 0.4), the
+  stronger swirl of iOS's moving lens.
+- Phone and Atlas Studio: the search button's neck gives way to a lens pressing into its end
+  (`GlassTabBarAccessory.yieldsToLens`); the neck now parts a median 33 ms after iOS's (67 before).
+- CanvasKit and .NET selectors use the Compose Calm bar and selector material itself
+  (`calmSelectorMaterial`, `drawCalmBar`, `through`), checked value by value against the Kotlin
+  factory; the resting inset reads 33 over a dark page (12 with the earlier approximation).
 
 ### Added
 
@@ -44,7 +59,15 @@ This file records user-visible development changes. Published artifacts are iden
   `createCalmNavigation` / `CalmNavigation`, `scene.addNavigation`, `painter.drawSelector` /
   `GlassPainter.DrawSelector`. A port of the Compose pose controller and gesture protocol, checked
   against Kotlin-exported trajectories (`ports/skia/fixtures/selector-calm.json`); its material is
-  an approximation of the Compose Calm selector.
+  the Compose Calm material (`ports/skia/fixtures/selector-material.json`, see Changed).
+- `GlassStyle.rimMirrorGain` (`uRimMirrorGain`): how much deeper content the mirrored rim reaches
+  per unit of band; 1 (default) is the plain mirror.
+- `GlassPoseSpec.releaseTrailingInOmega`, `releaseTrailingInZeta`, `releaseTrailingCarry`,
+  `releaseWallGive` and the `CalmCriticalLanding` preset; all off by default.
+- `GlassTabBarAccessory(yieldsToLens = true)`: a formed pose selector takes the neck's place; off by default.
+- CanvasKit `calmSelectorMaterial`, `calmBarMaterial`, `painter.drawCalmBar`; .NET
+  `CalmSelectorMaterial`, `GlassPainter.DrawCalmBar`; `drawSelector` / `DrawSelector` take transit,
+  held travel and a `through` image.
 
 - `GlassInteraction.releaseStiffness` / `releaseDamping`: an optional release spring for the press.
 - `GlassInteraction.pressReach`: while pressed, the side nearer the touch grows further; 0 by default.

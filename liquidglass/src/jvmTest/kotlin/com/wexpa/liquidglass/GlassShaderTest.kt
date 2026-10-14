@@ -33,7 +33,7 @@ class GlassShaderTest {
             .toSet()
 
         val setByHost = setOf(
-            "uHeldEdgeRecovery", "uHeldGlowReach", "uFoldCorners", "uRimMirror",
+            "uHeldEdgeRecovery", "uHeldGlowReach", "uFoldCorners", "uRimMirror", "uRimMirrorGain",
             "uSize", "uRadii", "uRefractBand", "uBackdrop", "uAberration", "uBase", "uBlur", "uIor", "uBevelPower", "uMirror",
             "uFresnel", "uHiChroma", "uLegibility", "uCornerPower", "uTouch", "uTouchAmt",
             "uMaterialize", "uFrost", "uContrast", "uDebugCoverage", "uShapeKind", "uFieldRange", "uFieldScale", "uRefractDepth", "uBevel",
@@ -76,7 +76,7 @@ class GlassContentShaderTest {
             "uRefractBand", "uRefractDepth", "uIor", "uBevelPower", "uAberration", "uScale",
             "uMaterialize", "uTouch", "uTouchAmt", "uProfile", "uFormation", "uHeldLens", "uHeldMagnification", "uRestMap",
             "uFuse", "uFuseShape",
-            "uBody", "uBodyY", "uBodyKind", "uPoseA", "uPoseAInv", "uPoseC", "uPoseD", "uEndpointAlpha", "uEdgeFold", "uInkSplit", "uHeldInk", "uFoldCorners", "uRimMirror",
+            "uBody", "uBodyY", "uBodyKind", "uPoseA", "uPoseAInv", "uPoseC", "uPoseD", "uEndpointAlpha", "uEdgeFold", "uInkSplit", "uHeldInk", "uFoldCorners", "uRimMirror", "uRimMirrorGain",
         )
         val unset = declared - setByHost - setOf("content", "field")
         assertTrue(unset.isEmpty(), "content shader declares uniforms nothing sets: $unset")

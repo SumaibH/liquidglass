@@ -57,19 +57,24 @@ flying past it, and corrected the comparison scene's resting pill to the measure
 pass corrected the inferred input (hold onset and wall-throw lift), enlarged the moving lens's
 cap swirl with faint fringes, made the held bar reach toward the finger (edges within 2–5 px of
 iOS) and redesigned Atlas Studio. An eighth pass matched the bar's release after lift, so the
-search-button neck parts on time. The Calm selector's motion and gestures are now ported to the
-CanvasKit and .NET packages, checked frame by frame against the Kotlin controller. On Android, the
+search-button neck parts on time. A ninth pass (14 October, second half) scored every wall landing
+rather than one: after the lift the trailing edge travels on underdamped (rms 4.9 px over nine
+landings, 15.4 before; the 9.9 s landing now narrows like the others), a formed lens presses past
+the bar's end as iOS's does, the moving lens's caps draw content out radially (and a clamp that had
+halved the rim mirror was fixed), and the search button's neck gives way to an arriving lens (median
+33 ms late, 67 before). The Calm selector's motion, gestures and material are ported to the
+CanvasKit and .NET packages, checked against the Kotlin controller and material factory. On Android, the
 selector and Atlas Studio were verified on an API 37 emulator through the AGSL path
-([emulator record](https://github.com/shayann07/liquidglass/blob/codex/atlas-stabilization/review/atlas/android-emulator-2026-10-14/README.md));
+([emulator record](https://github.com/shayann07/liquidglass/blob/main/review/atlas/android-emulator-2026-10-14/README.md));
 no physical device was available.
 
-![Before and after at the same replay instants](https://raw.githubusercontent.com/shayann07/liquidglass/codex/atlas-stabilization/review/atlas/reference-replay-2026-10-13/before-after.png)
+![Before and after at the same replay instants](https://raw.githubusercontent.com/shayann07/liquidglass/main/review/atlas/reference-replay-2026-10-13/before-after.png)
 
 Our renders only; the private reference is not published. Finger timing is inferred from the
 recordings. Method, numbers and the remaining differences (bar/search fusion while held, weaker
 stretch on fast reversals, later hold onset, smaller ink magnification in transit, more smeared
 text under the bar) are in the
-[reference-replay record](https://github.com/shayann07/liquidglass/blob/codex/atlas-stabilization/review/atlas/reference-replay-2026-10-13/README.md).
+[reference-replay record](https://github.com/shayann07/liquidglass/blob/main/review/atlas/reference-replay-2026-10-13/README.md).
 
 Earlier work this builds on: resting tap travel and held formation are separate; press expansion
 and whole-bar strain are separate, and the selector gets no independent perpendicular squeeze;
@@ -93,8 +98,8 @@ tap optics by the change above.
 | Native .NET material, motion and controls | [Painter](https://github.com/shayann07/liquidglass/blob/b46207d665725a0aa841102bfbdcbe74aaf4ac3c/review/atlas/dotnet-2026-10-10/README.md), [calm interaction](https://github.com/shayann07/liquidglass/blob/b46207d665725a0aa841102bfbdcbe74aaf4ac3c/review/atlas/dotnet-calm-2026-10-13/README.md), [native backdrops](https://github.com/shayann07/liquidglass/blob/b46207d665725a0aa841102bfbdcbe74aaf4ac3c/review/atlas/dotnet-controls-2026-10-13/README.md) |
 
 These links are pinned to a published source checkpoint so the evidence remains reproducible.
-For later status, follow the repository's [progress](https://github.com/shayann07/liquidglass/blob/codex/atlas-stabilization/PROGRESS.md)
-and [full checklist](https://github.com/shayann07/liquidglass/blob/codex/atlas-stabilization/TODO.md).
+For later status, follow the repository's [progress](https://github.com/shayann07/liquidglass/blob/main/PROGRESS.md)
+and [full checklist](https://github.com/shayann07/liquidglass/blob/main/TODO.md).
 
 ## Native .NET interaction and controls
 
@@ -114,9 +119,10 @@ lens pixels, refraction, resize, retained-source failure and UI-thread checks pa
 keeps native controls interactive beside their glass preview. RichTextBox/ActiveX are rejected;
 hidden children, custom controls and overlapping container order retain documented limits.
 
-This completes usable whole-surface feedback and one native control-capture path. Native navigation
-selector travel, additional frameworks, high-level portable refracted foreground and universal
-widget capture remain incomplete. No NuGet package was published.
+This completes usable whole-surface feedback and one native control-capture path; the native Calm
+navigation selector (motion, gestures and the Compose material) is also ported. Additional
+frameworks, high-level portable refracted foreground, ported selected ink and universal widget
+capture remain incomplete. No NuGet package was published.
 
 ## Verification and performance
 
@@ -136,13 +142,14 @@ trace was produced and no permission changes were made. See [performance](perfor
 
 ## What remains
 
-1. Remaining differences from the continuous comparison: iOS's held lens hits the wall at
-   speed, ours is slowed by the end-tab clamp, so one landing narrows less than iOS's; iOS's cap swirl is
-   still somewhat stronger. Owner visual acceptance is pending.
+1. Remaining differences from the continuous comparison: the 9.9 s landing passes its rest by
+   33 px against iOS's 41 and the left landing narrows up to 14.5 px less; iOS's cap petals carry
+   stronger rainbow fringes; the neck parts a median 33 ms late (150–200 ms at two releases).
+   Owner visual acceptance is pending.
 2. Verify all directional extreme envelopes and Android composition on appropriate hardware.
 3. Resolve ordinary interaction/display performance and final wide/narrow Atlas visual acceptance.
-4. Complete native navigation and additional host integrations with executable evidence.
-5. Finish the final requirement audit and protected PR review/merge. No release/tag is authorized.
+4. Ported selected ink and additional host integrations, with executable evidence.
+5. Physical Android device check. No release/tag is authorized.
 
 The current checklist has 27 completed and 22 open entries of unequal size; this is not a progress
 percentage. A passing checkpoint does not narrow the full goal.
@@ -154,4 +161,4 @@ relevant limitation before publication. Visible changes require app-owned screen
 size/backend, captions that distinguish measured source from candidate output, reproduction commands
 and an exact verification record. Failed attempts stay labelled and historical claims retain their
 original scope. Raw/private recordings and full profile traces stay outside the published site.
-The maintainer checklist is in [CONTRIBUTING](https://github.com/shayann07/liquidglass/blob/codex/atlas-stabilization/CONTRIBUTING.md).
+The maintainer checklist is in [CONTRIBUTING](https://github.com/shayann07/liquidglass/blob/main/CONTRIBUTING.md).

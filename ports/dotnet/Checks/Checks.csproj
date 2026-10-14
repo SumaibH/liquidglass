@@ -11,5 +11,6 @@
     <None Include="../../skia/shaders/*.sksl" Link="shaders/%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
     <None Update="fixtures/calm-motion.json" CopyToOutputDirectory="PreserveNewest" />
     <None Include="../../skia/fixtures/selector-calm.json" Link="fixtures/selector-calm.json" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="../../skia/fixtures/selector-material.json" Link="fixtures/selector-material.json" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
 </Project>

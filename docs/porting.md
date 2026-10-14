@@ -83,7 +83,8 @@ The host still supplies input, labels, accessible controls, frame scheduling and
 The root scene, painter and interaction exports have TypeScript declarations; additional native
 bindings remain separate work. Whole-surface .NET calm feedback and the Calm navigation selector
 (`scene.addNavigation`; .NET `CalmNavigation`) are implemented and checked against Kotlin-exported
-trajectories; their selector material is an approximation of the Compose Calm one. See the
+trajectories; they draw the bar and selector in the Compose Calm material itself, checked against
+Kotlin-computed uniforms. See the
 [scene example and lifecycle](https://github.com/shayann07/liquidglass/blob/main/ports/skia/README.md#start-with-one-scene).
 
 ```js

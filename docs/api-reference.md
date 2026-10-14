@@ -137,12 +137,13 @@ fun GlassTabBar(
     item: @Composable (index: Int, selected: Boolean) -> Unit,
 )
 
-class GlassTabBarAccessory(size: Dp, gap: Dp = 8.dp, fusion: Dp = 6.dp)
+class GlassTabBarAccessory(size: Dp, gap: Dp = 8.dp, fusion: Dp = 6.dp, yieldsToLens: Boolean = false)
 ```
 
 `trailingAccessory` describes a separate glass control beside the bar's trailing end (iOS 26
 Phone's search button). The bar fuses with it through a liquid neck while held; you lay it out
-and draw it. See [the search button](tab-bar.md#a-neighbouring-control-the-search-button).
+and draw it. `yieldsToLens` lets a formed pose selector pressing into that end take the neck's
+place. See [the search button](tab-bar.md#a-neighbouring-control-the-search-button).
 
 A tab bar whose selection indicator is a piece of glass you can pick up: a flat inset at rest, a
 lens while held that stands proud of the bar and looks *through* it, dragged 1:1 and committed on
@@ -212,6 +213,10 @@ endpoint landings. During a moving endpoint release, its leading edge recovers t
 resting endpoint while its centre follows from the changing width. This keeps translation and
 shape connected without moving layout or hit targets. A released selector compresses as it
 decelerates near an end tab; middle-tab and stationary releases retain their previous response.
+In current `Calm()` the trailing edge of an end-tab landing travels on underdamped until it turns,
+then recovers critically, and a still-formed lens may press past the bar's end by a share of the
+bar height that recedes with its formation; the first two-edge landing is kept as
+`GlassPoseSpec.CalmCriticalLanding` for comparison.
 Setting `motionEnabled = false` during
 recovery clears stored deformation on the next advance. Short moving taps can grow above and
 below the resting bar, as in the owner's labelled Phone recording. This does not make that tap

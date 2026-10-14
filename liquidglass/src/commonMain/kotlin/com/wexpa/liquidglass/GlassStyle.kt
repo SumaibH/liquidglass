@@ -421,6 +421,14 @@ data class GlassStyle(
      * 2026-10-13: icon strokes near a travelling lens's ends wrap mirrored along its rim).
      */
     val rimMirror: Float = 0f,
+    /**
+     * With [rimMirror]: how much deeper content the mirrored rim reaches per unit of band, 0.05
+     * to 1. One is the plain mirror (a pixel at depth u shows 2b - u); below one the rim shows
+     * b + (b - u) x gain, so content near the band is drawn out radially toward the rim,
+     * magnified by 1 / gain. A moving tab-bar selector uses it (video2, 2026-10-14: icons near a
+     * travelling lens's caps stretch into long petals reaching the rim).
+     */
+    val rimMirrorGain: Float = 1f,
 ) {
     companion object {
         /** Clear standalone lens. [magnification] is the centre zoom, gradually returning to

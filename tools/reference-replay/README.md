@@ -16,7 +16,10 @@ Pillow. Run from a scratch directory such as `.local/sxs/`.
 | Three-row video | `./sxs3.sh ../../docs/2.MP4 before-v2 out-v2 cmp-v2.mp4` (local only: contains the reference) |
 
 `v1-script.txt`, `v2-script.txt` and `v2-catalogue.txt` are the inferred scripts (v2 revised on
-14 October: held presses begin 137 ms before the visible shift, wall throws lift moving). The
+14 October: held presses begin 137 ms before the visible shift, wall throws lift moving; second
+revision: the finger leads the ink by 33 ms through throws, and a stationary hold lifts where the
+iOS bar starts to return, read from a row dump of the recording when `v2-row495.gray` and
+`v2-pts.txt` are present). The
 generator splices the held-reversal episode (18.7–22.4 s) from `reversal-script.txt`, rebuilt from the episode's turning points because the ink centroid snaps
 between tabs mid-sweep. They hold only finger times and x positions; **the timing is inferred, not recorded**.
 Script format: `select <tab>`, then `<ms> down|move|up <x> <y>` in scene pixels at 3 px/pt, and

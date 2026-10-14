@@ -31,7 +31,8 @@ const DEFAULT_SPEC = Object.freeze({
   tapAreaOmega: 42, tapAreaReferenceSpeed: 2.4, tapBodyElongation: .15, tapSpineFallOmega: 12,
   tapAreaSpineOmega: 40, tapAreaSpineZeta: .38, tapAreaBodySpeed: 10.2, releaseImpactGain: 0,
   releaseEdgeAnchor: false, releaseRecoveryOmega: 0, releaseRecoveryZeta: 1,
-  releaseTrailingEdge: false, tapShortTripRate: 1, tapAppearanceArea: 0, tapAppearanceSpine: 0,
+  releaseTrailingEdge: false, releaseTrailingInOmega: 0, releaseTrailingInZeta: 1, releaseTrailingCarry: 1, releaseWallGive: 0,
+  tapShortTripRate: 1, tapAppearanceArea: 0, tapAppearanceSpine: 0,
   tapAppearanceFallOmega: 0, releaseFormationSpeed: 0,
 });
 
@@ -47,6 +48,7 @@ export const CALM_SELECTOR_SPEC = Object.freeze({
   tapSpineLimitSlots: .45, tapAreaGain: .51, tapShortTripRate: .75, tapAppearanceArea: .44,
   tapAppearanceSpine: .13, tapAppearanceFallOmega: 45, releaseFormationSpeed: 3,
   graspOmega: 120, heldFormRiseOmega: 50, releaseTrailingEdge: true, releaseRecoveryOmega: 13,
+  releaseTrailingInOmega: 9, releaseTrailingInZeta: .3, releaseTrailingCarry: .1, releaseWallGive: .35,
 });
 
 const MODE = Object.freeze({Rest: 'rest', TapTransit: 'tap', PressPending: 'pending', Held: 'held', Released: 'released'});
@@ -54,7 +56,7 @@ const CONTOUR_SAMPLES = 256, QUIET_PX = .02, QUIET_STEPS = 8, CONTACT_TOLERANCE 
 const MAX_CONTACT_ITERATIONS = 24, MAX_CONTACT_STEP = 12, MAX_CONTACT_PRESSURE_STEP = .06;
 const CONTACT_REGAIN_MARGIN = 0, CONTACT_REGAIN_ACCOMMODATION = 1, ACCOMMODATION_RESOLVE_PX = 1;
 const ACCOMMODATION_RESOLVE_PRESSURE = .01, COVERAGE_EPSILON = .5, CONTACT_REGAIN_FORMATION = .02;
-const REGRAB_FORMATION = .15, GEOMETRY_EPSILON = 1e-3, BEVEL_RATIO = .6;
+const REGRAB_FORMATION = .15, GEOMETRY_EPSILON = 1e-3, BEVEL_RATIO = .6, WALL_PULL_HEIGHTS = 20, RELEASE_IMPACT_REACH = .3;
 
 class Spring {
   constructor(value = 0, velocity = 0) { this.value = value; this.velocity = velocity; this.target = value; }
@@ -261,7 +263,7 @@ export class CalmSelectorController {
     this.mode = MODE.Rest; this.motionEnabled = true; this.started = false;
     this.form = new Spring(); this.transit = new Spring(); this.travel = new Spring(); this.tapArea = new Spring();
     this.tapAreaActive = false; this.tapDistance = 0; this.releaseImpactActive = false;
-    this.releaseEdge = new Spring(); this.releaseTrail = new Spring(); this.releaseEdgeActive = false;
+    this.releaseEdge = new Spring(); this.releaseTrail = new Spring(); this.releaseEdgeActive = false; this.trailImpact = false;
     this.now = 0; this.pressStart = 0; this.downX = 0; this.downY = 0; this.downOnBody = false;
     this.pressEligible = false; this.pointerDownActive = false; this.lastSampleAt = 0;
     this.graspQx = 0; this.graspQy = 0; this.hasGrasp = false; this.graspY0 = 0; this.slowFor = 0;
@@ -497,7 +499,7 @@ export class CalmSelectorController {
       this.releaseEdge.velocity = vel.cx + dir * this.landingHalfWidthVelocity();
       this.releaseEdge.target = centreOf(bar, this.restIndex) + dir * ref.width * .5;
       this.releaseTrail.value = pose.cx - dir * this.landingHalfWidth();
-      this.releaseTrail.velocity = vel.cx - dir * this.landingHalfWidthVelocity();
+      this.releaseTrail.velocity = vel.cx - dir * this.landingHalfWidthVelocity(); this.trailImpact = false;
       this.releaseTrail.target = centreOf(bar, this.restIndex) - dir * ref.width * .5;
     }
     this.releaseEdgeActive = coupleReleaseEdge;
@@ -666,11 +668,27 @@ export class CalmSelectorController {
       const leadBefore = this.releaseEdge.value;
       this.releaseEdge.step(dt, s.centreOmega, s.centreZeta);
       if (twoEdge) {
-        const wall = dir > 0 ? bar.width : 0;
-        if (dir * this.releaseEdge.velocity > 0 && dir * (this.releaseEdge.value - wall) > 0) {
+        const give = s.releaseWallGive * bar.height;
+        const wall = (dir > 0 ? bar.width : 0) + dir * give * clamp(this.form.value, 0, 1);
+        const wallVelocity = this.form.value > 0 && this.form.value < 1 ? dir * give * this.form.velocity : 0;
+        if (give > 0) {
+          if (dir * (this.releaseEdge.value - wall) > 0) {
+            const from = dir * (leadBefore - wall) > 0 ? leadBefore : wall;
+            const pull = Math.min(dir * (from - wall), WALL_PULL_HEIGHTS * bar.height * dt);
+            this.releaseEdge.value = from - dir * pull;
+            this.releaseEdge.velocity = from === wall ? wallVelocity
+              : pull < dir * (from - wall) ? -dir * WALL_PULL_HEIGHTS * bar.height : wallVelocity;
+          }
+        } else if (dir * this.releaseEdge.velocity > 0 && dir * (this.releaseEdge.value - wall) > 0) {
           this.releaseEdge.value = dir * (leadBefore - wall) > 0 ? leadBefore : wall; this.releaseEdge.velocity = 0;
         }
-        this.releaseTrail.step(dt, s.releaseRecoveryOmega, s.releaseRecoveryZeta);
+        // The leading edge meets the bar's end: the impact takes the trailing edge's speed, once.
+        if (!this.trailImpact && dir * (this.releaseEdge.value - (dir > 0 ? bar.width : 0)) >= -RELEASE_IMPACT_REACH * bar.height) {
+          this.trailImpact = true; this.releaseTrail.velocity *= s.releaseTrailingCarry;
+        }
+        if (s.releaseTrailingInOmega > 0 && dir * this.releaseTrail.velocity > 0) {
+          this.releaseTrail.step(dt, s.releaseTrailingInOmega, s.releaseTrailingInZeta);
+        } else this.releaseTrail.step(dt, s.releaseRecoveryOmega, s.releaseRecoveryZeta);
         const caps = ref.r * Math.exp(pose.p) + Math.max(pose.acc, 0);
         const capsVelocity = ref.r * Math.exp(pose.p) * vel.p + (pose.acc > 0 ? vel.acc : 0);
         const minimum = caps + .002;

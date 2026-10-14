@@ -185,9 +185,12 @@ test('navigation: a tap selects, the selector settles under the bar, and drawing
 test('navigation: the drawn selector darkens the bar where it rests and leaves the rest untouched', () => {
   const f = fixture(360, 140), scene = createGlassScene(kit, {width: 360, height: 140, pixelRatio: 1});
   try {
-    scene.setSource(f.image);
-    scene.addSurface({x: 20, y: 40, width: 300, height: 62, radius: 31}, {dark: true});
-    scene.draw(f.canvas, 0);
+    // The bar alone, in the Compose Calm bar material the navigation layer draws.
+    const painter = createGlassPainter(kit);
+    try {
+      painter.setSource(f.image); f.canvas.drawImage(f.image, 0, 0);
+      painter.drawCalmBar(f.canvas, {x: 20, y: 40, width: 300, height: 62}, {dark: true});
+    } finally { painter.dispose(); }
     const bar = f.read();
     const s2 = createGlassScene(kit, {width: 360, height: 140, pixelRatio: 1});
     s2.setSource(f.image); s2.addNavigation({x: 20, y: 40, width: 300, height: 62}, {count: 3});

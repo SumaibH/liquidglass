@@ -535,7 +535,8 @@ internal fun Modifier.liquidGlassCore(
                         heldGlow = style.heldGlow.coerceIn(0f, 2f),
                         heldGlowReach = style.heldGlowReach.toPx().coerceAtLeast(0f),
                         foldCorners = style.foldAtCorners.coerceIn(0f, 1f),
-                        rimMirror = style.rimMirror.coerceIn(0f, 0.5f),
+                        rimMirror = style.rimMirror.coerceIn(0f, 1f),
+                        rimMirrorGain = style.rimMirrorGain.coerceIn(.05f, 1f),
                         heldEdgeRecovery = style.heldEdgeRecovery.toPx().coerceAtLeast(0f),
                         restMap = style.restMap.uniform,
                         body = body?.let {
@@ -1092,6 +1093,8 @@ internal data class GlassUniforms(
     val foldCorners: Float = 0f,
     /** [GlassStyle.rimMirror]. */
     val rimMirror: Float = 0f,
+    /** [GlassStyle.rimMirrorGain]. */
+    val rimMirrorGain: Float = 1f,
     /** [GlassStyle.heldEdgeRecovery], in layer pixels. */
     val heldEdgeRecovery: Float = 0f,
     /** Resting-corner source map: 0 the legacy map, 1 the measured table ([GlassRestMap]). */
@@ -1217,7 +1220,7 @@ internal data class GlassUniforms(
             profile == other.profile && formation == other.formation && heldLens == other.heldLens &&
             heldMagnification == other.heldMagnification && heldGlow == other.heldGlow &&
             heldGlowReach == other.heldGlowReach && foldCorners == other.foldCorners &&
-            rimMirror == other.rimMirror &&
+            rimMirror == other.rimMirror && rimMirrorGain == other.rimMirrorGain &&
             heldEdgeRecovery == other.heldEdgeRecovery &&
             restMap == other.restMap &&
             body.contentEquals(other.body) && bodyY == other.bodyY && bodyKind == other.bodyKind &&

@@ -110,34 +110,85 @@ public sealed class GlassPainter : IDisposable
         return v;
     }
 
-    /// <summary>Draw a navigation selector's deformed body over the bar rect (device px). <paramref name="pose"/>
-    /// comes from <see cref="CalmSelectorController.Render"/> in the same device px as <paramref name="bar"/>.
-    /// Material: the in-app surface, blended toward the held lens profile by <paramref name="formation"/>;
-    /// an approximation of the Compose Calm selector's tuned material, not its measured grey levels.</summary>
-    public void DrawSelector(SKCanvas canvas, SKRect bar, CalmSelectorPose pose, float formation = 0, GlassSurfaceOptions? options = null)
+    /// <summary>Draw a Calm navigation bar's glass in the Compose Calm bar material
+    /// (GlassTabBarStyle.Calm; its held lift follows the selector's <paramref name="formation"/>).
+    /// Device px; <c>options.Density</c> is px per dp, <c>options.TintAmount</c> is not used.</summary>
+    public void DrawCalmBar(SKCanvas canvas, SKRect bar, float formation = 0, GlassSurfaceOptions? options = null)
     {
         Ready(canvas, bar);
-        if (!float.IsFinite(formation)) throw new ArgumentOutOfRangeException(nameof(formation));
+        options ??= new(Dark: true);
+        if (!float.IsFinite(formation) || !float.IsFinite(options.Density) || options.Density <= 0)
+            throw new ArgumentOutOfRangeException(nameof(formation));
+        var v = ClearUniforms(material, bar.Width, bar.Height, 2, 1);
+        Apply(v, CalmSelectorMaterial.Bar(options.Dark, formation), options);
+        Set(v, "uRadii", Enumerable.Repeat(bar.Height / 2, 4).ToArray()); Set(v, "uRefractBand", .6f * bar.Height / 2);
+        Set(v, "uFormation", 0); Set(v, "uScale", Math.Clamp((Math.Min(bar.Width, bar.Height) / options.Density - 56) / 264, 0, 1));
+        var origin = new SKPoint(bar.Left - 2, bar.Top - 2);
+        using var shader = Backdrop(origin, v["uWideKernel"][0], out var strip);
+        Set(v, "uWideStrip", v["uWideKernel"][0] >= 1 ? strip : 0);
+        Draw(canvas, v, shader, origin);
+    }
+
+    /// <summary>Draw a navigation selector's deformed body over the bar rect (device px). <paramref name="pose"/>
+    /// comes from <see cref="CalmSelectorController.Render"/> in the same device px as <paramref name="bar"/>;
+    /// <paramref name="formation"/>, <paramref name="transit"/> and <paramref name="heldTravel"/> are the
+    /// controller's. The material is the Compose Calm selector's own (<see cref="CalmSelectorMaterial"/>).
+    /// Like Compose, the lens looks through the bar: pass <paramref name="through"/>, an image the size of the
+    /// source holding the backdrop with the bar's glass drawn over it, and a share of the raw backdrop is added
+    /// on top; without it the lens sees the backdrop alone. <c>options.TintAmount</c> is not used.</summary>
+    public void DrawSelector(SKCanvas canvas, SKRect bar, CalmSelectorPose pose, float formation = 0, GlassSurfaceOptions? options = null,
+        float transit = 0, float heldTravel = 0, SKImage? through = null)
+    {
+        Ready(canvas, bar);
+        if (!float.IsFinite(formation) || !float.IsFinite(transit) || !float.IsFinite(heldTravel))
+            throw new ArgumentOutOfRangeException(nameof(formation));
         if (new[] { pose.A, pose.AInv, pose.C, pose.D }.Any(v => v is null || v.Length != 4 || v.Any(x => !float.IsFinite(x))))
             throw new ArgumentException("Pose from CalmSelectorController.Render required", nameof(pose));
+        if (through is not null && (through.Width != source!.Width || through.Height != source.Height))
+            throw new ArgumentException("The through image must be the size of the source", nameof(through));
         options ??= new(Dark: true);
+        if (!float.IsFinite(options.Density) || options.Density <= 0) throw new ArgumentOutOfRangeException(nameof(options));
         // The body may stand proud of the bar while held and protrude past its ends in transit.
         float mx = bar.Height * .6f, my = bar.Height * .4f;
         var node = SKRect.Create(bar.Left - mx, bar.Top - my, bar.Width + 2 * mx, bar.Height + 2 * my);
-        var f = Math.Clamp(formation, 0, 1);
-        var v = SurfaceUniforms(node, [bar.Height / 2, bar.Height / 2, bar.Height / 2, bar.Height / 2], options);
+        var calm = CalmSelectorMaterial.Selector(options.Dark, formation, transit, heldTravel);
+        var v = ClearUniforms(material, node.Width, node.Height, 2, 1);
+        Apply(v, calm, options);
+        Set(v, "uFormation", calm.Formation);
         Set(v, "uBodyKind", 2); Set(v, "uPoseA", pose.A); Set(v, "uPoseAInv", pose.AInv); Set(v, "uPoseD", pose.D);
         Set(v, "uPoseC", pose.C[0] - bar.Width / 2, pose.C[1] - bar.Height / 2, pose.C[2], pose.C[3]);
-        Set(v, "uRefractBand", pose.D[3]); Set(v, "uProfile", 2); Set(v, "uHeldLens", f); Set(v, "uHeldMagnification", .12f * f);
-        var tint = v["uTint"]; Set(v, "uTint", tint[0], tint[1], tint[2], tint[3] * (1 - .85f * f));
-        // Calm dark: the resting inset carries no material lift, so it sits darker than its bar.
-        Set(v, "uLift", v["uLift"][0] * f); Set(v, "uBlur", v["uBlur"][0] * (1 - f));
-        Set(v, "uFineShare", v["uFineShare"][0] + (1 - v["uFineShare"][0]) * f);
+        Set(v, "uRefractBand", pose.D[3]);
         Set(v, "uRadii", Enumerable.Repeat(Math.Min(node.Width, node.Height) / 2, 4).ToArray());
+        Set(v, "uScale", Math.Clamp((Math.Min(node.Width, node.Height) / options.Density - 56) / 264, 0, 1));
         var origin = new SKPoint(node.Left - 2, node.Top - 2);
-        using var shader = Backdrop(origin, 10 * options.Density, out var strip);
-        Set(v, "uWideStrip", strip);
+        using var view = through is null ? null : ComposeThrough(through, calm.RawShare);
+        using var shader = Backdrop(origin, v["uWideKernel"][0], out var strip, view);
+        Set(v, "uWideStrip", v["uWideKernel"][0] >= 1 ? strip : 0);
         Draw(canvas, v, shader, origin);
+    }
+
+    // The material pass's share of a Calm material, in px (ink-only terms belong to the content pass).
+    private static void Apply(Dictionary<string, float[]> v, CalmMaterial calm, GlassSurfaceOptions o)
+    {
+        foreach (var (key, value) in calm.Values)
+            if (v.ContainsKey(key)) v[key] = CalmSelectorMaterial.DpFields.Contains(key) ? value.Select(x => x * o.Density).ToArray() : value;
+        Set(v, "uMaterialize", o.Materialize); Set(v, "uFrost", o.ReducedTransparency); Set(v, "uContrast", o.IncreasedContrast);
+    }
+
+    // The backdrop with the glass the lens looks through over it, plus rawShare of the raw page.
+    private SKImage ComposeThrough(SKImage through, float rawShare)
+    {
+        using var surface = SKSurface.Create(new SKImageInfo(source!.Width, source.Height, SKColorType.Rgba8888, SKAlphaType.Premul))
+            ?? throw new InvalidOperationException("Cannot allocate the selector backdrop");
+        surface.Canvas.Clear(SKColors.Black);
+        surface.Canvas.DrawImage(through, 0, 0, Sampling);
+        if (rawShare > .001f)
+        {
+            using var add = new SKPaint { BlendMode = SKBlendMode.Plus, Color = SKColors.White.WithAlpha((byte)Math.Round(rawShare * 255)) };
+            surface.Canvas.DrawImage(source, 0, 0, Sampling, add);
+        }
+        surface.Canvas.Flush();
+        return surface.Snapshot();
     }
 
     public static Dictionary<string, float[]> ClearUniforms(GlassEffectPass effect, float width, float height,
@@ -158,22 +209,39 @@ public sealed class GlassPainter : IDisposable
         return v;
     }
 
-    private SKShader Backdrop(SKPoint origin, float sigma, out float strip)
+    private SKShader Backdrop(SKPoint origin, float sigma, out float strip, SKImage? view = null)
     {
+        // A one-off view (the selector looking through the bar) gets its own tone image.
+        if (view is not null)
+        {
+            using var once = Tone(view, sigma);
+            return Compose(view, once, origin, out strip);
+        }
         if (wideImage is null || wideSigma != sigma)
         {
             wideImage?.Dispose(); wideImage = null;
-            using var surface = SKSurface.Create(new SKImageInfo((source!.Width + 3) / 4, (source.Height + 3) / 4, SKColorType.Rgba8888, SKAlphaType.Premul))
-                ?? throw new InvalidOperationException("Cannot allocate wide tone image");
-            using var sharp = source.ToShader(SKShaderTileMode.Clamp, SKShaderTileMode.Clamp, Sampling);
-            using var filter = SKImageFilter.CreateBlur(sigma, sigma, SKShaderTileMode.Clamp);
-            using var p = new SKPaint { Shader = sharp, ImageFilter = filter };
-            surface.Canvas.Clear(SKColors.Transparent); surface.Canvas.Scale(.25f, .25f); surface.Canvas.DrawPaint(p); surface.Canvas.Flush();
-            wideImage = surface.Snapshot(); wideSigma = sigma;
+            wideImage = Tone(source!, sigma); wideSigma = sigma;
         }
-        using var sharpShader = source!.ToShader(SKShaderTileMode.Clamp, SKShaderTileMode.Clamp, Sampling);
-        using var wideShader = wideImage.ToShader(SKShaderTileMode.Clamp, SKShaderTileMode.Clamp, Sampling, SKMatrix.CreateScale(4, 4));
-        var threshold = Math.Max(1, source.Height - origin.Y + 1);
+        return Compose(source!, wideImage, origin, out strip);
+    }
+
+    private static SKImage Tone(SKImage image, float sigma)
+    {
+        sigma = Math.Max(sigma, 1);
+        using var surface = SKSurface.Create(new SKImageInfo((image.Width + 3) / 4, (image.Height + 3) / 4, SKColorType.Rgba8888, SKAlphaType.Premul))
+            ?? throw new InvalidOperationException("Cannot allocate wide tone image");
+        using var sharp = image.ToShader(SKShaderTileMode.Clamp, SKShaderTileMode.Clamp, Sampling);
+        using var filter = SKImageFilter.CreateBlur(sigma, sigma, SKShaderTileMode.Clamp);
+        using var p = new SKPaint { Shader = sharp, ImageFilter = filter };
+        surface.Canvas.Clear(SKColors.Transparent); surface.Canvas.Scale(.25f, .25f); surface.Canvas.DrawPaint(p); surface.Canvas.Flush();
+        return surface.Snapshot();
+    }
+
+    private static SKShader Compose(SKImage image, SKImage tone, SKPoint origin, out float strip)
+    {
+        using var sharpShader = image.ToShader(SKShaderTileMode.Clamp, SKShaderTileMode.Clamp, Sampling);
+        using var wideShader = tone.ToShader(SKShaderTileMode.Clamp, SKShaderTileMode.Clamp, Sampling, SKMatrix.CreateScale(4, 4));
+        var threshold = Math.Max(1, image.Height - origin.Y + 1);
         strip = threshold + Math.Max(0, origin.Y / 4) + 1;
         using var uniforms = new SKRuntimeEffectUniforms(BackdropEffect);
         uniforms["origin"] = origin; uniforms["strip"] = strip; uniforms["threshold"] = threshold;

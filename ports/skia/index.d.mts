@@ -2,6 +2,16 @@ import type {Canvas, CanvasKit, Image} from 'canvaskit-wasm';
 import type {CalmSelectorPose, CalmSelectorState} from './selector.mjs';
 export type {CalmSelectorPose, CalmSelectorState, CalmSelectorBar, CalmNavigation} from './selector.mjs';
 export {CalmSelectorController, calmSelectorBar, createCalmNavigation} from './selector.mjs';
+/** The Compose Calm selector material as shader uniforms (lengths in dp) and its band blend. */
+export function calmSelectorMaterial(state?: {dark?: boolean; formation?: number; transit?: number; heldTravel?: number}):
+  {values: Readonly<Record<string, number | readonly number[]>>; uFormation: number};
+/** The Compose Calm bar material (lengths in dp), its held lift following `formation`. */
+export function calmBarMaterial(state?: {dark?: boolean; formation?: number}): Readonly<Record<string, number | readonly number[]>>;
+export interface CalmSelectorDrawOptions {
+  dark?: boolean; density?: number; materialize?: number; reducedTransparency?: number; increasedContrast?: number;
+  /** The source-sized backdrop with the bar's glass drawn over it: the lens looks through the bar. */
+  through?: Image | null;
+}
 
 export interface GlassShaderSources { material: string; content: string; endpoint: string }
 export type CornerRadii = number | readonly [number, number, number, number];
@@ -40,8 +50,11 @@ export interface GlassPainter {
   /** Low-level painter coordinates are device pixels. */
   drawLens(canvas: Canvas, bounds: GlassLensBounds): void;
   drawSurface(canvas: Canvas, bounds: GlassSurfaceBounds, material?: GlassMaterial): void;
-  /** A navigation selector's pose body over the bar rect (device px); approximate Calm material. */
-  drawSelector(canvas: Canvas, bar: GlassRect, selector: {pose: CalmSelectorPose; formation?: number}, material?: GlassMaterial): void;
+  /** A Calm navigation bar's glass in the Compose Calm bar material (device px). */
+  drawCalmBar(canvas: Canvas, bar: GlassRect, options?: Omit<CalmSelectorDrawOptions, 'through'> & {formation?: number}): void;
+  /** A navigation selector's pose body over the bar rect (device px), in the Compose Calm selector material. */
+  drawSelector(canvas: Canvas, bar: GlassRect,
+    selector: {pose: CalmSelectorPose; formation?: number; transit?: number; heldTravel?: number}, options?: CalmSelectorDrawOptions): void;
   dispose(): void;
 }
 export function createGlassPainter(kit: CanvasKit, sources?: GlassShaderSources): GlassPainter;

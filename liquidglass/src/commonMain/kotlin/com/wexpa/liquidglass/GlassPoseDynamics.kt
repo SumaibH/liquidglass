@@ -290,6 +290,28 @@ internal data class GlassPoseSpec(
      * The rate is authored; it replaces [releaseImpactGain] and its area exchange.
      */
     val releaseTrailingEdge: Boolean = false,
+    /**
+     * Opt-in, [releaseTrailingEdge] only: while the trailing edge still moves toward the wall it
+     * follows this rate and damping instead of [releaseRecoveryOmega] / [releaseRecoveryZeta]; once
+     * it turns, the recovery spring takes over. Zero keeps the single critically damped spring.
+     * Observed in video2 (2026-10-14, ten right-wall landings): after the lift the trailing edge
+     * keeps travelling for about 0.3 s, overshoots its rest by about 40 px, then returns without
+     * a second overshoot. Authored rate, not a measured Apple constant.
+     */
+    val releaseTrailingInOmega: Float = 0f,
+    val releaseTrailingInZeta: Float = 1f,
+    /** Share of the trailing edge's own velocity it keeps once the leading edge meets the bar's end
+     * (within 0.3 bar heights of it): the impact takes the rest ([releaseTrailingEdge]). One carries
+     * all of it (the historical landing); authored. */
+    val releaseTrailingCarry: Float = 1f,
+    /**
+     * Opt-in, [releaseTrailingEdge] only: how far past the bar's end a still-formed released lens
+     * may press, as a share of the bar height, scaled by its formation. The wall comes back in as
+     * the lens turns into the pill and carries the leading edge with it. Zero keeps the hard wall.
+     * Observed in video2 (2026-10-14): the clear lens of a wall throw protrudes about 60 px past
+     * the bar's end (957-960 px at 9.92-9.95 s) and is back at the end as the pill forms. Authored.
+     */
+    val releaseWallGive: Float = 0f,
     /** Opt-in coupled-tap clock ratio for adjacent trips, blending back to the existing
      * rate by two slots. Authored output calibration; not an identified Apple spring. */
     val tapShortTripRate: Float = 1f,
@@ -366,12 +388,22 @@ internal data class GlassPoseSpec(
         val CalmFreeLanding = CalmImpact.copy(releaseImpactGain = 0f, releaseEdgeAnchor = false,
             releaseRecoveryOmega = 0f, releaseFormationSpeed = 3f, graspOmega = 120f,
             heldFormRiseOmega = 50f)
-        /** Current Calm: [CalmFreeLanding] with a wall at the bar's end and the two-edge landing
+        /** The first two-edge Calm (14 Oct 2026), retained for comparison: [CalmFreeLanding] with a wall at the bar's end and the two-edge landing
          * ([releaseTrailingEdge]). Trailing-edge rate 13/s, critically damped, authored against
          * the measured consecutive landing widths (241 -> 285 px; rms 3.4 / 3.2 px right / left on
          * the test throw; 12 and 14/s gave 4.0 / 7.3);
          * 2026-10-14 pass in review/atlas/reference-replay-2026-10-13. */
-        val Calm = CalmFreeLanding.copy(releaseTrailingEdge = true, releaseRecoveryOmega = 13f)
+        val CalmCriticalLanding = CalmFreeLanding.copy(releaseTrailingEdge = true, releaseRecoveryOmega = 13f)
+        /** Current Calm: [CalmCriticalLanding] whose trailing edge travels on to the wall
+         * underdamped (9/s, damping .3) and keeps a tenth of its speed once its leading edge meets the end, then
+         * recovers on the 13/s critical spring. Authored against nine right-wall landings of
+         * video2 (trailing edge on a clear row, 2026-10-14 pass, finger leading the ink by 33 ms):
+         * rms 4.9 px against 15.4 for [CalmCriticalLanding]; the 9.9 s landing's trailing edge
+         * passes its rest by 33 px against iOS's 41 (was 12). Its
+         * formed lens presses up to .35 bar heights past the end ([releaseWallGive]), as iOS's clear
+         * lens does, which also covers the bar/search fusion neck while the lens is there. */
+        val Calm = CalmCriticalLanding.copy(releaseTrailingInOmega = 9f, releaseTrailingInZeta = .3f,
+            releaseTrailingCarry = .1f, releaseWallGive = .35f)
     }
 }
 
@@ -451,6 +483,8 @@ internal class GlassPoseController(
     private var releaseImpactActive = false
     private val releaseEdge = GlassSpring()
     private val releaseTrail = GlassSpring()
+    /** The landing's impact has taken the trailing edge's speed ([GlassPoseSpec.releaseTrailingCarry]). */
+    private var releaseTrailImpact = false
     private var releaseEdgeActive = false
 
     // ------------------------------------------------------------------- the clock
@@ -969,6 +1003,7 @@ internal class GlassPoseController(
             releaseEdge.target = bar.centreOf(restIndex) + endpointDirection * reference.width * .5f
             releaseTrail.value = pose.cx - endpointDirection * landingHalfWidth()
             releaseTrail.velocity = velocity.cx - endpointDirection * landingHalfWidthVelocity()
+            releaseTrailImpact = false
             releaseTrail.target = bar.centreOf(restIndex) - endpointDirection * reference.width * .5f
         }
         releaseEdgeActive = coupleReleaseEdge
@@ -1287,12 +1322,40 @@ internal class GlassPoseController(
                 // A body already protruding at release holds where it is (no jump) until the
                 // spring draws it back. Resolved after the step, so the stop does not depend
                 // on the frame cadence.
-                val wall = if (endpointDirection > 0f) bar.width else 0f
-                if (endpointDirection * releaseEdge.velocity > 0f && endpointDirection * (releaseEdge.value - wall) > 0f) {
+                // A formed lens may press past the end ([GlassPoseSpec.releaseWallGive]); that give
+                // recedes with the formation and brings the leading edge back with it.
+                val give = spec.releaseWallGive * bar.height
+                val wall = (if (endpointDirection > 0f) bar.width else 0f) +
+                    endpointDirection * give * form.value.coerceIn(0f, 1f)
+                val wallVelocity = if (form.value > 0f && form.value < 1f) endpointDirection * give * form.velocity else 0f
+                if (give > 0f) {
+                    if (endpointDirection * (releaseEdge.value - wall) > 0f) {
+                        // Reaching the wall from inside stops there; a body already beyond it (the
+                        // wall receding, or released past the give) is drawn back at a bounded
+                        // rate, so it never jumps.
+                        val from = if (endpointDirection * (leadBefore - wall) > 0f) leadBefore else wall
+                        val pull = min(endpointDirection * (from - wall), WALL_PULL_HEIGHTS * bar.height * dt)
+                        releaseEdge.value = from - endpointDirection * pull
+                        releaseEdge.velocity = if (from == wall || pull < endpointDirection * (from - wall)) {
+                            if (from == wall) wallVelocity else -endpointDirection * WALL_PULL_HEIGHTS * bar.height
+                        } else wallVelocity
+                    }
+                } else if (endpointDirection * releaseEdge.velocity > 0f && endpointDirection * (releaseEdge.value - wall) > 0f) {
                     releaseEdge.value = if (endpointDirection * (leadBefore - wall) > 0f) leadBefore else wall
                     releaseEdge.velocity = 0f
                 }
-                releaseTrail.step(dt, spec.releaseRecoveryOmega, spec.releaseRecoveryZeta)
+                // The leading edge meets the bar's end: the impact takes the trailing edge's speed,
+                // once. Not at the lift: a lens released far from the end travels whole until then.
+                val end = if (endpointDirection > 0f) bar.width else 0f
+                if (!releaseTrailImpact && endpointDirection * (releaseEdge.value - end) >= -RELEASE_IMPACT_REACH * bar.height) {
+                    releaseTrailImpact = true
+                    releaseTrail.velocity *= spec.releaseTrailingCarry
+                }
+                if (spec.releaseTrailingInOmega > 0f && endpointDirection * releaseTrail.velocity > 0f) {
+                    releaseTrail.step(dt, spec.releaseTrailingInOmega, spec.releaseTrailingInZeta)
+                } else {
+                    releaseTrail.step(dt, spec.releaseRecoveryOmega, spec.releaseRecoveryZeta)
+                }
                 // The spine is what the two edges leave beside the caps; never shorter than a
                 // circle, which stops the trailing edge instead of inverting the capsule.
                 val caps = reference.r * exp(pose.p) + max(pose.acc, 0f)
@@ -1929,6 +1992,11 @@ internal class GlassPoseController(
         /** Coverage improvements below this are not worth the expansion that buys them. */
         const val COVERAGE_EPSILON = 0.5f
         const val CONTACT_REGAIN_FORMATION = 0.02f
+        /** How fast a receding wall give ([GlassPoseSpec.releaseWallGive]) may draw back a body
+         * beyond it, in bar heights per second: a continuity bound, not a measured rate. */
+        const val WALL_PULL_HEIGHTS = 20f
+        /** How close to the bar's end, in bar heights, the leading edge counts as meeting it. */
+        const val RELEASE_IMPACT_REACH = .3f
         /** A body still this formed when a finger lands on it is re-grabbed, not pressed anew. */
         const val REGRAB_FORMATION = 0.15f
     }

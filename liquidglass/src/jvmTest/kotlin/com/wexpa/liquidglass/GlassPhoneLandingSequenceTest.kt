@@ -103,17 +103,17 @@ class GlassPhoneLandingSequenceTest {
         }
     }
 
-    /** Calm's two-edge landing (2026-10-14): the same measured series, without the impact
-     * model's area exchange. The leading edge stops at the bar's end; the trailing edge carries
+    /** The first two-edge landing (2026-10-14, [GlassPoseSpec.CalmCriticalLanding]): the same
+     * measured series on the authored test throw, without the impact model's area exchange. The leading edge stops at the bar's end; the trailing edge carries
      * on toward the wall and springs back, so the pill narrows from behind and never grows. */
-    @Test fun calmLandsAgainstTheWallAndNarrowsFromBehind() {
+    @Test fun criticalLandingNarrowsFromBehindOnTheTestThrow() {
         val right=floatArrayOf(241f,241f,242f,244f,247f,250f,253f,257f,261f,264f,267f,
             271f,274f,276f,278f,281f,282f,283f,284f,285f,285f,285f,285f,284f,284f,284f,284f,284f,285f)
         val left=floatArrayOf(239f,241f,242f,245f,248f,251f,255f,258f,262f,265f,269f,
             272f,274f,277f,278f,281f,282f,283f,284f,283f,283f,284f,284f)
-        val held=bar.height*GlassPoseSpec.Calm.heldHeightRatio
+        val held=bar.height*GlassPoseSpec.CalmCriticalLanding.heldHeightRatio
         for(reverse in listOf(false,true)) {
-            val c=throwing(reverse, spec=GlassPoseSpec.Calm)
+            val c=throwing(reverse, spec=GlassPoseSpec.CalmCriticalLanding)
             val samples=mutableListOf<FloatArray>()
             repeat(721) { i ->
                 c.advanceTo(.9f+i/480f)
@@ -140,6 +140,91 @@ class GlassPhoneLandingSequenceTest {
         repeat(240) { i -> free.advanceTo(1f+i/480f); narrowest=minOf(narrowest,GlassPoseExtents().also(free::extents).width) }
         assertTrue(narrowest>270f,"CalmFreeLanding changed: $narrowest")
     }
+
+    /** The Phone bar as PhoneScene lays it out, in video px (3 px/dp): 8 dp item inset, 95 dp pill. */
+    private val phoneBar: GlassSelectorBar = run {
+        val width = 834f; val height = 186f; val inset = 24f; val density = 3f
+        val slot = (width - inset * 2f) / 3f
+        val rest = minOf(285f / 2f, (inset + slot / 2f - density).coerceAtLeast(density))
+        val half = minOf(height / 2f - 12f, rest)
+        GlassSelectorBar(width, height, inset, 3, height / 2f, rest, half,
+            maxOf(half, height / 2f - density), half, rest, density, width)
+    }
+
+    /**
+     * Calm (2026-10-14, second pass): video2's own first right- and left-wall throws, replayed
+     * from the inferred finger (tools/reference-replay/v2-script.txt, bar-local x = video x - 63),
+     * against the measured consecutive widths **at their own timestamps**, not re-aligned at the
+     * narrowest frame. The trailing edge travels on underdamped toward the wall
+     * ([GlassPoseSpec.releaseTrailingInOmega]) and keeps a tenth of its speed at the impact; the
+     * earlier critical landing narrowed about 0.15 s early (rms 14.4 / 21.5 px on these series;
+     * now 3.0 / 6.8). The finger leads the ink by 33 ms (v2script.py LEAD).
+     */
+    @Test fun calmLandsAgainstTheWallAndNarrowsFromBehind() {
+        val right = floatArrayOf(241f,241f,242f,244f,247f,250f,253f,257f,261f,264f,267f,
+            271f,274f,276f,278f,281f,282f,283f,284f,285f,285f,285f,285f,284f,284f,284f,284f,284f,285f)
+        val left = floatArrayOf(239f,241f,242f,245f,248f,251f,255f,258f,262f,265f,269f,
+            272f,274f,277f,278f,281f,282f,283f,284f,283f,283f,284f,284f)
+        // (ms, op, video x): down, moves, up as GlassTabBar issues them. The press is held
+        // (past the hold threshold) before it moves, so the drag needs no separate beginDrag.
+        val rightThrow = listOf(Triple(1203,"down",217f), Triple(2124,"move",285.4f), Triple(2140,"move",480f),
+            Triple(2157,"move",484.4f), Triple(2174,"move",627.1f), Triple(2190,"move",742f),
+            Triple(2206,"move",884.4f), Triple(2207,"up",884.4f))
+        val leftThrow = listOf(Triple(3386,"down",742f), Triple(4157,"move",681.7f), Triple(4174,"move",485.2f),
+            Triple(4190,"move",477.5f), Triple(4207,"move",397.2f), Triple(4224,"move",248.5f),
+            Triple(4240,"move",217f), Triple(4256,"move",153f), Triple(4257,"up",153f))
+        val held = phoneBar.height * GlassPoseSpec.Calm.heldHeightRatio
+        for ((events, series, start, tolerance) in listOf(
+            Quad(rightThrow, right, 2.523333, 7f), Quad(leftThrow, left, 4.573333, 15f))) {
+            val target = if (series === right) 2 else 0
+            val c = GlassPoseController(GlassPoseSpec.Calm)
+            c.attach(phoneBar, null, null); c.snapToRest(2 - target)
+            val e = GlassPoseExtents()
+            val widths = mutableListOf<Pair<Double, Float>>()
+            var next = 0
+            var frame = (events.first().first / 1000.0 * 60).toInt()
+            while (frame / 60.0 < start + series.size / 60.0 + .4) {
+                val t = frame / 60.0
+                while (next < events.size && events[next].first / 1000.0 <= t) {
+                    val (ms, op, x) = events[next++]
+                    when (op) {
+                        "down" -> { c.pointerDown(x - 63f, phoneBar.centreY, ms / 1000.0, true); c.retarget(2 - target) }
+                        "move" -> c.pointerMove(x - 63f, phoneBar.centreY, ms / 1000.0)
+                        "up" -> c.pointerUp(target)
+                    }
+                }
+                c.advanceFrameTo(t.toFloat())
+                assertFalse(c.solverFailed)
+                c.extents(e)
+                widths += t to e.width
+                if (c.mode == GlassPoseMode.Released) {
+                    val wall = if (target == 2) phoneBar.width else 0f
+                    val lead = if (target == 2) e.right - wall else wall - e.left
+                    // A formed lens presses past the wall by at most its formation's share of the
+                    // give, and is back at the wall once it is the pill.
+                    val give = GlassPoseSpec.Calm.releaseWallGive * phoneBar.height * c.formation
+                    assertTrue(lead < give + 4f, "target=$target t=$t leading edge $lead px past the wall (give $give)")
+                    assertTrue(e.height <= held + 1f, "target=$target t=$t landing grew taller than held")
+                }
+                frame++
+            }
+            var squares = 0.0
+            for (i in series.indices) {
+                val t = start + i / 60.0
+                val k = widths.indexOfFirst { it.first >= t }
+                val (t0, w0) = widths[k - 1]; val (t1, w1) = widths[k]
+                val ours = w0 + (w1 - w0) * ((t - t0) / (t1 - t0)).toFloat()
+                assertEquals(series[i], ours, tolerance, "target=$target t=$t width")
+                squares += (ours - series[i]).toDouble().let { it * it }
+            }
+            val rms = kotlin.math.sqrt(squares / series.size)
+            // Left: its first frames narrow up to 14.5 px less than iOS (253 against 239 px at its narrowest).
+            assertTrue(rms < (if (target == 2) 3.5 else 7.0), "target=$target width rms $rms")
+            assertTrue(widths.filter { it.first > start }.maxOf { it.second } <= 285.5f, "unobserved width rebound")
+        }
+    }
+
+    private data class Quad<A, B, C, D>(val a: A, val b: B, val c: C, val d: D)
 
     @Test fun regrabCarriesTheVelocityOfTheShapeAwareCentre() {
         for(reverse in listOf(false,true)) for(time in listOf(.96f,1.05f,1.14f,1.3f)) {

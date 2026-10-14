@@ -264,6 +264,80 @@ the delay of our bar's first shrink at every release, so it is attributed to the
 time, not tuned away. Also tried and rejected: handing the finger's own speed to the trailing
 edge at an end-tab release (see pass 7).
 
+### Pass 9: landing, cap swirl, neck timing and port material (14 October, second pass)
+
+**Wall landings, scored on every landing.** Pass 6 fitted the landing to one measured width series
+re-aligned at its narrowest frame. Scoring all ten right-wall landings of video 2 instead (the dark
+pill's trailing edge on the clear row y = 568 against the same controller driven by the inferred
+input, at the source frames' own timestamps) showed that iOS behaves the same way every time: after
+the lift the trailing edge keeps travelling for about 0.3 s, passes its rest by about 40 px
+(29–41 px on eight of them), then comes back without a second overshoot. Ours passed it 0.1–0.2 s
+early and by anything from 5 to 55 px. The 2.2 s and 9.9 s landings, which ours handled very
+differently, are the same landing in iOS.
+
+![The 9.9 s landing before and after pass 9 (our renders only)](landing-99.png)
+
+*Our renders only: `32bf46c` above, this pass below; video 2's 9.9 s throw, 60 fps deterministic GPU
+replay of the inferred input. The trailing edge now carries on to about 636 px against iOS's 645
+(615 before).*
+
+Adopted (Calm; the previous Calm kept as `GlassPoseSpec.CalmCriticalLanding`):
+
+- `releaseTrailingInOmega` / `releaseTrailingInZeta`: while the trailing edge still moves toward
+  the wall it follows a softer, underdamped spring (9/s, damping .3); once it turns, the 13/s
+  critical recovery takes over. `releaseTrailingCarry` .1: it keeps a tenth of its own speed once
+  the leading edge meets the bar's end (within 0.3 bar heights of it): the impact, not the lift,
+  takes the rest, so a lens released far from the end travels whole until then (taking the speed
+  at the lift stretched an extreme 8 ms throw by 40 px per 2 ms step). Authored: across nine landings rms 4.9 px against 15.4 for the critical landing
+  (`.local/sxs/wallscore.py`). The 9.9 s landing passes its rest by 33 px against iOS's 41 (12
+  before); the measured width series, now compared at their own timestamps (2.52 s right,
+  4.57 s left), rms 3.0 / 6.8 px against 14.4 / 21.5. The left landing's first frames still narrow
+  up to 14.5 px less than iOS (253 against 239 px at its narrowest).
+- `releaseWallGive` .35: a still-formed released lens may press up to .35 bar heights past the
+  bar's end, the give receding with formation. iOS's clear lens protrudes about 60 px (957–960 px
+  at 9.92–9.95 s); ours now reaches 951 px (911 before).
+- Input: the finger now leads the ink by 33 ms through every throw (`v2script.py` `LEAD`). The
+  selected-ink centroid trails the lens's leading edge (in iOS the lens reaches the end tab about
+  three frames before the ink does); 33 ms is the lead the landings fit best (4.9 px against 5.5
+  without it, 6.0 at 17 ms, 5.5 at 50 ms). The lens darkening after each landing now matches iOS
+  within one to three grey levels on the same frames.
+
+Excluded and recorded: the 28.66 s landing. iOS's trailing edge stops at its rest (2 px) where ours
+passes it by 53 px: the source has a frame gap in that throw, so the inferred finger jumps 228 px
+in one step and our lens is released 166 px short of the wall.
+
+**Cap swirl.** Pass 7's rim mirror of 1.0 never reached the shader: the uniform builder clamped
+`GlassStyle.rimMirror` to 0.5 (`LiquidGlass.kt`), so the moving lens mirrored half its band. Fixed
+(clamp 0–1). New opt-in `GlassStyle.rimMirrorGain` (`uRimMirrorGain`, both passes; 0 or 1 the plain
+mirror): within the mirrored band a pixel at depth u shows b + (b − u) × gain, so cap content is
+drawn out radially toward the rim, magnified by 1 / gain. The moving Calm selector uses 0.4. In iOS
+the icons under a moving lens's caps stretch into long petals reaching the rim; ours now does the
+same at a comparable scale. Authored and judged on side-by-side frames; the rainbow fringes along
+iOS's petals are still fainter in ours.
+
+![Moving lens caps before and after pass 9 (our renders only)](swirl-gain.png)
+
+**Bar/search neck timing.** The neck parted 60–70 ms after iOS's. Two causes, measured on the bar's
+far edge (row y = 495, above the neck) and the gap (row 568, x 903–915) over all 23 releases:
+
+- At a throw into the search-button end iOS's neck goes as the lens arrives, before the lift: the
+  clear lens protrudes over the gap. Ours lasted until our bar shrank. New opt-in
+  `GlassTabBarAccessory.yieldsToLens`: a formed pose selector pressing into the accessory's end
+  takes the neck's place (its fusion fades with the lens's formation and reach). Phone and Atlas
+  Studio use it.
+- After a stationary hold iOS's bar starts returning about 100 ms before ours. That lift was
+  inferred as "50 ms before the held shift disappears"; it is now where the iOS bar starts to
+  return, less our own bar's 43 ms release latency (`v2script.py`; 5.797 s against 5.890 s).
+
+The neck now parts a median 33 ms after iOS's (67 ms before; stationary hold −33 ms, was +83);
+most releases are within two frames. Larger residuals: the end of the rebuilt reversal episode
+(+200 ms), 34.8 s (+150 ms) and two throws away from the button (+100 ms).
+
+![The neck at a throw into the search-button end (our renders only)](neck-timing.png)
+
+**Port material.** See [the ports record](../ports-selector-2026-10-14/README.md): the CanvasKit and
+.NET selectors now use the Compose Calm material itself, checked value by value.
+
 ### Re-reading the landing evidence
 
 The removed impact model was calibrated to one frame, video 2 at 2.5567 s ("frame082": width
@@ -274,10 +348,11 @@ the impact. The narrowing itself is real and is listed below.
 
 ## Remaining differences
 
-- Post-landing narrowing (pass 6) is reproduced for fast releases; replay landings whose
-  inferred finger stops before lifting do not narrow (likely an input artefact, see pass 6), and
-  ours narrows about 100 ms earlier than iOS.
-- iOS's swirl at the ends of a moving lens is still somewhat stronger (pass 7).
+- Wall landings (pass 9): rms 4.9 px over nine right-wall landings; the 9.9 s landing passes its
+  rest by 33 px against 41; the left landing's first frames narrow up to 14.5 px less; the
+  28.66 s landing is an input artefact (source frame gap).
+- Cap swirl (pass 9): comparable petals; iOS's rainbow fringes along them are stronger.
+- Neck timing (pass 9): median 33 ms late; the reversal end and 34.8 s release 150–200 ms late.
 - The rebuilt reversal input and the full video 2 script (`v2-script.txt`) are inferred; the
   per-episode lag numbers above are relative to that inference.
 - Hold onset is aligned by construction (pass 7); it cannot be tested from these recordings.
@@ -305,7 +380,9 @@ the impact. The narrowing itself is real and is listed below.
 ## Files
 
 - `before-after.png`, `lens-edge.png`, `moving-lens.png`, `landing.png`, `cap-swirl.png`,
-  `atlas-studio.mp4` — public, our renders only.
+  `landing-99.png`, `swirl-gain.png`, `neck-timing.png`, `atlas-studio.mp4` — public, our renders only.
+- Pass 9 scoring (local, reads the private recording's row dumps): `.local/sxs/wallscore.py`
+  (landings), `neck.py` (neck timing), `liftonset.py` and `baredge.py` (bar release onset).
 - Local only: `.local/comparisons/2026-10-13-baseline/` (first comparison, original scripts) and
   `.local/comparisons/2026-10-13-pass1/` (reference / before / after).
 - Harness: `desktop/src/jvmMain/.../PhoneReplay.kt`, `sample/.../PhoneScene.kt`; script generators

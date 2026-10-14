@@ -116,10 +116,14 @@ canvas.addEventListener('pointerdown', e => nav.down(e.offsetX, e.offsetY, e.tim
 The motion is a line-by-line port of the Compose pose controller (`selector.mjs`:
 `CalmSelectorController`, `calmSelectorBar`, `createCalmNavigation`), checked frame by frame against
 trajectories the Kotlin controller exports (`fixtures/selector-calm.json`: taps, a held throw into
-the wall, held reversals, a stationary hold; 0.05 px). The selector is drawn through the production
-shader's pose body (`painter.drawSelector`), with the in-app material blended toward the held-lens
-profile by formation: an approximation of the Compose Calm selector's tuned material, not its
-measured grey levels. Selected ink inside the lens, labels and accessibility stay with the host. [Evidence](../../review/atlas/ports-selector-2026-10-14/README.md).
+the wall, held reversals, a stationary hold; 0.05 px). The navigation layer draws its bar in the
+Compose Calm bar material (`painter.drawCalmBar`) and the selector through the production shader's
+pose body in the Compose Calm selector material (`painter.drawSelector`, `calmSelectorMaterial`:
+the production pill, lens and bar styles exported by the Kotlin tests and blended by the same rules,
+checked against 96 Kotlin-computed uniform sets). Like Compose, the lens looks through the bar:
+`drawSelector(canvas, bar, state, {through})` takes the page with the bar's glass drawn over it,
+which the scene layer renders for you (one extra page-sized pass per navigation layer and frame).
+Selected ink inside the lens, labels and accessibility stay with the host. [Evidence](../../review/atlas/ports-selector-2026-10-14/README.md).
 
 ## Draw a lens without managing uniforms
 

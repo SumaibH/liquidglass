@@ -21,7 +21,9 @@
     "scene.d.mts",
     "interaction.d.mts",
     "selector.mjs",
-    "selector.d.mts"
+    "selector.d.mts",
+    "selector-material.mjs",
+    "selector-material-data.mjs"
   ],
   "exports": {
     ".": {
@@ -47,7 +49,8 @@
     "generate:shaders": "node generate-shaders.mjs",
     "generate:interaction": "node generate-interaction.mjs",
     "test:types": "tsc -p tsconfig.types.json",
-    "test": "node generate-shaders.mjs --check && node generate-interaction.mjs --check && npm run test:types && node --test renderer.test.mjs painter.test.mjs scene.test.mjs selector.test.mjs",
+    "generate:selector-material": "node generate-selector-material.mjs",
+    "test": "node generate-shaders.mjs --check && node generate-interaction.mjs --check && node generate-selector-material.mjs --check && npm run test:types && node --test renderer.test.mjs painter.test.mjs scene.test.mjs selector.test.mjs",
     "example": "node example.mjs"
   },
   "dependencies": {

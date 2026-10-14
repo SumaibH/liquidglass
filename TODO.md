@@ -30,7 +30,15 @@ bounded completed work, **not completion of full iOS parity**. All open rows rem
 - [x] Android verified on an API 37 emulator (AGSL path, software GPU): tap, hold, throw and Atlas
   Studio render correctly (`review/atlas/android-emulator-2026-10-14`). Physical device still open.
 - [x] Calm navigation selector ported to CanvasKit and .NET, checked against Kotlin-exported
-  trajectories (5 scenarios, worst 0.035 px); approximate selector material.
+  trajectories (5 scenarios, worst 0.035 px).
+- [x] PR6 merged into main (02f74a4) with the owner's explicit go-ahead.
+- [x] Pass 9: every wall landing scored; trailing edge travels on underdamped, formed lens presses
+  past the end (rms 4.9 px over nine landings, was 15.4; 9.9 s passes rest by 33 px vs iOS 41).
+- [x] Pass 9: rim-mirror clamp bug fixed; cap content drawn out radially (`rimMirrorGain` 0.4).
+- [x] Pass 9: neck yields to an arriving lens; stationary-hold lift from the iOS bar's release;
+  neck parts a median 33 ms late (was 67). Two releases still 150–200 ms late.
+- [x] Pass 9: ports use the Compose Calm bar/selector material (96 Kotlin samples, ≤2e-7) and look
+  through the bar. Selected ink in the ports remains host-owned.
 - [ ] Owner visual acceptance of the navigation selector.
 
 ## P0 — current visible failures
@@ -114,11 +122,10 @@ bounded completed work, **not completion of full iOS parity**. All open rows rem
   fixture parity, source ownership and Linux visible-label guard.
 - [ ] Implement and verify remaining native integration paths; document exact prerequisites and
   gaps. Compose + web + .NET is not equivalent to arbitrary-stack support.
-- [ ] Complete native .NET navigation motion/controller integration and practical host-owned
-  backdrop/widget capture. Whole-surface CalmInteraction, painter feedback and WinForms card
-  input now pass144portable states,107520outline probes,12check groups and9native phases.
-  WinForms standard-control capture now has executable native glyph/refraction/resize checks.
-  Navigation-selector travel, custom/other-framework capture are still missing.
+- [x] Native .NET navigation motion/controller integration: `CalmSelectorController`,
+  `CalmNavigation`, `DrawCalmBar` / `DrawSelector` with the Compose material (14 October).
+- [ ] Practical host-owned backdrop/widget capture beyond WinForms standard controls;
+  custom/other-framework capture is still missing.
 - [ ] Keep production shader contracts/packaging/licenses synchronized and validate each supported
   path with executable examples; documentation alone does not prove support.
 
@@ -133,10 +140,8 @@ bounded completed work, **not completion of full iOS parity**. All open rows rem
   update source hashes, limitations, public evidence and verification ledger.
 - [x] Audit this 12 October checkpoint: 132 intended files, curated native/cropped proof only;
   raw recordings and private configuration stay local. Repeat the audit for later changes.
-- [ ] Rewrite PR title/body around final behavior; push coherent verified changes and inspect
-  hosted results, especially the split Atlas suite. No cancelled/unfinished run counts as a pass.
-- [ ] Complete full requirement-by-requirement goal audit, review and authorized merge of PR6
-  under existing protection. No blanket administrator bypass, package publication, tag or release.
+- [x] PR6 title/body rewritten; hosted results inspected; all ten required checks green on 32bf46c.
+- [x] PR6 merged (02f74a4) on the owner's explicit instruction; no package, tag or release.
 
 ## Next action only
 

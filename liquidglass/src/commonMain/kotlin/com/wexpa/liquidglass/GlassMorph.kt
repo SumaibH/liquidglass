@@ -58,6 +58,7 @@ fun lerpGlassStyle(start: GlassStyle, stop: GlassStyle, fraction: Float): GlassS
         heldGlowReach = d(start.heldGlowReach, stop.heldGlowReach),
         foldAtCorners = f(start.foldAtCorners, stop.foldAtCorners),
         rimMirror = f(start.rimMirror, stop.rimMirror),
+        rimMirrorGain = f(start.rimMirrorGain, stop.rimMirrorGain),
         heldEdgeRecovery = d(start.heldEdgeRecovery, stop.heldEdgeRecovery),
         rawShare = f(start.rawShare, stop.rawShare),
         mirror = f(start.mirror, stop.mirror),

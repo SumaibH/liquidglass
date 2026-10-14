@@ -55,8 +55,11 @@ comparisons, authored choices and remaining limitations.
 Since 13 October, dark Calm's moving selector also shows the lens optics (`tapOptics`) while its
 pigment keeps its measured fade, a thrown lens stays formed until it settles, and wall landings
 stay flat against the end. Since 14 October a fast landing presses into the bar's end and the
-pill narrows briefly from behind before widening back, as in iOS. See the
-[continuous comparison](https://github.com/shayann07/liquidglass/blob/codex/atlas-stabilization/review/atlas/reference-replay-2026-10-13/README.md).
+pill narrows briefly from behind before widening back, as in iOS: after the lift its trailing edge
+travels on for about 0.3 s and passes its rest by about 40 px, scored on every wall landing of the
+reference recording, and a still-formed lens presses past the bar's end. The moving lens draws the
+content under its caps out toward the rim (`GlassStyle.rimMirrorGain`). See the
+[continuous comparison](https://github.com/shayann07/liquidglass/blob/main/review/atlas/reference-replay-2026-10-13/README.md).
 
 ## A neighbouring control: the search button
 
@@ -87,6 +90,11 @@ Box {
 The bar never draws or moves the accessory. Its outline is a smooth union with the accessory's
 circle (`fusion`, 6 dp by default), anchored so only the bar's own press growth closes the gap;
 a `fusion` under twice the `gap` keeps them apart at rest. Reduced motion disables the fusion.
+
+With `GlassTabBarAccessory(..., yieldsToLens = true)` a formed selector pressing into the
+accessory's end takes the neck's place, so the bar and the button part as the lens arrives rather
+than when the finger lifts, as on iOS. It is off by default; the Phone comparison scene and Atlas
+Studio use it.
 
 ## Historical horizontal selector
 

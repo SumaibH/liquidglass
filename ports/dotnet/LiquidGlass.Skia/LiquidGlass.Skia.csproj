@@ -10,5 +10,6 @@
   <ItemGroup>
     <PackageReference Include="SkiaSharp" Version="4.153.1" />
     <EmbeddedResource Include="../../skia/shaders/*.sksl" LogicalName="LiquidGlass.Shaders.%(Filename).sksl" />
+    <EmbeddedResource Include="../../skia/fixtures/selector-material.json" LogicalName="LiquidGlass.SelectorMaterial.json" />
   </ItemGroup>
 </Project>
