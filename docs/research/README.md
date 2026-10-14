@@ -1,5 +1,9 @@
 # The research behind the material
 
+For the current development work, start with [the visual evidence index](../development-status.md)
+and [Atlas stabilization](atlas-stabilization.md). The historical research workflow and measurements
+below are preserved as provenance, not a fresh validation of every current backend.
+
 
 !!! abstract "Start here: [the full record](the-record.md)"
     The complete research record — the mathematics of the deforming selector, the measured material

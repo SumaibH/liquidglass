@@ -1,11 +1,10 @@
 #!/usr/bin/env python3
-"""Fail if the docs link to a file in this repository that git does not track.
+"""Fail if README/docs reference repository files or images that git does not track.
 
 mkdocs --strict checks relative links, but the site also links to research material by absolute
-GitHub URL (https://github.com/shayann07/liquidglass/blob/main/...). Those resolve only if the
-path is committed; research/ is mostly local and ignored, so a link to it would 404 on the live
-site. This script checks every such link in docs/**/*.md against `git ls-files`: the target must
-be a tracked file, or a directory that contains tracked files.
+GitHub/raw URLs. Check main, the development branch and pinned SHA links, plus relative images,
+against `git ls-files`: the target must be tracked or contain tracked files. This is an offline
+path check; rendered-page verification separately confirms pinned remote images actually load.
 
 Run from anywhere inside the repository:  python .github/scripts/check_repo_links.py
 """
@@ -17,8 +16,11 @@ from pathlib import Path
 from urllib.parse import unquote
 
 LINK = re.compile(
-    r"https://github\.com/shayann07/liquidglass/(?:blob|tree|raw)/main/([^\s)\]>\"'`]+)"
+    r"https://(?:github\.com/shayann07/liquidglass/(?:blob|tree|raw)/|"
+    r"raw\.githubusercontent\.com/shayann07/liquidglass/)"
+    r"(?:main|codex/atlas-stabilization|[0-9a-f]{7,40})/([^\s)\]>\"'`]+)"
 )
+IMAGE = re.compile(r"!\[[^\]]*\]\(([^\s)]+)")
 
 
 def main() -> int:
@@ -43,7 +45,7 @@ def main() -> int:
 
     dead = []
     checked = 0
-    for md in sorted((root / "docs").rglob("*.md")):
+    for md in [root / "README.md", *sorted((root / "docs").rglob("*.md"))]:
         rel = md.relative_to(root).as_posix()
         for lineno, line in enumerate(md.read_text(encoding="utf-8").splitlines(), 1):
             for match in LINK.finditer(line):
@@ -53,13 +55,25 @@ def main() -> int:
                 if path in tracked or path in dirs:
                     continue
                 dead.append(f"{rel}:{lineno}: {path}")
+            for match in IMAGE.finditer(line):
+                target = match.group(1)
+                if "://" in target or target.startswith("data:"):
+                    continue
+                checked += 1
+                try:
+                    path = (md.parent / unquote(target.split("#", 1)[0])).resolve().relative_to(root).as_posix()
+                except ValueError:
+                    dead.append(f"{rel}:{lineno}: image outside repository: {target}")
+                    continue
+                if path not in tracked:
+                    dead.append(f"{rel}:{lineno}: untracked image: {path}")
 
     if dead:
         print(f"{len(dead)} link(s) to paths git does not track (they 404 on GitHub):")
         for entry in dead:
             print(f"  {entry}")
         return 1
-    print(f"OK: {checked} GitHub link(s) in docs/ all point at tracked paths.")
+    print(f"OK: {checked} repository links and visual references in README/docs point at tracked paths.")
     return 0
 
 

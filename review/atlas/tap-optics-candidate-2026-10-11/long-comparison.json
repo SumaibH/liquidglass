@@ -1,0 +1,98 @@
+{
+  "method": "Diagnostic interior transfer over observed bar, one time shift at old long80percent shape anchor .98s. Native .905/.930 repeat limits early temporal interpretation. Nominal278px40ms; not inferred finger events or full rendering.",
+  "traceSha256": "c7e121afc89f73ab49bbe35737259b0c2c35e14e0746bedf255187ff11e8d255",
+  "timeOrigin": 0.855,
+  "samples": [
+    {
+      "file": "frame-006.png",
+      "seconds": 0.905,
+      "observedBar": 42.0,
+      "observedSelector": 42.0,
+      "formation": 0.16718800000000011,
+      "appearance": 0.3411020000000007,
+      "previous": 16.182828000000004,
+      "candidate": 24.98911700354402
+    },
+    {
+      "file": "frame-008.png",
+      "seconds": 0.946667,
+      "observedBar": 42.0,
+      "observedSelector": 45.0,
+      "formation": 0.21690906609705757,
+      "appearance": 0.8540538158690543,
+      "previous": 17.724181049008788,
+      "candidate": 38.45703685744913
+    },
+    {
+      "file": "frame-009.png",
+      "seconds": 0.963333,
+      "observedBar": 41.0,
+      "observedSelector": 45.0,
+      "formation": 0.217037057312917,
+      "appearance": 0.9101236159458552,
+      "previous": 17.11963024804397,
+      "candidate": 38.85371871681822
+    },
+    {
+      "file": "frame-010.png",
+      "seconds": 0.98,
+      "observedBar": 41.0,
+      "observedSelector": 45.0,
+      "formation": 0.21024,
+      "appearance": 0.902996,
+      "previous": 16.91232,
+      "candidate": 38.66339868928
+    },
+    {
+      "file": "frame-011.png",
+      "seconds": 0.996667,
+      "observedBar": 41.0,
+      "observedSelector": 45.0,
+      "formation": 0.19806873647578363,
+      "appearance": 0.8302308735179764,
+      "previous": 16.5410964625114,
+      "candidate": 36.84763331173249
+    },
+    {
+      "file": "frame-012.png",
+      "seconds": 1.013333,
+      "observedBar": 40.0,
+      "observedSelector": 44.0,
+      "formation": 0.18193031464503429,
+      "appearance": 0.6903108594537508,
+      "previous": 15.457909439351027,
+      "candidate": 32.3995810670644
+    },
+    {
+      "file": "frame-016.png",
+      "seconds": 1.08,
+      "observedBar": 37.0,
+      "observedSelector": 38.0,
+      "formation": 0.10508899999999992,
+      "appearance": 0.11591299999999964,
+      "previous": 11.495036499999998,
+      "candidate": 14.451393334175489
+    },
+    {
+      "file": "frame-019.png",
+      "seconds": 1.13,
+      "observedBar": 36.0,
+      "observedSelector": 29.0,
+      "formation": 0.059685000000000085,
+      "appearance": 0.011605000000000072,
+      "previous": 9.671180000000003,
+      "candidate": 9.976725956100005
+    }
+  ],
+  "metrics": {
+    "previous": {
+      "rms": 26.639739937896636,
+      "maxAbsolute": 28.542090560648973
+    },
+    "candidate": {
+      "rms": 13.818295978871282,
+      "maxAbsolute": 23.54860666582451
+    }
+  },
+  "decision": "Candidate improves nominal peak but clears too weakly early and restores dark pigment too early late. A first short episode is insufficient for full optical acceptance. Preserve counterexample, no runtime retune during verification."
+}

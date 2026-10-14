@@ -27,6 +27,9 @@ enum class GlassProfile {
      * between them never crosses into the fold.
      */
     Held,
+    /** Standalone magnifier with one C1-continuous source map for backdrop and foreground.
+     * Authored optical model; the measured tab-bar Held profile stays separate. */
+    Lens,
 }
 
 /**
@@ -147,7 +150,8 @@ data class GlassStyle(
      */
     val heldMagnification: Float = 0f,
     /**
-     * How much of the held lens's inward rim glow is drawn, 0 to 1. The glow is the measured
+     * How much of the held lens's inward rim glow is drawn, 0 to 2 (1 is the historical full
+     * amount; values above 1 are for a wider [heldGlowReach]). The glow is the measured
      * "+16 falling to +1 over 15 px" behind the lens's lit edge line; a lens that is meant to show
      * nothing but the exterior compressed into its band, with colour separation where content
      * crosses it, sets this to 0 together with [specular], [counterLight] and [edgeShadow].
@@ -396,8 +400,46 @@ data class GlassStyle(
      * is unaffected; this is one coordinate blend, not a blend of two glyph images.
      */
     val heldInkContinuous: Boolean = false,
+    /**
+     * How far inward the held lens's rim glow ([heldGlow]) reaches before falling to 1/e.
+     * Zero ties it to [bevel], the historical narrow glow. Video2's moving lens shows a glow of
+     * about +25 at the edge fading over roughly 6 pt across its band (2026-10-13).
+     */
+    val heldGlowReach: Dp = 0.dp,
+    /**
+     * Confine the measured fold ([GlassProfile.Measured] at formation) to the outline's corner
+     * arcs, 0 to 1. Zero folds every edge as the measured cover sheet does. A moving tab-bar
+     * selector uses 1: video1/video2 show its rim mirroring content at the cap ends while its
+     * long top and bottom runs keep a thin band.
+     */
+    val foldAtCorners: Float = 0f,
+    /**
+     * With [GlassProfile.Measured] and a formation, replace the measured fold with a reflective
+     * rim: within this fraction b of the band a pixel at depth u shows the content at depth
+     * 2b - u, mirrored about b, and the interior is shown in place. Continuous, with no hidden
+     * seam. Zero keeps the measured fold. A moving tab-bar selector uses it (video1/video2,
+     * 2026-10-13: icon strokes near a travelling lens's ends wrap mirrored along its rim).
+     */
+    val rimMirror: Float = 0f,
 ) {
     companion object {
+        /** Clear standalone lens. [magnification] is the centre zoom, gradually returning to
+         * identity at the boundary. No internal fold/seam and no separate foreground zoom.
+         * Authored, not an Apple calibration. Supported range: 1x to 2.5x. */
+        fun clearLens(magnification: Float = 1.25f): GlassStyle {
+            require(magnification.isFinite() && magnification in 1f..2.5f) {
+                "Lens magnification must be finite and between 1 and 2.5"
+            }
+            return GlassStyle(
+                profile = GlassProfile.Lens, blurRadius = 0.dp, wideKernel = 0.dp,
+                fineShare = 1f, tint = Color.White.copy(alpha = 0.015f), tintLift = 0f,
+                heldLens = 1f, heldMagnification = 1f - 1f / magnification,
+                bevel = 1.2.dp, bevelPeak = 0f, specular = 0.28f, fresnel = 0.02f,
+                counterLight = 0.35f, dispersion = 0f, innerShadow = 0f,
+                contactShadow = 0.15f, invertsWithBackdrop = false,
+            )
+        }
+
         /** In-app glass, light appearance, default Tint Amount: the measured navigation pill. */
         val Regular = GlassStyle()
 

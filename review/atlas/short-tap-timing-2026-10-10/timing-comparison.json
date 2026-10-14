@@ -1,0 +1,708 @@
+{
+  "method": "Nominal278px/40ms production input. For each model/episode, fit one time offset to all nine moving centre samples on a0.1ms grid. No rate/geometry fit, time scaling or per-frame rematching. Model polygon intersections use the same source rows.",
+  "limits": "Partial optical edge tracks, not recovered pointer timing or rendered optical agreement. Repeated-episode heights unresolved. Model was calibrated using the first episode; second episode informed candidate validation. Whole-bar transform and source resting-geometry uncertainty remain.",
+  "baselineSha256": "81072e5656d444b526cf88efaec40a2128ede8357cead048610765054c1d0344",
+  "candidateSha256": "44e22aa53c6327b1f49befbe7e571c1ef8efae962149294a4970527777a68305",
+  "episodes": {
+    "first": {
+      "sourceSha256": "c1464bd90b4ef230bd50dc83c01069a996ff11d78096c8e6ef9b2ae4ea694e24",
+      "models": {
+        "previous": {
+          "timeOrigin": 3.4199330000005417,
+          "metrics": {
+            "centre": {
+              "samples": 9,
+              "rms": 12.814438461222835,
+              "maxAbsolute": 20.41446705734893
+            },
+            "width": {
+              "samples": 9,
+              "rms": 8.240201190326033,
+              "maxAbsolute": 15.724653042297689
+            },
+            "height": {
+              "samples": 7,
+              "rms": 4.637682393583268,
+              "maxAbsolute": 7.357487094958088
+            }
+          },
+          "samples": [
+            {
+              "file": "frame-006.png",
+              "pts": 2048,
+              "seconds": 3.413333,
+              "observed": {
+                "centre": 735.0,
+                "width": 285.0,
+                "height": 166.0
+              },
+              "predicted": {
+                "centre": 742.500335,
+                "width": 277.13421000000005,
+                "height": 167.5
+              },
+              "horizontalUsable": true,
+              "verticalUsable": true
+            },
+            {
+              "file": "frame-007.png",
+              "pts": 2058,
+              "seconds": 3.43,
+              "observed": {
+                "centre": 715.5,
+                "width": 294.0,
+                "height": 172.0
+              },
+              "predicted": {
+                "centre": 735.9144670573489,
+                "width": 278.2753469577023,
+                "height": 168.6352507227026
+              },
+              "horizontalUsable": true,
+              "verticalUsable": true
+            },
+            {
+              "file": "frame-008.png",
+              "pts": 2068,
+              "seconds": 3.446667,
+              "observed": {
+                "centre": 690.5,
+                "width": 302.0,
+                "height": 186.0
+              },
+              "predicted": {
+                "centre": 706.7109964116479,
+                "width": 288.07174238139413,
+                "height": 178.12593458993948
+              },
+              "horizontalUsable": true,
+              "verticalUsable": false
+            },
+            {
+              "file": "frame-009.png",
+              "pts": 2078,
+              "seconds": 3.463333,
+              "observed": {
+                "centre": 662.5,
+                "width": 310.0,
+                "height": 186.0
+              },
+              "predicted": {
+                "centre": 668.8408687045189,
+                "width": 301.22968406475803,
+                "height": 188.55637287447917
+              },
+              "horizontalUsable": true,
+              "verticalUsable": false
+            },
+            {
+              "file": "frame-010.png",
+              "pts": 2088,
+              "seconds": 3.48,
+              "observed": {
+                "centre": 635.0,
+                "width": 311.0,
+                "height": 188.0
+              },
+              "predicted": {
+                "centre": 631.1904833209877,
+                "width": 308.53733026509445,
+                "height": 195.3574870949581
+              },
+              "horizontalUsable": true,
+              "verticalUsable": true
+            },
+            {
+              "file": "frame-011.png",
+              "pts": 2098,
+              "seconds": 3.496667,
+              "observed": {
+                "centre": 608.5,
+                "width": 316.0,
+                "height": 196.0
+              },
+              "predicted": {
+                "centre": 597.7305095963615,
+                "width": 316.893093499515,
+                "height": 199.36387711745996
+              },
+              "horizontalUsable": true,
+              "verticalUsable": true
+            },
+            {
+              "file": "frame-012.png",
+              "pts": 2108,
+              "seconds": 3.513333,
+              "observed": {
+                "centre": 584.0,
+                "width": 320.0,
+                "height": 196.0
+              },
+              "predicted": {
+                "centre": 569.7932690763291,
+                "width": 322.06941021251686,
+                "height": 201.19390309409604
+              },
+              "horizontalUsable": true,
+              "verticalUsable": true
+            },
+            {
+              "file": "frame-013.png",
+              "pts": 2128,
+              "seconds": 3.546667,
+              "observed": {
+                "centre": 544.0,
+                "width": 329.0,
+                "height": 204.0
+              },
+              "predicted": {
+                "centre": 529.8649536848023,
+                "width": 329.7343853679464,
+                "height": 200.4660042730776
+              },
+              "horizontalUsable": true,
+              "verticalUsable": true
+            },
+            {
+              "file": "frame-014.png",
+              "pts": 2138,
+              "seconds": 3.563333,
+              "observed": {
+                "centre": 529.5,
+                "width": 332.0,
+                "height": 204.0
+              },
+              "predicted": {
+                "centre": 516.4709974287407,
+                "width": 327.59841679891383,
+                "height": 198.33686417039283
+              },
+              "horizontalUsable": true,
+              "verticalUsable": true
+            }
+          ]
+        },
+        "candidate": {
+          "timeOrigin": 3.4008330000005014,
+          "metrics": {
+            "centre": {
+              "samples": 9,
+              "rms": 2.550044386195598,
+              "maxAbsolute": 5.002090000377848
+            },
+            "width": {
+              "samples": 9,
+              "rms": 5.25429008875649,
+              "maxAbsolute": 9.358791820933448
+            },
+            "height": {
+              "samples": 7,
+              "rms": 3.9349620992874637,
+              "maxAbsolute": 7.180180942616516
+            }
+          },
+          "samples": [
+            {
+              "file": "frame-006.png",
+              "pts": 2048,
+              "seconds": 3.413333,
+              "observed": {
+                "centre": 735.0,
+                "width": 285.0,
+                "height": 166.0
+              },
+              "predicted": {
+                "centre": 736.7509200003987,
+                "width": 278.08849999990383,
+                "height": 168.44948999990436
+              },
+              "horizontalUsable": true,
+              "verticalUsable": true
+            },
+            {
+              "file": "frame-007.png",
+              "pts": 2058,
+              "seconds": 3.43,
+              "observed": {
+                "centre": 715.5,
+                "width": 294.0,
+                "height": 172.0
+              },
+              "predicted": {
+                "centre": 716.7078958942847,
+                "width": 284.64120817906655,
+                "height": 174.89767133320848
+              },
+              "horizontalUsable": true,
+              "verticalUsable": true
+            },
+            {
+              "file": "frame-008.png",
+              "pts": 2068,
+              "seconds": 3.446667,
+              "observed": {
+                "centre": 690.5,
+                "width": 302.0,
+                "height": 186.0
+              },
+              "predicted": {
+                "centre": 689.7403102458949,
+                "width": 294.14055002993825,
+                "height": 183.37048261567813
+              },
+              "horizontalUsable": true,
+              "verticalUsable": false
+            },
+            {
+              "file": "frame-009.png",
+              "pts": 2078,
+              "seconds": 3.463333,
+              "observed": {
+                "centre": 662.5,
+                "width": 310.0,
+                "height": 186.0
+              },
+              "predicted": {
+                "centre": 660.7840600008701,
+                "width": 304.0237999997114,
+                "height": 190.33602999982048
+              },
+              "horizontalUsable": true,
+              "verticalUsable": false
+            },
+            {
+              "file": "frame-010.png",
+              "pts": 2088,
+              "seconds": 3.48,
+              "observed": {
+                "centre": 635.0,
+                "width": 311.0,
+                "height": 188.0
+              },
+              "predicted": {
+                "centre": 632.6812800737716,
+                "width": 308.19788674291925,
+                "height": 195.18018094261652
+              },
+              "horizontalUsable": true,
+              "verticalUsable": true
+            },
+            {
+              "file": "frame-011.png",
+              "pts": 2098,
+              "seconds": 3.496667,
+              "observed": {
+                "centre": 608.5,
+                "width": 316.0,
+                "height": 196.0
+              },
+              "predicted": {
+                "centre": 606.9328227171982,
+                "width": 314.88976478575864,
+                "height": 198.47065447242204
+              },
+              "horizontalUsable": true,
+              "verticalUsable": true
+            },
+            {
+              "file": "frame-012.png",
+              "pts": 2108,
+              "seconds": 3.513333,
+              "observed": {
+                "centre": 584.0,
+                "width": 320.0,
+                "height": 196.0
+              },
+              "predicted": {
+                "centre": 584.2100050006419,
+                "width": 319.6966899998781,
+                "height": 200.42455999995624
+              },
+              "horizontalUsable": true,
+              "verticalUsable": true
+            },
+            {
+              "file": "frame-013.png",
+              "pts": 2128,
+              "seconds": 3.546667,
+              "observed": {
+                "centre": 544.0,
+                "width": 329.0,
+                "height": 204.0
+              },
+              "predicted": {
+                "centre": 548.1929359877756,
+                "width": 329.4135832283458,
+                "height": 201.42509673179407
+              },
+              "horizontalUsable": true,
+              "verticalUsable": true
+            },
+            {
+              "file": "frame-014.png",
+              "pts": 2138,
+              "seconds": 3.563333,
+              "observed": {
+                "centre": 529.5,
+                "width": 332.0,
+                "height": 204.0
+              },
+              "predicted": {
+                "centre": 534.5020900003778,
+                "width": 329.4942400000006,
+                "height": 200.81802000002685
+              },
+              "horizontalUsable": true,
+              "verticalUsable": true
+            }
+          ]
+        }
+      }
+    },
+    "repeat": {
+      "sourceSha256": "aec3d99deceb3bbc28449e3bec960ac050f65b15968b88d722b5bf67c8a48a67",
+      "models": {
+        "previous": {
+          "timeOrigin": 15.421766999999393,
+          "metrics": {
+            "centre": {
+              "samples": 9,
+              "rms": 15.663821270780987,
+              "maxAbsolute": 21.827472539343148
+            },
+            "width": {
+              "samples": 9,
+              "rms": 15.508035052687116,
+              "maxAbsolute": 20.49469774160673
+            }
+          },
+          "samples": [
+            {
+              "file": "frame-006.png",
+              "pts": 9247,
+              "seconds": 15.411667,
+              "observed": {
+                "centre": 735.5,
+                "width": 286.0,
+                "height": 166.0
+              },
+              "predicted": {
+                "centre": 742.500335,
+                "width": 277.13421000000005,
+                "height": 167.5
+              },
+              "horizontalUsable": true,
+              "verticalUsable": false
+            },
+            {
+              "file": "frame-007.png",
+              "pts": 9257,
+              "seconds": 15.428333,
+              "observed": {
+                "centre": 718.0,
+                "width": 295.0,
+                "height": 174.0
+              },
+              "predicted": {
+                "centre": 739.5229173358741,
+                "width": 277.4474917065411,
+                "height": 167.8118062070925
+              },
+              "horizontalUsable": true,
+              "verticalUsable": false
+            },
+            {
+              "file": "frame-008.png",
+              "pts": 9267,
+              "seconds": 15.445,
+              "observed": {
+                "centre": 693.5,
+                "width": 306.0,
+                "height": 188.0
+              },
+              "predicted": {
+                "centre": 713.9931631375287,
+                "width": 285.5053022583933,
+                "height": 175.72355007097497
+              },
+              "horizontalUsable": true,
+              "verticalUsable": false
+            },
+            {
+              "file": "frame-009.png",
+              "pts": 9277,
+              "seconds": 15.461667,
+              "observed": {
+                "centre": 666.5,
+                "width": 316.0,
+                "height": 190.0
+              },
+              "predicted": {
+                "centre": 676.9802763667849,
+                "width": 298.4568728683914,
+                "height": 186.64839188331987
+              },
+              "horizontalUsable": true,
+              "verticalUsable": false
+            },
+            {
+              "file": "frame-010.png",
+              "pts": 9287,
+              "seconds": 15.478333,
+              "observed": {
+                "centre": 639.0,
+                "width": 319.0,
+                "height": 192.0
+              },
+              "predicted": {
+                "centre": 638.8330817586162,
+                "width": 306.30303635281786,
+                "height": 194.19422963108101
+              },
+              "horizontalUsable": true,
+              "verticalUsable": false
+            },
+            {
+              "file": "frame-011.png",
+              "pts": 9297,
+              "seconds": 15.495,
+              "observed": {
+                "centre": 613.5,
+                "width": 326.0,
+                "height": 194.0
+              },
+              "predicted": {
+                "centre": 604.3183875162476,
+                "width": 315.4220729988698,
+                "height": 198.72717514963762
+              },
+              "horizontalUsable": true,
+              "verticalUsable": false
+            },
+            {
+              "file": "frame-012.png",
+              "pts": 9307,
+              "seconds": 15.511667,
+              "observed": {
+                "centre": 591.0,
+                "width": 335.0,
+                "height": 194.0
+              },
+              "predicted": {
+                "centre": 575.1895935070211,
+                "width": 321.21706427921663,
+                "height": 200.95658195070226
+              },
+              "horizontalUsable": true,
+              "verticalUsable": false
+            },
+            {
+              "file": "frame-013.png",
+              "pts": 9317,
+              "seconds": 15.528333,
+              "observed": {
+                "centre": 570.5,
+                "width": 338.0,
+                "height": 192.0
+              },
+              "predicted": {
+                "centre": 551.6475810058238,
+                "width": 324.28041097783955,
+                "height": 201.5074581601237
+              },
+              "horizontalUsable": true,
+              "verticalUsable": false
+            },
+            {
+              "file": "frame-014.png",
+              "pts": 9327,
+              "seconds": 15.545,
+              "observed": {
+                "centre": 555.0,
+                "width": 345.0,
+                "height": 189.0
+              },
+              "predicted": {
+                "centre": 533.1725274606569,
+                "width": 325.0324320347377,
+                "height": 200.76895087692412
+              },
+              "horizontalUsable": true,
+              "verticalUsable": false
+            }
+          ]
+        },
+        "candidate": {
+          "timeOrigin": 15.402666999999438,
+          "metrics": {
+            "centre": {
+              "samples": 9,
+              "rms": 2.532958525160332,
+              "maxAbsolute": 3.865583491268808
+            },
+            "width": {
+              "samples": 9,
+              "rms": 14.341383288327929,
+              "maxAbsolute": 20.638684209142184
+            }
+          },
+          "samples": [
+            {
+              "file": "frame-006.png",
+              "pts": 9247,
+              "seconds": 15.411667,
+              "observed": {
+                "centre": 735.5,
+                "width": 286.0,
+                "height": 166.0
+              },
+              "predicted": {
+                "centre": 739.3655834912688,
+                "width": 277.4964296309682,
+                "height": 167.86045922250082
+              },
+              "horizontalUsable": true,
+              "verticalUsable": false
+            },
+            {
+              "file": "frame-007.png",
+              "pts": 9257,
+              "seconds": 15.428333,
+              "observed": {
+                "centre": 718.0,
+                "width": 295.0,
+                "height": 174.0
+              },
+              "predicted": {
+                "centre": 721.6944785203141,
+                "width": 282.8996701236338,
+                "height": 173.20618678325397
+              },
+              "horizontalUsable": true,
+              "verticalUsable": false
+            },
+            {
+              "file": "frame-008.png",
+              "pts": 9267,
+              "seconds": 15.445,
+              "observed": {
+                "centre": 693.5,
+                "width": 306.0,
+                "height": 188.0
+              },
+              "predicted": {
+                "centre": 695.6936382976622,
+                "width": 292.05396104915064,
+                "height": 181.6440656293312
+              },
+              "horizontalUsable": true,
+              "verticalUsable": false
+            },
+            {
+              "file": "frame-009.png",
+              "pts": 9277,
+              "seconds": 15.461667,
+              "observed": {
+                "centre": 666.5,
+                "width": 316.0,
+                "height": 190.0
+              },
+              "predicted": {
+                "centre": 666.8661127094942,
+                "width": 301.99764940322734,
+                "height": 189.05847050323493
+              },
+              "horizontalUsable": true,
+              "verticalUsable": false
+            },
+            {
+              "file": "frame-010.png",
+              "pts": 9287,
+              "seconds": 15.478333,
+              "observed": {
+                "centre": 639.0,
+                "width": 319.0,
+                "height": 192.0
+              },
+              "predicted": {
+                "centre": 638.4277402822773,
+                "width": 306.51246453442866,
+                "height": 194.30272777290867
+              },
+              "horizontalUsable": true,
+              "verticalUsable": false
+            },
+            {
+              "file": "frame-011.png",
+              "pts": 9297,
+              "seconds": 15.495,
+              "observed": {
+                "centre": 613.5,
+                "width": 326.0,
+                "height": 194.0
+              },
+              "predicted": {
+                "centre": 612.1085745035547,
+                "width": 313.64529718735935,
+                "height": 197.8983044118458
+              },
+              "horizontalUsable": true,
+              "verticalUsable": false
+            },
+            {
+              "file": "frame-012.png",
+              "pts": 9307,
+              "seconds": 15.511667,
+              "observed": {
+                "centre": 591.0,
+                "width": 335.0,
+                "height": 194.0
+              },
+              "predicted": {
+                "centre": 588.723295753564,
+                "width": 318.82819066684215,
+                "height": 200.10786874297366
+              },
+              "horizontalUsable": true,
+              "verticalUsable": false
+            },
+            {
+              "file": "frame-013.png",
+              "pts": 9317,
+              "seconds": 15.528333,
+              "observed": {
+                "centre": 570.5,
+                "width": 338.0,
+                "height": 192.0
+              },
+              "predicted": {
+                "centre": 568.5196141941615,
+                "width": 322.32418971064646,
+                "height": 201.21745290358763
+              },
+              "horizontalUsable": true,
+              "verticalUsable": false
+            },
+            {
+              "file": "frame-014.png",
+              "pts": 9327,
+              "seconds": 15.545,
+              "observed": {
+                "centre": 555.0,
+                "width": 345.0,
+                "height": 189.0
+              },
+              "predicted": {
+                "centre": 551.4172553834813,
+                "width": 324.3613157908578,
+                "height": 201.46587983487257
+              },
+              "horizontalUsable": true,
+              "verticalUsable": false
+            }
+          ]
+        }
+      }
+    }
+  }
+}

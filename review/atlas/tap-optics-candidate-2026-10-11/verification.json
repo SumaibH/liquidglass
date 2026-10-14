@@ -1,0 +1,133 @@
+{
+  "tests": 36,
+  "failures": 0,
+  "errors": 0,
+  "focusedDuration": "3s",
+  "native": "10phases pass40s, allsheet inspected; earlier auto adapter not logged",
+  "sourceSha256": {
+    "liquidglass/src/commonMain/kotlin/com/wexpa/liquidglass/GlassPoseDynamics.kt": "2da2be6247c5825d2b0e24e5fe802861437398eb970633c4a681a75926526242",
+    "liquidglass/src/commonMain/kotlin/com/wexpa/liquidglass/GlassTapAppearance.kt": "a5d9792175f2597b826f985aa4d191376cb9068137a93ff451e9c30f92424b0a",
+    "liquidglass/src/commonMain/kotlin/com/wexpa/liquidglass/GlassTabBar.kt": "1129c65ea728579586c04405118b4b30607bd00c7309a213a93d0fd11582bb76",
+    "liquidglass/src/commonMain/kotlin/com/wexpa/liquidglass/GlassTabBarV3.kt": "96f6e3d1d6bc08f70abce152339c0f47c887b9052cba0e4d3219ecc53ea3bbe3",
+    "liquidglass/src/jvmTest/kotlin/com/wexpa/liquidglass/GlassPhoneTapOpticsTest.kt": "053239d6f2f9367d185547d57d9273c96db3f3b092d9144e30c8f49890939347"
+  },
+  "fullVerification": {
+    "library": {
+      "tests": 365,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 27,
+      "testcaseSeconds": 527.4750000000001,
+      "passed": 338
+    },
+    "desktop": {
+      "tests": 2,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "testcaseSeconds": 124.546,
+      "passed": 2
+    },
+    "android": "assembleDebug passed",
+    "duration": "11m11s",
+    "sourceSha256": {
+      "liquidglass/src/commonMain/kotlin/com/wexpa/liquidglass/GlassPoseDynamics.kt": "2da2be6247c5825d2b0e24e5fe802861437398eb970633c4a681a75926526242",
+      "liquidglass/src/commonMain/kotlin/com/wexpa/liquidglass/GlassTapAppearance.kt": "a5d9792175f2597b826f985aa4d191376cb9068137a93ff451e9c30f92424b0a",
+      "liquidglass/src/commonMain/kotlin/com/wexpa/liquidglass/GlassTabBar.kt": "1129c65ea728579586c04405118b4b30607bd00c7309a213a93d0fd11582bb76",
+      "liquidglass/src/commonMain/kotlin/com/wexpa/liquidglass/GlassTabBarV3.kt": "96f6e3d1d6bc08f70abce152339c0f47c887b9052cba0e4d3219ecc53ea3bbe3",
+      "liquidglass/src/jvmTest/kotlin/com/wexpa/liquidglass/GlassPhoneTapOpticsTest.kt": "053239d6f2f9367d185547d57d9273c96db3f3b092d9144e30c8f49890939347"
+    },
+    "scope": "Current optical candidate, complete local run. Source longtap opticalcounterexample stillopen; not1:1 acceptance."
+  },
+  "pixelFollowup": "All5optical cases pass13s, now including production content/aperture rendering of79x79px complete synthetic ink against source79..80; runtimeunchanged.",
+  "nativeInspection": "Historical automatic-adapter 10-phase capture inspected; later NVIDIA 33+10 captures below also inspected. Current renderer verification is in the wide-input packet.",
+  "nativeRestExact": true,
+  "nativeRecoveredExact": true,
+  "longOpticalAudit": {
+    "accepted": false,
+    "sourceFrames": 8,
+    "comparison": "Interior transfer diagnostic over observed bar, one old long80percent phase anchor.",
+    "metrics": {
+      "previous": {
+        "rms": 26.639739937896636,
+        "maxAbsolute": 28.542090560648973
+      },
+      "candidate": {
+        "rms": 13.818295978871282,
+        "maxAbsolute": 23.54860666582451
+      }
+    },
+    "limits": "Longtap lateopacity remains wrong; firstshortsequence alone cannot establishfullmaterialacceptance. Inputtiming andearlyduplicatedsourceframe remainuncertain.",
+    "exportToolSha256": "6c5f03639993393a8e21902be067247bab8c778acd44001a2f53d2e6d053dc82"
+  },
+  "splitAtlasVerification": {
+    "tests": 3,
+    "failures": 0,
+    "errors": 0,
+    "commandDuration": "2m7s",
+    "cases": [
+      {
+        "name": "actualAtlasExtremeDragsRemainAnchoredAndRecover[desktop]",
+        "seconds": 52.698
+      },
+      {
+        "name": "actualAtlasSceneSwitchingAndControlsRecover[desktop]",
+        "seconds": 71.709
+      },
+      {
+        "name": "boundsRemainValidAtEdgesAndInTinyWindows[desktop]",
+        "seconds": 0.0
+      }
+    ],
+    "sourceSha256": "2892c8d8e1241ac099bdaa5f385d063c55270b7e096972feb6d2c0578798336f",
+    "reason": "Hosted44f01de combinedscene/control/extreme case timedout6min. Independent scenarios retain allinputs/assertions,800x600resolution,6minpercase; no runtimechange."
+  },
+  "nvidiaNative": {
+    "full": {
+      "phases": 33,
+      "checksPassed": true,
+      "imagesInspected": true,
+      "rendererInfo": "GraphicsApi: DIRECT3D\nOS: windows x64\nVideo card: NVIDIA GeForce RTX 3050 6GB Laptop GPU\nTotal VRAM: 6001 MB\n",
+      "largestRedraw": {
+        "label": "01-tap-25ms",
+        "elapsed_ms": "3215.0349",
+        "event": "capture",
+        "x_px": "",
+        "y_px": "",
+        "scene": "2",
+        "render_ms": "439.3023",
+        "readback_ms": "1679.4875"
+      },
+      "limits": "Own-buffer independent replays; a separate owner-facing Atlas instance was also open. No presentedFPS or performanceacceptance claim."
+    },
+    "short": {
+      "phases": 10,
+      "checksPassed": true,
+      "imagesInspected": true,
+      "rendererInfo": "GraphicsApi: DIRECT3D\nOS: windows x64\nVideo card: NVIDIA GeForce RTX 3050 6GB Laptop GPU\nTotal VRAM: 6001 MB\n",
+      "largestRedraw": {
+        "label": "14-short-right-25ms",
+        "elapsed_ms": "3084.0245",
+        "event": "capture",
+        "x_px": "",
+        "y_px": "",
+        "scene": "1",
+        "render_ms": "32.4136",
+        "readback_ms": "1697.0104"
+      },
+      "limits": "Own-buffer independent replays; a separate owner-facing Atlas instance was also open. No presentedFPS or performanceacceptance claim."
+    }
+  },
+  "visualAcceptance": {
+    "accepted": false,
+    "failures": [
+      "Earlymovingselectorhardverticalinteriorseam,alsoin44f01debaseline",
+      "Longtapopticalopacityreturnsdarktooearly"
+    ],
+    "maskIsolation": "Seampersists withsharedbartransform/tintmaskdisabled. Diagnosticpassed39s,exactsamplebytesrestored anddesktopcompilepassed1s;notproposedfix."
+  },
+  "supersededBy": {
+    "packet": "../wide-input-2026-10-11/verification.json",
+    "status": "JVM seam corrected and full local inventory verified: 342 passes, 27 optional skips, 3 Atlas passes, Android assembly. Earlier seam failure is retained as provenance; long-tap appearance remains unresolved."
+  }
+}

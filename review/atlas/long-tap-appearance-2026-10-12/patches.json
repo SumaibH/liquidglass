@@ -1,0 +1,237 @@
+{
+  "sourceSha256": "186e1eb34e6baf896b16bffe839176fc298b2b7a6823d11cb39204ed960ebc06",
+  "limits": "All three episodes now inform calibration. Frame timestamps are native source PTS, time origins are authored alignment, not finger events. Bar values are observed output, not hidden input pixels.",
+  "episodes": [
+    {
+      "name": "short",
+      "slots": 1,
+      "restWidth": 278,
+      "pressSeconds": 0.04,
+      "timeOrigin": 3.4008330000005014,
+      "samples": [
+        {
+          "file": "frame-006.png",
+          "seconds": 3.413333,
+          "observedBar": 37.0,
+          "observedSelector": 14.0
+        },
+        {
+          "file": "frame-007.png",
+          "seconds": 3.43,
+          "observedBar": 43.0,
+          "observedSelector": 15.0
+        },
+        {
+          "file": "frame-008.png",
+          "seconds": 3.446667,
+          "observedBar": 47.0,
+          "observedSelector": 23.0
+        },
+        {
+          "file": "frame-009.png",
+          "seconds": 3.463333,
+          "observedBar": 49.0,
+          "observedSelector": 29.0
+        },
+        {
+          "file": "frame-010.png",
+          "seconds": 3.48,
+          "observedBar": 50.0,
+          "observedSelector": 35.0
+        },
+        {
+          "file": "frame-011.png",
+          "seconds": 3.496667,
+          "observedBar": 50.5,
+          "observedSelector": 40.0
+        },
+        {
+          "file": "frame-012.png",
+          "seconds": 3.513333,
+          "observedBar": 51.0,
+          "observedSelector": 44.5
+        },
+        {
+          "file": "frame-013.png",
+          "seconds": 3.546667,
+          "observedBar": 51.0,
+          "observedSelector": 50.0
+        },
+        {
+          "file": "frame-014.png",
+          "seconds": 3.563333,
+          "observedBar": 51.0,
+          "observedSelector": 52.0
+        }
+      ]
+    },
+    {
+      "name": "first-long",
+      "slots": 2,
+      "restWidth": 278,
+      "pressSeconds": 0.04,
+      "timeOrigin": 0.855,
+      "samples": [
+        {
+          "file": "frame-006.png",
+          "seconds": 0.905,
+          "observedBar": 42.0,
+          "observedSelector": 42.0
+        },
+        {
+          "file": "frame-008.png",
+          "seconds": 0.946667,
+          "observedBar": 42.0,
+          "observedSelector": 45.0
+        },
+        {
+          "file": "frame-009.png",
+          "seconds": 0.963333,
+          "observedBar": 41.0,
+          "observedSelector": 45.0
+        },
+        {
+          "file": "frame-010.png",
+          "seconds": 0.98,
+          "observedBar": 41.0,
+          "observedSelector": 45.0
+        },
+        {
+          "file": "frame-011.png",
+          "seconds": 0.996667,
+          "observedBar": 41.0,
+          "observedSelector": 45.0
+        },
+        {
+          "file": "frame-012.png",
+          "seconds": 1.013333,
+          "observedBar": 40.0,
+          "observedSelector": 44.0
+        },
+        {
+          "file": "frame-016.png",
+          "seconds": 1.08,
+          "observedBar": 37.0,
+          "observedSelector": 38.0
+        },
+        {
+          "file": "frame-019.png",
+          "seconds": 1.13,
+          "observedBar": 36.0,
+          "observedSelector": 29.0
+        }
+      ]
+    },
+    {
+      "name": "repeated-long",
+      "slots": 2,
+      "restWidth": 278,
+      "pressSeconds": 0.04,
+      "timeOrigin": 2.6762776828949337,
+      "samples": [
+        {
+          "file": "frame-008.png",
+          "seconds": 2.746667,
+          "observedBar": 44.0,
+          "observedSelector": 45.0
+        },
+        {
+          "file": "frame-009.png",
+          "seconds": 2.763333,
+          "observedBar": 44.0,
+          "observedSelector": 46.0
+        },
+        {
+          "file": "frame-010.png",
+          "seconds": 2.78,
+          "observedBar": 43.0,
+          "observedSelector": 46.0
+        },
+        {
+          "file": "frame-011.png",
+          "seconds": 2.796667,
+          "observedBar": 43.0,
+          "observedSelector": 46.0
+        },
+        {
+          "file": "frame-012.png",
+          "seconds": 2.813333,
+          "observedBar": 42.0,
+          "observedSelector": 45.0
+        },
+        {
+          "file": "frame-013.png",
+          "seconds": 2.83,
+          "observedBar": 41.0,
+          "observedSelector": 44.0
+        },
+        {
+          "file": "frame-014.png",
+          "seconds": 2.846667,
+          "observedBar": 40.0,
+          "observedSelector": 43.0
+        },
+        {
+          "file": "frame-015.png",
+          "seconds": 2.863333,
+          "observedBar": 39.0,
+          "observedSelector": 41.0
+        },
+        {
+          "file": "frame-016.png",
+          "seconds": 2.88,
+          "observedBar": 38.0,
+          "observedSelector": 39.0
+        },
+        {
+          "file": "frame-017.png",
+          "seconds": 2.896667,
+          "observedBar": 38.0,
+          "observedSelector": 36.0
+        },
+        {
+          "file": "frame-018.png",
+          "seconds": 2.913333,
+          "observedBar": 37.0,
+          "observedSelector": 33.0
+        },
+        {
+          "file": "frame-019.png",
+          "seconds": 2.93,
+          "observedBar": 36.0,
+          "observedSelector": 30.0
+        },
+        {
+          "file": "frame-020.png",
+          "seconds": 2.946667,
+          "observedBar": 36.0,
+          "observedSelector": 27.0
+        },
+        {
+          "file": "frame-021.png",
+          "seconds": 2.963333,
+          "observedBar": 35.0,
+          "observedSelector": 24.0
+        },
+        {
+          "file": "frame-022.png",
+          "seconds": 2.98,
+          "observedBar": 35.0,
+          "observedSelector": 21.0
+        },
+        {
+          "file": "frame-023.png",
+          "seconds": 2.996667,
+          "observedBar": 34.0,
+          "observedSelector": 19.0
+        },
+        {
+          "file": "frame-024.png",
+          "seconds": 3.013333,
+          "observedBar": 34.0,
+          "observedSelector": 18.0
+        }
+      ]
+    }
+  ]
+}

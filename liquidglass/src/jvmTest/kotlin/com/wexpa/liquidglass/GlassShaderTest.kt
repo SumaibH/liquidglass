@@ -33,11 +33,11 @@ class GlassShaderTest {
             .toSet()
 
         val setByHost = setOf(
-            "uHeldEdgeRecovery",
+            "uHeldEdgeRecovery", "uHeldGlowReach", "uFoldCorners", "uRimMirror",
             "uSize", "uRadii", "uRefractBand", "uBackdrop", "uAberration", "uBase", "uBlur", "uIor", "uBevelPower", "uMirror",
             "uFresnel", "uHiChroma", "uLegibility", "uCornerPower", "uTouch", "uTouchAmt",
             "uMaterialize", "uFrost", "uContrast", "uDebugCoverage", "uShapeKind", "uFieldRange", "uFieldScale", "uRefractDepth", "uBevel",
-            "uLight", "uSpecular", "uSpecularPow", "uTint", "uInnerShadow", "uAdaptive",
+            "uLight", "uSpecular", "uSpecularPow", "uTint", "uTintMaskX", "uTintMaskY", "uInnerShadow", "uAdaptive",
             "uPad", "uScale", "uFlip", "uCounterLight", "uEdgeLight", "uBevelPeak", "uEdgeShadow", "uRimSoft", "uTintAbsorb",
             "uProfile", "uFormation", "uHeldLens", "uHeldMagnification", "uHeldGlow", "uRestMap", "uWideStrip", "uWideScale", "uFineShare", "uWideKernel", "uLift", "uLiftAdapt",
             "uFuse", "uFuseShape",
@@ -76,7 +76,7 @@ class GlassContentShaderTest {
             "uRefractBand", "uRefractDepth", "uIor", "uBevelPower", "uAberration", "uScale",
             "uMaterialize", "uTouch", "uTouchAmt", "uProfile", "uFormation", "uHeldLens", "uHeldMagnification", "uRestMap",
             "uFuse", "uFuseShape",
-            "uBody", "uBodyY", "uBodyKind", "uPoseA", "uPoseAInv", "uPoseC", "uPoseD", "uEndpointAlpha", "uEdgeFold", "uInkSplit", "uHeldInk",
+            "uBody", "uBodyY", "uBodyKind", "uPoseA", "uPoseAInv", "uPoseC", "uPoseD", "uEndpointAlpha", "uEdgeFold", "uInkSplit", "uHeldInk", "uFoldCorners", "uRimMirror",
         )
         val unset = declared - setByHost - setOf("content", "field")
         assertTrue(unset.isEmpty(), "content shader declares uniforms nothing sets: $unset")

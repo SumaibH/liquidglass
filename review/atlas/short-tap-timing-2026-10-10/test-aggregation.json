@@ -1,0 +1,2540 @@
+{
+  "tests": 360,
+  "passed": 333,
+  "skipped": 27,
+  "failures": 0,
+  "errors": 0,
+  "recoveredPasses": 322,
+  "freshFollowupCases": 38,
+  "method": "Gradle report-only recovery from interrupted generic binary results plus exact missing-test follow-up; full360-case inventory matched, same source hashes. Cancelled test is replaced, not counted as an optional skip.",
+  "interruptedBinaryHashes": {
+    "output-events.bin": "536ccb4d10a5771890c574d4ebc891d7503260beef37decf0c04799677574fa0",
+    "results-generic.bin": "3f7e26de4dc19651d1435f0a37447915fad4f1823ba7175d9d0db2c1c746efa0"
+  },
+  "cases": {
+    "com.wexpa.liquidglass.GlassTabBarV3GestureTest.aCancelBeforeSlopSelectsNothingAndReleases": {
+      "className": "com.wexpa.liquidglass.GlassTabBarV3GestureTest",
+      "method": "aCancelBeforeSlopSelectsNothingAndReleases",
+      "failures": 0,
+      "skipped": 0,
+      "duration": "16.375s"
+    },
+    "com.wexpa.liquidglass.GlassTabBarV3GestureTest.aDeclinedTapReturnsTheSelectorToTheSelectionTheHostHolds": {
+      "className": "com.wexpa.liquidglass.GlassTabBarV3GestureTest",
+      "method": "aDeclinedTapReturnsTheSelectorToTheSelectionTheHostHolds",
+      "failures": 0,
+      "skipped": 0,
+      "duration": "14.060s"
+    },
+    "com.wexpa.liquidglass.GlassTabBarV3GestureTest.aDragThatStopsHoldsAndLiftsCommitsTheTabUnderTheLensWithoutAFling": {
+      "className": "com.wexpa.liquidglass.GlassTabBarV3GestureTest",
+      "method": "aDragThatStopsHoldsAndLiftsCommitsTheTabUnderTheLensWithoutAFling",
+      "failures": 0,
+      "skipped": 0,
+      "duration": "25.246s"
+    },
+    "com.wexpa.liquidglass.GlassTabBarV3GestureTest.aFastLiftFlingsToTheNextTab": {
+      "className": "com.wexpa.liquidglass.GlassTabBarV3GestureTest",
+      "method": "aFastLiftFlingsToTheNextTab",
+      "failures": 0,
+      "skipped": 0,
+      "duration": "22.297s"
+    },
+    "com.wexpa.liquidglass.GlassTabBarV3GestureTest.aHeldDragFormsTheLensAndDeformsTheBody": {
+      "className": "com.wexpa.liquidglass.GlassTabBarV3GestureTest",
+      "method": "aHeldDragFormsTheLensAndDeformsTheBody",
+      "failures": 0,
+      "skipped": 0,
+      "duration": "19.040s"
+    },
+    "com.wexpa.liquidglass.GlassTabBarV3GestureTest.aMatureHoldCanMovePurelyVerticallyAndReturnWithoutLosingOwnership": {
+      "className": "com.wexpa.liquidglass.GlassTabBarV3GestureTest",
+      "method": "aMatureHoldCanMovePurelyVerticallyAndReturnWithoutLosingOwnership",
+      "failures": 0,
+      "skipped": 0,
+      "duration": "31.077s"
+    },
+    "com.wexpa.liquidglass.GlassTabBarV3GestureTest.anOrdinaryTapKeepsTheWholeBodyInsideTheBar": {
+      "className": "com.wexpa.liquidglass.GlassTabBarV3GestureTest",
+      "method": "anOrdinaryTapKeepsTheWholeBodyInsideTheBar",
+      "failures": 0,
+      "skipped": 0,
+      "duration": "26.169s"
+    },
+    "com.wexpa.liquidglass.GlassTabBarV3GestureTest.aQuickTapNeverStartsTheHeldLens": {
+      "className": "com.wexpa.liquidglass.GlassTabBarV3GestureTest",
+      "method": "aQuickTapNeverStartsTheHeldLens",
+      "failures": 0,
+      "skipped": 0,
+      "duration": "16.404s"
+    },
+    "com.wexpa.liquidglass.GlassTabBarV3GestureTest.aTapSelectsOnceThroughTheItem": {
+      "className": "com.wexpa.liquidglass.GlassTabBarV3GestureTest",
+      "method": "aTapSelectsOnceThroughTheItem",
+      "failures": 0,
+      "skipped": 0,
+      "duration": "10.857s"
+    },
+    "com.wexpa.liquidglass.GlassTabBarV3GestureTest.tappingTheSelectedTabIsOneCallbackAndStaysPut": {
+      "className": "com.wexpa.liquidglass.GlassTabBarV3GestureTest",
+      "method": "tappingTheSelectedTabIsOneCallbackAndStaysPut",
+      "failures": 0,
+      "skipped": 0,
+      "duration": "4.393s"
+    },
+    "com.wexpa.liquidglass.GlassAstraMorphTest.theProductionMorphCarriesTheLensFieldsAtEveryIntermediateState": {
+      "className": "com.wexpa.liquidglass.GlassAstraMorphTest",
+      "method": "theProductionMorphCarriesTheLensFieldsAtEveryIntermediateState",
+      "failures": 0,
+      "skipped": 0,
+      "duration": "0.106s"
+    },
+    "com.wexpa.liquidglass.GlassAstraRecoveryTest.anOffCentreStationaryPointStaysAttachedAtEveryPresentationRate": {
+      "className": "com.wexpa.liquidglass.GlassAstraRecoveryTest",
+      "method": "anOffCentreStationaryPointStaysAttachedAtEveryPresentationRate",
+      "failures": 0,
+      "skipped": 0,
+      "duration": "0.032s"
+    },
+    "com.wexpa.liquidglass.GlassAstraRecoveryTest.everyRenderedContourPointIsContinuousAtAnOffCentreRelease": {
+      "className": "com.wexpa.liquidglass.GlassAstraRecoveryTest",
+      "method": "everyRenderedContourPointIsContinuousAtAnOffCentreRelease",
+      "failures": 0,
+      "skipped": 0,
+      "duration": "0.031s"
+    },
+    "com.wexpa.liquidglass.GlassAstraRecoveryTest.releaseToADistantTabDoesNotReexciteStrainFromReturnSpeed": {
+      "className": "com.wexpa.liquidglass.GlassAstraRecoveryTest",
+      "method": "releaseToADistantTabDoesNotReexciteStrainFromReturnSpeed",
+      "failures": 0,
+      "skipped": 0,
+      "duration": "0.011s"
+    },
+    "com.wexpa.liquidglass.GlassBarShapeReferenceTest.biasedMaterialFitsEveryViewportEdgeWithoutMovingTheLayout": {
+      "className": "com.wexpa.liquidglass.GlassBarShapeReferenceTest",
+      "method": "biasedMaterialFitsEveryViewportEdgeWithoutMovingTheLayout",
+      "failures": 0,
+      "skipped": 0,
+      "duration": "0.047s"
+    },
+    "com.wexpa.liquidglass.GlassBarShapeReferenceTest.oppositeAndDiagonalPullsPreserveAreaAndDoNotReachTheLimitEarly": {
+      "className": "com.wexpa.liquidglass.GlassBarShapeReferenceTest",
+      "method": "oppositeAndDiagonalPullsPreserveAreaAndDoNotReachTheLimitEarly",
+      "failures": 0,
+      "skipped": 0,
+      "duration": "0.001s"
+    },
+    "com.wexpa.liquidglass.GlassBarShapeReferenceTest.prolongedBarPullMatchesBothReferenceDimensions": {
+      "className": "com.wexpa.liquidglass.GlassBarShapeReferenceTest",
+      "method": "prolongedBarPullMatchesBothReferenceDimensions",
+      "failures": 0,
+      "skipped": 0,
+      "duration": "0.011s"
+    },
+    "com.wexpa.liquidglass.GlassBarShapeReferenceTest.prolongedUpwardPullMatchesTheOriginalTopAndBottomSeparately": {
+      "className": "com.wexpa.liquidglass.GlassBarShapeReferenceTest",
+      "method": "prolongedUpwardPullMatchesTheOriginalTopAndBottomSeparately",
+      "failures": 0,
+      "skipped": 0,
+      "duration": "0.006s"
+    },
+    "com.wexpa.liquidglass.GlassCalibrationRenderTest.renderTheReferenceChromeOverTheCalibrationTargets": {
+      "className": "com.wexpa.liquidglass.GlassCalibrationRenderTest",
+      "method": "renderTheReferenceChromeOverTheCalibrationTargets",
+      "failures": 0,
+      "skipped": 0,
+      "duration": "0s"
+    },
+    "com.wexpa.liquidglass.GlassCalmBarRenderTest.ordinaryGlyphMatchesOriginalHeldAndExtremeEnvelope": {
+      "className": "com.wexpa.liquidglass.GlassCalmBarRenderTest",
+      "method": "ordinaryGlyphMatchesOriginalHeldAndExtremeEnvelope",
+      "failures": 0,
+      "skipped": 0,
+      "duration": "1m15.87s"
+    },
+    "com.wexpa.liquidglass.GlassCalmBarRenderTest.wholeBarSurvivesFullScreenPullsWithoutMovingItsLayout": {
+      "className": "com.wexpa.liquidglass.GlassCalmBarRenderTest",
+      "method": "wholeBarSurvivesFullScreenPullsWithoutMovingItsLayout",
+      "failures": 0,
+      "skipped": 0,
+      "duration": "1m24.73s"
+    },
+    "com.wexpa.liquidglass.GlassCalmGrowthReferenceTest.aCalmPhoneHoldDoesNotMagnifyTheWholeRestingCapsule": {
+      "className": "com.wexpa.liquidglass.GlassCalmGrowthReferenceTest",
+      "method": "aCalmPhoneHoldDoesNotMagnifyTheWholeRestingCapsule",
+      "failures": 0,
+      "skipped": 0,
+      "duration": "0.015s"
+    },
+    "com.wexpa.liquidglass.GlassCalmGrowthReferenceTest.calmBarPreservesOrdinaryHeldGrowthSeparatelyFromDrag": {
+      "className": "com.wexpa.liquidglass.GlassCalmGrowthReferenceTest",
+      "method": "calmBarPreservesOrdinaryHeldGrowthSeparatelyFromDrag",
+      "failures": 0,
+      "skipped": 0,
+      "duration": "0s"
+    },
+    "com.wexpa.liquidglass.GlassCalmGrowthReferenceTest.calmBarPressAndExtremeDragStayBelowTheOriginalWholeBarBound": {
+      "className": "com.wexpa.liquidglass.GlassCalmGrowthReferenceTest",
+      "method": "calmBarPressAndExtremeDragStayBelowTheOriginalWholeBarBound",
+      "failures": 0,
+      "skipped": 0,
+      "duration": "0.010s"
+    },
+    "com.wexpa.liquidglass.GlassCalmGrowthReferenceTest.theRecommendedCalmPresetKeepsTheOriginalSettledHeight": {
+      "className": "com.wexpa.liquidglass.GlassCalmGrowthReferenceTest",
+      "method": "theRecommendedCalmPresetKeepsTheOriginalSettledHeight",
+      "failures": 0,
+      "skipped": 0,
+      "duration": "0.002s"
+    },
+    "com.wexpa.liquidglass.GlassCalmSelectorTest.aMoveAfterAnIdleHoldResumesWithoutReplayingTheIdleGap": {
+      "className": "com.wexpa.liquidglass.GlassCalmSelectorTest",
+      "method": "aMoveAfterAnIdleHoldResumesWithoutReplayingTheIdleGap",
+      "failures": 0,
+      "skipped": 0,
+      "duration": "0.010s"
+    },
+    "com.wexpa.liquidglass.GlassCalmSelectorTest.heldAndReleasedTravelKeepTheirShapeResponseWithoutReinflating": {
+      "className": "com.wexpa.liquidglass.GlassCalmSelectorTest",
+      "method": "heldAndReleasedTravelKeepTheirShapeResponseWithoutReinflating",
+      "failures": 0,
+      "skipped": 0,
+      "duration": "0.065s"
+    },
+    "com.wexpa.liquidglass.GlassCalmSelectorTest.longerTravelDeformsMoreAndReturnsToItsRestingSize": {
+      "className": "com.wexpa.liquidglass.GlassCalmSelectorTest",
+      "method": "longerTravelDeformsMoreAndReturnsToItsRestingSize",
+      "failures": 0,
+      "skipped": 0,
+      "duration": "0.013s"
+    },
+    "com.wexpa.liquidglass.GlassCalmSelectorTest.movementBeyondAnEndAnchorDoesNotInventSelectorTravel": {
+      "className": "com.wexpa.liquidglass.GlassCalmSelectorTest",
+      "method": "movementBeyondAnEndAnchorDoesNotInventSelectorTravel",
+      "failures": 0,
+      "skipped": 0,
+      "duration": "0.023s"
+    },
+    "com.wexpa.liquidglass.GlassCalmSelectorTest.perpendicularFullScreenDragsDoNotSquishTheSelector": {
+      "className": "com.wexpa.liquidglass.GlassCalmSelectorTest",
+      "method": "perpendicularFullScreenDragsDoNotSquishTheSelector",
+      "failures": 0,
+      "skipped": 0,
+      "duration": "0.015s"
+    },
+    "com.wexpa.liquidglass.GlassCalmSelectorTest.reversingAndThrowingKeepTheSameShapeAtDifferentFrameRates": {
+      "className": "com.wexpa.liquidglass.GlassCalmSelectorTest",
+      "method": "reversingAndThrowingKeepTheSameShapeAtDifferentFrameRates",
+      "failures": 0,
+      "skipped": 0,
+      "duration": "0.031s"
+    },
+    "com.wexpa.liquidglass.GlassCalmTest.ordinaryTravelDoesNotReachTheExtremeAndHugeTravelStaysBounded": {
+      "className": "com.wexpa.liquidglass.GlassCalmTest",
+      "method": "ordinaryTravelDoesNotReachTheExtremeAndHugeTravelStaysBounded",
+      "failures": 0,
+      "skipped": 0,
+      "duration": "0.001s"
+    },
+    "com.wexpa.liquidglass.GlassCalmTest.responseIsGradualAndMonotoneWithoutSpringOvershoot": {
+      "className": "com.wexpa.liquidglass.GlassCalmTest",
+      "method": "responseIsGradualAndMonotoneWithoutSpringOvershoot",
+      "failures": 0,
+      "skipped": 0,
+      "duration": "0s"
+    },
+    "com.wexpa.liquidglass.GlassContainerShaderTest.testContainerShaderCompiles": {
+      "className": "com.wexpa.liquidglass.GlassContainerShaderTest",
+      "method": "testContainerShaderCompiles",
+      "failures": 0,
+      "skipped": 0,
+      "duration": "0.004s"
+    },
+    "com.wexpa.liquidglass.GlassContainerShaderTest.testEveryUniformTheContainerShaderDeclaresIsSetByTheHost": {
+      "className": "com.wexpa.liquidglass.GlassContainerShaderTest",
+      "method": "testEveryUniformTheContainerShaderDeclaresIsSetByTheHost",
+      "failures": 0,
+      "skipped": 0,
+      "duration": "0.021s"
+    },
+    "com.wexpa.liquidglass.GlassContainerShaderTest.testMemberLoopIsBoundedByTheDeclaredArraySize": {
+      "className": "com.wexpa.liquidglass.GlassContainerShaderTest",
+      "method": "testMemberLoopIsBoundedByTheDeclaredArraySize",
+      "failures": 0,
+      "skipped": 0,
+      "duration": "0.004s"
+    },
+    "com.wexpa.liquidglass.GlassContentShaderTest.testContentShaderCompiles": {
+      "className": "com.wexpa.liquidglass.GlassContentShaderTest",
+      "method": "testContentShaderCompiles",
+      "failures": 0,
+      "skipped": 0,
+      "duration": "0.005s"
+    },
+    "com.wexpa.liquidglass.GlassContentShaderTest.testEveryUniformTheContentShaderDeclaresIsSetByTheHost": {
+      "className": "com.wexpa.liquidglass.GlassContentShaderTest",
+      "method": "testEveryUniformTheContentShaderDeclaresIsSetByTheHost",
+      "failures": 0,
+      "skipped": 0,
+      "duration": "0.002s"
+    },
+    "com.wexpa.liquidglass.GlassContentShaderTest.testTheContentPassSharesThePanelShadersGeometry": {
+      "className": "com.wexpa.liquidglass.GlassContentShaderTest",
+      "method": "testTheContentPassSharesThePanelShadersGeometry",
+      "failures": 0,
+      "skipped": 0,
+      "duration": "0.011s"
+    },
+    "com.wexpa.liquidglass.GlassCoverageDiagnosticTest.coverageSilhouetteIsPadInvariantAcrossScales": {
+      "className": "com.wexpa.liquidglass.GlassCoverageDiagnosticTest",
+      "method": "coverageSilhouetteIsPadInvariantAcrossScales",
+      "failures": 0,
+      "skipped": 0,
+      "duration": "2.110s"
+    },
+    "com.wexpa.liquidglass.GlassCoverageDiagnosticTest.diagnosticsOffLeaveTheProductionPathUntouched": {
+      "className": "com.wexpa.liquidglass.GlassCoverageDiagnosticTest",
+      "method": "diagnosticsOffLeaveTheProductionPathUntouched",
+      "failures": 0,
+      "skipped": 0,
+      "duration": "0.002s"
+    },
+    "com.wexpa.liquidglass.GlassEdgeTransportTest.pairedImagesSeparateAsTheSquareRootOfTheLandmarksOffset": {
+      "className": "com.wexpa.liquidglass.GlassEdgeTransportTest",
+      "method": "pairedImagesSeparateAsTheSquareRootOfTheLandmarksOffset",
+      "failures": 0,
+      "skipped": 0,
+      "duration": "1.109s"
+    },
+    "com.wexpa.liquidglass.GlassEdgeTransportTest.theArcToRunTransitionCarriesNoSeam": {
+      "className": "com.wexpa.liquidglass.GlassEdgeTransportTest",
+      "method": "theArcToRunTransitionCarriesNoSeam",
+      "failures": 0,
+      "skipped": 0,
+      "duration": "1.023s"
+    },
+    "com.wexpa.liquidglass.GlassEdgeTransportTest.theBodysImplementedMapMatchesItsCpuQuery": {
+      "className": "com.wexpa.liquidglass.GlassEdgeTransportTest",
+      "method": "theBodysImplementedMapMatchesItsCpuQuery",
+      "failures": 0,
+      "skipped": 0,
+      "duration": "2.839s"
+    },
+    "com.wexpa.liquidglass.GlassEdgeTransportTest.theEncodingItselfIsGoodToAHundredthOfAPixel": {
+      "className": "com.wexpa.liquidglass.GlassEdgeTransportTest",
+      "method": "theEncodingItselfIsGoodToAHundredthOfAPixel",
+      "failures": 0,
+      "skipped": 0,
+      "duration": "0s"
+    },
+    "com.wexpa.liquidglass.GlassEdgeTransportTest.theFoldTurnsWhereTheCandidatePredictsAndNowhereElse": {
+      "className": "com.wexpa.liquidglass.GlassEdgeTransportTest",
+      "method": "theFoldTurnsWhereTheCandidatePredictsAndNowhereElse",
+      "failures": 0,
+      "skipped": 0,
+      "duration": "1.158s"
+    },
+    "com.wexpa.liquidglass.GlassEdgeTransportTest.theHeldInkMapIsContinuousThroughItsConnectionBand": {
+      "className": "com.wexpa.liquidglass.GlassEdgeTransportTest",
+      "method": "theHeldInkMapIsContinuousThroughItsConnectionBand",
+      "failures": 0,
+      "skipped": 0,
+      "duration": "0.668s"
+    },
+    "com.wexpa.liquidglass.GlassEdgeTransportTest.theImplementedStraightMapMatchesTheDeclaredProfile": {
+      "className": "com.wexpa.liquidglass.GlassEdgeTransportTest",
+      "method": "theImplementedStraightMapMatchesTheDeclaredProfile",
+      "failures": 0,
+      "skipped": 0,
+      "duration": "1.455s"
+    },
+    "com.wexpa.liquidglass.GlassEdgeTransportTest.turningTheFoldOffLeavesEveryExistingConsumerWhereItWas": {
+      "className": "com.wexpa.liquidglass.GlassEdgeTransportTest",
+      "method": "turningTheFoldOffLeavesEveryExistingConsumerWhereItWas",
+      "failures": 0,
+      "skipped": 0,
+      "duration": "1.314s"
+    },
+    "com.wexpa.liquidglass.GlassEndpointCompositorTest.aCoverageSweepStaysExactAtEveryPartialAperture": {
+      "className": "com.wexpa.liquidglass.GlassEndpointCompositorTest",
+      "method": "aCoverageSweepStaysExactAtEveryPartialAperture",
+      "failures": 0,
+      "skipped": 0,
+      "duration": "0.314s"
+    },
+    "com.wexpa.liquidglass.GlassEndpointCompositorTest.equalEndpointsLeaveTheImageUntouchedAtEveryCoverage": {
+      "className": "com.wexpa.liquidglass.GlassEndpointCompositorTest",
+      "method": "equalEndpointsLeaveTheImageUntouchedAtEveryCoverage",
+      "failures": 0,
+      "skipped": 0,
+      "duration": "0.128s"
+    },
+    "com.wexpa.liquidglass.GlassEndpointCompositorTest.inkKeepsItsOwnAlphaWhenTheSplitIsOff": {
+      "className": "com.wexpa.liquidglass.GlassEndpointCompositorTest",
+      "method": "inkKeepsItsOwnAlphaWhenTheSplitIsOff",
+      "failures": 0,
+      "skipped": 0,
+      "duration": "0.170s"
+    },
+    "com.wexpa.liquidglass.GlassEndpointCompositorTest.theCompositionIsTheCompleteEndpointEquationToWithinOneCodeLevel": {
+      "className": "com.wexpa.liquidglass.GlassEndpointCompositorTest",
+      "method": "theCompositionIsTheCompleteEndpointEquationToWithinOneCodeLevel",
+      "failures": 0,
+      "skipped": 0,
+      "duration": "0.106s"
+    },
+    "com.wexpa.liquidglass.GlassEndpointGateTest.equalEndpointsWithRealInkLeaveTheImageUntouched": {
+      "className": "com.wexpa.liquidglass.GlassEndpointGateTest",
+      "method": "equalEndpointsWithRealInkLeaveTheImageUntouched",
+      "failures": 0,
+      "skipped": 0,
+      "duration": "0.192s"
+    },
+    "com.wexpa.liquidglass.GlassEndpointGateTest.packedInkAndMaterialMeetTheOneLevelEndToEndGate": {
+      "className": "com.wexpa.liquidglass.GlassEndpointGateTest",
+      "method": "packedInkAndMaterialMeetTheOneLevelEndToEndGate",
+      "failures": 0,
+      "skipped": 0,
+      "duration": "1.359s"
+    },
+    "com.wexpa.liquidglass.GlassEndpointGateTest.theEndToEndChainCarriesNoArithmeticErrorBeyondItsDeclaredQuantisation": {
+      "className": "com.wexpa.liquidglass.GlassEndpointGateTest",
+      "method": "theEndToEndChainCarriesNoArithmeticErrorBeyondItsDeclaredQuantisation",
+      "failures": 0,
+      "skipped": 0,
+      "duration": "1.380s"
+    },
+    "com.wexpa.liquidglass.GlassEndpointGateTest.theSingleRaySamplesTheGlyphsOwnPremultipliedColourAndAlpha": {
+      "className": "com.wexpa.liquidglass.GlassEndpointGateTest",
+      "method": "theSingleRaySamplesTheGlyphsOwnPremultipliedColourAndAlpha",
+      "failures": 0,
+      "skipped": 0,
+      "duration": "0.130s"
+    },
+    "com.wexpa.liquidglass.GlassEndpointInputBoundsTest.offscreenInkSurvivesClippingAtEveryViewportEdge": {
+      "className": "com.wexpa.liquidglass.GlassEndpointInputBoundsTest",
+      "method": "offscreenInkSurvivesClippingAtEveryViewportEdge",
+      "failures": 0,
+      "skipped": 0,
+      "duration": "0.009s"
+    },
+    "com.wexpa.liquidglass.GlassExtremeInteractionTest.anchoredRoundControlsRetainDiagonalStretch": {
+      "className": "com.wexpa.liquidglass.GlassExtremeInteractionTest",
+      "method": "anchoredRoundControlsRetainDiagonalStretch",
+      "failures": 0,
+      "skipped": 0,
+      "duration": "0s"
+    },
+    "com.wexpa.liquidglass.GlassExtremeInteractionTest.anchoredWideBarsNeverTranslateOrTiltAtAnyPullAngle": {
+      "className": "com.wexpa.liquidglass.GlassExtremeInteractionTest",
+      "method": "anchoredWideBarsNeverTranslateOrTiltAtAnyPullAngle",
+      "failures": 0,
+      "skipped": 0,
+      "duration": "0.002s"
+    },
+    "com.wexpa.liquidglass.GlassExtremeInteractionTest.farEdgesAndCornersStayBoundedAndRecoverWithoutStoredTravel": {
+      "className": "com.wexpa.liquidglass.GlassExtremeInteractionTest",
+      "method": "farEdgesAndCornersStayBoundedAndRecoverWithoutStoredTravel",
+      "failures": 0,
+      "skipped": 0,
+      "duration": "0.035s"
+    },
+    "com.wexpa.liquidglass.GlassExtremeInteractionTest.resistanceHasNoDeadZoneOrDiscontinuityAtEitherAnchor": {
+      "className": "com.wexpa.liquidglass.GlassExtremeInteractionTest",
+      "method": "resistanceHasNoDeadZoneOrDiscontinuityAtEitherAnchor",
+      "failures": 0,
+      "skipped": 0,
+      "duration": "0s"
+    },
+    "com.wexpa.liquidglass.GlassExtremeInteractionTest.viewportLeavesRoomyControlsAndIntentionallyPartialLayoutsAlone": {
+      "className": "com.wexpa.liquidglass.GlassExtremeInteractionTest",
+      "method": "viewportLeavesRoomyControlsAndIntentionallyPartialLayoutsAlone",
+      "failures": 0,
+      "skipped": 0,
+      "duration": "0.001s"
+    },
+    "com.wexpa.liquidglass.GlassExtremeInteractionTest.wideGlassContourStaysInTheWindowForEveryExtremePullAngle": {
+      "className": "com.wexpa.liquidglass.GlassExtremeInteractionTest",
+      "method": "wideGlassContourStaysInTheWindowForEveryExtremePullAngle",
+      "failures": 0,
+      "skipped": 0,
+      "duration": "0.026s"
+    },
+    "com.wexpa.liquidglass.GlassExtremeInteractionTest.wideGlassDoesNotMultiplyCrossAxisPixelLossByItsAspectRatio": {
+      "className": "com.wexpa.liquidglass.GlassExtremeInteractionTest",
+      "method": "wideGlassDoesNotMultiplyCrossAxisPixelLossByItsAspectRatio",
+      "failures": 0,
+      "skipped": 0,
+      "duration": "0s"
+    },
+    "com.wexpa.liquidglass.GlassFieldPadConsumerTest.aFieldBuiltOnePixelOffThePadMovesTheSilhouetteByThatPixel": {
+      "className": "com.wexpa.liquidglass.GlassFieldPadConsumerTest",
+      "method": "aFieldBuiltOnePixelOffThePadMovesTheSilhouetteByThatPixel",
+      "failures": 0,
+      "skipped": 0,
+      "duration": "0.180s"
+    },
+    "com.wexpa.liquidglass.GlassFieldPadConsumerTest.everyWholePixelPadPutsTheSampledFieldOnTheClosedForm": {
+      "className": "com.wexpa.liquidglass.GlassFieldPadConsumerTest",
+      "method": "everyWholePixelPadPutsTheSampledFieldOnTheClosedForm",
+      "failures": 0,
+      "skipped": 0,
+      "duration": "0.938s"
+    },
+    "com.wexpa.liquidglass.GlassFieldPadConsumerTest.heldAndFusedGeometryKeepTheSilhouetteAcrossScales": {
+      "className": "com.wexpa.liquidglass.GlassFieldPadConsumerTest",
+      "method": "heldAndFusedGeometryKeepTheSilhouetteAcrossScales",
+      "failures": 0,
+      "skipped": 0,
+      "duration": "0.342s"
+    },
+    "com.wexpa.liquidglass.GlassFieldPadConsumerTest.reducedScaleKeepsTheSilhouetteWithClosedFormAndSampledField": {
+      "className": "com.wexpa.liquidglass.GlassFieldPadConsumerTest",
+      "method": "reducedScaleKeepsTheSilhouetteWithClosedFormAndSampledField",
+      "failures": 0,
+      "skipped": 0,
+      "duration": "0.202s"
+    },
+    "com.wexpa.liquidglass.GlassFieldPadConsumerTest.sampledFieldAtTheRecordPadMatchesTheClosedForm": {
+      "className": "com.wexpa.liquidglass.GlassFieldPadConsumerTest",
+      "method": "sampledFieldAtTheRecordPadMatchesTheClosedForm",
+      "failures": 0,
+      "skipped": 0,
+      "duration": "0.195s"
+    },
+    "com.wexpa.liquidglass.GlassHeldBandSharpnessTest.theCompressedHeldBandIsNoMoreThanOnePixelSofterThanItsSupersampledReference": {
+      "className": "com.wexpa.liquidglass.GlassHeldBandSharpnessTest",
+      "method": "theCompressedHeldBandIsNoMoreThanOnePixelSofterThanItsSupersampledReference",
+      "failures": 0,
+      "skipped": 0,
+      "duration": "40.016s"
+    },
+    "com.wexpa.liquidglass.GlassHeldBandSharpnessTest.theIdentityRegionStaysAtLeastAsSharpAsItsReference": {
+      "className": "com.wexpa.liquidglass.GlassHeldBandSharpnessTest",
+      "method": "theIdentityRegionStaysAtLeastAsSharpAsItsReference",
+      "failures": 0,
+      "skipped": 0,
+      "duration": "10.920s"
+    },
+    "com.wexpa.liquidglass.GlassHeldDragSensitivityTest.extremeHorizontalPullStillFlattensWithoutTheRejectedCollapse": {
+      "className": "com.wexpa.liquidglass.GlassHeldDragSensitivityTest",
+      "method": "extremeHorizontalPullStillFlattensWithoutTheRejectedCollapse",
+      "failures": 0,
+      "skipped": 0,
+      "duration": "0.002s"
+    },
+    "com.wexpa.liquidglass.GlassHeldDragSensitivityTest.moderateHorizontalInputHasLessSqueezeAndStretch": {
+      "className": "com.wexpa.liquidglass.GlassHeldDragSensitivityTest",
+      "method": "moderateHorizontalInputHasLessSqueezeAndStretch",
+      "failures": 0,
+      "skipped": 0,
+      "duration": "0.002s"
+    },
+    "com.wexpa.liquidglass.GlassHeldDragSensitivityTest.offAxisInputStaysContinuousWithAMuchSmallerMaximum": {
+      "className": "com.wexpa.liquidglass.GlassHeldDragSensitivityTest",
+      "method": "offAxisInputStaysContinuousWithAMuchSmallerMaximum",
+      "failures": 0,
+      "skipped": 0,
+      "duration": "0.021s"
+    },
+    "com.wexpa.liquidglass.GlassHeldDragSensitivityTest.tapContoursAreUnaffectedByHeldSensitivity": {
+      "className": "com.wexpa.liquidglass.GlassHeldDragSensitivityTest",
+      "method": "tapContoursAreUnaffectedByHeldSensitivity",
+      "failures": 0,
+      "skipped": 0,
+      "duration": "0.044s"
+    },
+    "com.wexpa.liquidglass.GlassHeldRimReferenceTest.theHeldRimRemainsVisibleOverBlackWithoutLiftingTheWholeInterior": {
+      "className": "com.wexpa.liquidglass.GlassHeldRimReferenceTest",
+      "method": "theHeldRimRemainsVisibleOverBlackWithoutLiftingTheWholeInterior",
+      "failures": 0,
+      "skipped": 0,
+      "duration": "0.238s"
+    },
+    "com.wexpa.liquidglass.GlassHeldSideBoundaryTest.recoveryDoesNotChangeOtherProfilesOrAnUnformedLens": {
+      "className": "com.wexpa.liquidglass.GlassHeldSideBoundaryTest",
+      "method": "recoveryDoesNotChangeOtherProfilesOrAnUnformedLens",
+      "failures": 0,
+      "skipped": 0,
+      "duration": "0.208s"
+    },
+    "com.wexpa.liquidglass.GlassHeldSideBoundaryTest.theHeldSideHasANarrowDarkStepWithoutAWhiteSideOutline": {
+      "className": "com.wexpa.liquidglass.GlassHeldSideBoundaryTest",
+      "method": "theHeldSideHasANarrowDarkStepWithoutAWhiteSideOutline",
+      "failures": 0,
+      "skipped": 0,
+      "duration": "0.246s"
+    },
+    "com.wexpa.liquidglass.GlassHeldTravelReferenceTest.ordinaryHoldGrowthIsUnchangedAndEarlyFastTravelStaysBounded": {
+      "className": "com.wexpa.liquidglass.GlassHeldTravelReferenceTest",
+      "method": "ordinaryHoldGrowthIsUnchangedAndEarlyFastTravelStaysBounded",
+      "failures": 0,
+      "skipped": 0,
+      "duration": "0.010s"
+    },
+    "com.wexpa.liquidglass.GlassHeldTravelReferenceTest.strongTravelCanReachTheOriginalFlattenedPairWithoutIncreasingOffAxisPull": {
+      "className": "com.wexpa.liquidglass.GlassHeldTravelReferenceTest",
+      "method": "strongTravelCanReachTheOriginalFlattenedPairWithoutIncreasingOffAxisPull",
+      "failures": 0,
+      "skipped": 0,
+      "duration": "0.056s"
+    },
+    "com.wexpa.liquidglass.GlassHeldTravelReferenceTest.tuningHeldTravelDoesNotChangeTheRestingTapCurve": {
+      "className": "com.wexpa.liquidglass.GlassHeldTravelReferenceTest",
+      "method": "tuningHeldTravelDoesNotChangeTheRestingTapCurve",
+      "failures": 0,
+      "skipped": 0,
+      "duration": "0.007s"
+    },
+    "com.wexpa.liquidglass.GlassInsetMaterialTest.compressedCapsDoNotPaintRestingTintOntoThePage": {
+      "className": "com.wexpa.liquidglass.GlassInsetMaterialTest",
+      "method": "compressedCapsDoNotPaintRestingTintOntoThePage",
+      "failures": 0,
+      "skipped": 0,
+      "duration": "0.144s"
+    },
+    "com.wexpa.liquidglass.GlassInsetMaterialTest.footprintAlphaAndOpticalCoverageRemainIndependent": {
+      "className": "com.wexpa.liquidglass.GlassInsetMaterialTest",
+      "method": "footprintAlphaAndOpticalCoverageRemainIndependent",
+      "failures": 0,
+      "skipped": 0,
+      "duration": "0.180s"
+    },
+    "com.wexpa.liquidglass.GlassInsetMaterialTest.substrateMaskUsesTheSamePullAndPressCoordinatesAsTheBar": {
+      "className": "com.wexpa.liquidglass.GlassInsetMaterialTest",
+      "method": "substrateMaskUsesTheSamePullAndPressCoordinatesAsTheBar",
+      "failures": 0,
+      "skipped": 0,
+      "duration": "0s"
+    },
+    "com.wexpa.liquidglass.GlassLensTest.continuousLensHasNoHiddenAnnulusOrReversedSourceAcrossItsDiameter": {
+      "className": "com.wexpa.liquidglass.GlassLensTest",
+      "method": "continuousLensHasNoHiddenAnnulusOrReversedSourceAcrossItsDiameter",
+      "failures": 0,
+      "skipped": 0,
+      "duration": "1.242s"
+    },
+    "com.wexpa.liquidglass.GlassLensTest.invalidZoomIsRejectedAtThePublicBoundary": {
+      "className": "com.wexpa.liquidglass.GlassLensTest",
+      "method": "invalidZoomIsRejectedAtThePublicBoundary",
+      "failures": 0,
+      "skipped": 0,
+      "duration": "0.001s"
+    },
+    "com.wexpa.liquidglass.GlassLensTest.magnifiesBackdropAtTheAdvertisedCentreGain": {
+      "className": "com.wexpa.liquidglass.GlassLensTest",
+      "method": "magnifiesBackdropAtTheAdvertisedCentreGain",
+      "failures": 0,
+      "skipped": 0,
+      "duration": "0.061s"
+    },
+    "com.wexpa.liquidglass.GlassLensTest.materialAndForegroundUseTheSameLensAtEveryPixel": {
+      "className": "com.wexpa.liquidglass.GlassLensTest",
+      "method": "materialAndForegroundUseTheSameLensAtEveryPixel",
+      "failures": 0,
+      "skipped": 0,
+      "duration": "0.081s"
+    },
+    "com.wexpa.liquidglass.GlassLensTest.rendersRegressionEvidenceFromProductionShader": {
+      "className": "com.wexpa.liquidglass.GlassLensTest",
+      "method": "rendersRegressionEvidenceFromProductionShader",
+      "failures": 0,
+      "skipped": 0,
+      "duration": "0.330s"
+    },
+    "com.wexpa.liquidglass.GlassMaterialDrawingTest.shiftedSelectorNodeDrawsIdenticalInkWithTheSharedBarPivot": {
+      "className": "com.wexpa.liquidglass.GlassMaterialDrawingTest",
+      "method": "shiftedSelectorNodeDrawsIdenticalInkWithTheSharedBarPivot",
+      "failures": 0,
+      "skipped": 0,
+      "duration": "0.088s"
+    },
+    "com.wexpa.liquidglass.GlassMeasuredOpticsTest.testTheAdaptiveLiftReadsLightOverDarkContent": {
+      "className": "com.wexpa.liquidglass.GlassMeasuredOpticsTest",
+      "method": "testTheAdaptiveLiftReadsLightOverDarkContent",
+      "failures": 0,
+      "skipped": 0,
+      "duration": "0.205s"
+    },
+    "com.wexpa.liquidglass.GlassMeasuredOpticsTest.testTheCommittedLensIsOnlyAnInwardOffset": {
+      "className": "com.wexpa.liquidglass.GlassMeasuredOpticsTest",
+      "method": "testTheCommittedLensIsOnlyAnInwardOffset",
+      "failures": 0,
+      "skipped": 0,
+      "duration": "0.147s"
+    },
+    "com.wexpa.liquidglass.GlassMeasuredOpticsTest.testTheFoldShowsContentTwiceAndHidesTheInnermostBand": {
+      "className": "com.wexpa.liquidglass.GlassMeasuredOpticsTest",
+      "method": "testTheFoldShowsContentTwiceAndHidesTheInnermostBand",
+      "failures": 0,
+      "skipped": 0,
+      "duration": "0.170s"
+    },
+    "com.wexpa.liquidglass.GlassMeasuredOpticsTest.testTheMeasuredRimSamplesInwardOnly": {
+      "className": "com.wexpa.liquidglass.GlassMeasuredOpticsTest",
+      "method": "testTheMeasuredRimSamplesInwardOnly",
+      "failures": 0,
+      "skipped": 0,
+      "duration": "0.125s"
+    },
+    "com.wexpa.liquidglass.GlassMeasuredOpticsTest.testTheMeasuredToneOverFlatBlackAndWhite": {
+      "className": "com.wexpa.liquidglass.GlassMeasuredOpticsTest",
+      "method": "testTheMeasuredToneOverFlatBlackAndWhite",
+      "failures": 0,
+      "skipped": 0,
+      "duration": "0.319s"
+    },
+    "com.wexpa.liquidglass.GlassMeasuredOpticsTest.testTheWideKernelSetsToneWithoutDestroyingStripes": {
+      "className": "com.wexpa.liquidglass.GlassMeasuredOpticsTest",
+      "method": "testTheWideKernelSetsToneWithoutDestroyingStripes",
+      "failures": 0,
+      "skipped": 0,
+      "duration": "0.173s"
+    },
+    "com.wexpa.liquidglass.GlassOpticsTest.testHalfScaleRendersTheSameMaterialAsFullScale": {
+      "className": "com.wexpa.liquidglass.GlassOpticsTest",
+      "method": "testHalfScaleRendersTheSameMaterialAsFullScale",
+      "failures": 0,
+      "skipped": 0,
+      "duration": "0.279s"
+    },
+    "com.wexpa.liquidglass.GlassOpticsTest.testRefractionIsContinuousAcrossTheMedialAxisOfAPill": {
+      "className": "com.wexpa.liquidglass.GlassOpticsTest",
+      "method": "testRefractionIsContinuousAcrossTheMedialAxisOfAPill",
+      "failures": 0,
+      "skipped": 0,
+      "duration": "0.282s"
+    },
+    "com.wexpa.liquidglass.GlassOpticsTest.testRimSofteningSpreadsTheCompressionLine": {
+      "className": "com.wexpa.liquidglass.GlassOpticsTest",
+      "method": "testRimSofteningSpreadsTheCompressionLine",
+      "failures": 0,
+      "skipped": 0,
+      "duration": "0.244s"
+    },
+    "com.wexpa.liquidglass.GlassOpticsTest.testTheClosedFormNormalIsSymmetricInBothAxes": {
+      "className": "com.wexpa.liquidglass.GlassOpticsTest",
+      "method": "testTheClosedFormNormalIsSymmetricInBothAxes",
+      "failures": 0,
+      "skipped": 0,
+      "duration": "0.123s"
+    },
+    "com.wexpa.liquidglass.GlassOpticsTest.testTheDarkContourSitsInsideTheCoverageRamp": {
+      "className": "com.wexpa.liquidglass.GlassOpticsTest",
+      "method": "testTheDarkContourSitsInsideTheCoverageRamp",
+      "failures": 0,
+      "skipped": 0,
+      "duration": "0.205s"
+    },
+    "com.wexpa.liquidglass.GlassOpticsTest.testTheDomeFieldKeepsRefractionAtTheSpineOfAWidePill": {
+      "className": "com.wexpa.liquidglass.GlassOpticsTest",
+      "method": "testTheDomeFieldKeepsRefractionAtTheSpineOfAWidePill",
+      "failures": 0,
+      "skipped": 0,
+      "duration": "0.107s"
+    },
+    "com.wexpa.liquidglass.GlassOpticsTest.testTheHighlightKeepsChromaOverASaturatedBackdrop": {
+      "className": "com.wexpa.liquidglass.GlassOpticsTest",
+      "method": "testTheHighlightKeepsChromaOverASaturatedBackdrop",
+      "failures": 0,
+      "skipped": 0,
+      "duration": "0.208s"
+    },
+    "com.wexpa.liquidglass.GlassOpticsTest.testTheRimSamplesOutward": {
+      "className": "com.wexpa.liquidglass.GlassOpticsTest",
+      "method": "testTheRimSamplesOutward",
+      "failures": 0,
+      "skipped": 0,
+      "duration": "0.076s"
+    },
+    "com.wexpa.liquidglass.GlassOpticsTest.testTintAsAMediumKeepsMoreOfTheBackdropStructure": {
+      "className": "com.wexpa.liquidglass.GlassOpticsTest",
+      "method": "testTintAsAMediumKeepsMoreOfTheBackdropStructure",
+      "failures": 0,
+      "skipped": 0,
+      "duration": "0.199s"
+    },
+    "com.wexpa.liquidglass.GlassPadContractTest.heldProfileRecordsTheOutwardSamplingMargin": {
+      "className": "com.wexpa.liquidglass.GlassPadContractTest",
+      "method": "heldProfileRecordsTheOutwardSamplingMargin",
+      "failures": 0,
+      "skipped": 0,
+      "duration": "0.001s"
+    },
+    "com.wexpa.liquidglass.GlassPadContractTest.recordPadIsWholeLayerPixelsAtEveryRenderScale": {
+      "className": "com.wexpa.liquidglass.GlassPadContractTest",
+      "method": "recordPadIsWholeLayerPixelsAtEveryRenderScale",
+      "failures": 0,
+      "skipped": 0,
+      "duration": "0s"
+    },
+    "com.wexpa.liquidglass.GlassPadContractTest.theWorkedExampleRoundsUpInLayerSpace": {
+      "className": "com.wexpa.liquidglass.GlassPadContractTest",
+      "method": "theWorkedExampleRoundsUpInLayerSpace",
+      "failures": 0,
+      "skipped": 0,
+      "duration": "0s"
+    },
+    "com.wexpa.liquidglass.GlassPathFieldTest.testDistanceGrowsWithDepthRatherThanSaturating": {
+      "className": "com.wexpa.liquidglass.GlassPathFieldTest",
+      "method": "testDistanceGrowsWithDepthRatherThanSaturating",
+      "failures": 0,
+      "skipped": 0,
+      "duration": "0.008s"
+    },
+    "com.wexpa.liquidglass.GlassPathFieldTest.testTheDistanceFieldIsSignedAndZeroOnTheOutline": {
+      "className": "com.wexpa.liquidglass.GlassPathFieldTest",
+      "method": "testTheDistanceFieldIsSignedAndZeroOnTheOutline",
+      "failures": 0,
+      "skipped": 0,
+      "duration": "0.009s"
+    },
+    "com.wexpa.liquidglass.GlassPhoneLandingSequenceTest.consecutiveBilateralRecoveryMatchesWidthAndEndpointFacingEdge": {
+      "className": "com.wexpa.liquidglass.GlassPhoneLandingSequenceTest",
+      "method": "consecutiveBilateralRecoveryMatchesWidthAndEndpointFacingEdge",
+      "failures": 0,
+      "skipped": 0,
+      "duration": "0.011s"
+    },
+    "com.wexpa.liquidglass.GlassPhoneLandingSequenceTest.exportEdgeRecoveryExperiments": {
+      "className": "com.wexpa.liquidglass.GlassPhoneLandingSequenceTest",
+      "method": "exportEdgeRecoveryExperiments",
+      "failures": 0,
+      "skipped": 0,
+      "duration": "0.357s"
+    },
+    "com.wexpa.liquidglass.GlassPhoneLandingSequenceTest.regrabCarriesTheVelocityOfTheShapeAwareCentre": {
+      "className": "com.wexpa.liquidglass.GlassPhoneLandingSequenceTest",
+      "method": "regrabCarriesTheVelocityOfTheShapeAwareCentre",
+      "failures": 0,
+      "skipped": 0,
+      "duration": "0.022s"
+    },
+    "com.wexpa.liquidglass.GlassPhoneMaterialReferenceTest.theCalmBarDoesNotBrightenTwiceWhileHeld": {
+      "className": "com.wexpa.liquidglass.GlassPhoneMaterialReferenceTest",
+      "method": "theCalmBarDoesNotBrightenTwiceWhileHeld",
+      "failures": 0,
+      "skipped": 0,
+      "duration": "0.298s"
+    },
+    "com.wexpa.liquidglass.GlassPhoneMaterialReferenceTest.theDarkV3BarMatchesTheOriginalRestAndHeldPlateaus": {
+      "className": "com.wexpa.liquidglass.GlassPhoneMaterialReferenceTest",
+      "method": "theDarkV3BarMatchesTheOriginalRestAndHeldPlateaus",
+      "failures": 0,
+      "skipped": 0,
+      "duration": "0.705s"
+    },
+    "com.wexpa.liquidglass.GlassPhoneTapTimingTest.consecutiveShortTripsFollowOneAlignedTrajectory": {
+      "className": "com.wexpa.liquidglass.GlassPhoneTapTimingTest",
+      "method": "consecutiveShortTripsFollowOneAlignedTrajectory",
+      "failures": 0,
+      "skipped": 0,
+      "duration": "0.033s"
+    },
+    "com.wexpa.liquidglass.GlassPhoneTapTimingTest.longTripKeepsItsVerifiedTrajectoryAndShape": {
+      "className": "com.wexpa.liquidglass.GlassPhoneTapTimingTest",
+      "method": "longTripKeepsItsVerifiedTrajectoryAndShape",
+      "failures": 0,
+      "skipped": 0,
+      "duration": "0.012s"
+    },
+    "com.wexpa.liquidglass.GlassPhoneTapTimingTest.shortTripCadenceScaleAndDirectionStayConsistent": {
+      "className": "com.wexpa.liquidglass.GlassPhoneTapTimingTest",
+      "method": "shortTripCadenceScaleAndDirectionStayConsistent",
+      "failures": 0,
+      "skipped": 0,
+      "duration": "0.120s"
+    },
+    "com.wexpa.liquidglass.GlassPhoneTapTimingTest.shortTripRegrabPreservesActualCentreVelocity": {
+      "className": "com.wexpa.liquidglass.GlassPhoneTapTimingTest",
+      "method": "shortTripRegrabPreservesActualCentreVelocity",
+      "failures": 0,
+      "skipped": 0,
+      "duration": "0.002s"
+    },
+    "com.wexpa.liquidglass.GlassPhoneTapVolumeTest.cadenceScaleAndReversePreserveTheShape": {
+      "className": "com.wexpa.liquidglass.GlassPhoneTapVolumeTest",
+      "method": "cadenceScaleAndReversePreserveTheShape",
+      "failures": 0,
+      "skipped": 0,
+      "duration": "0.059s"
+    },
+    "com.wexpa.liquidglass.GlassPhoneTapVolumeTest.interruptedTapAndHoldTransitionsStayContinuous": {
+      "className": "com.wexpa.liquidglass.GlassPhoneTapVolumeTest",
+      "method": "interruptedTapAndHoldTransitionsStayContinuous",
+      "failures": 0,
+      "skipped": 0,
+      "duration": "0.009s"
+    },
+    "com.wexpa.liquidglass.GlassPhoneTapVolumeTest.pairedShortAndLongTapShapes": {
+      "className": "com.wexpa.liquidglass.GlassPhoneTapVolumeTest",
+      "method": "pairedShortAndLongTapShapes",
+      "failures": 0,
+      "skipped": 0,
+      "duration": "0.010s"
+    },
+    "com.wexpa.liquidglass.GlassPhoneTapVolumeTest.reducedMotionAndRelayoutClearTransientArea": {
+      "className": "com.wexpa.liquidglass.GlassPhoneTapVolumeTest",
+      "method": "reducedMotionAndRelayoutClearTransientArea",
+      "failures": 0,
+      "skipped": 0,
+      "duration": "0s"
+    },
+    "com.wexpa.liquidglass.GlassPhoneTapVolumeTest.sleepingFrameLoopLeavesExactRestAndCanWakeAgain": {
+      "className": "com.wexpa.liquidglass.GlassPhoneTapVolumeTest",
+      "method": "sleepingFrameLoopLeavesExactRestAndCanWakeAgain",
+      "failures": 0,
+      "skipped": 0,
+      "duration": "0.019s"
+    },
+    "com.wexpa.liquidglass.GlassPhoneThrowTest.exportEndpointCompressionCandidates": {
+      "className": "com.wexpa.liquidglass.GlassPhoneThrowTest",
+      "method": "exportEndpointCompressionCandidates",
+      "failures": 0,
+      "skipped": 0,
+      "duration": "0.399s"
+    },
+    "com.wexpa.liquidglass.GlassPhoneThrowTest.extremeThrowsStayFiniteContinuousAndInsideTheAllocatedEnvelope": {
+      "className": "com.wexpa.liquidglass.GlassPhoneThrowTest",
+      "method": "extremeThrowsStayFiniteContinuousAndInsideTheAllocatedEnvelope",
+      "failures": 0,
+      "skipped": 0,
+      "duration": "0.173s"
+    },
+    "com.wexpa.liquidglass.GlassPhoneThrowTest.hardLandingCanReachTheObservedNarrowBodyAndLargeCapTogether": {
+      "className": "com.wexpa.liquidglass.GlassPhoneThrowTest",
+      "method": "hardLandingCanReachTheObservedNarrowBodyAndLargeCapTogether",
+      "failures": 0,
+      "skipped": 0,
+      "duration": "0.002s"
+    },
+    "com.wexpa.liquidglass.GlassPhoneThrowTest.middleLandingsAndStationaryHoldsKeepTheirPriorResponse": {
+      "className": "com.wexpa.liquidglass.GlassPhoneThrowTest",
+      "method": "middleLandingsAndStationaryHoldsKeepTheirPriorResponse",
+      "failures": 0,
+      "skipped": 0,
+      "duration": "0.020s"
+    },
+    "com.wexpa.liquidglass.GlassPhoneThrowTest.regrabAndReducedMotionClearLandingOwnership": {
+      "className": "com.wexpa.liquidglass.GlassPhoneThrowTest",
+      "method": "regrabAndReducedMotionClearLandingOwnership",
+      "failures": 0,
+      "skipped": 0,
+      "duration": "0.001s"
+    },
+    "com.wexpa.liquidglass.GlassPhoneThrowTest.reverseAndPresentationCadencePreserveLandingAndSleep": {
+      "className": "com.wexpa.liquidglass.GlassPhoneThrowTest",
+      "method": "reverseAndPresentationCadencePreserveLandingAndSleep",
+      "failures": 0,
+      "skipped": 0,
+      "duration": "0.038s"
+    },
+    "com.wexpa.liquidglass.GlassPortableMaterialSpecTest.portableInAppParametersFollowTheProductionFactory": {
+      "className": "com.wexpa.liquidglass.GlassPortableMaterialSpecTest",
+      "method": "portableInAppParametersFollowTheProductionFactory",
+      "failures": 0,
+      "skipped": 0,
+      "duration": "0.011s"
+    },
+    "com.wexpa.liquidglass.GlassPoseDynamicsTest.aCalmHeldBodyGenuinelyProtrudesAboveAndBelowTheBar": {
+      "className": "com.wexpa.liquidglass.GlassPoseDynamicsTest",
+      "method": "aCalmHeldBodyGenuinelyProtrudesAboveAndBelowTheBar",
+      "failures": 0,
+      "skipped": 0,
+      "duration": "0.001s"
+    },
+    "com.wexpa.liquidglass.GlassPoseDynamicsTest.accommodationNeverRecruitsAThirdItem": {
+      "className": "com.wexpa.liquidglass.GlassPoseDynamicsTest",
+      "method": "accommodationNeverRecruitsAThirdItem",
+      "failures": 0,
+      "skipped": 0,
+      "duration": "0.001s"
+    },
+    "com.wexpa.liquidglass.GlassPoseDynamicsTest.aHeldDragStretchesTowardAnArbitraryDirection": {
+      "className": "com.wexpa.liquidglass.GlassPoseDynamicsTest",
+      "method": "aHeldDragStretchesTowardAnArbitraryDirection",
+      "failures": 0,
+      "skipped": 0,
+      "duration": "0.006s"
+    },
+    "com.wexpa.liquidglass.GlassPoseDynamicsTest.aLongerTapStretchesMoreAndRecoveryStaysBounded": {
+      "className": "com.wexpa.liquidglass.GlassPoseDynamicsTest",
+      "method": "aLongerTapStretchesMoreAndRecoveryStaysBounded",
+      "failures": 0,
+      "skipped": 0,
+      "duration": "0.006s"
+    },
+    "com.wexpa.liquidglass.GlassPoseDynamicsTest.aLongUptimeDoesNotQuantiseTheMeasuredVelocity": {
+      "className": "com.wexpa.liquidglass.GlassPoseDynamicsTest",
+      "method": "aLongUptimeDoesNotQuantiseTheMeasuredVelocity",
+      "failures": 0,
+      "skipped": 0,
+      "duration": "0.001s"
+    },
+    "com.wexpa.liquidglass.GlassPoseDynamicsTest.anOrdinaryTapStaysInsideTheBar": {
+      "className": "com.wexpa.liquidglass.GlassPoseDynamicsTest",
+      "method": "anOrdinaryTapStaysInsideTheBar",
+      "failures": 0,
+      "skipped": 0,
+      "duration": "0.004s"
+    },
+    "com.wexpa.liquidglass.GlassPoseDynamicsTest.aReleasedBodyRegainsContactOnlyAfterItIsBackInside": {
+      "className": "com.wexpa.liquidglass.GlassPoseDynamicsTest",
+      "method": "aReleasedBodyRegainsContactOnlyAfterItIsBackInside",
+      "failures": 0,
+      "skipped": 0,
+      "duration": "0.002s"
+    },
+    "com.wexpa.liquidglass.GlassPoseDynamicsTest.aRewoundClockDoesNotRewindTheHoldThreshold": {
+      "className": "com.wexpa.liquidglass.GlassPoseDynamicsTest",
+      "method": "aRewoundClockDoesNotRewindTheHoldThreshold",
+      "failures": 0,
+      "skipped": 0,
+      "duration": "0.002s"
+    },
+    "com.wexpa.liquidglass.GlassPoseDynamicsTest.aStationaryFingerKeepsItsMaterialPointWhileTheBodyGrows": {
+      "className": "com.wexpa.liquidglass.GlassPoseDynamicsTest",
+      "method": "aStationaryFingerKeepsItsMaterialPointWhileTheBodyGrows",
+      "failures": 0,
+      "skipped": 0,
+      "duration": "0.001s"
+    },
+    "com.wexpa.liquidglass.GlassPoseDynamicsTest.aStrongPullIsAllowedToFlattenTheBodyBackInsideTheBar": {
+      "className": "com.wexpa.liquidglass.GlassPoseDynamicsTest",
+      "method": "aStrongPullIsAllowedToFlattenTheBodyBackInsideTheBar",
+      "failures": 0,
+      "skipped": 0,
+      "duration": "0.002s"
+    },
+    "com.wexpa.liquidglass.GlassPoseDynamicsTest.pressureAccommodationAndStrainAreReportedSeparately": {
+      "className": "com.wexpa.liquidglass.GlassPoseDynamicsTest",
+      "method": "pressureAccommodationAndStrainAreReportedSeparately",
+      "failures": 0,
+      "skipped": 0,
+      "duration": "0.001s"
+    },
+    "com.wexpa.liquidglass.GlassPoseDynamicsTest.reducedMotionIsStillAndFlat": {
+      "className": "com.wexpa.liquidglass.GlassPoseDynamicsTest",
+      "method": "reducedMotionIsStillAndFlat",
+      "failures": 0,
+      "skipped": 0,
+      "duration": "0s"
+    },
+    "com.wexpa.liquidglass.GlassPoseDynamicsTest.refreshRatesAgreeOnTheSameTimestamps": {
+      "className": "com.wexpa.liquidglass.GlassPoseDynamicsTest",
+      "method": "refreshRatesAgreeOnTheSameTimestamps",
+      "failures": 0,
+      "skipped": 0,
+      "duration": "0.004s"
+    },
+    "com.wexpa.liquidglass.GlassPoseDynamicsTest.releaseStartsFromTheShapeTheBodyActuallyHasAndRecoversTogether": {
+      "className": "com.wexpa.liquidglass.GlassPoseDynamicsTest",
+      "method": "releaseStartsFromTheShapeTheBodyActuallyHasAndRecoversTogether",
+      "failures": 0,
+      "skipped": 0,
+      "duration": "0.002s"
+    },
+    "com.wexpa.liquidglass.GlassPoseDynamicsTest.theGraspSurvivesAParentScaleChangeWithoutSliding": {
+      "className": "com.wexpa.liquidglass.GlassPoseDynamicsTest",
+      "method": "theGraspSurvivesAParentScaleChangeWithoutSliding",
+      "failures": 0,
+      "skipped": 0,
+      "duration": "0s"
+    },
+    "com.wexpa.liquidglass.GlassPoseGeometryTest.accommodationAddsSpanAndCandidateBLeavesTheCapsAlone": {
+      "className": "com.wexpa.liquidglass.GlassPoseGeometryTest",
+      "method": "accommodationAddsSpanAndCandidateBLeavesTheCapsAlone",
+      "failures": 0,
+      "skipped": 0,
+      "duration": "0.001s"
+    },
+    "com.wexpa.liquidglass.GlassPoseGeometryTest.aCircularReferenceFallsBackToTheUniformBranch": {
+      "className": "com.wexpa.liquidglass.GlassPoseGeometryTest",
+      "method": "aCircularReferenceFallsBackToTheUniformBranch",
+      "failures": 0,
+      "skipped": 0,
+      "duration": "0s"
+    },
+    "com.wexpa.liquidglass.GlassPoseGeometryTest.nothingProducesANaNOrASelfIntersection": {
+      "className": "com.wexpa.liquidglass.GlassPoseGeometryTest",
+      "method": "nothingProducesANaNOrASelfIntersection",
+      "failures": 0,
+      "skipped": 0,
+      "duration": "0.007s"
+    },
+    "com.wexpa.liquidglass.GlassPoseGeometryTest.strainStretchesAlongItsDirectionAndSqueezesAcross": {
+      "className": "com.wexpa.liquidglass.GlassPoseGeometryTest",
+      "method": "strainStretchesAlongItsDirectionAndSqueezesAcross",
+      "failures": 0,
+      "skipped": 0,
+      "duration": "0.001s"
+    },
+    "com.wexpa.liquidglass.GlassPoseGeometryTest.taperMakesOneEndLargerThanTheOther": {
+      "className": "com.wexpa.liquidglass.GlassPoseGeometryTest",
+      "method": "taperMakesOneEndLargerThanTheOther",
+      "failures": 0,
+      "skipped": 0,
+      "duration": "0.001s"
+    },
+    "com.wexpa.liquidglass.GlassPoseGeometryTest.theBandNeverReachesTheMedialAxis": {
+      "className": "com.wexpa.liquidglass.GlassPoseGeometryTest",
+      "method": "theBandNeverReachesTheMedialAxis",
+      "failures": 0,
+      "skipped": 0,
+      "duration": "0.001s"
+    },
+    "com.wexpa.liquidglass.GlassPoseGeometryTest.theIdentityPoseReproducesTheCanonicalBodyExactly": {
+      "className": "com.wexpa.liquidglass.GlassPoseGeometryTest",
+      "method": "theIdentityPoseReproducesTheCanonicalBodyExactly",
+      "failures": 0,
+      "skipped": 0,
+      "duration": "0.001s"
+    },
+    "com.wexpa.liquidglass.GlassPoseGeometryTest.theInverseRoundTripsToWithinASmallFractionOfAPixel": {
+      "className": "com.wexpa.liquidglass.GlassPoseGeometryTest",
+      "method": "theInverseRoundTripsToWithinASmallFractionOfAPixel",
+      "failures": 0,
+      "skipped": 0,
+      "duration": "0.007s"
+    },
+    "com.wexpa.liquidglass.GlassPoseGeometryTest.theMapIsInvertibleAndOrientationPreservingOverTheWholeBody": {
+      "className": "com.wexpa.liquidglass.GlassPoseGeometryTest",
+      "method": "theMapIsInvertibleAndOrientationPreservingOverTheWholeBody",
+      "failures": 0,
+      "skipped": 0,
+      "duration": "0.011s"
+    },
+    "com.wexpa.liquidglass.GlassPoseGeometryTest.theSpineVectorOrientsTheCapsuleAndKeepsItsCaps": {
+      "className": "com.wexpa.liquidglass.GlassPoseGeometryTest",
+      "method": "theSpineVectorOrientsTheCapsuleAndKeepsItsCaps",
+      "failures": 0,
+      "skipped": 0,
+      "duration": "0.001s"
+    },
+    "com.wexpa.liquidglass.GlassPoseGeometryTest.theTransformedNormalAgreesWithIndependentFiniteDifferences": {
+      "className": "com.wexpa.liquidglass.GlassPoseGeometryTest",
+      "method": "theTransformedNormalAgreesWithIndependentFiniteDifferences",
+      "failures": 0,
+      "skipped": 0,
+      "duration": "0.006s"
+    },
+    "com.wexpa.liquidglass.GlassPoseOffCentreGraspTest.anOffCentreHoldPreservesTheAttachedPoint": {
+      "className": "com.wexpa.liquidglass.GlassPoseOffCentreGraspTest",
+      "method": "anOffCentreHoldPreservesTheAttachedPoint",
+      "failures": 0,
+      "skipped": 0,
+      "duration": "0.001s"
+    },
+    "com.wexpa.liquidglass.GlassPoseOffCentreGraspTest.anOffCentreHorizontalDragPreservesVerticalAttachment": {
+      "className": "com.wexpa.liquidglass.GlassPoseOffCentreGraspTest",
+      "method": "anOffCentreHorizontalDragPreservesVerticalAttachment",
+      "failures": 0,
+      "skipped": 0,
+      "duration": "0.007s"
+    },
+    "com.wexpa.liquidglass.GlassPoseReferenceSilhouetteTest.anOrdinaryTraverseKeepsItsProtrusionWhileAHardFlickDoesNot": {
+      "className": "com.wexpa.liquidglass.GlassPoseReferenceSilhouetteTest",
+      "method": "anOrdinaryTraverseKeepsItsProtrusionWhileAHardFlickDoesNot",
+      "failures": 0,
+      "skipped": 0,
+      "duration": "0.002s"
+    },
+    "com.wexpa.liquidglass.GlassPoseReferenceSilhouetteTest.theAccommodatedPairStaysInsideTheReferenceWidthBracket": {
+      "className": "com.wexpa.liquidglass.GlassPoseReferenceSilhouetteTest",
+      "method": "theAccommodatedPairStaysInsideTheReferenceWidthBracket",
+      "failures": 0,
+      "skipped": 0,
+      "duration": "0.002s"
+    },
+    "com.wexpa.liquidglass.GlassPoseReferenceSilhouetteTest.theCalmHeldBodyProtrudesByTheLedgersFraction": {
+      "className": "com.wexpa.liquidglass.GlassPoseReferenceSilhouetteTest",
+      "method": "theCalmHeldBodyProtrudesByTheLedgersFraction",
+      "failures": 0,
+      "skipped": 0,
+      "duration": "0.001s"
+    },
+    "com.wexpa.liquidglass.GlassPoseReferenceSilhouetteTest.theNodeIsTallEnoughForEveryBodyItHasToShow": {
+      "className": "com.wexpa.liquidglass.GlassPoseReferenceSilhouetteTest",
+      "method": "theNodeIsTallEnoughForEveryBodyItHasToShow",
+      "failures": 0,
+      "skipped": 0,
+      "duration": "0.009s"
+    },
+    "com.wexpa.liquidglass.GlassPoseRegrabTest.aPressDuringRecoveryTakesTheHoldBackWithoutABlink": {
+      "className": "com.wexpa.liquidglass.GlassPoseRegrabTest",
+      "method": "aPressDuringRecoveryTakesTheHoldBackWithoutABlink",
+      "failures": 0,
+      "skipped": 0,
+      "duration": "0.003s"
+    },
+    "com.wexpa.liquidglass.GlassPoseShaderAgreementTest.theIdentityPoseRendersTheCanonicalCapsuleInTheShader": {
+      "className": "com.wexpa.liquidglass.GlassPoseShaderAgreementTest",
+      "method": "theIdentityPoseRendersTheCanonicalCapsuleInTheShader",
+      "failures": 0,
+      "skipped": 0,
+      "duration": "0.010s"
+    },
+    "com.wexpa.liquidglass.GlassPoseShaderAgreementTest.theSharedPoseShaderAgreesWithTheCpuQuery": {
+      "className": "com.wexpa.liquidglass.GlassPoseShaderAgreementTest",
+      "method": "theSharedPoseShaderAgreesWithTheCpuQuery",
+      "failures": 0,
+      "skipped": 0,
+      "duration": "0.133s"
+    },
+    "com.wexpa.liquidglass.GlassPullTest.customUnboundedInputGainsRemainCompatible": {
+      "className": "com.wexpa.liquidglass.GlassPullTest",
+      "method": "customUnboundedInputGainsRemainCompatible",
+      "failures": 0,
+      "skipped": 0,
+      "duration": "0.001s"
+    },
+    "com.wexpa.liquidglass.GlassPullTest.observedCentroidTravelPredictsSearchAndKeyDeformation": {
+      "className": "com.wexpa.liquidglass.GlassPullTest",
+      "method": "observedCentroidTravelPredictsSearchAndKeyDeformation",
+      "failures": 0,
+      "skipped": 0,
+      "duration": "0s"
+    },
+    "com.wexpa.liquidglass.GlassPullTest.theBalloonGrowsByPointsNotByRatio": {
+      "className": "com.wexpa.liquidglass.GlassPullTest",
+      "method": "theBalloonGrowsByPointsNotByRatio",
+      "failures": 0,
+      "skipped": 0,
+      "duration": "0.002s"
+    },
+    "com.wexpa.liquidglass.GlassPullTest.theLawIsAbsoluteSoACardPulledTheSameDistanceStretchesByTheSamePixels": {
+      "className": "com.wexpa.liquidglass.GlassPullTest",
+      "method": "theLawIsAbsoluteSoACardPulledTheSameDistanceStretchesByTheSamePixels",
+      "failures": 0,
+      "skipped": 0,
+      "duration": "0s"
+    },
+    "com.wexpa.liquidglass.GlassPullTest.thePullResponseIsOptInAndReducedMotionRemovesElasticity": {
+      "className": "com.wexpa.liquidglass.GlassPullTest",
+      "method": "thePullResponseIsOptInAndReducedMotionRemovesElasticity",
+      "failures": 0,
+      "skipped": 0,
+      "duration": "0s"
+    },
+    "com.wexpa.liquidglass.GlassRefinementTest.circularGlassHasTheSameStrainInEveryDirection": {
+      "className": "com.wexpa.liquidglass.GlassRefinementTest",
+      "method": "circularGlassHasTheSameStrainInEveryDirection",
+      "failures": 0,
+      "skipped": 0,
+      "duration": "0s"
+    },
+    "com.wexpa.liquidglass.GlassRefinementTest.geometricPressDoesNotWaitForTheGlowOrItsFade": {
+      "className": "com.wexpa.liquidglass.GlassRefinementTest",
+      "method": "geometricPressDoesNotWaitForTheGlowOrItsFade",
+      "failures": 0,
+      "skipped": 0,
+      "duration": "0s"
+    },
+    "com.wexpa.liquidglass.GlassRefinementTest.increasingPullRemainsResponsiveButCannotStoreUnboundedTravel": {
+      "className": "com.wexpa.liquidglass.GlassRefinementTest",
+      "method": "increasingPullRemainsResponsiveButCannotStoreUnboundedTravel",
+      "failures": 0,
+      "skipped": 0,
+      "duration": "0.001s"
+    },
+    "com.wexpa.liquidglass.GlassRefinementTest.pressPeakAndSteadySizeMatchAnIndependentKeypadPress": {
+      "className": "com.wexpa.liquidglass.GlassRefinementTest",
+      "method": "pressPeakAndSteadySizeMatchAnIndependentKeypadPress",
+      "failures": 0,
+      "skipped": 0,
+      "duration": "0.001s"
+    },
+    "com.wexpa.liquidglass.GlassRefinementTest.sustainedOffBarOverpullCannotKeepCollapsingTheBody": {
+      "className": "com.wexpa.liquidglass.GlassRefinementTest",
+      "method": "sustainedOffBarOverpullCannotKeepCollapsingTheBody",
+      "failures": 0,
+      "skipped": 0,
+      "duration": "0.003s"
+    },
+    "com.wexpa.liquidglass.GlassRefinementTest.theSamePhysicalVelocityIsStableAcrossInputRates": {
+      "className": "com.wexpa.liquidglass.GlassRefinementTest",
+      "method": "theSamePhysicalVelocityIsStableAcrossInputRates",
+      "failures": 0,
+      "skipped": 0,
+      "duration": "0.001s"
+    },
+    "com.wexpa.liquidglass.GlassRestLayoutTest.compactEndToEndTapsRecoverToTheDeclaredAnchors": {
+      "className": "com.wexpa.liquidglass.GlassRestLayoutTest",
+      "method": "compactEndToEndTapsRecoverToTheDeclaredAnchors",
+      "failures": 0,
+      "skipped": 0,
+      "duration": "0.020s"
+    },
+    "com.wexpa.liquidglass.GlassRestLayoutTest.firstPublishedRestIsContainedAtEveryAnchorAcrossCompactLayouts": {
+      "className": "com.wexpa.liquidglass.GlassRestLayoutTest",
+      "method": "firstPublishedRestIsContainedAtEveryAnchorAcrossCompactLayouts",
+      "failures": 0,
+      "skipped": 0,
+      "duration": "0.006s"
+    },
+    "com.wexpa.liquidglass.GlassRestLayoutTest.layoutsWithEnoughSpaceKeepTheirDeclaredRestSize": {
+      "className": "com.wexpa.liquidglass.GlassRestLayoutTest",
+      "method": "layoutsWithEnoughSpaceKeepTheirDeclaredRestSize",
+      "failures": 0,
+      "skipped": 0,
+      "duration": "0.001s"
+    },
+    "com.wexpa.liquidglass.GlassRestLayoutTest.resizeFromHeldRebasesToAFeasibleRestWithoutChangingSelection": {
+      "className": "com.wexpa.liquidglass.GlassRestLayoutTest",
+      "method": "resizeFromHeldRebasesToAFeasibleRestWithoutChangingSelection",
+      "failures": 0,
+      "skipped": 0,
+      "duration": "0.005s"
+    },
+    "com.wexpa.liquidglass.GlassRestMapTest.testEveryJoinIsContinuousAndTheIdentityJoinHasSlopeOneOnBothSides": {
+      "className": "com.wexpa.liquidglass.GlassRestMapTest",
+      "method": "testEveryJoinIsContinuousAndTheIdentityJoinHasSlopeOneOnBothSides",
+      "failures": 0,
+      "skipped": 0,
+      "duration": "0s"
+    },
+    "com.wexpa.liquidglass.GlassRestMapTest.testFormationBlendsTheSelectedMapLinearlyTowardTheFoldWithoutAPop": {
+      "className": "com.wexpa.liquidglass.GlassRestMapTest",
+      "method": "testFormationBlendsTheSelectedMapLinearlyTowardTheFoldWithoutAPop",
+      "failures": 0,
+      "skipped": 0,
+      "duration": "1.673s"
+    },
+    "com.wexpa.liquidglass.GlassRestMapTest.testTheCandidateHasNoNewDiscontinuityAlongTheNormalOrAcrossTheCornerRunTransitionAndNeverSamplesOutward": {
+      "className": "com.wexpa.liquidglass.GlassRestMapTest",
+      "method": "testTheCandidateHasNoNewDiscontinuityAlongTheNormalOrAcrossTheCornerRunTransitionAndNeverSamplesOutward",
+      "failures": 0,
+      "skipped": 0,
+      "duration": "0.749s"
+    },
+    "com.wexpa.liquidglass.GlassRestMapTest.testTheCandidateRimSamplesInwardOnlyOverAHardBoundary": {
+      "className": "com.wexpa.liquidglass.GlassRestMapTest",
+      "method": "testTheCandidateRimSamplesInwardOnlyOverAHardBoundary",
+      "failures": 0,
+      "skipped": 0,
+      "duration": "0.115s"
+    },
+    "com.wexpa.liquidglass.GlassRestMapTest.testTheCompiledTableIsWithinAQuarterPixelOfTheFittedReferenceOnADenseGrid": {
+      "className": "com.wexpa.liquidglass.GlassRestMapTest",
+      "method": "testTheCompiledTableIsWithinAQuarterPixelOfTheFittedReferenceOnADenseGrid",
+      "failures": 0,
+      "skipped": 0,
+      "duration": "0.002s"
+    },
+    "com.wexpa.liquidglass.GlassRestMapTest.testTheCoordinateEncodingRoundTrips": {
+      "className": "com.wexpa.liquidglass.GlassRestMapTest",
+      "method": "testTheCoordinateEncodingRoundTrips",
+      "failures": 0,
+      "skipped": 0,
+      "duration": "0.001s"
+    },
+    "com.wexpa.liquidglass.GlassRestMapTest.testTheGeneratedShaderTextCarriesEveryKnot": {
+      "className": "com.wexpa.liquidglass.GlassRestMapTest",
+      "method": "testTheGeneratedShaderTextCarriesEveryKnot",
+      "failures": 0,
+      "skipped": 0,
+      "duration": "0.002s"
+    },
+    "com.wexpa.liquidglass.GlassRestMapTest.testTheKnotsAreUniqueFiniteStrictlyIncreasingAndEndOnIdentity": {
+      "className": "com.wexpa.liquidglass.GlassRestMapTest",
+      "method": "testTheKnotsAreUniqueFiniteStrictlyIncreasingAndEndOnIdentity",
+      "failures": 0,
+      "skipped": 0,
+      "duration": "0s"
+    },
+    "com.wexpa.liquidglass.GlassRestMapTest.testTheLegacyAndHeldProfilesKeepTheirDifferencedContentNormalForTheRecord": {
+      "className": "com.wexpa.liquidglass.GlassRestMapTest",
+      "method": "testTheLegacyAndHeldProfilesKeepTheirDifferencedContentNormalForTheRecord",
+      "failures": 0,
+      "skipped": 0,
+      "duration": "2.807s"
+    },
+    "com.wexpa.liquidglass.GlassRestMapTest.testTheOrientationIsOneMinimumWithSourceInsideTheDisplayDepthEverywhere": {
+      "className": "com.wexpa.liquidglass.GlassRestMapTest",
+      "method": "testTheOrientationIsOneMinimumWithSourceInsideTheDisplayDepthEverywhere",
+      "failures": 0,
+      "skipped": 0,
+      "duration": "0.003s"
+    },
+    "com.wexpa.liquidglass.GlassRestMapTest.testThePanelShaderReproducesTheTableAtTheReferenceSizeAndTheVitalsSizeAtThreeRenderScales": {
+      "className": "com.wexpa.liquidglass.GlassRestMapTest",
+      "method": "testThePanelShaderReproducesTheTableAtTheReferenceSizeAndTheVitalsSizeAtThreeRenderScales",
+      "failures": 0,
+      "skipped": 0,
+      "duration": "3.639s"
+    },
+    "com.wexpa.liquidglass.GlassRestMapTest.testThePositionalConstructorPrefixIsUnchangedAndTheDefaultRestMapIsLegacy": {
+      "className": "com.wexpa.liquidglass.GlassRestMapTest",
+      "method": "testThePositionalConstructorPrefixIsUnchangedAndTheDefaultRestMapIsLegacy",
+      "failures": 0,
+      "skipped": 0,
+      "duration": "0s"
+    },
+    "com.wexpa.liquidglass.GlassRestMapTest.testTheSelectorLeavesTheFullFoldAndTheHeldFamilyUntouched": {
+      "className": "com.wexpa.liquidglass.GlassRestMapTest",
+      "method": "testTheSelectorLeavesTheFullFoldAndTheHeldFamilyUntouched",
+      "failures": 0,
+      "skipped": 0,
+      "duration": "8.437s"
+    },
+    "com.wexpa.liquidglass.GlassRestMapTest.testTheThreeShadersSampleFromTheSamePlaceOnTheMeasuredProfile": {
+      "className": "com.wexpa.liquidglass.GlassRestMapTest",
+      "method": "testTheThreeShadersSampleFromTheSamePlaceOnTheMeasuredProfile",
+      "failures": 0,
+      "skipped": 0,
+      "duration": "1m9.88s"
+    },
+    "com.wexpa.liquidglass.GlassRestTapReferenceTest.calmLongTapKeepsTheOriginalArrivalRecovery": {
+      "className": "com.wexpa.liquidglass.GlassRestTapReferenceTest",
+      "method": "calmLongTapKeepsTheOriginalArrivalRecovery",
+      "failures": 0,
+      "skipped": 0,
+      "duration": "0.015s"
+    },
+    "com.wexpa.liquidglass.GlassRestTapReferenceTest.longTapHasBoundedShapeRecoveryWithoutBecomingAHeldGesture": {
+      "className": "com.wexpa.liquidglass.GlassRestTapReferenceTest",
+      "method": "longTapHasBoundedShapeRecoveryWithoutBecomingAHeldGesture",
+      "failures": 0,
+      "skipped": 0,
+      "duration": "0.061s"
+    },
+    "com.wexpa.liquidglass.GlassRestTapReferenceTest.settledRestAndTransitHaveDifferentEnvelopes": {
+      "className": "com.wexpa.liquidglass.GlassRestTapReferenceTest",
+      "method": "settledRestAndTransitHaveDifferentEnvelopes",
+      "failures": 0,
+      "skipped": 0,
+      "duration": "0s"
+    },
+    "com.wexpa.liquidglass.GlassRobustnessTest.aBarNarrowerThanItsInsetsHasOrderedCentresAndNeverThrows": {
+      "className": "com.wexpa.liquidglass.GlassRobustnessTest",
+      "method": "aBarNarrowerThanItsInsetsHasOrderedCentresAndNeverThrows",
+      "failures": 0,
+      "skipped": 0,
+      "duration": "0.001s"
+    },
+    "com.wexpa.liquidglass.GlassSampleBoundsTest.testAPanelOverTheBackdropHasARegion": {
+      "className": "com.wexpa.liquidglass.GlassSampleBoundsTest",
+      "method": "testAPanelOverTheBackdropHasARegion",
+      "failures": 0,
+      "skipped": 0,
+      "duration": "0s"
+    },
+    "com.wexpa.liquidglass.GlassSampleBoundsTest.testBoundsAreNeverInverted": {
+      "className": "com.wexpa.liquidglass.GlassSampleBoundsTest",
+      "method": "testBoundsAreNeverInverted",
+      "failures": 0,
+      "skipped": 0,
+      "duration": "0.001s"
+    },
+    "com.wexpa.liquidglass.GlassSelectorBodyTest.aFeasibleRequestIsReturnedUntouched": {
+      "className": "com.wexpa.liquidglass.GlassSelectorBodyTest",
+      "method": "aFeasibleRequestIsReturnedUntouched",
+      "failures": 0,
+      "skipped": 0,
+      "duration": "0.001s"
+    },
+    "com.wexpa.liquidglass.GlassSelectorBodyTest.atZeroSkewTheBodyIsExactlyACapsule": {
+      "className": "com.wexpa.liquidglass.GlassSelectorBodyTest",
+      "method": "atZeroSkewTheBodyIsExactlyACapsule",
+      "failures": 0,
+      "skipped": 0,
+      "duration": "0.005s"
+    },
+    "com.wexpa.liquidglass.GlassSelectorBodyTest.endAsymmetryNeverMovesTheDeclaredHorizontalCentre": {
+      "className": "com.wexpa.liquidglass.GlassSelectorBodyTest",
+      "method": "endAsymmetryNeverMovesTheDeclaredHorizontalCentre",
+      "failures": 0,
+      "skipped": 0,
+      "duration": "0s"
+    },
+    "com.wexpa.liquidglass.GlassSelectorBodyTest.theAnalyticQueryMatchesADenseBoundaryOracleAwayFromMedialTies": {
+      "className": "com.wexpa.liquidglass.GlassSelectorBodyTest",
+      "method": "theAnalyticQueryMatchesADenseBoundaryOracleAwayFromMedialTies",
+      "failures": 0,
+      "skipped": 0,
+      "duration": "4.378s"
+    },
+    "com.wexpa.liquidglass.GlassSelectorBodyTest.theCriticalCentrePredictionOfSectionSixHolds": {
+      "className": "com.wexpa.liquidglass.GlassSelectorBodyTest",
+      "method": "theCriticalCentrePredictionOfSectionSixHolds",
+      "failures": 0,
+      "skipped": 0,
+      "duration": "0.001s"
+    },
+    "com.wexpa.liquidglass.GlassSelectorBodyTest.theInscribedPolygonIsConservativeAtEveryRadius": {
+      "className": "com.wexpa.liquidglass.GlassSelectorBodyTest",
+      "method": "theInscribedPolygonIsConservativeAtEveryRadius",
+      "failures": 0,
+      "skipped": 0,
+      "duration": "0.007s"
+    },
+    "com.wexpa.liquidglass.GlassSelectorBodyTest.theProjectionContainsTheWholeContourNotJustItsCentre": {
+      "className": "com.wexpa.liquidglass.GlassSelectorBodyTest",
+      "method": "theProjectionContainsTheWholeContourNotJustItsCentre",
+      "failures": 0,
+      "skipped": 0,
+      "duration": "0.045s"
+    },
+    "com.wexpa.liquidglass.GlassSelectorBodyTest.theSpringStepsExactlyRatherThanByFixedIncrements": {
+      "className": "com.wexpa.liquidglass.GlassSelectorBodyTest",
+      "method": "theSpringStepsExactlyRatherThanByFixedIncrements",
+      "failures": 0,
+      "skipped": 0,
+      "duration": "0s"
+    },
+    "com.wexpa.liquidglass.GlassSelectorBodyTest.velocityProjectionRemovesOutwardMotionAndNeverAddsSpeed": {
+      "className": "com.wexpa.liquidglass.GlassSelectorBodyTest",
+      "method": "velocityProjectionRemovesOutwardMotionAndNeverAddsSpeed",
+      "failures": 0,
+      "skipped": 0,
+      "duration": "0.020s"
+    },
+    "com.wexpa.liquidglass.GlassSelectorControllerTest.aDelayedFrameProducesNoStaleFlingAndNoInfiniteState": {
+      "className": "com.wexpa.liquidglass.GlassSelectorControllerTest",
+      "method": "aDelayedFrameProducesNoStaleFlingAndNoInfiniteState",
+      "failures": 0,
+      "skipped": 0,
+      "duration": "0.074s"
+    },
+    "com.wexpa.liquidglass.GlassSelectorControllerTest.aHoldMayLeaveTheBarAndRecoversContinuouslyOnRelease": {
+      "className": "com.wexpa.liquidglass.GlassSelectorControllerTest",
+      "method": "aHoldMayLeaveTheBarAndRecoversContinuouslyOnRelease",
+      "failures": 0,
+      "skipped": 0,
+      "duration": "0.009s"
+    },
+    "com.wexpa.liquidglass.GlassSelectorControllerTest.aLongerTapDrivesMoreExtraLengthThanAShortOne": {
+      "className": "com.wexpa.liquidglass.GlassSelectorControllerTest",
+      "method": "aLongerTapDrivesMoreExtraLengthThanAShortOne",
+      "failures": 0,
+      "skipped": 0,
+      "duration": "0.016s"
+    },
+    "com.wexpa.liquidglass.GlassSelectorControllerTest.anOrdinaryTapStaysInsideTheBarAndNeverFormsTheHeldLens": {
+      "className": "com.wexpa.liquidglass.GlassSelectorControllerTest",
+      "method": "anOrdinaryTapStaysInsideTheBarAndNeverFormsTheHeldLens",
+      "failures": 0,
+      "skipped": 0,
+      "duration": "0.028s"
+    },
+    "com.wexpa.liquidglass.GlassSelectorControllerTest.aRetargetMidFlightKeepsTheValuesAndVelocitiesItAlreadyHad": {
+      "className": "com.wexpa.liquidglass.GlassSelectorControllerTest",
+      "method": "aRetargetMidFlightKeepsTheValuesAndVelocitiesItAlreadyHad",
+      "failures": 0,
+      "skipped": 0,
+      "duration": "0.008s"
+    },
+    "com.wexpa.liquidglass.GlassSelectorControllerTest.aStationaryFingerStillGrowsTheBodyAroundTheLabelItIsOver": {
+      "className": "com.wexpa.liquidglass.GlassSelectorControllerTest",
+      "method": "aStationaryFingerStillGrowsTheBodyAroundTheLabelItIsOver",
+      "failures": 0,
+      "skipped": 0,
+      "duration": "0.010s"
+    },
+    "com.wexpa.liquidglass.GlassSelectorControllerTest.everySubstepIsContainedNotJustEveryRenderedFrame": {
+      "className": "com.wexpa.liquidglass.GlassSelectorControllerTest",
+      "method": "everySubstepIsContainedNotJustEveryRenderedFrame",
+      "failures": 0,
+      "skipped": 0,
+      "duration": "0.002s"
+    },
+    "com.wexpa.liquidglass.GlassSelectorControllerTest.reducedMotionKeepsTheBodyStillAndFlat": {
+      "className": "com.wexpa.liquidglass.GlassSelectorControllerTest",
+      "method": "reducedMotionKeepsTheBodyStillAndFlat",
+      "failures": 0,
+      "skipped": 0,
+      "duration": "0.003s"
+    },
+    "com.wexpa.liquidglass.GlassSelectorControllerTest.theSameTimestampsGiveTheSameGeometryAtSixtyNinetyAndOneHundredAndTwenty": {
+      "className": "com.wexpa.liquidglass.GlassSelectorControllerTest",
+      "method": "theSameTimestampsGiveTheSameGeometryAtSixtyNinetyAndOneHundredAndTwenty",
+      "failures": 0,
+      "skipped": 0,
+      "duration": "0.007s"
+    },
+    "com.wexpa.liquidglass.GlassSelectorControllerTest.theTrailingEndLagsGoingOutAndTheArrivingEndBulgesComingIn": {
+      "className": "com.wexpa.liquidglass.GlassSelectorControllerTest",
+      "method": "theTrailingEndLagsGoingOutAndTheArrivingEndBulgesComingIn",
+      "failures": 0,
+      "skipped": 0,
+      "duration": "0.010s"
+    },
+    "com.wexpa.liquidglass.GlassSelectorLifetimeTest.aCappedGraspContributesNoGrowthVelocity": {
+      "className": "com.wexpa.liquidglass.GlassSelectorLifetimeTest",
+      "method": "aCappedGraspContributesNoGrowthVelocity",
+      "failures": 0,
+      "skipped": 0,
+      "duration": "0.001s"
+    },
+    "com.wexpa.liquidglass.GlassSelectorLifetimeTest.aClockRestartDoesNotRewindTheHoldThreshold": {
+      "className": "com.wexpa.liquidglass.GlassSelectorLifetimeTest",
+      "method": "aClockRestartDoesNotRewindTheHoldThreshold",
+      "failures": 0,
+      "skipped": 0,
+      "duration": "0.003s"
+    },
+    "com.wexpa.liquidglass.GlassSelectorLifetimeTest.aConstraintBufferOverflowIsTreatedAsAFailure": {
+      "className": "com.wexpa.liquidglass.GlassSelectorLifetimeTest",
+      "method": "aConstraintBufferOverflowIsTreatedAsAFailure",
+      "failures": 0,
+      "skipped": 0,
+      "duration": "0s"
+    },
+    "com.wexpa.liquidglass.GlassSelectorLifetimeTest.acquiringAGraspWhileAlreadyMovingDoesNotStepTheCentre": {
+      "className": "com.wexpa.liquidglass.GlassSelectorLifetimeTest",
+      "method": "acquiringAGraspWhileAlreadyMovingDoesNotStepTheCentre",
+      "failures": 0,
+      "skipped": 0,
+      "duration": "0s"
+    },
+    "com.wexpa.liquidglass.GlassSelectorLifetimeTest.aDensityChangeWithTheSameOuterWidthIsStillARebase": {
+      "className": "com.wexpa.liquidglass.GlassSelectorLifetimeTest",
+      "method": "aDensityChangeWithTheSameOuterWidthIsStillARebase",
+      "failures": 0,
+      "skipped": 0,
+      "duration": "0.001s"
+    },
+    "com.wexpa.liquidglass.GlassSelectorLifetimeTest.aLateFrameWithNoFingerStillRecovers": {
+      "className": "com.wexpa.liquidglass.GlassSelectorLifetimeTest",
+      "method": "aLateFrameWithNoFingerStillRecovers",
+      "failures": 0,
+      "skipped": 0,
+      "duration": "0.001s"
+    },
+    "com.wexpa.liquidglass.GlassSelectorLifetimeTest.anInkOnlyRevisionKeepsTheHold": {
+      "className": "com.wexpa.liquidglass.GlassSelectorLifetimeTest",
+      "method": "anInkOnlyRevisionKeepsTheHold",
+      "failures": 0,
+      "skipped": 0,
+      "duration": "0.003s"
+    },
+    "com.wexpa.liquidglass.GlassSelectorLifetimeTest.anItemCountChangeRebasesToAValidItem": {
+      "className": "com.wexpa.liquidglass.GlassSelectorLifetimeTest",
+      "method": "anItemCountChangeRebasesToAValidItem",
+      "failures": 0,
+      "skipped": 0,
+      "duration": "0s"
+    },
+    "com.wexpa.liquidglass.GlassSelectorLifetimeTest.anOrdinaryTapNeverAcquiresAHeldAllowance": {
+      "className": "com.wexpa.liquidglass.GlassSelectorLifetimeTest",
+      "method": "anOrdinaryTapNeverAcquiresAHeldAllowance",
+      "failures": 0,
+      "skipped": 0,
+      "duration": "0.001s"
+    },
+    "com.wexpa.liquidglass.GlassSelectorLifetimeTest.anUncappedGraspCarriesTheFullGrowthTerm": {
+      "className": "com.wexpa.liquidglass.GlassSelectorLifetimeTest",
+      "method": "anUncappedGraspCarriesTheFullGrowthTerm",
+      "failures": 0,
+      "skipped": 0,
+      "duration": "0s"
+    },
+    "com.wexpa.liquidglass.GlassSelectorLifetimeTest.aRebaseDuringReleaseLeavesNoInheritedAllowance": {
+      "className": "com.wexpa.liquidglass.GlassSelectorLifetimeTest",
+      "method": "aRebaseDuringReleaseLeavesNoInheritedAllowance",
+      "failures": 0,
+      "skipped": 0,
+      "duration": "0.002s"
+    },
+    "com.wexpa.liquidglass.GlassSelectorLifetimeTest.aRecreatedControllerStartsCleanOnTheNewLayout": {
+      "className": "com.wexpa.liquidglass.GlassSelectorLifetimeTest",
+      "method": "aRecreatedControllerStartsCleanOnTheNewLayout",
+      "failures": 0,
+      "skipped": 0,
+      "duration": "0.004s"
+    },
+    "com.wexpa.liquidglass.GlassSelectorLifetimeTest.aRelaxingOffsetContributesItsOwnVelocity": {
+      "className": "com.wexpa.liquidglass.GlassSelectorLifetimeTest",
+      "method": "aRelaxingOffsetContributesItsOwnVelocity",
+      "failures": 0,
+      "skipped": 0,
+      "duration": "0.001s"
+    },
+    "com.wexpa.liquidglass.GlassSelectorLifetimeTest.aResizeAtRestMovesTheBodyToTheNewAnchor": {
+      "className": "com.wexpa.liquidglass.GlassSelectorLifetimeTest",
+      "method": "aResizeAtRestMovesTheBodyToTheNewAnchor",
+      "failures": 0,
+      "skipped": 0,
+      "duration": "0s"
+    },
+    "com.wexpa.liquidglass.GlassSelectorLifetimeTest.aResizeWhileHeldClearsGestureOwnership": {
+      "className": "com.wexpa.liquidglass.GlassSelectorLifetimeTest",
+      "method": "aResizeWhileHeldClearsGestureOwnership",
+      "failures": 0,
+      "skipped": 0,
+      "duration": "0.003s"
+    },
+    "com.wexpa.liquidglass.GlassSelectorLifetimeTest.aResizeWhileTravellingLandsOnTheNewAnchor": {
+      "className": "com.wexpa.liquidglass.GlassSelectorLifetimeTest",
+      "method": "aResizeWhileTravellingLandsOnTheNewAnchor",
+      "failures": 0,
+      "skipped": 0,
+      "duration": "0.001s"
+    },
+    "com.wexpa.liquidglass.GlassSelectorLifetimeTest.aRewoundClockDoesNotRewindTheReleaseAge": {
+      "className": "com.wexpa.liquidglass.GlassSelectorLifetimeTest",
+      "method": "aRewoundClockDoesNotRewindTheReleaseAge",
+      "failures": 0,
+      "skipped": 0,
+      "duration": "0.003s"
+    },
+    "com.wexpa.liquidglass.GlassSelectorLifetimeTest.aSolverFailurePublishesAFeasibleFallbackNotAnAdvancedPosition": {
+      "className": "com.wexpa.liquidglass.GlassSelectorLifetimeTest",
+      "method": "aSolverFailurePublishesAFeasibleFallbackNotAnAdvancedPosition",
+      "failures": 0,
+      "skipped": 0,
+      "duration": "0.003s"
+    },
+    "com.wexpa.liquidglass.GlassSelectorLifetimeTest.aStaticSolverFailureNeverPublishesAnInfeasibleBody": {
+      "className": "com.wexpa.liquidglass.GlassSelectorLifetimeTest",
+      "method": "aStaticSolverFailureNeverPublishesAnInfeasibleBody",
+      "failures": 0,
+      "skipped": 0,
+      "duration": "0.001s"
+    },
+    "com.wexpa.liquidglass.GlassSelectorLifetimeTest.aStationaryHeldFingerSurvivesASuspendedLoop": {
+      "className": "com.wexpa.liquidglass.GlassSelectorLifetimeTest",
+      "method": "aStationaryHeldFingerSurvivesASuspendedLoop",
+      "failures": 0,
+      "skipped": 0,
+      "duration": "0.001s"
+    },
+    "com.wexpa.liquidglass.GlassSelectorLifetimeTest.aStationaryHoldAdmitsAtMostOneNeighbour": {
+      "className": "com.wexpa.liquidglass.GlassSelectorLifetimeTest",
+      "method": "aStationaryHoldAdmitsAtMostOneNeighbour",
+      "failures": 0,
+      "skipped": 0,
+      "duration": "0.002s"
+    },
+    "com.wexpa.liquidglass.GlassSelectorLifetimeTest.aStationaryHoldCoversTheAdmittedLabelInTwoDimensions": {
+      "className": "com.wexpa.liquidglass.GlassSelectorLifetimeTest",
+      "method": "aStationaryHoldCoversTheAdmittedLabelInTwoDimensions",
+      "failures": 0,
+      "skipped": 0,
+      "duration": "0.004s"
+    },
+    "com.wexpa.liquidglass.GlassSelectorLifetimeTest.crossingSlopAfterTheThresholdDoesNotReAcquireTheGrasp": {
+      "className": "com.wexpa.liquidglass.GlassSelectorLifetimeTest",
+      "method": "crossingSlopAfterTheThresholdDoesNotReAcquireTheGrasp",
+      "failures": 0,
+      "skipped": 0,
+      "duration": "0s"
+    },
+    "com.wexpa.liquidglass.GlassSelectorLifetimeTest.disablingMotionMidGestureCancelsOwnershipWithoutSelecting": {
+      "className": "com.wexpa.liquidglass.GlassSelectorLifetimeTest",
+      "method": "disablingMotionMidGestureCancelsOwnershipWithoutSelecting",
+      "failures": 0,
+      "skipped": 0,
+      "duration": "0.001s"
+    },
+    "com.wexpa.liquidglass.GlassSelectorLifetimeTest.everyActiveMovingRowRespectsItsOwnAllowanceVelocity": {
+      "className": "com.wexpa.liquidglass.GlassSelectorLifetimeTest",
+      "method": "everyActiveMovingRowRespectsItsOwnAllowanceVelocity",
+      "failures": 0,
+      "skipped": 0,
+      "duration": "0.004s"
+    },
+    "com.wexpa.liquidglass.GlassSelectorLifetimeTest.storedCentreVelocityIsThePositionDerivativeUnderAStationaryFinger": {
+      "className": "com.wexpa.liquidglass.GlassSelectorLifetimeTest",
+      "method": "storedCentreVelocityIsThePositionDerivativeUnderAStationaryFinger",
+      "failures": 0,
+      "skipped": 0,
+      "duration": "0.002s"
+    },
+    "com.wexpa.liquidglass.GlassSelectorLifetimeTest.theDeviceLayoutAccommodatesItsLongestLabelAtALargerFontSetting": {
+      "className": "com.wexpa.liquidglass.GlassSelectorLifetimeTest",
+      "method": "theDeviceLayoutAccommodatesItsLongestLabelAtALargerFontSetting",
+      "failures": 0,
+      "skipped": 0,
+      "duration": "0.004s"
+    },
+    "com.wexpa.liquidglass.GlassSelectorOwnerRegressionTest.accommodationAndVelocityTogetherCannotRecruitThreeIconCentres": {
+      "className": "com.wexpa.liquidglass.GlassSelectorOwnerRegressionTest",
+      "method": "accommodationAndVelocityTogetherCannotRecruitThreeIconCentres",
+      "failures": 0,
+      "skipped": 0,
+      "duration": "0.016s"
+    },
+    "com.wexpa.liquidglass.GlassSelectorOwnerRegressionTest.aQuickTapDoesNotUseTheSlowerHeldRecovery": {
+      "className": "com.wexpa.liquidglass.GlassSelectorOwnerRegressionTest",
+      "method": "aQuickTapDoesNotUseTheSlowerHeldRecovery",
+      "failures": 0,
+      "skipped": 0,
+      "duration": "0.005s"
+    },
+    "com.wexpa.liquidglass.GlassSelectorOwnerRegressionTest.bothOutermostTabsRemainReachableWithAnAccommodatedBody": {
+      "className": "com.wexpa.liquidglass.GlassSelectorOwnerRegressionTest",
+      "method": "bothOutermostTabsRemainReachableWithAnAccommodatedBody",
+      "failures": 0,
+      "skipped": 0,
+      "duration": "0.003s"
+    },
+    "com.wexpa.liquidglass.GlassSelectorOwnerRegressionTest.endRecoveryHasOneShapeAndPositionPhaseRatherThanASecondStretch": {
+      "className": "com.wexpa.liquidglass.GlassSelectorOwnerRegressionTest",
+      "method": "endRecoveryHasOneShapeAndPositionPhaseRatherThanASecondStretch",
+      "failures": 0,
+      "skipped": 0,
+      "duration": "0.003s"
+    },
+    "com.wexpa.liquidglass.GlassSelectorOwnerRegressionTest.regrabbingDuringRecoveryReplacesItsShrinkingWalls": {
+      "className": "com.wexpa.liquidglass.GlassSelectorOwnerRegressionTest",
+      "method": "regrabbingDuringRecoveryReplacesItsShrinkingWalls",
+      "failures": 0,
+      "skipped": 0,
+      "duration": "0.003s"
+    },
+    "com.wexpa.liquidglass.GlassSelectorOwnerRegressionTest.stoppedEndReleaseShrinksAndTranslatesTogetherInBothDirections": {
+      "className": "com.wexpa.liquidglass.GlassSelectorOwnerRegressionTest",
+      "method": "stoppedEndReleaseShrinksAndTranslatesTogetherInBothDirections",
+      "failures": 0,
+      "skipped": 0,
+      "duration": "0.013s"
+    },
+    "com.wexpa.liquidglass.GlassSelectorOwnerRegressionTest.weeksOfDeviceUptimeCannotQuantizeDragVelocityOrDeformation": {
+      "className": "com.wexpa.liquidglass.GlassSelectorOwnerRegressionTest",
+      "method": "weeksOfDeviceUptimeCannotQuantizeDragVelocityOrDeformation",
+      "failures": 0,
+      "skipped": 0,
+      "duration": "0.004s"
+    },
+    "com.wexpa.liquidglass.GlassShaderBundleTest.portableSourcesMatchProduction": {
+      "className": "com.wexpa.liquidglass.GlassShaderBundleTest",
+      "method": "portableSourcesMatchProduction",
+      "failures": 0,
+      "skipped": 0,
+      "duration": "0.371s"
+    },
+    "com.wexpa.liquidglass.GlassShaderTest.testEveryUniformTheHostSetsExistsInTheShader": {
+      "className": "com.wexpa.liquidglass.GlassShaderTest",
+      "method": "testEveryUniformTheHostSetsExistsInTheShader",
+      "failures": 0,
+      "skipped": 0,
+      "duration": "0.003s"
+    },
+    "com.wexpa.liquidglass.GlassShaderTest.testShaderCompiles": {
+      "className": "com.wexpa.liquidglass.GlassShaderTest",
+      "method": "testShaderCompiles",
+      "failures": 0,
+      "skipped": 0,
+      "duration": "0.009s"
+    },
+    "com.wexpa.liquidglass.GlassShadowTest.testShadowDeepensWithSizeAndWithBusyContent": {
+      "className": "com.wexpa.liquidglass.GlassShadowTest",
+      "method": "testShadowDeepensWithSizeAndWithBusyContent",
+      "failures": 0,
+      "skipped": 0,
+      "duration": "0.001s"
+    },
+    "com.wexpa.liquidglass.GlassStyleMorphTest.testDecisionsSnapRatherThanBlend": {
+      "className": "com.wexpa.liquidglass.GlassStyleMorphTest",
+      "method": "testDecisionsSnapRatherThanBlend",
+      "failures": 0,
+      "skipped": 0,
+      "duration": "0.001s"
+    },
+    "com.wexpa.liquidglass.GlassStyleMorphTest.testInterpolationHitsBothEnds": {
+      "className": "com.wexpa.liquidglass.GlassStyleMorphTest",
+      "method": "testInterpolationHitsBothEnds",
+      "failures": 0,
+      "skipped": 0,
+      "duration": "0s"
+    },
+    "com.wexpa.liquidglass.GlassStyleMorphTest.testTheEdgeParametersTravelWithTheMorph": {
+      "className": "com.wexpa.liquidglass.GlassStyleMorphTest",
+      "method": "testTheEdgeParametersTravelWithTheMorph",
+      "failures": 0,
+      "skipped": 0,
+      "duration": "0s"
+    },
+    "com.wexpa.liquidglass.GlassSurfaceDesktopTest.desktopPressIsPreservedWhileOnlyLargeSurfaceDragBecomesSubtle": {
+      "className": "com.wexpa.liquidglass.GlassSurfaceDesktopTest",
+      "method": "desktopPressIsPreservedWhileOnlyLargeSurfaceDragBecomesSubtle",
+      "failures": 0,
+      "skipped": 0,
+      "duration": "2m11.25s"
+    },
+    "com.wexpa.liquidglass.GlassSurfacePullTest.largeSurfaceDragAddsAtMostOneDpPerEdgeInEveryDirection": {
+      "className": "com.wexpa.liquidglass.GlassSurfacePullTest",
+      "method": "largeSurfaceDragAddsAtMostOneDpPerEdgeInEveryDirection",
+      "failures": 0,
+      "skipped": 0,
+      "duration": "0.002s"
+    },
+    "com.wexpa.liquidglass.GlassSurfacePullTest.settingsAndOriginalSmallControlsKeepTheirExistingResponse": {
+      "className": "com.wexpa.liquidglass.GlassSurfacePullTest",
+      "method": "settingsAndOriginalSmallControlsKeepTheirExistingResponse",
+      "failures": 0,
+      "skipped": 0,
+      "duration": "0.001s"
+    },
+    "com.wexpa.liquidglass.GlassSurfacePullTest.sizeTransitionAndTinyDragAreContinuousAndIdleRemainsUnchanged": {
+      "className": "com.wexpa.liquidglass.GlassSurfacePullTest",
+      "method": "sizeTransitionAndTinyDragAreContinuousAndIdleRemainsUnchanged",
+      "failures": 0,
+      "skipped": 0,
+      "duration": "0s"
+    },
+    "com.wexpa.liquidglass.GlassSurfacePullTest.theLargeSurfaceGainHasNoStepAtTheOrigin": {
+      "className": "com.wexpa.liquidglass.GlassSurfacePullTest",
+      "method": "theLargeSurfaceGainHasNoStepAtTheOrigin",
+      "failures": 0,
+      "skipped": 0,
+      "duration": "0.001s"
+    },
+    "com.wexpa.liquidglass.GlassTabBarCalmGestureTest.aCancelAfterCrossingTabsSelectsNothingAndSettlesBack": {
+      "className": "com.wexpa.liquidglass.GlassTabBarCalmGestureTest",
+      "method": "aCancelAfterCrossingTabsSelectsNothingAndSettlesBack",
+      "failures": 0,
+      "skipped": 0,
+      "duration": "7.906s"
+    },
+    "com.wexpa.liquidglass.GlassTabBarCalmGestureTest.aCancelBeforeSlopSelectsNothingAndReleases": {
+      "className": "com.wexpa.liquidglass.GlassTabBarCalmGestureTest",
+      "method": "aCancelBeforeSlopSelectsNothingAndReleases",
+      "failures": 0,
+      "skipped": 0,
+      "duration": "17.305s"
+    },
+    "com.wexpa.liquidglass.GlassTabBarCalmGestureTest.aDeclinedDragReturnsTheSelectorToTheSelectionTheHostHolds": {
+      "className": "com.wexpa.liquidglass.GlassTabBarCalmGestureTest",
+      "method": "aDeclinedDragReturnsTheSelectorToTheSelectionTheHostHolds",
+      "failures": 0,
+      "skipped": 0,
+      "duration": "14.096s"
+    },
+    "com.wexpa.liquidglass.GlassTabBarCalmGestureTest.aDeclinedTapReturnsTheSelectorToTheSelectionTheHostHolds": {
+      "className": "com.wexpa.liquidglass.GlassTabBarCalmGestureTest",
+      "method": "aDeclinedTapReturnsTheSelectorToTheSelectionTheHostHolds",
+      "failures": 0,
+      "skipped": 0,
+      "duration": "29.062s"
+    },
+    "com.wexpa.liquidglass.GlassTabBarCalmGestureTest.aDragThatStopsHoldsAndLiftsCommitsTheTabUnderTheLensWithoutAFling": {
+      "className": "com.wexpa.liquidglass.GlassTabBarCalmGestureTest",
+      "method": "aDragThatStopsHoldsAndLiftsCommitsTheTabUnderTheLensWithoutAFling",
+      "failures": 0,
+      "skipped": 0,
+      "duration": "18.801s"
+    },
+    "com.wexpa.liquidglass.GlassTabBarCalmGestureTest.aFastLiftFlingsToTheNextTab": {
+      "className": "com.wexpa.liquidglass.GlassTabBarCalmGestureTest",
+      "method": "aFastLiftFlingsToTheNextTab",
+      "failures": 0,
+      "skipped": 0,
+      "duration": "9.697s"
+    },
+    "com.wexpa.liquidglass.GlassTabBarCalmGestureTest.aSecondFingerTakingOverCancelsTheDragInsteadOfCommittingWithStaleVelocity": {
+      "className": "com.wexpa.liquidglass.GlassTabBarCalmGestureTest",
+      "method": "aSecondFingerTakingOverCancelsTheDragInsteadOfCommittingWithStaleVelocity",
+      "failures": 0,
+      "skipped": 0,
+      "duration": "4.788s"
+    },
+    "com.wexpa.liquidglass.GlassTabBarCalmGestureTest.aSecondTapAfterAReleaseIsASecondCallbackAndNothingSticks": {
+      "className": "com.wexpa.liquidglass.GlassTabBarCalmGestureTest",
+      "method": "aSecondTapAfterAReleaseIsASecondCallbackAndNothingSticks",
+      "failures": 0,
+      "skipped": 0,
+      "duration": "16.355s"
+    },
+    "com.wexpa.liquidglass.GlassTabBarCalmGestureTest.aTakeoverAfterAFlingLeavesTheCommittedSelectionAndReleases": {
+      "className": "com.wexpa.liquidglass.GlassTabBarCalmGestureTest",
+      "method": "aTakeoverAfterAFlingLeavesTheCommittedSelectionAndReleases",
+      "failures": 0,
+      "skipped": 0,
+      "duration": "9.240s"
+    },
+    "com.wexpa.liquidglass.GlassTabBarCalmGestureTest.aTapSelectsOnceThroughTheItem": {
+      "className": "com.wexpa.liquidglass.GlassTabBarCalmGestureTest",
+      "method": "aTapSelectsOnceThroughTheItem",
+      "failures": 0,
+      "skipped": 0,
+      "duration": "11.190s"
+    },
+    "com.wexpa.liquidglass.GlassTabBarCalmGestureTest.aVerticalScrollInAScrollingParentTakesTheGestureWithoutASelection": {
+      "className": "com.wexpa.liquidglass.GlassTabBarCalmGestureTest",
+      "method": "aVerticalScrollInAScrollingParentTakesTheGestureWithoutASelection",
+      "failures": 0,
+      "skipped": 0,
+      "duration": "11.889s"
+    },
+    "com.wexpa.liquidglass.GlassTabBarCalmGestureTest.tappingTheSelectedTabIsOneCallbackAndStaysPut": {
+      "className": "com.wexpa.liquidglass.GlassTabBarCalmGestureTest",
+      "method": "tappingTheSelectedTabIsOneCallbackAndStaysPut",
+      "failures": 0,
+      "skipped": 0,
+      "duration": "4.540s"
+    },
+    "com.wexpa.liquidglass.GlassTabBarCalmGestureTest.theInteractiveRowIsOneGroupOfTabsWithTheSelectionReported": {
+      "className": "com.wexpa.liquidglass.GlassTabBarCalmGestureTest",
+      "method": "theInteractiveRowIsOneGroupOfTabsWithTheSelectionReported",
+      "failures": 0,
+      "skipped": 0,
+      "duration": "0.152s"
+    },
+    "com.wexpa.liquidglass.GlassTabBarCalmGestureTest.withMotionDisabledATapStillSelectsOnceAndADragSelectsNothing": {
+      "className": "com.wexpa.liquidglass.GlassTabBarCalmGestureTest",
+      "method": "withMotionDisabledATapStillSelectsOnceAndADragSelectsNothing",
+      "failures": 0,
+      "skipped": 0,
+      "duration": "4.553s"
+    },
+    "com.wexpa.liquidglass.GlassTabBarCountChangeTest.capsule": {
+      "className": "com.wexpa.liquidglass.GlassTabBarCountChangeTest",
+      "method": "capsule",
+      "failures": 0,
+      "skipped": 0,
+      "duration": "3.123s"
+    },
+    "com.wexpa.liquidglass.GlassTabBarCountChangeTest.v3": {
+      "className": "com.wexpa.liquidglass.GlassTabBarCountChangeTest",
+      "method": "v3",
+      "failures": 0,
+      "skipped": 0,
+      "duration": "0.602s"
+    },
+    "com.wexpa.liquidglass.GlassTabBarGeometryTest.testAFlickCarriesOneItemAndNeverPastTheEnds": {
+      "className": "com.wexpa.liquidglass.GlassTabBarGeometryTest",
+      "method": "testAFlickCarriesOneItemAndNeverPastTheEnds",
+      "failures": 0,
+      "skipped": 0,
+      "duration": "0s"
+    },
+    "com.wexpa.liquidglass.GlassTabBarGeometryTest.testCentresAreSymmetricAboutTheBar": {
+      "className": "com.wexpa.liquidglass.GlassTabBarGeometryTest",
+      "method": "testCentresAreSymmetricAboutTheBar",
+      "failures": 0,
+      "skipped": 0,
+      "duration": "0s"
+    },
+    "com.wexpa.liquidglass.GlassTabBarGeometryTest.testNearestIndexRoundTripsEveryCentreAndClampsTheEnds": {
+      "className": "com.wexpa.liquidglass.GlassTabBarGeometryTest",
+      "method": "testNearestIndexRoundTripsEveryCentreAndClampsTheEnds",
+      "failures": 0,
+      "skipped": 0,
+      "duration": "0s"
+    },
+    "com.wexpa.liquidglass.GlassTabBarGeometryTest.testSlotsShareTheBarInsideTheInset": {
+      "className": "com.wexpa.liquidglass.GlassTabBarGeometryTest",
+      "method": "testSlotsShareTheBarInsideTheInset",
+      "failures": 0,
+      "skipped": 0,
+      "duration": "0s"
+    },
+    "com.wexpa.liquidglass.GlassTabBarGestureTest.aCancelAfterCrossingTabsSelectsNothingAndSettlesBack": {
+      "className": "com.wexpa.liquidglass.GlassTabBarGestureTest",
+      "method": "aCancelAfterCrossingTabsSelectsNothingAndSettlesBack",
+      "failures": 0,
+      "skipped": 0,
+      "duration": "5.616s"
+    },
+    "com.wexpa.liquidglass.GlassTabBarGestureTest.aCancelBeforeSlopSelectsNothingAndReleases": {
+      "className": "com.wexpa.liquidglass.GlassTabBarGestureTest",
+      "method": "aCancelBeforeSlopSelectsNothingAndReleases",
+      "failures": 0,
+      "skipped": 0,
+      "duration": "6.577s"
+    },
+    "com.wexpa.liquidglass.GlassTabBarGestureTest.aDeclinedDragReturnsTheSelectorToTheSelectionTheHostHolds": {
+      "className": "com.wexpa.liquidglass.GlassTabBarGestureTest",
+      "method": "aDeclinedDragReturnsTheSelectorToTheSelectionTheHostHolds",
+      "failures": 0,
+      "skipped": 0,
+      "duration": "34.013s"
+    },
+    "com.wexpa.liquidglass.GlassTabBarGestureTest.aDeclinedTapReturnsTheSelectorToTheSelectionTheHostHolds": {
+      "className": "com.wexpa.liquidglass.GlassTabBarGestureTest",
+      "method": "aDeclinedTapReturnsTheSelectorToTheSelectionTheHostHolds",
+      "failures": 0,
+      "skipped": 0,
+      "duration": "9.356s"
+    },
+    "com.wexpa.liquidglass.GlassTabBarGestureTest.aDragThatStopsHoldsAndLiftsCommitsTheTabUnderTheLensWithoutAFling": {
+      "className": "com.wexpa.liquidglass.GlassTabBarGestureTest",
+      "method": "aDragThatStopsHoldsAndLiftsCommitsTheTabUnderTheLensWithoutAFling",
+      "failures": 0,
+      "skipped": 0,
+      "duration": "7.401s"
+    },
+    "com.wexpa.liquidglass.GlassTabBarGestureTest.aFastLiftFlingsToTheNextTab": {
+      "className": "com.wexpa.liquidglass.GlassTabBarGestureTest",
+      "method": "aFastLiftFlingsToTheNextTab",
+      "failures": 0,
+      "skipped": 0,
+      "duration": "4.607s"
+    },
+    "com.wexpa.liquidglass.GlassTabBarGestureTest.aSecondFingerTakingOverCancelsTheDragInsteadOfCommittingWithStaleVelocity": {
+      "className": "com.wexpa.liquidglass.GlassTabBarGestureTest",
+      "method": "aSecondFingerTakingOverCancelsTheDragInsteadOfCommittingWithStaleVelocity",
+      "failures": 0,
+      "skipped": 0,
+      "duration": "5.174s"
+    },
+    "com.wexpa.liquidglass.GlassTabBarGestureTest.aSecondTapAfterAReleaseIsASecondCallbackAndNothingSticks": {
+      "className": "com.wexpa.liquidglass.GlassTabBarGestureTest",
+      "method": "aSecondTapAfterAReleaseIsASecondCallbackAndNothingSticks",
+      "failures": 0,
+      "skipped": 0,
+      "duration": "8.946s"
+    },
+    "com.wexpa.liquidglass.GlassTabBarGestureTest.aTakeoverAfterAFlingLeavesTheCommittedSelectionAndReleases": {
+      "className": "com.wexpa.liquidglass.GlassTabBarGestureTest",
+      "method": "aTakeoverAfterAFlingLeavesTheCommittedSelectionAndReleases",
+      "failures": 0,
+      "skipped": 0,
+      "duration": "23.937s"
+    },
+    "com.wexpa.liquidglass.GlassTabBarGestureTest.aTapSelectsOnceThroughTheItem": {
+      "className": "com.wexpa.liquidglass.GlassTabBarGestureTest",
+      "method": "aTapSelectsOnceThroughTheItem",
+      "failures": 0,
+      "skipped": 0,
+      "duration": "4.645s"
+    },
+    "com.wexpa.liquidglass.GlassTabBarGestureTest.aVerticalScrollInAScrollingParentTakesTheGestureWithoutASelection": {
+      "className": "com.wexpa.liquidglass.GlassTabBarGestureTest",
+      "method": "aVerticalScrollInAScrollingParentTakesTheGestureWithoutASelection",
+      "failures": 0,
+      "skipped": 0,
+      "duration": "1.612s"
+    },
+    "com.wexpa.liquidglass.GlassTabBarGestureTest.tappingTheSelectedTabIsOneCallbackAndStaysPut": {
+      "className": "com.wexpa.liquidglass.GlassTabBarGestureTest",
+      "method": "tappingTheSelectedTabIsOneCallbackAndStaysPut",
+      "failures": 0,
+      "skipped": 0,
+      "duration": "4.672s"
+    },
+    "com.wexpa.liquidglass.GlassTabBarGestureTest.theInteractiveRowIsOneGroupOfTabsWithTheSelectionReported": {
+      "className": "com.wexpa.liquidglass.GlassTabBarGestureTest",
+      "method": "theInteractiveRowIsOneGroupOfTabsWithTheSelectionReported",
+      "failures": 0,
+      "skipped": 0,
+      "duration": "0.139s"
+    },
+    "com.wexpa.liquidglass.GlassTabBarGestureTest.withMotionDisabledATapStillSelectsOnceAndADragSelectsNothing": {
+      "className": "com.wexpa.liquidglass.GlassTabBarGestureTest",
+      "method": "withMotionDisabledATapStillSelectsOnceAndADragSelectsNothing",
+      "failures": 0,
+      "skipped": 0,
+      "duration": "4.088s"
+    },
+    "com.wexpa.liquidglass.GlassTabBarInkTest.movingTheApertureDoesNotMoveTheInkItIsOver": {
+      "className": "com.wexpa.liquidglass.GlassTabBarInkTest",
+      "method": "movingTheApertureDoesNotMoveTheInkItIsOver",
+      "failures": 0,
+      "skipped": 0,
+      "duration": "24.344s"
+    },
+    "com.wexpa.liquidglass.GlassTabBarInkTest.theSelectedGlyphIsAsSharpThroughTheSelectorAsItIsDrawnDirectly": {
+      "className": "com.wexpa.liquidglass.GlassTabBarInkTest",
+      "method": "theSelectedGlyphIsAsSharpThroughTheSelectorAsItIsDrawnDirectly",
+      "failures": 0,
+      "skipped": 0,
+      "duration": "10.520s"
+    },
+    "com.wexpa.liquidglass.GlassTabBarInkTest.theSelectedItemShowsOneGlyphNotTwo": {
+      "className": "com.wexpa.liquidglass.GlassTabBarInkTest",
+      "method": "theSelectedItemShowsOneGlyphNotTwo",
+      "failures": 0,
+      "skipped": 0,
+      "duration": "8.809s"
+    },
+    "com.wexpa.liquidglass.GlassTabBarInkTest.theSelectorsThroughSourceCarriesNoOrdinaryInk": {
+      "className": "com.wexpa.liquidglass.GlassTabBarInkTest",
+      "method": "theSelectorsThroughSourceCarriesNoOrdinaryInk",
+      "failures": 0,
+      "skipped": 0,
+      "duration": "24.486s"
+    },
+    "com.wexpa.liquidglass.GlassTabBarLensRenderTest.renderTheHeldLensOverThePhoneBar": {
+      "className": "com.wexpa.liquidglass.GlassTabBarLensRenderTest",
+      "method": "renderTheHeldLensOverThePhoneBar",
+      "failures": 0,
+      "skipped": 0,
+      "duration": "0.001s"
+    },
+    "com.wexpa.liquidglass.GlassTabBarLensVariantsRenderTest.renderTheV3LensRimVariantsOverThePhoneBar": {
+      "className": "com.wexpa.liquidglass.GlassTabBarLensVariantsRenderTest",
+      "method": "renderTheV3LensRimVariantsOverThePhoneBar",
+      "failures": 0,
+      "skipped": 0,
+      "duration": "0.007s"
+    },
+    "com.wexpa.liquidglass.GlassTabBarMotionTraceTest.testAHoldBeforeTheLiftDoesNotFlingAndAFastLiftDoes": {
+      "className": "com.wexpa.liquidglass.GlassTabBarMotionTraceTest",
+      "method": "testAHoldBeforeTheLiftDoesNotFlingAndAFastLiftDoes",
+      "failures": 0,
+      "skipped": 0,
+      "duration": "0.002s"
+    },
+    "com.wexpa.liquidglass.GlassTabBarMotionTraceTest.testARePressDuringTheReleaseRetargetsFromTheCurrentValueAndVelocity": {
+      "className": "com.wexpa.liquidglass.GlassTabBarMotionTraceTest",
+      "method": "testARePressDuringTheReleaseRetargetsFromTheCurrentValueAndVelocity",
+      "failures": 0,
+      "skipped": 0,
+      "duration": "0.002s"
+    },
+    "com.wexpa.liquidglass.GlassTabBarMotionTraceTest.testTheFourTracesAreStableAtEveryFrameRateAndAgreeAtEqualElapsedTimes": {
+      "className": "com.wexpa.liquidglass.GlassTabBarMotionTraceTest",
+      "method": "testTheFourTracesAreStableAtEveryFrameRateAndAgreeAtEqualElapsedTimes",
+      "failures": 0,
+      "skipped": 0,
+      "duration": "0.063s"
+    },
+    "com.wexpa.liquidglass.GlassTabBarMotionTraceTest.testTheShippedRulesFlungAfterAHoldAndSnappedVelocityOnARetarget": {
+      "className": "com.wexpa.liquidglass.GlassTabBarMotionTraceTest",
+      "method": "testTheShippedRulesFlungAfterAHoldAndSnappedVelocityOnARetarget",
+      "failures": 0,
+      "skipped": 0,
+      "duration": "0.104s"
+    },
+    "com.wexpa.liquidglass.GlassTabBarStyleTest.testEveryPresetConstructsWithItsMaterialsInPlace": {
+      "className": "com.wexpa.liquidglass.GlassTabBarStyleTest",
+      "method": "testEveryPresetConstructsWithItsMaterialsInPlace",
+      "failures": 0,
+      "skipped": 0,
+      "duration": "0s"
+    },
+    "com.wexpa.liquidglass.GlassTabBarStyleTest.testTheHeldLensIsClearWithALitEdgeAndNoBead": {
+      "className": "com.wexpa.liquidglass.GlassTabBarStyleTest",
+      "method": "testTheHeldLensIsClearWithALitEdgeAndNoBead",
+      "failures": 0,
+      "skipped": 0,
+      "duration": "0s"
+    },
+    "com.wexpa.liquidglass.GlassTabBarStyleTest.testTheIos27PresetOnlyDarkensTheContourAndBrightensTheHighlight": {
+      "className": "com.wexpa.liquidglass.GlassTabBarStyleTest",
+      "method": "testTheIos27PresetOnlyDarkensTheContourAndBrightensTheHighlight",
+      "failures": 0,
+      "skipped": 0,
+      "duration": "0s"
+    },
+    "com.wexpa.liquidglass.GlassTabBarStyleTest.testTheLensSidesAreDarkBecauseTheEdgeLineIsDirectional": {
+      "className": "com.wexpa.liquidglass.GlassTabBarStyleTest",
+      "method": "testTheLensSidesAreDarkBecauseTheEdgeLineIsDirectional",
+      "failures": 0,
+      "skipped": 0,
+      "duration": "0s"
+    },
+    "com.wexpa.liquidglass.GlassTabBarStyleTest.testTheLensStandsProudByTheSameAmountAboveAndBelow": {
+      "className": "com.wexpa.liquidglass.GlassTabBarStyleTest",
+      "method": "testTheLensStandsProudByTheSameAmountAboveAndBelow",
+      "failures": 0,
+      "skipped": 0,
+      "duration": "0s"
+    },
+    "com.wexpa.liquidglass.GlassTabBarStyleTest.testTheRestingInsetHasNoOptics": {
+      "className": "com.wexpa.liquidglass.GlassTabBarStyleTest",
+      "method": "testTheRestingInsetHasNoOptics",
+      "failures": 0,
+      "skipped": 0,
+      "duration": "0s"
+    },
+    "com.wexpa.liquidglass.GlassTabBarStyleTest.testTheV3PresetAgreesWithItselfAcrossEveryFieldThatSnapsAtTheMorphsMidpoint": {
+      "className": "com.wexpa.liquidglass.GlassTabBarStyleTest",
+      "method": "testTheV3PresetAgreesWithItselfAcrossEveryFieldThatSnapsAtTheMorphsMidpoint",
+      "failures": 0,
+      "skipped": 0,
+      "duration": "0s"
+    },
+    "com.wexpa.liquidglass.GlassTabBarStyleTest.testTheV3PresetLeavesTheMeasuredOpticsAlone": {
+      "className": "com.wexpa.liquidglass.GlassTabBarStyleTest",
+      "method": "testTheV3PresetLeavesTheMeasuredOpticsAlone",
+      "failures": 0,
+      "skipped": 0,
+      "duration": "0.001s"
+    },
+    "com.wexpa.liquidglass.GlassTabBarTouchFrameTest.aFractionalOverflowLeavesBodyInkAndTouchInOneFrame": {
+      "className": "com.wexpa.liquidglass.GlassTabBarTouchFrameTest",
+      "method": "aFractionalOverflowLeavesBodyInkAndTouchInOneFrame",
+      "failures": 0,
+      "skipped": 0,
+      "duration": "22.083s"
+    },
+    "com.wexpa.liquidglass.GlassTabBarTouchFrameTest.aMovingNodeKeepsTheFingersWorldPointAcrossIntegerPlacements": {
+      "className": "com.wexpa.liquidglass.GlassTabBarTouchFrameTest",
+      "method": "aMovingNodeKeepsTheFingersWorldPointAcrossIntegerPlacements",
+      "failures": 0,
+      "skipped": 0,
+      "duration": "1m5.16s"
+    },
+    "com.wexpa.liquidglass.GlassTabBarTouchFrameTest.theNodeLocalTouchInvertsToTheBarLocalPoint": {
+      "className": "com.wexpa.liquidglass.GlassTabBarTouchFrameTest",
+      "method": "theNodeLocalTouchInvertsToTheBarLocalPoint",
+      "failures": 0,
+      "skipped": 0,
+      "duration": "33.851s"
+    },
+    "com.wexpa.liquidglass.GlassTabBarV3GestureTest.aVerticalScrollInAScrollingParentTakesTheGestureWithoutASelection": {
+      "className": "com.wexpa.liquidglass.GlassTabBarV3GestureTest",
+      "method": "aVerticalScrollInAScrollingParentTakesTheGestureWithoutASelection",
+      "failures": 0,
+      "skipped": 0,
+      "seconds": 3.123
+    },
+    "com.wexpa.liquidglass.GlassTabBarV3GestureTest.aSecondTapAfterAReleaseIsASecondCallbackAndNothingSticks": {
+      "className": "com.wexpa.liquidglass.GlassTabBarV3GestureTest",
+      "method": "aSecondTapAfterAReleaseIsASecondCallbackAndNothingSticks",
+      "failures": 0,
+      "skipped": 0,
+      "seconds": 7.464
+    },
+    "com.wexpa.liquidglass.GlassTabBarV3GestureTest.theInteractiveRowIsOneGroupOfTabsWithTheSelectionReported": {
+      "className": "com.wexpa.liquidglass.GlassTabBarV3GestureTest",
+      "method": "theInteractiveRowIsOneGroupOfTabsWithTheSelectionReported",
+      "failures": 0,
+      "skipped": 0,
+      "seconds": 0.218
+    },
+    "com.wexpa.liquidglass.GlassTabBarV3GestureTest.aCancelAfterCrossingTabsSelectsNothingAndSettlesBack": {
+      "className": "com.wexpa.liquidglass.GlassTabBarV3GestureTest",
+      "method": "aCancelAfterCrossingTabsSelectsNothingAndSettlesBack",
+      "failures": 0,
+      "skipped": 0,
+      "seconds": 7.974
+    },
+    "com.wexpa.liquidglass.GlassTabBarV3GestureTest.withMotionDisabledATapStillSelectsOnceAndADragSelectsNothing": {
+      "className": "com.wexpa.liquidglass.GlassTabBarV3GestureTest",
+      "method": "withMotionDisabledATapStillSelectsOnceAndADragSelectsNothing",
+      "failures": 0,
+      "skipped": 0,
+      "seconds": 6.467
+    },
+    "com.wexpa.liquidglass.GlassTabBarV3GestureTest.aSecondFingerTakingOverCancelsTheDragInsteadOfCommittingWithStaleVelocity": {
+      "className": "com.wexpa.liquidglass.GlassTabBarV3GestureTest",
+      "method": "aSecondFingerTakingOverCancelsTheDragInsteadOfCommittingWithStaleVelocity",
+      "failures": 0,
+      "skipped": 0,
+      "seconds": 5.932
+    },
+    "com.wexpa.liquidglass.GlassTabBarV3GestureTest.aTakeoverAfterAFlingLeavesTheCommittedSelectionAndReleases": {
+      "className": "com.wexpa.liquidglass.GlassTabBarV3GestureTest",
+      "method": "aTakeoverAfterAFlingLeavesTheCommittedSelectionAndReleases",
+      "failures": 0,
+      "skipped": 0,
+      "seconds": 11.647
+    },
+    "com.wexpa.liquidglass.GlassTabBarV3GestureTest.aDeclinedDragReturnsTheSelectorToTheSelectionTheHostHolds": {
+      "className": "com.wexpa.liquidglass.GlassTabBarV3GestureTest",
+      "method": "aDeclinedDragReturnsTheSelectorToTheSelectionTheHostHolds",
+      "failures": 0,
+      "skipped": 0,
+      "seconds": 19.022
+    },
+    "com.wexpa.liquidglass.GlassTapPhaseReferenceTest.arrivalCompressionExchangesWidthForHeight": {
+      "className": "com.wexpa.liquidglass.GlassTapPhaseReferenceTest",
+      "method": "arrivalCompressionExchangesWidthForHeight",
+      "failures": 0,
+      "skipped": 0,
+      "seconds": 0.018
+    },
+    "com.wexpa.liquidglass.GlassTapPhaseReferenceTest.longTapHeightHasAlreadyChangedAtTheOriginalMidpoint": {
+      "className": "com.wexpa.liquidglass.GlassTapPhaseReferenceTest",
+      "method": "longTapHeightHasAlreadyChangedAtTheOriginalMidpoint",
+      "failures": 0,
+      "skipped": 0,
+      "seconds": 0.005
+    },
+    "com.wexpa.liquidglass.GlassTapPhaseReferenceTest.recoilSurvivesReversedTravelAndPresentationCadence": {
+      "className": "com.wexpa.liquidglass.GlassTapPhaseReferenceTest",
+      "method": "recoilSurvivesReversedTravelAndPresentationCadence",
+      "failures": 0,
+      "skipped": 0,
+      "seconds": 0.029
+    },
+    "com.wexpa.liquidglass.showcase.ShowcaseAppTest.appDark": {
+      "className": "com.wexpa.liquidglass.showcase.ShowcaseAppTest",
+      "method": "appDark",
+      "failures": 0,
+      "skipped": 1,
+      "seconds": 0.011
+    },
+    "com.wexpa.liquidglass.showcase.ShowcaseAppTest.appLight": {
+      "className": "com.wexpa.liquidglass.showcase.ShowcaseAppTest",
+      "method": "appLight",
+      "failures": 0,
+      "skipped": 1,
+      "seconds": 0.001
+    },
+    "com.wexpa.liquidglass.showcase.ShowcaseAppTest.appScrolling": {
+      "className": "com.wexpa.liquidglass.showcase.ShowcaseAppTest",
+      "method": "appScrolling",
+      "failures": 0,
+      "skipped": 1,
+      "seconds": 0.001
+    },
+    "com.wexpa.liquidglass.showcase.ShowcaseExtrasTest.implicitScene": {
+      "className": "com.wexpa.liquidglass.showcase.ShowcaseExtrasTest",
+      "method": "implicitScene",
+      "failures": 0,
+      "skipped": 1,
+      "seconds": 0.001
+    },
+    "com.wexpa.liquidglass.showcase.ShowcaseExtrasTest.coverSheet": {
+      "className": "com.wexpa.liquidglass.showcase.ShowcaseExtrasTest",
+      "method": "coverSheet",
+      "failures": 0,
+      "skipped": 1,
+      "seconds": 0.001
+    },
+    "com.wexpa.liquidglass.showcase.ShowcaseExtrasTest.builtInGallery": {
+      "className": "com.wexpa.liquidglass.showcase.ShowcaseExtrasTest",
+      "method": "builtInGallery",
+      "failures": 0,
+      "skipped": 1,
+      "seconds": 0.002
+    },
+    "com.wexpa.liquidglass.showcase.ShowcaseExtrasTest.scrollEdges": {
+      "className": "com.wexpa.liquidglass.showcase.ShowcaseExtrasTest",
+      "method": "scrollEdges",
+      "failures": 0,
+      "skipped": 1,
+      "seconds": 0.001
+    },
+    "com.wexpa.liquidglass.showcase.ShowcaseInteractionTest.reducedMotion": {
+      "className": "com.wexpa.liquidglass.showcase.ShowcaseInteractionTest",
+      "method": "reducedMotion",
+      "failures": 0,
+      "skipped": 1,
+      "seconds": 0.003
+    },
+    "com.wexpa.liquidglass.showcase.ShowcaseInteractionTest.materializeIn": {
+      "className": "com.wexpa.liquidglass.showcase.ShowcaseInteractionTest",
+      "method": "materializeIn",
+      "failures": 0,
+      "skipped": 1,
+      "seconds": 0.002
+    },
+    "com.wexpa.liquidglass.showcase.ShowcaseInteractionTest.containerFusion": {
+      "className": "com.wexpa.liquidglass.showcase.ShowcaseInteractionTest",
+      "method": "containerFusion",
+      "failures": 0,
+      "skipped": 1,
+      "seconds": 0.0
+    },
+    "com.wexpa.liquidglass.showcase.ShowcaseInteractionTest.pressDefault": {
+      "className": "com.wexpa.liquidglass.showcase.ShowcaseInteractionTest",
+      "method": "pressDefault",
+      "failures": 0,
+      "skipped": 1,
+      "seconds": 0.002
+    },
+    "com.wexpa.liquidglass.showcase.ShowcaseInteractionTest.pullSmallControl": {
+      "className": "com.wexpa.liquidglass.showcase.ShowcaseInteractionTest",
+      "method": "pullSmallControl",
+      "failures": 0,
+      "skipped": 1,
+      "seconds": 0.001
+    },
+    "com.wexpa.liquidglass.showcase.ShowcaseInteractionTest.pullLargeCard": {
+      "className": "com.wexpa.liquidglass.showcase.ShowcaseInteractionTest",
+      "method": "pullLargeCard",
+      "failures": 0,
+      "skipped": 1,
+      "seconds": 0.002
+    },
+    "com.wexpa.liquidglass.showcase.ShowcaseMaterialTest.darkAppearanceOverText": {
+      "className": "com.wexpa.liquidglass.showcase.ShowcaseMaterialTest",
+      "method": "darkAppearanceOverText",
+      "failures": 0,
+      "skipped": 1,
+      "seconds": 0.008
+    },
+    "com.wexpa.liquidglass.showcase.ShowcaseMaterialTest.renderScale": {
+      "className": "com.wexpa.liquidglass.showcase.ShowcaseMaterialTest",
+      "method": "renderScale",
+      "failures": 0,
+      "skipped": 1,
+      "seconds": 0.002
+    },
+    "com.wexpa.liquidglass.showcase.ShowcaseMaterialTest.lightDirection": {
+      "className": "com.wexpa.liquidglass.showcase.ShowcaseMaterialTest",
+      "method": "lightDirection",
+      "failures": 0,
+      "skipped": 1,
+      "seconds": 0.003
+    },
+    "com.wexpa.liquidglass.showcase.ShowcaseMaterialTest.shapes": {
+      "className": "com.wexpa.liquidglass.showcase.ShowcaseMaterialTest",
+      "method": "shapes",
+      "failures": 0,
+      "skipped": 1,
+      "seconds": 0.002
+    },
+    "com.wexpa.liquidglass.showcase.ShowcaseMaterialTest.presetsOverAPhoto": {
+      "className": "com.wexpa.liquidglass.showcase.ShowcaseMaterialTest",
+      "method": "presetsOverAPhoto",
+      "failures": 0,
+      "skipped": 1,
+      "seconds": 0.001
+    },
+    "com.wexpa.liquidglass.showcase.ShowcaseMaterialTest.legibilityOverText": {
+      "className": "com.wexpa.liquidglass.showcase.ShowcaseMaterialTest",
+      "method": "legibilityOverText",
+      "failures": 0,
+      "skipped": 1,
+      "seconds": 0.0
+    },
+    "com.wexpa.liquidglass.showcase.ShowcaseMaterialTest.environment": {
+      "className": "com.wexpa.liquidglass.showcase.ShowcaseMaterialTest",
+      "method": "environment",
+      "failures": 0,
+      "skipped": 1,
+      "seconds": 0.001
+    },
+    "com.wexpa.liquidglass.showcase.ShowcaseMaterialTest.tint": {
+      "className": "com.wexpa.liquidglass.showcase.ShowcaseMaterialTest",
+      "method": "tint",
+      "failures": 0,
+      "skipped": 1,
+      "seconds": 0.0
+    },
+    "com.wexpa.liquidglass.showcase.ShowcaseMaterialTest.styleMorph": {
+      "className": "com.wexpa.liquidglass.showcase.ShowcaseMaterialTest",
+      "method": "styleMorph",
+      "failures": 0,
+      "skipped": 1,
+      "seconds": 0.004
+    },
+    "com.wexpa.liquidglass.showcase.ShowcaseMaterialTest.materialize": {
+      "className": "com.wexpa.liquidglass.showcase.ShowcaseMaterialTest",
+      "method": "materialize",
+      "failures": 0,
+      "skipped": 1,
+      "seconds": 0.002
+    },
+    "com.wexpa.liquidglass.showcase.ShowcaseMaterialTest.presetsOverAGrid": {
+      "className": "com.wexpa.liquidglass.showcase.ShowcaseMaterialTest",
+      "method": "presetsOverAGrid",
+      "failures": 0,
+      "skipped": 1,
+      "seconds": 0.001
+    },
+    "com.wexpa.liquidglass.showcase.ShowcaseTabBarTest.reducedMotion": {
+      "className": "com.wexpa.liquidglass.showcase.ShowcaseTabBarTest",
+      "method": "reducedMotion",
+      "failures": 0,
+      "skipped": 1,
+      "seconds": 0.002
+    },
+    "com.wexpa.liquidglass.showcase.ShowcaseTabBarTest.v3DeformingBody": {
+      "className": "com.wexpa.liquidglass.showcase.ShowcaseTabBarTest",
+      "method": "v3DeformingBody",
+      "failures": 0,
+      "skipped": 1,
+      "seconds": 0.001
+    },
+    "com.wexpa.liquidglass.showcase.ShowcaseTabBarTest.capsuleSelector": {
+      "className": "com.wexpa.liquidglass.showcase.ShowcaseTabBarTest",
+      "method": "capsuleSelector",
+      "failures": 0,
+      "skipped": 1,
+      "seconds": 0.002
+    }
+  },
+  "sourceSha256": {
+    "liquidglass/src/commonMain/kotlin/com/wexpa/liquidglass/GlassPoseDynamics.kt": "c21e64ca9146128ed506259d16b6d21b4442af9056d3f5f196d99df17ba19692",
+    "liquidglass/src/jvmTest/kotlin/com/wexpa/liquidglass/GlassPhoneTapTimingTest.kt": "e67bb5c0e15224134f714e60ab266d9e941db86f420af7d4bd1ac2bab255694a"
+  }
+}

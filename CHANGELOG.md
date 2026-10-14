@@ -1,5 +1,175 @@
 # Changelog
 
+This file records user-visible development changes. Published artifacts are identified separately;
+`Unreleased` does not imply that Maven Central already contains these APIs.
+
+## Unreleased — Atlas stabilization
+
+### Changed (13 October, continuous iOS comparison)
+
+- `GlassTabBarStyle.Calm()`: a tapped selector travels as refracting glass (`tapOptics`); a
+  thrown lens stays formed while travelling (`GlassPoseSpec.releaseFormationSpeed`); wall
+  landings no longer convert speed into a tall circle (previous model kept as
+  `GlassPoseSpec.CalmImpact`); the grasp uses the default 78/s response; held-lens specular 0.2.
+- Calm dark material recalibrated to the owner's two iOS recordings: bar 45 at rest / 53 held,
+  resting selector black 0.42 without negative lift. `V3()` and older presets are unchanged.
+- Calm held travel follows video 2's fast reversals: the lens stays under the finger (grasp
+  120/s, was 40) and a hold forms in about 80 ms (held formation rise 50/s; taps unchanged).
+  Held stretch and squeeze are unchanged to keep the measured IMG6735 flattened pair.
+- Calm lens and bar edges measured against video 2: bar rim halved (the "white outline" was the
+  bar's rim seen through the lens), held lens edge line .26, a stronger and wider rim glow and
+  `rawShare` .28 so the page shows crisply through the lens.
+- Calm moving lens: a reflective rim at its caps (icons wrap mirrored along the curve, as in
+  iOS) instead of the clipped held map, and every icon under the lens shows its selected ink.
+  A still held lens keeps the measured held map and blends to the rim mirror as it travels.
+- Calm wall landings (14 October): the pill presses against the bar's end and narrows from
+  behind before widening back (`GlassPoseSpec.releaseTrailingEdge`, trailing edge 13/s), matching
+  video 2's measured 241 → 285 px recovery without growing taller; the leading edge no longer
+  flies past the end. The previous landing is kept as `GlassPoseSpec.CalmFreeLanding`.
+- Sample: `PhoneActivity` hosts the Calm comparison scene on Android (verified on an API 37 emulator).
+- `PhoneScene` geometry: a 95 pt resting pill with 8 pt ends, measured in video 2.
+- Calm moving lens (14 October): a deeper reflective rim (`rimMirror` 1.0, the whole band; up to 1 is now allowed)
+  gives a larger swirl at the caps, with a faint colour split confined to the mirrored band.
+- Calm dark bar reaches toward the finger while held (`GlassInteraction.pressReach` 0.03): the
+  finger's side grows further, the far side as before; edges within 2–5 px of iOS.
+- Calm dark bar snaps back after lift like iOS's (0.12 s, slight overshoot), so the search-button
+  neck parts on time (`GlassInteraction.releaseStiffness` / `releaseDamping`).
+- Atlas Studio redesigned: one full-window scene moving under all the glass, the Calm bar fused
+  with a magnifier button as the only scene switcher, a glass top bar and an anchored card.
+- Repository description and README rewritten for developers; lab detail moved to linked records.
+
+### Added
+
+- Calm navigation selector for the CanvasKit and .NET ports: `CalmSelectorController`,
+  `createCalmNavigation` / `CalmNavigation`, `scene.addNavigation`, `painter.drawSelector` /
+  `GlassPainter.DrawSelector`. A port of the Compose pose controller and gesture protocol, checked
+  against Kotlin-exported trajectories (`ports/skia/fixtures/selector-calm.json`); its material is
+  an approximation of the Compose Calm selector.
+
+- `GlassInteraction.releaseStiffness` / `releaseDamping`: an optional release spring for the press.
+- `GlassInteraction.pressReach`: while pressed, the side nearer the touch grows further; 0 by default.
+
+- `GlassStyle.rimMirror` and `GlassStyle.foldAtCorners` (`uRimMirror`, `uFoldCorners`): a
+  reflective rim map for the measured family and a corner-only fold; both 0 by default.
+  `GlassTabBarStyle.tapOpticsFold` and `lensInkAll` select them for Calm.
+- `GlassStyle.heldGlowReach` (and the `uHeldGlowReach` shader uniform): how far the held lens's
+  rim glow reaches inward; 0 keeps the historical bevel-length glow. `heldGlow` now accepts 0–2.
+- `GlassTabBarAccessory` and `GlassTabBar(trailingAccessory = …)`: a separate neighbouring
+  glass control (iOS 26 Phone's search button) that the bar fuses with through a liquid neck
+  while held. `GlassFuse(anchored = true)` keeps a fused rect fixed while the material grows.
+- `PhoneScene` and the `:desktop:phoneReplay` task: deterministic 60 fps GPU replay of scripted
+  gestures for side-by-side comparison with reference recordings, plus the tracking and script
+  tools in `tools/reference-replay/`.
+
+- Native .NET/SkiaSharp painter and source ownership, executable Windows/Linux renderer checks
+  and a Windows Forms host. `CalmInteraction`/`GlassFeedback` provide timestamped whole-surface
+  press/pull, release/re-grab, viewport containment, cancellation and reduced-motion/resize reset.
+  The host keeps labels and hit targets anchored; native selector travel remains separate work.
+- `LiquidGlass.WinForms.ControlBackdrop.Capture`: owned standard-control subtree snapshots,
+  explicit UI-thread/lifetime rules and known-unsupported-control rejection. The executable
+  example verifies real TextBox glyph updates and production-lens refraction without screen capture.
+- Opt-in natural Atlas frame-recording and own-input/focus traces, separate from forced redraw
+  and screenshot readback. Includes a retained intermittent selection failure and performance limits.
+- Visual development/evidence index, native.NET guide and ongoing documentation/visual requirements
+  in contributor and agent instructions. Historical/source measurements remain explicitly labelled.
+
+- Opt-in Atlas native motion playback using its own AWT input component, with selection/layout
+  assertions, app-owned phase snapshots and actual event/render timestamps. Each phase replays
+  independently to keep slow readback out of subsequent input; an optional contact-sheet tool
+  preserves source pixels. A readback-free control and an isolated Swing dispatcher prevent
+  redraw from re-entering playback; pointer guards reject invalid traces. This is diagnostic
+  evidence, not a presented-FPS benchmark.
+
+- Portable `createGlassScene`: one borrowed backdrop, multiple surfaces/lenses, calm feedback and
+  draw transforms behind a reusable host API. Logical coordinates and pixel density are explicit;
+  input, semantics and labels remain with the host. Includes appearance updates and lifecycle cleanup.
+- TypeScript declarations for high-level portable APIs, packaged LICENSE/NOTICE and a standalone
+  runtime isolation check. The scene's motion bundle is generated from the existing portable source.
+
+- `GlassScene` and its scoped `Modifier.glass`, connecting one recorded backdrop to multiple overlays.
+- `GlassStyle.clearLens(magnification)` and `GlassProfile.Lens`: a continuous magnifier mapping shared
+  by material and foreground, with input validation and rendered continuity regressions.
+- `GlassInteraction.Calm` and `GlassResponse`: restrained press expansion and progressively resisted drag.
+- `GlassTabBarStyle.Calm()`: separate whole-bar feedback and selector travel deformation.
+- `GlassTabBarStyle.deformItemsWithBar`: shares one resolved bar drawing transform with ordinary
+  and selected ink, using the bar pivot even in a moving selector node. Enabled by `Calm()`;
+  older presets retain fixed item drawing. Layout, hit targets and generic card text are unchanged.
+- Optional pull displacement in `GlassPressSource.press` for hosts that already own their gesture.
+- Atlas Studio's sky, typography and grid scenes, native app-buffer captures and redraw timing output.
+- Dependabot configuration, private security reporting instructions and tighter workflow permissions.
+- Portable production SkSL bundle and CanvasKit adapter, with named uniform validation, source-drift
+  checks and independent JVM/CanvasKit pixel fixtures for every material profile.
+- `createGlassPainter` for portable clear lenses: source-image ownership, coordinate mapping and
+  temporary shader cleanup behind one small API, with an executable terminal example.
+- A browser Skia example with keyboard/pointer controls, backdrop replacement and context recreation;
+  the hosted browser suite covers this independently from the lightweight WebGL preview.
+- Framework-independent `createCalmInteraction` with timestamped press/pull, cancellation, viewport
+  containment and reduced motion; optional press amplitude is independent of the Calm drag response.
+- Portable `drawSurface` for rounded in-app material: light/dark appearance, tint amount, corner radii,
+  density and accessibility preferences, with one cached tone image and Kotlin parameter-drift fixtures.
+- `createGlassPainter(CanvasKit)` now includes production shader defaults. Terminal/browser examples
+  need no manual shader loading; CI checks the generated module for drift. Explicit sources remain supported.
+
+### Fixed
+
+- JVM clipping no longer discards the offscreen wide-tone input, removing a hard vertical selector
+  seam in native replays while retaining the kernel and through-bar/substrate behavior.
+- Resting tint is limited to the actual bar substrate, avoiding rejected opaque protruding discs.
+- Calm adjacent taps use a slower coupled travel/shape rate. Remaining repeated width/contour
+  error is retained; centre-timing agreement alone is not full motion proof.
+- Separate tap pigment/ink appearance follows projected area plus axial travel strain and gradual
+  recovery. Long-tap calibration improves while exported pose/formation/protrusion stays unchanged.
+- Atlas prefers a discrete adapter and reports the actual renderer. NVIDIA selection is verified;
+  this does not claim that ordinary interaction lag or presentation timing is solved.
+
+- Calm held travel now reaches both intermediate and flattened original selector shapes with less
+  maximum horizontal extension. Travel contraction is separate from ordinary touch growth and forms
+  with the material. Tap spring allocation is independent of held tuning, preserving the verified
+  resting-tap curve. Whole-bar drag and historical presets retain their previous settings.
+
+- Calm navigation's material-only directional bias now matches the selected original's top and bottom
+  edges separately, capped below its measured displacement. Layout and ordinary labels stay fixed;
+  the portable controller exposes the drawing bias as `state.offset`.
+
+- Calm navigation now couples mild stretch with narrowing. Its area-preserving drag model matches
+  conservative dimensions from original frames; generic cards retain adaptive strain and their extension cap.
+
+- The free magnifier no longer uses a held-navigation profile that maps labels and backdrop differently.
+- Atlas uses canvas-local bounded placement instead of conflicting mobile/desktop screen offsets.
+- The calm navigation selector does not interpret perpendicular full-screen travel as free-button squeeze.
+- Calm throws retain distance-dependent spine deformation as press formation fades; release no longer
+  disables travel-driven shape response.
+- Calm selector input is integrated at event timestamps to reduce frame-cadence dependence. Its settled
+  size is checked against the original Phone reference independently of authored drag sensitivity.
+- Calm resting taps keep a small compression/recovery on arrival. Shape damping and stretch gain are
+  tuned separately from the critical centre and press springs; the previous preset had lost this phase.
+- Calm resting-tap arrival exchanges spine compression for cap growth, retaining the original paired
+  width/height recoil without altering held/throw behavior or the existing midpoint fit. Historical
+  presets remain unchanged. Tests cover reverse travel, presentation cadence and reduced motion.
+- Further outward movement beyond an end anchor no longer stretches a stationary Calm selector.
+- Calm resting-tap height no longer waits through two springs before changing. A separate transit
+  pressure response and reduced spine gain fit the original midpoint's height and width together;
+  held pressure, optical formation and historical presets retain their existing response.
+- Calm navigation restores the original ordinary touch growth with a 5% press while
+  retaining restrained drag. Its held brightness no longer adds generic control lift a second time.
+- Portable viewport-limited press targets animate gradually instead of clipping growth mid-animation.
+- Portable wide-tone sampling preserves opaque edges even for tiny backdrops and fractional
+  quarter-resolution dimensions; small sources no longer pick up transparent black during blur.
+- Portable shader bindings cache compiled layout metadata, eliminating per-draw Wasm reflection
+  while preserving named-input validation and independent pixel tests.
+- Desktop Calm composes separate material and ink inputs before aperture rounding. The explicit ink
+  filter offset preserves labels under native viewport clipping; the strict endpoint gate now passes.
+- Atlas no longer reports an unverified Vulkan backend or invented live astronomical telemetry.
+- Atlas's Type scene places its specimen under the initial lens, making the optical effect visible at launch.
+- Portable shaders and reference pixels are declared Gradle test inputs, preventing stale cached checks
+  after changes outside the Kotlin tree; renderer screenshots are retained with cached test outputs.
+
+### Compatibility and limits
+
+Existing `V3`, `Measured`, `Pullable` and modifier defaults remain available. New scene feedback is calm
+by default. The new lens and dynamics are authored approximations. Full iOS equivalence, physical-device
+verification of this revision and native support for every UI stack remain unproven.
+
 ## Review fixes (unreleased)
 
 - Glass panels follow a resize in place: the size feeding the drag policy, band, pad and path

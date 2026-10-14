@@ -1,11 +1,20 @@
 # liquidglass — documentation
 
+The [development status and visual guide](development-status.md) covers the current unreleased
+Compose, CanvasKit and native.NET paths, source/native comparisons, verification and remaining gaps.
+It is the starting point for recent work; published0.1.0 and historical measurements have a different scope.
+
 A refracting glass material for Compose Multiplatform, drawn entirely in a shader.
 
 If you are here to use it, start with [Getting started](getting-started.md). If you are here to
 change the optics, read [How it works](how-it-works.md) and then
 [the research](research/README.md). If you are here to decide whether it fits your app, read
 [Limitations](limitations.md) first — it is deliberately the most detailed document here.
+
+The current development snapshot adds a simpler scene API, a continuous free magnifier and a calm
+navigation preset. Explore them in [Atlas Studio](atlas-studio.md), or read the
+[porting contract](porting.md) for other UI stacks. These are authored additions, not a new claim of
+full Apple parity.
 
 ## Guides
 
@@ -26,8 +35,7 @@ change the optics, read [How it works](how-it-works.md) and then
 
 ## Reference
 
-- [Research](research/README.md) — 27.6M tokens of adversarially-verified derivation, preserved
-  verbatim: the optical model, every parameter with its provenance, the motion model, and an
+- [Research](research/README.md) — the historical derivation and its provenance: the optical model, every parameter with its provenance, the motion model, and an
   honest account of where Android cannot match Apple.
 - [Reference measurements](research/reference-measurements.md) — the one first-hand source:
   numbers read off a recording of a real iOS 26 tab bar, and the three places they overturned a

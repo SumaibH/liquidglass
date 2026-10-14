@@ -1,0 +1,3141 @@
+{
+  "provenance": "Portable authored controller; cross-language equivalence, not an Apple motion oracle",
+  "sources": {
+    "ports/web/core.mjs": "bb777491fc65e56937e2939252780cbb922239ff35bb012ec4b15514593bfdd2",
+    "ports/web/interaction.mjs": "6539adf9b0400eb18ea9601b192a5b83c601c45b79a39d8343f1e1e20acb286e"
+  },
+  "cases": [
+    {
+      "options": {
+        "width": 56,
+        "height": 56,
+        "radius": 28,
+        "x": 20,
+        "y": 20,
+        "viewportWidth": 96,
+        "viewportHeight": 96,
+        "pullShape": "adaptive"
+      },
+      "samples": [
+        {
+          "operation": "press",
+          "time": 0,
+          "args": [
+            0,
+            0
+          ],
+          "expected": {
+            "matrix": [
+              1,
+              0,
+              0,
+              1
+            ],
+            "offset": [
+              0,
+              0
+            ],
+            "press": 0,
+            "held": true,
+            "active": true
+          }
+        },
+        {
+          "operation": "sample",
+          "time": 0.04,
+          "args": [],
+          "expected": {
+            "matrix": [
+              1.0035909632338262,
+              0,
+              0,
+              1.0035909632338262
+            ],
+            "offset": [
+              0,
+              0
+            ],
+            "press": 0.11969877446087518,
+            "held": true,
+            "active": true
+          }
+        },
+        {
+          "operation": "sample",
+          "time": 0.12,
+          "args": [],
+          "expected": {
+            "matrix": [
+              1.0159345666320678,
+              0,
+              0,
+              1.0159345666320678
+            ],
+            "offset": [
+              0,
+              0
+            ],
+            "press": 0.5311522210689291,
+            "held": true,
+            "active": true
+          }
+        },
+        {
+          "operation": "press",
+          "time": 0.13,
+          "args": [
+            50,
+            -30
+          ],
+          "expected": {
+            "matrix": [
+              1.01722643707544,
+              0,
+              0,
+              1.01722643707544
+            ],
+            "offset": [
+              0,
+              0
+            ],
+            "press": 0.5742145691813305,
+            "held": true,
+            "active": true
+          }
+        },
+        {
+          "operation": "sample",
+          "time": 0.2,
+          "args": [],
+          "expected": {
+            "matrix": [
+              1.0291259590057793,
+              -0.00984805348824162,
+              -0.00984805348824162,
+              1.0186213686183216
+            ],
+            "offset": [
+              0,
+              0
+            ],
+            "press": 0.7957887937350182,
+            "held": true,
+            "active": true
+          }
+        },
+        {
+          "operation": "press",
+          "time": 0.23,
+          "args": [
+            -1000000,
+            1000000
+          ],
+          "expected": {
+            "matrix": [
+              1.033415099852579,
+              -0.014590401755776488,
+              -0.014590401755776488,
+              1.0178520046464177
+            ],
+            "offset": [
+              0,
+              0
+            ],
+            "press": 0.8544517416499325,
+            "held": true,
+            "active": true
+          }
+        },
+        {
+          "operation": "sample",
+          "time": 0.5,
+          "args": [],
+          "expected": {
+            "matrix": [
+              1.0294035097630414,
+              -0.07336732127133207,
+              -0.07336732127133207,
+              1.0302927843991008
+            ],
+            "offset": [
+              0,
+              0
+            ],
+            "press": 0.9949382360356879,
+            "held": true,
+            "active": true
+          }
+        },
+        {
+          "operation": "release",
+          "time": 0.5,
+          "args": [],
+          "expected": {
+            "matrix": [
+              1.0294035097630414,
+              -0.07336732127133207,
+              -0.07336732127133207,
+              1.0302927843991008
+            ],
+            "offset": [
+              0,
+              0
+            ],
+            "press": 0.9949382360356879,
+            "held": false,
+            "active": true
+          }
+        },
+        {
+          "operation": "sample",
+          "time": 0.6,
+          "args": [],
+          "expected": {
+            "matrix": [
+              1.0154932169929984,
+              -0.03942426039986378,
+              -0.03942426039986378,
+              1.015682812202884
+            ],
+            "offset": [
+              0,
+              0
+            ],
+            "press": 0.5196004865980508,
+            "held": false,
+            "active": true
+          }
+        },
+        {
+          "operation": "press",
+          "time": 0.6,
+          "args": [
+            30,
+            80
+          ],
+          "expected": {
+            "matrix": [
+              1.0154932169929984,
+              -0.03942426039986378,
+              -0.03942426039986378,
+              1.015682812202884
+            ],
+            "offset": [
+              0,
+              0
+            ],
+            "press": 0.5196004865980508,
+            "held": true,
+            "active": true
+          }
+        },
+        {
+          "operation": "sample",
+          "time": 0.8,
+          "args": [],
+          "expected": {
+            "matrix": [
+              0.9942538007589306,
+              0.02098093087429083,
+              0.02098093087429083,
+              1.0566682925694804
+            ],
+            "offset": [
+              0,
+              0
+            ],
+            "press": 0.8487015554735049,
+            "held": true,
+            "active": true
+          }
+        },
+        {
+          "operation": "sample",
+          "time": 0.7,
+          "args": [],
+          "expected": {
+            "matrix": [
+              0.9942538007589306,
+              0.02098093087429083,
+              0.02098093087429083,
+              1.0566682925694804
+            ],
+            "offset": [
+              0,
+              0
+            ],
+            "press": 0.8487015554735049,
+            "held": true,
+            "active": true
+          }
+        },
+        {
+          "operation": "release",
+          "time": 0.9,
+          "args": [],
+          "expected": {
+            "matrix": [
+              0.9975515558945578,
+              0.025770241110408817,
+              0.025770241110408817,
+              1.0595271180686594
+            ],
+            "offset": [
+              0,
+              0
+            ],
+            "press": 0.9513112327202861,
+            "held": false,
+            "active": true
+          }
+        },
+        {
+          "operation": "sample",
+          "time": 1.1,
+          "args": [],
+          "expected": {
+            "matrix": [
+              0.999734368831825,
+              0.004487167028000783,
+              0.004487167028000783,
+              1.0101297915330814
+            ],
+            "offset": [
+              0,
+              0
+            ],
+            "press": 0.1644026727484311,
+            "held": false,
+            "active": true
+          }
+        },
+        {
+          "operation": "sample",
+          "time": 4,
+          "args": [],
+          "expected": {
+            "matrix": [
+              1,
+              0,
+              0,
+              1
+            ],
+            "offset": [
+              0,
+              0
+            ],
+            "press": 0,
+            "held": false,
+            "active": false
+          }
+        },
+        {
+          "operation": "press",
+          "time": 4,
+          "args": [
+            1e+308,
+            -1e+308
+          ],
+          "expected": {
+            "matrix": [
+              1,
+              0,
+              0,
+              1
+            ],
+            "offset": [
+              0,
+              0
+            ],
+            "press": 0,
+            "held": true,
+            "active": true
+          }
+        },
+        {
+          "operation": "sample",
+          "time": 4.4,
+          "args": [],
+          "expected": {
+            "matrix": [
+              1.0294486992164738,
+              -0.07688144546676687,
+              -0.07688144546676687,
+              1.0294486992164738
+            ],
+            "offset": [
+              0,
+              0
+            ],
+            "press": 0.981623307215801,
+            "held": true,
+            "active": true
+          }
+        },
+        {
+          "operation": "setReducedMotion",
+          "time": 4.5,
+          "args": [
+            true
+          ],
+          "expected": {
+            "matrix": [
+              1,
+              0,
+              0,
+              1
+            ],
+            "offset": [
+              0,
+              0
+            ],
+            "press": 0,
+            "held": false,
+            "active": false
+          }
+        },
+        {
+          "operation": "sample",
+          "time": 4.6,
+          "args": [],
+          "expected": {
+            "matrix": [
+              1,
+              0,
+              0,
+              1
+            ],
+            "offset": [
+              0,
+              0
+            ],
+            "press": 0,
+            "held": false,
+            "active": false
+          }
+        },
+        {
+          "operation": "setReducedMotion",
+          "time": 4.7,
+          "args": [
+            false
+          ],
+          "expected": {
+            "matrix": [
+              1,
+              0,
+              0,
+              1
+            ],
+            "offset": [
+              0,
+              0
+            ],
+            "press": 0,
+            "held": false,
+            "active": false
+          }
+        },
+        {
+          "operation": "press",
+          "time": 4.7,
+          "args": [
+            20,
+            30
+          ],
+          "expected": {
+            "matrix": [
+              1,
+              0,
+              0,
+              1
+            ],
+            "offset": [
+              0,
+              0
+            ],
+            "press": 0,
+            "held": true,
+            "active": true
+          }
+        },
+        {
+          "operation": "sample",
+          "time": 4.8,
+          "args": [],
+          "expected": {
+            "matrix": [
+              1.009036070572008,
+              0.009744989229546908,
+              0.009744989229546908,
+              1.0171568949299636
+            ],
+            "offset": [
+              0,
+              0
+            ],
+            "press": 0.43654942503286387,
+            "held": true,
+            "active": true
+          }
+        },
+        {
+          "operation": "resize",
+          "time": 4.9,
+          "args": [
+            {
+              "width": 50.4,
+              "height": 50.4
+            }
+          ],
+          "expected": {
+            "matrix": [
+              1,
+              0,
+              0,
+              1
+            ],
+            "offset": [
+              0,
+              0
+            ],
+            "press": 0,
+            "held": false,
+            "active": false
+          }
+        },
+        {
+          "operation": "sample",
+          "time": 5,
+          "args": [],
+          "expected": {
+            "matrix": [
+              1,
+              0,
+              0,
+              1
+            ],
+            "offset": [
+              0,
+              0
+            ],
+            "press": 0,
+            "held": false,
+            "active": false
+          }
+        }
+      ]
+    },
+    {
+      "options": {
+        "width": 56,
+        "height": 56,
+        "radius": 28,
+        "x": 20,
+        "y": 20,
+        "viewportWidth": 96,
+        "viewportHeight": 96,
+        "pullShape": "area-preserving",
+        "pressScale": 1.05,
+        "pressGrowth": 0
+      },
+      "samples": [
+        {
+          "operation": "press",
+          "time": 0,
+          "args": [
+            0,
+            0
+          ],
+          "expected": {
+            "matrix": [
+              1,
+              0,
+              0,
+              1
+            ],
+            "offset": [
+              0,
+              0
+            ],
+            "press": 0,
+            "held": true,
+            "active": true
+          }
+        },
+        {
+          "operation": "sample",
+          "time": 0.04,
+          "args": [],
+          "expected": {
+            "matrix": [
+              1.0059849387230437,
+              0,
+              0,
+              1.0059849387230437
+            ],
+            "offset": [
+              0,
+              0
+            ],
+            "press": 0.11969877446087518,
+            "held": true,
+            "active": true
+          }
+        },
+        {
+          "operation": "sample",
+          "time": 0.12,
+          "args": [],
+          "expected": {
+            "matrix": [
+              1.0265576110534465,
+              0,
+              0,
+              1.0265576110534465
+            ],
+            "offset": [
+              0,
+              0
+            ],
+            "press": 0.5311522210689291,
+            "held": true,
+            "active": true
+          }
+        },
+        {
+          "operation": "press",
+          "time": 0.13,
+          "args": [
+            50,
+            -30
+          ],
+          "expected": {
+            "matrix": [
+              1.0287107284590666,
+              0,
+              0,
+              1.0287107284590666
+            ],
+            "offset": [
+              0,
+              0
+            ],
+            "press": 0.5742145691813305,
+            "held": true,
+            "active": true
+          }
+        },
+        {
+          "operation": "sample",
+          "time": 0.2,
+          "args": [],
+          "expected": {
+            "matrix": [
+              1.0430782917323318,
+              -0.006123177560455079,
+              -0.006123177560455079,
+              1.036546902334513
+            ],
+            "offset": [
+              0.3818516144674753,
+              -0.22911096868048514
+            ],
+            "press": 0.7957887937350182,
+            "held": true,
+            "active": true
+          }
+        },
+        {
+          "operation": "press",
+          "time": 0.23,
+          "args": [
+            -1000000,
+            1000000
+          ],
+          "expected": {
+            "matrix": [
+              1.0476255483796786,
+              -0.00909747638213326,
+              -0.00909747638213326,
+              1.0379215735720697
+            ],
+            "offset": [
+              0.5657329616278408,
+              -0.33943977697670447
+            ],
+            "press": 0.8544517416499325,
+            "held": true,
+            "active": true
+          }
+        },
+        {
+          "operation": "sample",
+          "time": 0.5,
+          "args": [],
+          "expected": {
+            "matrix": [
+              1.0505141849833541,
+              -0.046883658753951694,
+              -0.046883658753951694,
+              1.0510725814835487
+            ],
+            "offset": [
+              -2.1002284022263398,
+              2.1127727743913933
+            ],
+            "press": 0.9949382360356879,
+            "held": true,
+            "active": true
+          }
+        },
+        {
+          "operation": "release",
+          "time": 0.5,
+          "args": [],
+          "expected": {
+            "matrix": [
+              1.0505141849833541,
+              -0.046883658753951694,
+              -0.046883658753951694,
+              1.0510725814835487
+            ],
+            "offset": [
+              -2.1002284022263398,
+              2.1127727743913933
+            ],
+            "press": 0.9949382360356879,
+            "held": false,
+            "active": true
+          }
+        },
+        {
+          "operation": "sample",
+          "time": 0.6,
+          "args": [],
+          "expected": {
+            "matrix": [
+              1.0262170692644133,
+              -0.02461383992089537,
+              -0.02461383992089537,
+              1.0263333976646833
+            ],
+            "offset": [
+              -1.1304451287233246,
+              1.1331196047254475
+            ],
+            "press": 0.5196004865980508,
+            "held": false,
+            "active": true
+          }
+        },
+        {
+          "operation": "press",
+          "time": 0.6,
+          "args": [
+            30,
+            80
+          ],
+          "expected": {
+            "matrix": [
+              1.0262170692644133,
+              -0.02461383992089537,
+              -0.02461383992089537,
+              1.0263333976646833
+            ],
+            "offset": [
+              -1.1304451287233246,
+              1.1331196047254475
+            ],
+            "press": 0.5196004865980508,
+            "held": true,
+            "active": true
+          }
+        },
+        {
+          "operation": "sample",
+          "time": 0.8,
+          "args": [],
+          "expected": {
+            "matrix": [
+              1.0231740208323692,
+              0.013073653617627941,
+              0.013073653617627941,
+              1.0622257696767536
+            ],
+            "offset": [
+              0.43725746400159987,
+              1.4389807017351117
+            ],
+            "press": 0.8487015554735049,
+            "held": true,
+            "active": true
+          }
+        },
+        {
+          "operation": "sample",
+          "time": 0.7,
+          "args": [],
+          "expected": {
+            "matrix": [
+              1.0231740208323692,
+              0.013073653617627941,
+              0.013073653617627941,
+              1.0622257696767536
+            ],
+            "offset": [
+              0.43725746400159987,
+              1.4389807017351117
+            ],
+            "press": 0.8487015554735049,
+            "held": true,
+            "active": true
+          }
+        },
+        {
+          "operation": "release",
+          "time": 0.9,
+          "args": [],
+          "expected": {
+            "matrix": [
+              1.0284137724373037,
+              0.016168973127972792,
+              0.016168973127972792,
+              1.0673282204461234
+            ],
+            "offset": [
+              0.5474515525198249,
+              1.5153495636620309
+            ],
+            "press": 0.9513112327202861,
+            "held": false,
+            "active": true
+          }
+        },
+        {
+          "operation": "sample",
+          "time": 1.1,
+          "args": [],
+          "expected": {
+            "matrix": [
+              1.0050888474396689,
+              0.0027101351416649413,
+              0.0027101351416649413,
+              1.011368482790138
+            ],
+            "offset": [
+              0.09567777460982836,
+              0.25727573108578095
+            ],
+            "press": 0.1644026727484311,
+            "held": false,
+            "active": true
+          }
+        },
+        {
+          "operation": "sample",
+          "time": 4,
+          "args": [],
+          "expected": {
+            "matrix": [
+              1,
+              0,
+              0,
+              1
+            ],
+            "offset": [
+              0,
+              0
+            ],
+            "press": 0,
+            "held": false,
+            "active": false
+          }
+        },
+        {
+          "operation": "press",
+          "time": 4,
+          "args": [
+            1e+308,
+            -1e+308
+          ],
+          "expected": {
+            "matrix": [
+              1,
+              0,
+              0,
+              1
+            ],
+            "offset": [
+              0,
+              0
+            ],
+            "press": 0,
+            "held": true,
+            "active": true
+          }
+        },
+        {
+          "operation": "sample",
+          "time": 4.4,
+          "args": [],
+          "expected": {
+            "matrix": [
+              1.0502290548995112,
+              -0.04908947178740782,
+              -0.04908947178740782,
+              1.0502290548995112
+            ],
+            "offset": [
+              2.206907385713303,
+              -2.206907385713303
+            ],
+            "press": 0.981623307215801,
+            "held": true,
+            "active": true
+          }
+        },
+        {
+          "operation": "setReducedMotion",
+          "time": 4.5,
+          "args": [
+            true
+          ],
+          "expected": {
+            "matrix": [
+              1,
+              0,
+              0,
+              1
+            ],
+            "offset": [
+              0,
+              0
+            ],
+            "press": 0,
+            "held": false,
+            "active": false
+          }
+        },
+        {
+          "operation": "sample",
+          "time": 4.6,
+          "args": [],
+          "expected": {
+            "matrix": [
+              1,
+              0,
+              0,
+              1
+            ],
+            "offset": [
+              0,
+              0
+            ],
+            "press": 0,
+            "held": false,
+            "active": false
+          }
+        },
+        {
+          "operation": "setReducedMotion",
+          "time": 4.7,
+          "args": [
+            false
+          ],
+          "expected": {
+            "matrix": [
+              1,
+              0,
+              0,
+              1
+            ],
+            "offset": [
+              0,
+              0
+            ],
+            "press": 0,
+            "held": false,
+            "active": false
+          }
+        },
+        {
+          "operation": "press",
+          "time": 4.7,
+          "args": [
+            20,
+            30
+          ],
+          "expected": {
+            "matrix": [
+              1,
+              0,
+              0,
+              1
+            ],
+            "offset": [
+              0,
+              0
+            ],
+            "press": 0,
+            "held": true,
+            "active": true
+          }
+        },
+        {
+          "operation": "sample",
+          "time": 4.8,
+          "args": [],
+          "expected": {
+            "matrix": [
+              1.0193696223661568,
+              0.005947590817642946,
+              0.005947590817642946,
+              1.024325948047526
+            ],
+            "offset": [
+              0.23337764438996877,
+              0.3500664665849532
+            ],
+            "press": 0.43654942503286387,
+            "held": true,
+            "active": true
+          }
+        },
+        {
+          "operation": "resize",
+          "time": 4.9,
+          "args": [
+            {
+              "width": 50.4,
+              "height": 50.4
+            }
+          ],
+          "expected": {
+            "matrix": [
+              1,
+              0,
+              0,
+              1
+            ],
+            "offset": [
+              0,
+              0
+            ],
+            "press": 0,
+            "held": false,
+            "active": false
+          }
+        },
+        {
+          "operation": "sample",
+          "time": 5,
+          "args": [],
+          "expected": {
+            "matrix": [
+              1,
+              0,
+              0,
+              1
+            ],
+            "offset": [
+              0,
+              0
+            ],
+            "press": 0,
+            "held": false,
+            "active": false
+          }
+        }
+      ]
+    },
+    {
+      "options": {
+        "width": 278,
+        "height": 62,
+        "radius": 31,
+        "x": 20,
+        "y": 20,
+        "viewportWidth": 318,
+        "viewportHeight": 102,
+        "pullShape": "adaptive"
+      },
+      "samples": [
+        {
+          "operation": "press",
+          "time": 0,
+          "args": [
+            0,
+            0
+          ],
+          "expected": {
+            "matrix": [
+              1,
+              0,
+              0,
+              1
+            ],
+            "offset": [
+              0,
+              0
+            ],
+            "press": 0,
+            "held": true,
+            "active": true
+          }
+        },
+        {
+          "operation": "sample",
+          "time": 0.04,
+          "args": [],
+          "expected": {
+            "matrix": [
+              1.001722284524617,
+              0,
+              0,
+              1.0035909632338262
+            ],
+            "offset": [
+              0,
+              0
+            ],
+            "press": 0.11969877446087518,
+            "held": true,
+            "active": true
+          }
+        },
+        {
+          "operation": "sample",
+          "time": 0.12,
+          "args": [],
+          "expected": {
+            "matrix": [
+              1.0076424780009918,
+              0,
+              0,
+              1.0159345666320678
+            ],
+            "offset": [
+              0,
+              0
+            ],
+            "press": 0.5311522210689291,
+            "held": true,
+            "active": true
+          }
+        },
+        {
+          "operation": "press",
+          "time": 0.13,
+          "args": [
+            50,
+            -30
+          ],
+          "expected": {
+            "matrix": [
+              1.0082620801321054,
+              0,
+              0,
+              1.01722643707544
+            ],
+            "offset": [
+              0,
+              0
+            ],
+            "press": 0.5742145691813305,
+            "held": true,
+            "active": true
+          }
+        },
+        {
+          "operation": "sample",
+          "time": 0.2,
+          "args": [],
+          "expected": {
+            "matrix": [
+              1.0116326493400043,
+              0,
+              0,
+              1.023470120106453
+            ],
+            "offset": [
+              0,
+              0
+            ],
+            "press": 0.7957887937350182,
+            "held": true,
+            "active": true
+          }
+        },
+        {
+          "operation": "press",
+          "time": 0.23,
+          "args": [
+            -1000000,
+            1000000
+          ],
+          "expected": {
+            "matrix": [
+              1.0125641868178066,
+              0,
+              0,
+              1.0250362744830814
+            ],
+            "offset": [
+              0,
+              0
+            ],
+            "press": 0.8544517416499325,
+            "held": true,
+            "active": true
+          }
+        },
+        {
+          "operation": "sample",
+          "time": 0.5,
+          "args": [],
+          "expected": {
+            "matrix": [
+              1.0143015023093003,
+              -2.7189538082400853e-21,
+              -2.6779457040247986e-21,
+              1.0298781784323319
+            ],
+            "offset": [
+              0,
+              0
+            ],
+            "press": 0.9949382360356879,
+            "held": true,
+            "active": true
+          }
+        },
+        {
+          "operation": "release",
+          "time": 0.5,
+          "args": [],
+          "expected": {
+            "matrix": [
+              1.0143015023093003,
+              -2.7189538082400853e-21,
+              -2.6779457040247986e-21,
+              1.0298781784323319
+            ],
+            "offset": [
+              0,
+              0
+            ],
+            "press": 0.9949382360356879,
+            "held": false,
+            "active": true
+          }
+        },
+        {
+          "operation": "sample",
+          "time": 0.6,
+          "args": [],
+          "expected": {
+            "matrix": [
+              1.0074731085457975,
+              -6.034465793875832e-22,
+              -5.9862670471654575e-22,
+              1.015594686757684
+            ],
+            "offset": [
+              0,
+              0
+            ],
+            "press": 0.5196004865980508,
+            "held": false,
+            "active": true
+          }
+        },
+        {
+          "operation": "press",
+          "time": 0.6,
+          "args": [
+            30,
+            80
+          ],
+          "expected": {
+            "matrix": [
+              1.0074731085457975,
+              -6.034465793875832e-22,
+              -5.9862670471654575e-22,
+              1.015594686757684
+            ],
+            "offset": [
+              0,
+              0
+            ],
+            "press": 0.5196004865980508,
+            "held": true,
+            "active": true
+          }
+        },
+        {
+          "operation": "sample",
+          "time": 0.8,
+          "args": [],
+          "expected": {
+            "matrix": [
+              1.0110447003035328,
+              2.5795225373100817e-19,
+              2.5461937055889824e-19,
+              1.0284916203373062
+            ],
+            "offset": [
+              0,
+              0
+            ],
+            "press": 0.8487015554735049,
+            "held": true,
+            "active": true
+          }
+        },
+        {
+          "operation": "sample",
+          "time": 0.7,
+          "args": [],
+          "expected": {
+            "matrix": [
+              1.0110447003035328,
+              2.5795225373100817e-19,
+              2.5461937055889824e-19,
+              1.0284916203373062
+            ],
+            "offset": [
+              0,
+              0
+            ],
+            "press": 0.8487015554735049,
+            "held": true,
+            "active": true
+          }
+        },
+        {
+          "operation": "release",
+          "time": 0.9,
+          "args": [],
+          "expected": {
+            "matrix": [
+              1.0125614032509924,
+              2.4063125381110326e-19,
+              2.3715670284741124e-19,
+              1.0313261108158838
+            ],
+            "offset": [
+              0,
+              0
+            ],
+            "press": 0.9513112327202861,
+            "held": false,
+            "active": true
+          }
+        },
+        {
+          "operation": "sample",
+          "time": 1.1,
+          "args": [],
+          "expected": {
+            "matrix": [
+              1.002174494088925,
+              4.027047775046316e-20,
+              4.016762784924417e-20,
+              1.0053982459101851
+            ],
+            "offset": [
+              0,
+              0
+            ],
+            "press": 0.1644026727484311,
+            "held": false,
+            "active": true
+          }
+        },
+        {
+          "operation": "sample",
+          "time": 4,
+          "args": [],
+          "expected": {
+            "matrix": [
+              1,
+              0,
+              0,
+              1
+            ],
+            "offset": [
+              0,
+              0
+            ],
+            "press": 0,
+            "held": false,
+            "active": false
+          }
+        },
+        {
+          "operation": "press",
+          "time": 4,
+          "args": [
+            1e+308,
+            -1e+308
+          ],
+          "expected": {
+            "matrix": [
+              1,
+              0,
+              0,
+              1
+            ],
+            "offset": [
+              0,
+              0
+            ],
+            "press": 0,
+            "held": true,
+            "active": true
+          }
+        },
+        {
+          "operation": "sample",
+          "time": 4.4,
+          "args": [],
+          "expected": {
+            "matrix": [
+              1.014124076362817,
+              0,
+              0,
+              1.0294486992164738
+            ],
+            "offset": [
+              0,
+              0
+            ],
+            "press": 0.981623307215801,
+            "held": true,
+            "active": true
+          }
+        },
+        {
+          "operation": "setReducedMotion",
+          "time": 4.5,
+          "args": [
+            true
+          ],
+          "expected": {
+            "matrix": [
+              1,
+              0,
+              0,
+              1
+            ],
+            "offset": [
+              0,
+              0
+            ],
+            "press": 0,
+            "held": false,
+            "active": false
+          }
+        },
+        {
+          "operation": "sample",
+          "time": 4.6,
+          "args": [],
+          "expected": {
+            "matrix": [
+              1,
+              0,
+              0,
+              1
+            ],
+            "offset": [
+              0,
+              0
+            ],
+            "press": 0,
+            "held": false,
+            "active": false
+          }
+        },
+        {
+          "operation": "setReducedMotion",
+          "time": 4.7,
+          "args": [
+            false
+          ],
+          "expected": {
+            "matrix": [
+              1,
+              0,
+              0,
+              1
+            ],
+            "offset": [
+              0,
+              0
+            ],
+            "press": 0,
+            "held": false,
+            "active": false
+          }
+        },
+        {
+          "operation": "press",
+          "time": 4.7,
+          "args": [
+            20,
+            30
+          ],
+          "expected": {
+            "matrix": [
+              1,
+              0,
+              0,
+              1
+            ],
+            "offset": [
+              0,
+              0
+            ],
+            "press": 0,
+            "held": true,
+            "active": true
+          }
+        },
+        {
+          "operation": "sample",
+          "time": 4.8,
+          "args": [],
+          "expected": {
+            "matrix": [
+              1.0061422486310296,
+              2.705597448853726e-20,
+              2.6873966383811245e-20,
+              1.0133983606293786
+            ],
+            "offset": [
+              0,
+              0
+            ],
+            "press": 0.43654942503286387,
+            "held": true,
+            "active": true
+          }
+        },
+        {
+          "operation": "resize",
+          "time": 4.9,
+          "args": [
+            {
+              "width": 250.20000000000002,
+              "height": 55.800000000000004
+            }
+          ],
+          "expected": {
+            "matrix": [
+              1,
+              0,
+              0,
+              1
+            ],
+            "offset": [
+              0,
+              0
+            ],
+            "press": 0,
+            "held": false,
+            "active": false
+          }
+        },
+        {
+          "operation": "sample",
+          "time": 5,
+          "args": [],
+          "expected": {
+            "matrix": [
+              1,
+              0,
+              0,
+              1
+            ],
+            "offset": [
+              0,
+              0
+            ],
+            "press": 0,
+            "held": false,
+            "active": false
+          }
+        }
+      ]
+    },
+    {
+      "options": {
+        "width": 278,
+        "height": 62,
+        "radius": 31,
+        "x": 20,
+        "y": 20,
+        "viewportWidth": 318,
+        "viewportHeight": 102,
+        "pullShape": "area-preserving",
+        "pressScale": 1.05,
+        "pressGrowth": 0
+      },
+      "samples": [
+        {
+          "operation": "press",
+          "time": 0,
+          "args": [
+            0,
+            0
+          ],
+          "expected": {
+            "matrix": [
+              1,
+              0,
+              0,
+              1
+            ],
+            "offset": [
+              0,
+              0
+            ],
+            "press": 0,
+            "held": true,
+            "active": true
+          }
+        },
+        {
+          "operation": "sample",
+          "time": 0.04,
+          "args": [],
+          "expected": {
+            "matrix": [
+              1.0059849387230437,
+              0,
+              0,
+              1.0059849387230437
+            ],
+            "offset": [
+              0,
+              0
+            ],
+            "press": 0.11969877446087518,
+            "held": true,
+            "active": true
+          }
+        },
+        {
+          "operation": "sample",
+          "time": 0.12,
+          "args": [],
+          "expected": {
+            "matrix": [
+              1.0265576110534465,
+              0,
+              0,
+              1.0265576110534465
+            ],
+            "offset": [
+              0,
+              0
+            ],
+            "press": 0.5311522210689291,
+            "held": true,
+            "active": true
+          }
+        },
+        {
+          "operation": "press",
+          "time": 0.13,
+          "args": [
+            50,
+            -30
+          ],
+          "expected": {
+            "matrix": [
+              1.0287107284590666,
+              0,
+              0,
+              1.0287107284590666
+            ],
+            "offset": [
+              0,
+              0
+            ],
+            "press": 0.5742145691813305,
+            "held": true,
+            "active": true
+          }
+        },
+        {
+          "operation": "sample",
+          "time": 0.2,
+          "args": [],
+          "expected": {
+            "matrix": [
+              1.042770165154155,
+              0,
+              0,
+              1.036817234528624
+            ],
+            "offset": [
+              0.38532409674514284,
+              -0.2311944580470857
+            ],
+            "press": 0.7957887937350182,
+            "held": true,
+            "active": true
+          }
+        },
+        {
+          "operation": "press",
+          "time": 0.23,
+          "args": [
+            -1000000,
+            1000000
+          ],
+          "expected": {
+            "matrix": [
+              1.0471541989579203,
+              0,
+              0,
+              1.0383097300225856
+            ],
+            "offset": [
+              0.5708776241321091,
+              -0.34252657447926543
+            ],
+            "press": 0.8544517416499325,
+            "held": true,
+            "active": true
+          }
+        },
+        {
+          "operation": "sample",
+          "time": 0.5,
+          "args": [],
+          "expected": {
+            "matrix": [
+              1.0494925546248066,
+              -3.115354502382452e-20,
+              -3.115354502382452e-20,
+              1.0500013306252913
+            ],
+            "offset": [
+              -2.328327783546106,
+              2.3409862317249233
+            ],
+            "press": 0.9949382360356879,
+            "held": true,
+            "active": true
+          }
+        },
+        {
+          "operation": "release",
+          "time": 0.5,
+          "args": [],
+          "expected": {
+            "matrix": [
+              1.0494925546248066,
+              -3.115354502382452e-20,
+              -3.115354502382452e-20,
+              1.0500013306252913
+            ],
+            "offset": [
+              -2.328327783546106,
+              2.3409862317249233
+            ],
+            "press": 0.9949382360356879,
+            "held": false,
+            "active": true
+          }
+        },
+        {
+          "operation": "sample",
+          "time": 0.6,
+          "args": [],
+          "expected": {
+            "matrix": [
+              1.0259270176238529,
+              -6.491616986996311e-21,
+              -6.491616986996311e-21,
+              1.0260330337746568
+            ],
+            "offset": [
+              -1.2522198242827092,
+              1.2549186214351624
+            ],
+            "press": 0.5196004865980508,
+            "held": false,
+            "active": true
+          }
+        },
+        {
+          "operation": "press",
+          "time": 0.6,
+          "args": [
+            30,
+            80
+          ],
+          "expected": {
+            "matrix": [
+              1.0259270176238529,
+              -6.491616986996311e-21,
+              -6.491616986996311e-21,
+              1.0260330337746568
+            ],
+            "offset": [
+              -1.2522198242827092,
+              1.2549186214351624
+            ],
+            "press": 0.5196004865980508,
+            "held": true,
+            "active": true
+          }
+        },
+        {
+          "operation": "sample",
+          "time": 0.8,
+          "args": [],
+          "expected": {
+            "matrix": [
+              1.0244537599929744,
+              2.2214018615632043e-18,
+              2.2214018615632043e-18,
+              1.0607320054937968
+            ],
+            "offset": [
+              0.4386115919669325,
+              1.4719211156058654
+            ],
+            "press": 0.8487015554735049,
+            "held": true,
+            "active": true
+          }
+        },
+        {
+          "operation": "sample",
+          "time": 0.7,
+          "args": [],
+          "expected": {
+            "matrix": [
+              1.0244537599929744,
+              2.2214018615632043e-18,
+              2.2214018615632043e-18,
+              1.0607320054937968
+            ],
+            "offset": [
+              0.4386115919669325,
+              1.4719211156058654
+            ],
+            "press": 0.8487015554735049,
+            "held": true,
+            "active": true
+          }
+        },
+        {
+          "operation": "release",
+          "time": 0.9,
+          "args": [],
+          "expected": {
+            "matrix": [
+              1.0297843274530807,
+              2.196373175748725e-18,
+              2.196373175748725e-18,
+              1.065653823495171
+            ],
+            "offset": [
+              0.5561095329455171,
+              1.5443970660882416
+            ],
+            "press": 0.9513112327202861,
+            "held": false,
+            "active": true
+          }
+        },
+        {
+          "operation": "sample",
+          "time": 1.1,
+          "args": [],
+          "expected": {
+            "matrix": [
+              1.0053349702302934,
+              3.538376165852978e-19,
+              3.538376165852978e-19,
+              1.011113577038912
+            ],
+            "offset": [
+              0.09737477545001842,
+              0.2620303134121744
+            ],
+            "press": 0.1644026727484311,
+            "held": false,
+            "active": true
+          }
+        },
+        {
+          "operation": "sample",
+          "time": 4,
+          "args": [],
+          "expected": {
+            "matrix": [
+              1,
+              0,
+              0,
+              1
+            ],
+            "offset": [
+              0,
+              0
+            ],
+            "press": 0,
+            "held": false,
+            "active": false
+          }
+        },
+        {
+          "operation": "press",
+          "time": 4,
+          "args": [
+            1e+308,
+            -1e+308
+          ],
+          "expected": {
+            "matrix": [
+              1,
+              0,
+              0,
+              1
+            ],
+            "offset": [
+              0,
+              0
+            ],
+            "press": 0,
+            "held": true,
+            "active": true
+          }
+        },
+        {
+          "operation": "sample",
+          "time": 4.4,
+          "args": [],
+          "expected": {
+            "matrix": [
+              1.04908116536079,
+              0,
+              0,
+              1.04908116536079
+            ],
+            "offset": [
+              2.4433617484682992,
+              -2.4433617484682992
+            ],
+            "press": 0.981623307215801,
+            "held": true,
+            "active": true
+          }
+        },
+        {
+          "operation": "setReducedMotion",
+          "time": 4.5,
+          "args": [
+            true
+          ],
+          "expected": {
+            "matrix": [
+              1,
+              0,
+              0,
+              1
+            ],
+            "offset": [
+              0,
+              0
+            ],
+            "press": 0,
+            "held": false,
+            "active": false
+          }
+        },
+        {
+          "operation": "sample",
+          "time": 4.6,
+          "args": [],
+          "expected": {
+            "matrix": [
+              1,
+              0,
+              0,
+              1
+            ],
+            "offset": [
+              0,
+              0
+            ],
+            "press": 0,
+            "held": false,
+            "active": false
+          }
+        },
+        {
+          "operation": "setReducedMotion",
+          "time": 4.7,
+          "args": [
+            false
+          ],
+          "expected": {
+            "matrix": [
+              1,
+              0,
+              0,
+              1
+            ],
+            "offset": [
+              0,
+              0
+            ],
+            "press": 0,
+            "held": false,
+            "active": false
+          }
+        },
+        {
+          "operation": "press",
+          "time": 4.7,
+          "args": [
+            20,
+            30
+          ],
+          "expected": {
+            "matrix": [
+              1,
+              0,
+              0,
+              1
+            ],
+            "offset": [
+              0,
+              0
+            ],
+            "press": 0,
+            "held": true,
+            "active": true
+          }
+        },
+        {
+          "operation": "sample",
+          "time": 4.8,
+          "args": [],
+          "expected": {
+            "matrix": [
+              1.0195835370951682,
+              2.751050757669098e-19,
+              2.751050757669098e-19,
+              1.0240763439347966
+            ],
+            "offset": [
+              0.2342196639649476,
+              0.35132949594742147
+            ],
+            "press": 0.43654942503286387,
+            "held": true,
+            "active": true
+          }
+        },
+        {
+          "operation": "resize",
+          "time": 4.9,
+          "args": [
+            {
+              "width": 250.20000000000002,
+              "height": 55.800000000000004
+            }
+          ],
+          "expected": {
+            "matrix": [
+              1,
+              0,
+              0,
+              1
+            ],
+            "offset": [
+              0,
+              0
+            ],
+            "press": 0,
+            "held": false,
+            "active": false
+          }
+        },
+        {
+          "operation": "sample",
+          "time": 5,
+          "args": [],
+          "expected": {
+            "matrix": [
+              1,
+              0,
+              0,
+              1
+            ],
+            "offset": [
+              0,
+              0
+            ],
+            "press": 0,
+            "held": false,
+            "active": false
+          }
+        }
+      ]
+    },
+    {
+      "options": {
+        "width": 320,
+        "height": 180,
+        "radius": 20,
+        "x": 20,
+        "y": 20,
+        "viewportWidth": 360,
+        "viewportHeight": 220,
+        "pullShape": "adaptive"
+      },
+      "samples": [
+        {
+          "operation": "press",
+          "time": 0,
+          "args": [
+            0,
+            0
+          ],
+          "expected": {
+            "matrix": [
+              1,
+              0,
+              0,
+              1
+            ],
+            "offset": [
+              0,
+              0
+            ],
+            "press": 0,
+            "held": true,
+            "active": true
+          }
+        },
+        {
+          "operation": "sample",
+          "time": 0.04,
+          "args": [],
+          "expected": {
+            "matrix": [
+              1.001496234680761,
+              0,
+              0,
+              1.0026599727657972
+            ],
+            "offset": [
+              0,
+              0
+            ],
+            "press": 0.11969877446087518,
+            "held": true,
+            "active": true
+          }
+        },
+        {
+          "operation": "sample",
+          "time": 0.12,
+          "args": [],
+          "expected": {
+            "matrix": [
+              1.0066394027633616,
+              0,
+              0,
+              1.0118033826904207
+            ],
+            "offset": [
+              0,
+              0
+            ],
+            "press": 0.5311522210689291,
+            "held": true,
+            "active": true
+          }
+        },
+        {
+          "operation": "press",
+          "time": 0.13,
+          "args": [
+            50,
+            -30
+          ],
+          "expected": {
+            "matrix": [
+              1.0071776821147667,
+              0,
+              0,
+              1.012760323759585
+            ],
+            "offset": [
+              0,
+              0
+            ],
+            "press": 0.5742145691813305,
+            "held": true,
+            "active": true
+          }
+        },
+        {
+          "operation": "sample",
+          "time": 0.2,
+          "args": [],
+          "expected": {
+            "matrix": [
+              1.0101066424211886,
+              -0.000044435132946087005,
+              -0.00004409731958970885,
+              1.0174655183193755
+            ],
+            "offset": [
+              0,
+              0
+            ],
+            "press": 0.7957887937350182,
+            "held": true,
+            "active": true
+          }
+        },
+        {
+          "operation": "press",
+          "time": 0.23,
+          "args": [
+            -1000000,
+            1000000
+          ],
+          "expected": {
+            "matrix": [
+              1.0109162232249584,
+              -0.00006574363029810108,
+              -0.00006520766364036838,
+              1.018664316916294
+            ],
+            "offset": [
+              0,
+              0
+            ],
+            "press": 0.8544517416499325,
+            "held": true,
+            "active": true
+          }
+        },
+        {
+          "operation": "sample",
+          "time": 0.5,
+          "args": [],
+          "expected": {
+            "matrix": [
+              1.0124280590093326,
+              -0.0006472482865383469,
+              -0.0006411228781615246,
+              1.0221214450374339
+            ],
+            "offset": [
+              0,
+              0
+            ],
+            "press": 0.9949382360356879,
+            "held": true,
+            "active": true
+          }
+        },
+        {
+          "operation": "release",
+          "time": 0.5,
+          "args": [],
+          "expected": {
+            "matrix": [
+              1.0124280590093326,
+              -0.0006472482865383469,
+              -0.0006411228781615246,
+              1.0221214450374339
+            ],
+            "offset": [
+              0,
+              0
+            ],
+            "press": 0.9949382360356879,
+            "held": false,
+            "active": true
+          }
+        },
+        {
+          "operation": "sample",
+          "time": 0.6,
+          "args": [],
+          "expected": {
+            "matrix": [
+              1.0064925799443225,
+              -0.0004529008745148151,
+              -0.0004506390842834632,
+              1.0115499467659772
+            ],
+            "offset": [
+              0,
+              0
+            ],
+            "press": 0.5196004865980508,
+            "held": false,
+            "active": true
+          }
+        },
+        {
+          "operation": "press",
+          "time": 0.6,
+          "args": [
+            30,
+            80
+          ],
+          "expected": {
+            "matrix": [
+              1.0064925799443225,
+              -0.0004529008745148151,
+              -0.0004506390842834632,
+              1.0115499467659772
+            ],
+            "offset": [
+              0,
+              0
+            ],
+            "press": 0.5196004865980508,
+            "held": true,
+            "active": true
+          }
+        },
+        {
+          "operation": "sample",
+          "time": 0.8,
+          "args": [],
+          "expected": {
+            "matrix": [
+              1.0093085131932584,
+              0.00008126132511184547,
+              0.00008060322810639957,
+              1.0208550074017793
+            ],
+            "offset": [
+              0,
+              0
+            ],
+            "press": 0.8487015554735049,
+            "held": true,
+            "active": true
+          }
+        },
+        {
+          "operation": "sample",
+          "time": 0.7,
+          "args": [],
+          "expected": {
+            "matrix": [
+              1.0093085131932584,
+              0.00008126132511184547,
+              0.00008060322810639957,
+              1.0208550074017793
+            ],
+            "offset": [
+              0,
+              0
+            ],
+            "press": 0.8487015554735049,
+            "held": true,
+            "active": true
+          }
+        },
+        {
+          "operation": "release",
+          "time": 0.9,
+          "args": [],
+          "expected": {
+            "matrix": [
+              1.01081945709964,
+              0.00012480501159670978,
+              0.00012367460470008574,
+              1.0226897098986414
+            ],
+            "offset": [
+              0,
+              0
+            ],
+            "press": 0.9513112327202861,
+            "held": false,
+            "active": true
+          }
+        },
+        {
+          "operation": "sample",
+          "time": 1.1,
+          "args": [],
+          "expected": {
+            "matrix": [
+              1.0018793329238527,
+              0.00002257289586973869,
+              0.00002253694760441342,
+              1.0039044848897776
+            ],
+            "offset": [
+              0,
+              0
+            ],
+            "press": 0.1644026727484311,
+            "held": false,
+            "active": true
+          }
+        },
+        {
+          "operation": "sample",
+          "time": 4,
+          "args": [],
+          "expected": {
+            "matrix": [
+              1,
+              0,
+              0,
+              1
+            ],
+            "offset": [
+              0,
+              0
+            ],
+            "press": 0,
+            "held": false,
+            "active": false
+          }
+        },
+        {
+          "operation": "press",
+          "time": 4,
+          "args": [
+            1e+308,
+            -1e+308
+          ],
+          "expected": {
+            "matrix": [
+              1,
+              0,
+              0,
+              1
+            ],
+            "offset": [
+              0,
+              0
+            ],
+            "press": 0,
+            "held": true,
+            "active": true
+          }
+        },
+        {
+          "operation": "sample",
+          "time": 4.4,
+          "args": [],
+          "expected": {
+            "matrix": [
+              1.0122702913401973,
+              -0.000656419041931825,
+              -0.000650288204638022,
+              1.0218138512714618
+            ],
+            "offset": [
+              0,
+              0
+            ],
+            "press": 0.981623307215801,
+            "held": true,
+            "active": true
+          }
+        },
+        {
+          "operation": "setReducedMotion",
+          "time": 4.5,
+          "args": [
+            true
+          ],
+          "expected": {
+            "matrix": [
+              1,
+              0,
+              0,
+              1
+            ],
+            "offset": [
+              0,
+              0
+            ],
+            "press": 0,
+            "held": false,
+            "active": false
+          }
+        },
+        {
+          "operation": "sample",
+          "time": 4.6,
+          "args": [],
+          "expected": {
+            "matrix": [
+              1,
+              0,
+              0,
+              1
+            ],
+            "offset": [
+              0,
+              0
+            ],
+            "press": 0,
+            "held": false,
+            "active": false
+          }
+        },
+        {
+          "operation": "setReducedMotion",
+          "time": 4.7,
+          "args": [
+            false
+          ],
+          "expected": {
+            "matrix": [
+              1,
+              0,
+              0,
+              1
+            ],
+            "offset": [
+              0,
+              0
+            ],
+            "press": 0,
+            "held": false,
+            "active": false
+          }
+        },
+        {
+          "operation": "press",
+          "time": 4.7,
+          "args": [
+            20,
+            30
+          ],
+          "expected": {
+            "matrix": [
+              1,
+              0,
+              0,
+              1
+            ],
+            "offset": [
+              0,
+              0
+            ],
+            "press": 0,
+            "held": true,
+            "active": true
+          }
+        },
+        {
+          "operation": "sample",
+          "time": 4.8,
+          "args": [],
+          "expected": {
+            "matrix": [
+              1.0053380793748894,
+              0.00004216563013221778,
+              0.00004198838891236958,
+              1.009862912667643
+            ],
+            "offset": [
+              0,
+              0
+            ],
+            "press": 0.43654942503286387,
+            "held": true,
+            "active": true
+          }
+        },
+        {
+          "operation": "resize",
+          "time": 4.9,
+          "args": [
+            {
+              "width": 288,
+              "height": 162
+            }
+          ],
+          "expected": {
+            "matrix": [
+              1,
+              0,
+              0,
+              1
+            ],
+            "offset": [
+              0,
+              0
+            ],
+            "press": 0,
+            "held": false,
+            "active": false
+          }
+        },
+        {
+          "operation": "sample",
+          "time": 5,
+          "args": [],
+          "expected": {
+            "matrix": [
+              1,
+              0,
+              0,
+              1
+            ],
+            "offset": [
+              0,
+              0
+            ],
+            "press": 0,
+            "held": false,
+            "active": false
+          }
+        }
+      ]
+    },
+    {
+      "options": {
+        "width": 320,
+        "height": 180,
+        "radius": 20,
+        "x": 20,
+        "y": 20,
+        "viewportWidth": 360,
+        "viewportHeight": 220,
+        "pullShape": "area-preserving",
+        "pressScale": 1.05,
+        "pressGrowth": 0
+      },
+      "samples": [
+        {
+          "operation": "press",
+          "time": 0,
+          "args": [
+            0,
+            0
+          ],
+          "expected": {
+            "matrix": [
+              1,
+              0,
+              0,
+              1
+            ],
+            "offset": [
+              0,
+              0
+            ],
+            "press": 0,
+            "held": true,
+            "active": true
+          }
+        },
+        {
+          "operation": "sample",
+          "time": 0.04,
+          "args": [],
+          "expected": {
+            "matrix": [
+              1.0059849387230437,
+              0,
+              0,
+              1.0059849387230437
+            ],
+            "offset": [
+              0,
+              0
+            ],
+            "press": 0.11969877446087518,
+            "held": true,
+            "active": true
+          }
+        },
+        {
+          "operation": "sample",
+          "time": 0.12,
+          "args": [],
+          "expected": {
+            "matrix": [
+              1.0265576110534465,
+              0,
+              0,
+              1.0265576110534465
+            ],
+            "offset": [
+              0,
+              0
+            ],
+            "press": 0.5311522210689291,
+            "held": true,
+            "active": true
+          }
+        },
+        {
+          "operation": "press",
+          "time": 0.13,
+          "args": [
+            50,
+            -30
+          ],
+          "expected": {
+            "matrix": [
+              1.0287107284590666,
+              0,
+              0,
+              1.0287107284590666
+            ],
+            "offset": [
+              0,
+              0
+            ],
+            "press": 0.5742145691813305,
+            "held": true,
+            "active": true
+          }
+        },
+        {
+          "operation": "sample",
+          "time": 0.2,
+          "args": [],
+          "expected": {
+            "matrix": [
+              1.0408533424564956,
+              -0.00024921778185409696,
+              -0.00024921778185409696,
+              1.0387266840513407
+            ],
+            "offset": [
+              0.39964502720803574,
+              -0.23978701632482124
+            ],
+            "press": 0.7957887937350182,
+            "held": true,
+            "active": true
+          }
+        },
+        {
+          "operation": "press",
+          "time": 0.23,
+          "args": [
+            -1000000,
+            1000000
+          ],
+          "expected": {
+            "matrix": [
+              1.044303671284338,
+              -0.0003702707045375362,
+              -0.0003702707045375362,
+              1.041144027938951
+            ],
+            "offset": [
+              0.5920948249951653,
+              -0.355256894997099
+            ],
+            "press": 0.8544517416499325,
+            "held": true,
+            "active": true
+          }
+        },
+        {
+          "operation": "sample",
+          "time": 0.5,
+          "args": [],
+          "expected": {
+            "matrix": [
+              1.0496726477878875,
+              -0.005905668432476281,
+              -0.005905668432476281,
+              1.049854407542593
+            ],
+            "offset": [
+              -6.809004231445008,
+              6.831843773757353
+            ],
+            "press": 0.9949382360356879,
+            "held": true,
+            "active": true
+          }
+        },
+        {
+          "operation": "release",
+          "time": 0.5,
+          "args": [],
+          "expected": {
+            "matrix": [
+              1.0496726477878875,
+              -0.005905668432476281,
+              -0.005905668432476281,
+              1.049854407542593
+            ],
+            "offset": [
+              -6.809004231445008,
+              6.831843773757353
+            ],
+            "press": 0.9949382360356879,
+            "held": false,
+            "active": true
+          }
+        },
+        {
+          "operation": "sample",
+          "time": 0.6,
+          "args": [],
+          "expected": {
+            "matrix": [
+              1.0259657294066618,
+              -0.0030862507785219843,
+              -0.0030862507785219843,
+              1.0260036033334394
+            ],
+            "offset": [
+              -3.648067201874055,
+              3.65086630234696
+            ],
+            "press": 0.5196004865980508,
+            "held": false,
+            "active": true
+          }
+        },
+        {
+          "operation": "press",
+          "time": 0.6,
+          "args": [
+            30,
+            80
+          ],
+          "expected": {
+            "matrix": [
+              1.0259657294066618,
+              -0.0030862507785219843,
+              -0.0030862507785219843,
+              1.0260036033334394
+            ],
+            "offset": [
+              -3.648067201874055,
+              3.65086630234696
+            ],
+            "press": 0.5196004865980508,
+            "held": true,
+            "active": true
+          }
+        },
+        {
+          "operation": "sample",
+          "time": 0.8,
+          "args": [],
+          "expected": {
+            "matrix": [
+              1.0344435134496106,
+              0.00038492398625762864,
+              0.00038492398625762864,
+              1.050488523936611
+            ],
+            "offset": [
+              0.32216436960456674,
+              1.7383273609108805
+            ],
+            "press": 0.8487015554735049,
+            "held": true,
+            "active": true
+          }
+        },
+        {
+          "operation": "sample",
+          "time": 0.7,
+          "args": [],
+          "expected": {
+            "matrix": [
+              1.0344435134496106,
+              0.00038492398625762864,
+              0.00038492398625762864,
+              1.050488523936611
+            ],
+            "offset": [
+              0.32216436960456674,
+              1.7383273609108805
+            ],
+            "press": 0.8487015554735049,
+            "held": true,
+            "active": true
+          }
+        },
+        {
+          "operation": "release",
+          "time": 0.9,
+          "args": [],
+          "expected": {
+            "matrix": [
+              1.0406179708231178,
+              0.0006588576504557128,
+              0.0006588576504557128,
+              1.0545599545538842
+            ],
+            "offset": [
+              0.5691042817326882,
+              1.6962765064074812
+            ],
+            "press": 0.9513112327202861,
+            "held": false,
+            "active": true
+          }
+        },
+        {
+          "operation": "sample",
+          "time": 1.1,
+          "args": [],
+          "expected": {
+            "matrix": [
+              1.0071356635305413,
+              0.00011460566360175916,
+              0.00011460566360175916,
+              1.009305784528494
+            ],
+            "offset": [
+              0.10383882349444612,
+              0.2837770106018435
+            ],
+            "press": 0.1644026727484311,
+            "held": false,
+            "active": true
+          }
+        },
+        {
+          "operation": "sample",
+          "time": 4,
+          "args": [],
+          "expected": {
+            "matrix": [
+              1,
+              0,
+              0,
+              1
+            ],
+            "offset": [
+              0,
+              0
+            ],
+            "press": 0,
+            "held": false,
+            "active": false
+          }
+        },
+        {
+          "operation": "press",
+          "time": 4,
+          "args": [
+            1e+308,
+            -1e+308
+          ],
+          "expected": {
+            "matrix": [
+              1,
+              0,
+              0,
+              1
+            ],
+            "offset": [
+              0,
+              0
+            ],
+            "press": 0,
+            "held": true,
+            "active": true
+          }
+        },
+        {
+          "operation": "sample",
+          "time": 4.4,
+          "args": [],
+          "expected": {
+            "matrix": [
+              1.0490990979160308,
+              -0.0061339818613876974,
+              -0.0061339818613876974,
+              1.0490990979160306
+            ],
+            "offset": [
+              7.0755868871104095,
+              -7.093630882649902
+            ],
+            "press": 0.981623307215801,
+            "held": true,
+            "active": true
+          }
+        },
+        {
+          "operation": "setReducedMotion",
+          "time": 4.5,
+          "args": [
+            true
+          ],
+          "expected": {
+            "matrix": [
+              1,
+              0,
+              0,
+              1
+            ],
+            "offset": [
+              0,
+              0
+            ],
+            "press": 0,
+            "held": false,
+            "active": false
+          }
+        },
+        {
+          "operation": "sample",
+          "time": 4.6,
+          "args": [],
+          "expected": {
+            "matrix": [
+              1,
+              0,
+              0,
+              1
+            ],
+            "offset": [
+              0,
+              0
+            ],
+            "press": 0,
+            "held": false,
+            "active": false
+          }
+        },
+        {
+          "operation": "setReducedMotion",
+          "time": 4.7,
+          "args": [
+            false
+          ],
+          "expected": {
+            "matrix": [
+              1,
+              0,
+              0,
+              1
+            ],
+            "offset": [
+              0,
+              0
+            ],
+            "press": 0,
+            "held": false,
+            "active": false
+          }
+        },
+        {
+          "operation": "press",
+          "time": 4.7,
+          "args": [
+            20,
+            30
+          ],
+          "expected": {
+            "matrix": [
+              1,
+              0,
+              0,
+              1
+            ],
+            "offset": [
+              0,
+              0
+            ],
+            "press": 0,
+            "held": true,
+            "active": true
+          }
+        },
+        {
+          "operation": "sample",
+          "time": 4.8,
+          "args": [],
+          "expected": {
+            "matrix": [
+              1.0210429445448628,
+              0.0002354565762458163,
+              0.0002354565762458163,
+              1.0226126550531685
+            ],
+            "offset": [
+              0.237578037647117,
+              0.35636705647067557
+            ],
+            "press": 0.43654942503286387,
+            "held": true,
+            "active": true
+          }
+        },
+        {
+          "operation": "resize",
+          "time": 4.9,
+          "args": [
+            {
+              "width": 288,
+              "height": 162
+            }
+          ],
+          "expected": {
+            "matrix": [
+              1,
+              0,
+              0,
+              1
+            ],
+            "offset": [
+              0,
+              0
+            ],
+            "press": 0,
+            "held": false,
+            "active": false
+          }
+        },
+        {
+          "operation": "sample",
+          "time": 5,
+          "args": [],
+          "expected": {
+            "matrix": [
+              1,
+              0,
+              0,
+              1
+            ],
+            "offset": [
+              0,
+              0
+            ],
+            "press": 0,
+            "held": false,
+            "active": false
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,5 +1,25 @@
 # Performance
 
+## Current Atlas evidence —13 October 2026
+
+Atlas requests a discrete GPU and reports the actual adapter. The tested Windows path selected
+NVIDIA RTX3050. The clipped-input renderer correction adds about 3 ms median submission in a
+controlled old/new/new/old comparison. Forced redraws still have large outliers: one 555 ms draw
+included 491 ms waiting for Skiko's Direct3D draw lock. Forced redraw takes that lock itself;
+this is not measured ordinary input latency.
+
+Natural recording without JFR produced 8,903 callbacks, median 0.9028 ms / p95 1.6017 ms / maximum 15.016 ms;
+536 input deliveries had maximum 32.1551 ms. These are callback/dispatch measurements, not GPU
+or displayed-frame timing. A preceding 87 ms first-input profile was inconclusive. Idle or
+unchanged-input gaps are not automatically dropped frames. Windows denied the PresentMon ETW
+session; no display trace exists. Performance and one intermittent selection failure remain open.
+
+[Exact runs and limitations](https://github.com/shayann07/liquidglass/blob/b46207d665725a0aa841102bfbdcbe74aaf4ac3c/review/atlas/frame-cost-2026-10-13/README.md),
+[GPU comparison](https://github.com/shayann07/liquidglass/blob/b46207d665725a0aa841102bfbdcbe74aaf4ac3c/review/atlas/gpu-2026-10-11/README.md), [diagnostic commands](atlas-studio.md).
+
+The Android results below are **historical measurements on named devices/scenes**, not measurements
+of this desktop revision or a guarantee that glass is free. Preserve the experimental conditions.
+
 ## What it actually costs
 
 Measured on a Pixel 7 at 120 Hz, with two glass elements over a live, continuously animating
@@ -10,7 +30,7 @@ app, sampling steady state across several windows:
 | shader path enabled | 3.85% | 8ms | 10ms |
 | `hasShaders` forced false | 4.96% | 9ms | 13ms |
 
-The same within noise. **The material was free**, on an app whose own idle redraw already
+The difference was within noise for that experiment; no added cost was resolved on an app whose own idle redraw already
 dominated the frame. Adding the mirrored band, the Schlick term and exact-Snell refraction later
 did not move it either.
 
@@ -59,7 +79,7 @@ shape or size changes. See [Shapes](shapes.md).
 back into a bitmap ten times a second. A permanently dark or permanently light app should leave
 it at 0.
 
-**Check your app's idle redraw first.** In this app the material was free and a background
+**Check your app's idle redraw first.** In that historical experiment no added material cost was resolved, and a background
 animation was redrawing the whole screen at ~90fps while nothing was happening. Quantising that
 animation to whole pixels — it moved 1.5px per second and was invalidating at display rate —
 recovered more than the shader ever cost, and let the app reach idle at all.

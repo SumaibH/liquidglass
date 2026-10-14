@@ -52,6 +52,7 @@ import androidx.compose.ui.input.pointer.util.VelocityTracker
 import androidx.compose.ui.layout.layout
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.semantics.SemanticsPropertyKey
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.clearAndSetSemantics
@@ -61,6 +62,7 @@ import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.DpRect
 import androidx.compose.ui.unit.IntOffset
+import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.isSpecified
 import androidx.compose.ui.unit.lerp
@@ -123,6 +125,9 @@ fun GlassTabBar(
     motionEnabled: Boolean = true,
     /** 0 to 1, for the bar to materialize in and out. See [liquidGlass]. */
     materialize: Float = 1f,
+    /** A separate glass control beside the bar's trailing end that the bar fuses with while
+     * pressed, such as a search button. See [GlassTabBarAccessory]. */
+    trailingAccessory: GlassTabBarAccessory? = null,
     item: @Composable (index: Int, selected: Boolean) -> Unit,
 ) {
     require(itemCount > 0) { "GlassTabBar needs at least one item" }
@@ -145,6 +150,7 @@ fun GlassTabBar(
     // Nothing here clips: the lens stands proud of the bar while it is held.
     BoxWithConstraints(modifier = modifier.height(style.height)) {
         val density = LocalDensity.current
+        val rtl = LocalLayoutDirection.current == LayoutDirection.Rtl
         val barWidthDp: Dp = maxWidth
         val barHeightDp: Dp = maxHeight
         val barWidthPx = with(density) { barWidthDp.toPx() }
@@ -182,6 +188,11 @@ fun GlassTabBar(
         var motion by remember { mutableStateOf<Job?>(null) }
         val scope = rememberCoroutineScope()
         val press = rememberGlassPressSource()
+        val barPress = rememberGlassPressSource()
+        val barDrawing = remember(style.deformItemsWithBar) {
+            if (style.deformItemsWithBar) GlassMaterialDrawingState() else null
+        }
+        var barDown by remember { mutableStateOf(Offset.Zero) }
         var v2Held by remember { mutableStateOf(false) }
         var dragging by remember { mutableStateOf(false) }
         var liveVelocity by remember { mutableFloatStateOf(0f) }
@@ -200,7 +211,8 @@ fun GlassTabBar(
             null
         }
         val poseHandle = if (spec != null && usePose) {
-            remember(spec) { GlassPoseHandle(GlassPoseController()) }
+            remember(spec) { GlassPoseHandle(GlassPoseController(
+                if (spec?.response == GlassResponse.Calm) GlassPoseSpec.Calm else GlassPoseSpec())) }
         } else {
             null
         }
@@ -217,7 +229,8 @@ fun GlassTabBar(
         val itemInk = remember(itemCount) { GlassItemBounds(itemCount) }
         // One layout snapshot serves the body's admission, both paint variants and the semantics.
         val formationNow = poseHandle?.formation ?: handle?.formation ?: 0f
-        val emphasisNow = 1f + (style.selectedScale - 1f) * formationNow
+        val transitAppearance = poseHandle?.transitAppearance ?: 0f
+        val emphasisNow = glassTransitInkScale(style,formationNow,transitAppearance)
         // The ink's own vertical half extent, measured from the row the body has to make room
         // for. Horizontal span alone does not prove a label fits inside a rounded end.
         val inkHalfHeightPx = with(density) {
@@ -343,7 +356,7 @@ fun GlassTabBar(
         val selectorWidthPx = with(density) { selectorWidth.toPx() }
         val selectorHeightPx = with(density) { selectorHeight.toPx() }
         val selectorRisePx = with(density) { style.lensRise.toPx() } * lift
-        val selectorStyle = lerpGlassStyle(style.pill, style.lens, lift)
+        val selectorStyle = glassSelectorMaterial(style, lift, transitAppearance)
 
         // The V3 body owns its own centre; offsetX follows it so semantics, the press glow and
         // the diagnostics all read one number.
@@ -390,6 +403,7 @@ fun GlassTabBar(
 
         /** One pointer entry point for both paths, each in its own declared frame. */
         fun pressAt(x: Float, y: Float) {
+            barPress.press(Offset(x, y), Offset(x, y) - barDown)
             when {
                 poseHandle != null -> {
                     poseHandle.barPointerX = x
@@ -411,6 +425,7 @@ fun GlassTabBar(
             poseHandle?.barPointerX = Float.NaN
             poseHandle?.barPointerY = Float.NaN
             press.release()
+            barPress.release()
         }
 
         // The gesture lives on an ancestor of both the lens and the items, not on a sibling
@@ -542,6 +557,7 @@ fun GlassTabBar(
                         // The item under the finger consumes the down, so this must not
                         // require an unconsumed one.
                         val down = awaitFirstDown(requireUnconsumed = false)
+                        barDown = down.position
                         val tracker = VelocityTracker()
                         tracker.addPosition(down.uptimeMillis, down.position)
 
@@ -762,6 +778,25 @@ fun GlassTabBar(
             } else {
                 null
             }
+            // A neighbouring control the bar's material reaches for (iOS 26 Phone: the search
+            // button). Anchored, so the bar's own press growth closes the gap, not the rect.
+            val accessoryFuse = if (trailingAccessory != null && motionEnabled && barFuse == null) {
+                with(density) {
+                    val sizePx = trailingAccessory.size.toPx()
+                    val gapPx = trailingAccessory.gap.toPx()
+                    val plateOffset = barWidthPx * (barScale - 1f) / 2f
+                    val left = (if (rtl) -gapPx - sizePx else barWidthPx + gapPx) + plateOffset
+                    val top = (barHeightPx - sizePx) / 2f + barHeightPx * (barScale - 1f) / 2f
+                    GlassFuse(
+                        bounds = DpRect(left.toDp(), top.toDp(), (left + sizePx).toDp(), (top + sizePx).toDp()),
+                        cornerRadius = (sizePx / 2f).toDp(),
+                        smoothing = trailingAccessory.fusion,
+                        anchored = true,
+                    )
+                }
+            } else {
+                null
+            }
             val margin = (style.heldScale - 1f).coerceAtLeast(0f)
             val barStyle = if (style.heldLift != 0f) {
                 style.bar.copy(tintLift = style.bar.tintLift + style.heldLift * lift)
@@ -790,19 +825,25 @@ fun GlassTabBar(
                         // the ordinary ink can survive underneath the selected ink
                         // (V3-MODEL section 8.2).
                         .then(if (anyHandle) Modifier.liquidGlassSource(barState) else Modifier)
-                        .liquidGlass(
+                        .liquidGlassCore(
                             state = state,
                             shape = barShape,
                             style = barStyle,
                             light = style.light,
-                            // The bar does not glow or bounce under the finger on the reference;
-                            // it grows and lifts, which is done above. The lens is the response.
-                            interaction = null,
+                            // Whole-surface feedback is independent of selector travel.
+                            interaction = if (motionEnabled) style.barInteraction else GlassInteraction.ReducedMotion,
+                            pressSource = barPress,
                             materialize = materialize,
                             // The lens is proud of the bar, and on the reference the bar's own
                             // outline does not simply end under it: it bows out to meet it, one
                             // liquid silhouette with no crease (measured model, section 2d).
-                            fuse = barFuse,
+                            fuse = barFuse ?: accessoryFuse,
+                            refractContent = false,
+                            through = null,
+                            lensFormation = 0f,
+                            body = null,
+                            endpointComposite = false,
+                            materialDrawing = barDrawing,
                         ),
                 )
                 Box(
@@ -812,7 +853,8 @@ fun GlassTabBar(
                         .graphicsLayer {
                             scaleX = barScale
                             scaleY = barScale
-                        },
+                        }
+                        .glassMaterialForeground(barDrawing),
                 ) {
                     ItemRow(
                         count = itemCount,
@@ -822,7 +864,7 @@ fun GlassTabBar(
                         semanticSelected = selected,
                         item = item,
                         emphasisIndex = activeIndex,
-                        emphasis = 1f + (style.selectedScale - 1f) * lift,
+                        emphasis = glassTransitInkScale(style,lift,transitAppearance),
                         onMeasured = if (anyHandle) { index, width -> itemInk.widths[index] = width } else null,
                     )
                 }
@@ -922,14 +964,15 @@ fun GlassTabBar(
                             pressSource = press,
                             refractContent = lensCarriesInk,
                             through = barState,
-                            // The bar's outline is not enlarged to hide the body: containment is
-                            // what keeps a tap inside it, and a hold is allowed out by its own
-                            // declared envelope (V3-MODEL section 12).
+                            // The bar keeps its own outline. The node's declared envelope
+                            // accommodates held growth and Calm's rounded moving taps.
                             fuse = null,
-                            lensFormation = 0f,
+                            lensFormation = glassSelectorFormation(style, lift, transitAppearance, poseHandle?.heldTravel ?: 0f),
                             body = handle?.body?.movedInto(nodeLeftPx.toFloat(), overflowTopPx.toFloat()),
                             poseBody = poseHandle?.render,
                             endpointComposite = lensCarriesInk,
+                            packedEndpoint = supportsGlassEndpointInputs && spec?.response == GlassResponse.Calm,
+                            tintWithinThrough = if (spec?.response == GlassResponse.Calm) barDrawing else null,
                         ),
                 ) {
                     if (lensCarriesInk) {
@@ -966,16 +1009,18 @@ fun GlassTabBar(
                                     )
                                     scaleX = barScale
                                     scaleY = barScale
-                                },
+                                }
+                                .glassMaterialForeground(barDrawing,
+                                    Offset(nodeLeftPx.toFloat(), nodeTopPx.toFloat())),
                         ) {
                             ItemRow(
                                 count = itemCount,
                                 inset = style.contentPadding,
-                                selectedFor = { index -> !usePose || index == activeIndex },
+                                selectedFor = { index -> !usePose || style.lensInkAll || index == activeIndex },
                                 onClick = null,
                                 item = item,
                                 emphasisIndex = activeIndex,
-                                emphasis = 1f + (style.selectedScale - 1f) * lift,
+                                emphasis = glassTransitInkScale(style,lift,transitAppearance),
                             )
                         }
                     }
@@ -1034,16 +1079,17 @@ fun GlassTabBar(
                                     .graphicsLayer {
                                         scaleX = barScale
                                         scaleY = barScale
-                                    },
+                                    }
+                                    .glassMaterialForeground(barDrawing),
                             ) {
                                 ItemRow(
                                     count = itemCount,
                                     inset = style.contentPadding,
-                                    selectedFor = { index -> !usePose || index == activeIndex },
+                                    selectedFor = { index -> !usePose || style.lensInkAll || index == activeIndex },
                                     onClick = null,
                                     item = item,
                                     emphasisIndex = activeIndex,
-                                    emphasis = 1f + (style.selectedScale - 1f) * lift,
+                                    emphasis = glassTransitInkScale(style,lift,transitAppearance),
                                 )
                             }
                         }
@@ -1212,7 +1258,7 @@ internal object GlassTabBarSemantics {
     val Formation = SemanticsPropertyKey<Float>("GlassTabBarFormation")
     val BodyWidth = SemanticsPropertyKey<Float>("GlassTabBarBodyWidth")
     val BodySkew = SemanticsPropertyKey<Float>("GlassTabBarBodySkew")
-    /** How far the body's contour is outside the resting bar, in px; 0 during an ordinary tap. */
+    /** How far the body's contour is outside the resting bar, in px; Calm taps may protrude. */
     val Protrusion = SemanticsPropertyKey<Float>("GlassTabBarProtrusion")
 
     /**
@@ -1262,14 +1308,14 @@ data class GlassTabBarStyle(
     /** The lens forms in about a tenth of a second: two frames at 30fps in the reference. */
     val form: AnimationSpec<Float> = spring(dampingRatio = 0.80f, stiffness = 1400f),
     /**
-     * And subsides over about four tenths.
+     * Authored slow recovery retained for compatibility with the historical selector.
      *
-     * Measured off the reference's own release (LOLL8185, the lens at rest on a tab, finger
-     * lifted at frame 1944): the lens stands 13 px proud of the bar and reaches the flat inset
-     * 30 frames later, 22 of them between nine tenths and one tenth of the travel, which is
-     * 367 ms. At stiffness 600 the library did it in 83 ms, so the lens blinked out instead of
-     * settling and the press read as never having happened. Stiffness 60 measures 383 ms on an
-     * S24+ by the same nine-to-one measure.
+     * The former attribution to a measured LOLL8185 release at CFR1944 is withdrawn:
+     * native-PTS crops still show a refracting lens over Calls in the assumed trailing-rest
+     * frames1968/1980. A vanishing raised-area signal there does not establish settled rest
+     * or finger-up timing. Neither the inherited314ms area duration nor its367ms fitted
+     * first-order equivalent identifies this spring. See the release-provenance audit in
+     * review/ATLAS-STABILIZATION.md. This documentation correction does not retune motion.
      */
     val subside: AnimationSpec<Float> = spring(dampingRatio = 1f, stiffness = 60f),
     /** Touch-down sends the selector to the finger's tab: stiff, so it is there before the drag. */
@@ -1324,8 +1370,87 @@ data class GlassTabBarStyle(
      * on; this is opt-in for exactly that reason.
      */
     val selector: GlassSelectorSpec? = null,
+    /** Whole-bar material deformation; ordinary labels retain their layout positions. */
+    val barInteraction: GlassInteraction? = null,
+    /** Let visible ordinary/selected ink share the bar's bounded drawing response.
+     * Layout, hit targets and selector travel remain independent. Enabled by [Calm]. */
+    val deformItemsWithBar: Boolean = false,
+    /** Fade the resting selector pigment during coupled tap travel; held optics stay separate. */
+    val tapTintFade: Float = 0f,
+    /** Transient selected-ink emphasis around its own anchor, fading as held zoom takes over. */
+    val tapSelectedScale: Float = 1f,
+    /**
+     * How much of the held lens's optics a resting selector shows while it travels after a tap,
+     * scaled by its transit appearance. Geometry is unaffected: the body keeps its tap size.
+     * 0 keeps the historical dark inset whose pigment fades. Calm uses 1: in video1 the moving
+     * selector refracts and magnifies the icons it crosses (2026-10-13 side-by-side).
+     */
+    val tapOptics: Float = 0f,
+    /**
+     * With [tapOptics], how strongly a moving, unheld selector folds its band (the lens's own
+     * nearby content mirrored along the rim) instead of using the held map. 0 keeps the held
+     * map. Calm dark uses 1, from the 2026-10-13 comparison with video1 and video2.
+     */
+    val tapOpticsFold: Float = 0f,
+    /**
+     * The pose selector draws every item's selected ink inside its aperture, not only the
+     * active item's. Video1/video2 (2026-10-13): every icon under a travelling or held iOS lens
+     * shows its selected colour. False keeps the r13 behaviour.
+     */
+    val lensInkAll: Boolean = false,
 ) {
     companion object {
+        /** Recommended navigation preset. Material responds gently; the selector deforms
+         * along travel only. Existing V3/Measured presets remain available for comparison. */
+        fun Calm(dark: Boolean = true): GlassTabBarStyle = V3(
+            dark = dark, spec = GlassSelectorSpec(response = GlassResponse.Calm),
+        ).let { v3 -> v3.copy(
+            // The held lens's rim over black in video2 (x 190, 1.7 s): an outer edge line of 62,
+            // then a glow fading inward 29, 21, 17, 14, 11, 9 across the band; V3 read 88 and
+            // then black (specular .49 at .2 read 27). Now 63, then 29, 16, 13, 11, 10, 8. The
+            // bright inner line the owner saw was the bar's own rim seen through the lens.
+            // Inside the lens the page shows through crisply: text +27 to +37 over the interior
+            // (p95/p99 at 1.7 s) from 133-level page text, about 0.28 of the raw page; V3's .01
+            // left it as the bar's frost.
+            lens = v3.lens.copy(specular = 0.26f, heldGlow = 2f, heldGlowReach = 6.dp, rawShare = 0.28f),
+            // Measured over the black page of the owner's primary references (docs/1.MP4,
+            // docs/2.MP4, recorded brightness space, 2026-10-13): bar 45 at rest and 53 held,
+            // resting selector 24-30 (about .58 of the bar). V3's 32/44 and "0.5 x bar - 10"
+            // came from older stills and left the resting selector nearly black (6-8).
+            // No straight-run fold on the bar: on a 62 pt bar the folds from both edges cover
+            // most of its height and doubled, reversed page text into a garbled smear. Both
+            // recordings show one soft, legible copy of the text beneath (13 October).
+            // The bar's rim: video2 at rest peaks +37 over its interior at the outermost pixel and
+            // fades over ~4 px (82, 72, 64, 53 on 45); the measured in-app bead gave +72 one
+            // pixel in, which the held lens also shows through itself as a bright inner line.
+            bar = (if (dark) v3.bar.copy(tintLift = 45f / 255f) else v3.bar).let {
+                it.copy(edgeFold = 0f, bevelPeak = it.bevelPeak * .5f, specular = it.specular * .5f)
+            },
+            heldLift = if (dark) 8f / 255f else v3.heldLift,
+            pill = if (dark) v3.pill.copy(tint = Color.Black.copy(alpha = 0.42f), tintLift = 0f) else v3.pill,
+            // Original Phone ordinary hold: bar186 ->196px. Reuse the rounded 1.05 press
+            // from Measured(), shared with visible ink using Calm timing. Generic 3%/2dp
+            // feedback undershot it; weakening press is not a correction to drag strain.
+            heldScale = 1f,
+            deformItemsWithBar = true,
+            // New dark Phone tap patch/icon evidence. Light and historical presets are unchanged.
+            tapTintFade = if (dark) 1f else 0f,
+            tapSelectedScale = if (dark) 1.15f else 1f,
+            tapOptics = if (dark) 1f else 0f,
+            tapOpticsFold = if (dark) 1f else 0f,
+            lensInkAll = true,
+            barInteraction = GlassInteraction.Calm.copy(
+                pressScale = 1.05f, pressGrowth = 0.dp,
+                pullShape = GlassPullShape.AreaPreserving,
+                // V3 already applies its measured heldLift to the bar's material. Adding
+                // the generic control lift again changed the44-level Phone plateau to54.
+                pressLift = 0f,
+                // iOS's held bar reaches toward the finger; its far side grows as usual.
+                pressReach = if (dark) .03f else 0f,
+                // iOS's bar snaps back after lift (0.12 s, ~10% overshoot) and parts from the button.
+                releaseStiffness = if (dark) 530f else 0f, releaseDamping = if (dark) .6f else 1f,
+            ),
+        ) }
         // Declaration order matters here: the constructor's defaults read RestingInset and
         // HeldLens, so Dark has to come after them or it is built while they are still null.
 
@@ -1659,6 +1784,78 @@ private const val INK_VERTICAL_SHARE = 0.62f
  * lands a few frames late, short enough that a refused tab does not look selected.
  */
 private const val SELECTION_GRACE_MILLIS = 400L
+
+/**
+ * A separate glass control beside a [GlassTabBar]'s trailing end, such as a search button.
+ *
+ * The bar does not draw it. It reaches for it: the bar's outline is a smooth union with the
+ * accessory's circle, [fusion] wide, so the bar's own press growth closes [gap] and the two
+ * join through a liquid neck, then part again on release. This is what the iOS 26 Phone tab bar
+ * does with its search button (measured 2026-10-13: an 8 pt gap and a neck about 17 pt tall at
+ * full press; the neck carries the bar's material up to the button's edge).
+ *
+ * Lay the accessory out yourself, vertically centred on the bar, [gap] beyond its trailing end,
+ * [size] square, and compose it after the bar so its own glass draws on top. A [fusion] below
+ * twice the [gap] keeps the two apart at rest.
+ */
+@Immutable
+class GlassTabBarAccessory(
+    val size: Dp,
+    val gap: Dp = 8.dp,
+    val fusion: Dp = 6.dp,
+) {
+    override fun equals(other: Any?): Boolean =
+        other is GlassTabBarAccessory && size == other.size && gap == other.gap && fusion == other.fusion
+
+    override fun hashCode(): Int = (size.hashCode() * 31 + gap.hashCode()) * 31 + fusion.hashCode()
+}
+
+/**
+ * The selector's material for a formation and tap transit appearance. Optics may form further
+ * than geometry: a moving resting selector shows the lens's refraction and rim at its resting
+ * size ([GlassTabBarStyle.tapOptics]) while its pigment fades ([GlassTabBarStyle.tapTintFade]).
+ */
+internal fun glassSelectorMaterial(style: GlassTabBarStyle, formation: Float, transitAppearance: Float): GlassStyle {
+    val pigment = glassTransitStyle(lerpGlassStyle(style.pill, style.lens, formation), transitAppearance, style.tapTintFade)
+    if (style.tapOptics <= 0f) return pigment
+    // Optics follow the transit appearance; tint keeps its own measured fade and recovery, so
+    // adding refraction does not delay the pigment's return after landing.
+    val opticalLift = max(formation, transitAppearance * style.tapOptics).coerceIn(0f, 1f)
+    val material = lerpGlassStyle(style.pill, style.lens, opticalLift).copy(tint = pigment.tint, tintLift = pigment.tintLift)
+    // A moving, unheld selector folds its band (see [glassSelectorFold]) instead of the held map.
+    return if (glassSelectorFold(style, formation, transitAppearance) > 0f)
+        material.copy(profile = GlassProfile.Measured, foldAtCorners = 1f, rimMirror = GlassSelectorRimMirror, dispersion = GlassSelectorRimDispersion, inkDispersion = GlassSelectorRimDispersion)
+    // A held lens keeps the measured held map when still and blends toward the same rim mirror
+    // at its caps as it travels ([glassSelectorFormation] carries the travel amount).
+    else if (style.tapOpticsFold > 0f && formation >= 0.5f) material.copy(foldAtCorners = 1f, rimMirror = GlassSelectorRimMirror, dispersion = GlassSelectorRimDispersion, inkDispersion = GlassSelectorRimDispersion)
+    else material
+}
+
+/** Rim-mirror band and its colour split for a moving Calm selector (authored, 2026-10-14). */
+internal const val GlassSelectorRimMirror = 1.0f
+internal const val GlassSelectorRimDispersion = 0.025f
+
+/** `lensFormation` for the selector: the transit fold while unheld, the held lens's travel
+ * (rim-mirror blend at its caps) while held. */
+internal fun glassSelectorFormation(style: GlassTabBarStyle, formation: Float, transitAppearance: Float,
+                                    heldTravel: Float): Float =
+    if (style.tapOpticsFold > 0f && formation >= 0.5f) (heldTravel * style.tapOpticsFold).coerceIn(0f, 1f)
+    else glassSelectorFold(style, formation, transitAppearance)
+
+/**
+ * The fold strength of a moving, unheld selector's band, for `lensFormation`: 0 unless
+ * [GlassTabBarStyle.tapOpticsFold] is on and transit optics lead held formation.
+ *
+ * Video1/video2 (2026-10-13): at the ends of a travelling lens iOS shows the lens's own nearby
+ * content mirrored and wrapped along the rim, blue icon strokes following the cap. That is the
+ * measured fold family's outer band (deeper content shown upside down), not the held map, which
+ * pulls the exterior in and was measured on stationary held stills.
+ */
+internal fun glassSelectorFold(style: GlassTabBarStyle, formation: Float, transitAppearance: Float): Float {
+    if (style.tapOptics <= 0f || style.tapOpticsFold <= 0f || formation >= 0.5f) return 0f
+    val transit = (transitAppearance * style.tapOptics).coerceIn(0f, 1f)
+    return if (transit > formation) transit * style.tapOpticsFold.coerceIn(0f, 1f) else 0f
+}
 
 /** The gesture's own pointer has lifted: a tap, as opposed to a pointer taken by another node. */
 private fun AwaitPointerEventScope.liftedWithoutDrag(id: PointerId): Boolean =

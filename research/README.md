@@ -1,5 +1,9 @@
 # liquidglass — the research record
 
+**13 October 2026 development index:** [visual status and evidence](../docs/development-status.md)
+covers subsequent motion/material corrections, native Atlas verification and cross-stack adapters.
+The original research and parameter provenance below remain historical; no full parity claim is made.
+
 **The optics in this library are measured, not styled.** This document is the complete record: the
 instrument the measurements were made with, the model fitted from them, the mathematics of the V3
 deformable selector as its controlling design states it, the code that implements all of it, the
@@ -7,6 +11,12 @@ tests that gate it, and the device results — including the one gate that fails
 
 Compiled 2026-09-14. Nothing here is marketing: every number carries its provenance, every failure
 is reported as a failure, and no claim of parity with Apple is made anywhere in this repository.
+
+**Development supplement, 2026-10-04:** [Atlas stabilization](../review/ATLAS-STABILIZATION.md)
+records the opt-in continuous magnifier, Calm travel/whole-bar separation, endpoint precision and
+desktop evidence. Its new original-frame audit separates the bar's 186px rest, 196px ordinary hold
+and 204–205px extreme. The navigation-only 1.05 press fits the ordinary hold; extreme asymmetry
+remains open. Historical measurements below retain their original scope and provenance.
 
 ---
 

@@ -1,0 +1,80 @@
+{
+  "status": "Local full inventory complete via explicit reused/fresh case coverage",
+  "sourceSha256": {
+    "liquidglass/src/commonMain/kotlin/com/wexpa/liquidglass/GlassPoseDynamics.kt": "9afe555345daa5df73c93cd03a233114ccb6db122aeded159cd31a8e55c75bb3",
+    "liquidglass/src/jvmTest/kotlin/com/wexpa/liquidglass/GlassPhoneTapOpticsTest.kt": "0b074e4d738eb7a42f80f13825794b09ed57c252900fdd6b9caa8d1748107667"
+  },
+  "focused": {
+    "uniquePassed": 38,
+    "failures": 0,
+    "optical": "7cases passed33s,25longpatches <=6RGB",
+    "gestureFollowup": "32cases passed5s; one optical case replaced/expanded, totalunique38"
+  },
+  "failFirst": {
+    "passed": 0,
+    "failed": 2,
+    "duration": "36s",
+    "source": "ebc12d3",
+    "firstLong": "25RGB vs42expected",
+    "repeat": "35RGB vs45expected"
+  },
+  "native": {
+    "phases": 33,
+    "checksPassed": true,
+    "inspected": true,
+    "duration": "3m9s",
+    "firstTapRenderMs": 771.0213,
+    "firstTapReadbackMs": 2904.2364
+  },
+  "full": {
+    "finished": "2026-10-13T04:06:51.0729624+05:00",
+    "method": "38 same-runtime focused cases reused plus 305 successful remaining cases, 27 optional skips and one isolated same-source retry. Exact 371-case inventory matched. The initial run had one one-minute timeout; it is preserved, not counted as a pass.",
+    "library": {
+      "tests": 371,
+      "passed": 344,
+      "skipped": 27,
+      "failures": 0,
+      "errors": 0,
+      "reusedFocused": 38,
+      "remainingCases": 332,
+      "retriedCases": 1
+    },
+    "initialFailure": {
+      "case": "com.wexpa.liquidglass.GlassTabBarV3GestureTest.aDeclinedDragReturnsTheSelectorToTheSelectionTheHostHolds",
+      "seconds": 65.318,
+      "reason": "one-minute deadline exceeded",
+      "rerunSeconds": 27.451,
+      "fixedByCodeChange": false
+    },
+    "desktop": {
+      "tests": 3,
+      "passed": 3,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "seconds": 314.815
+    },
+    "android": "assembleDebug passed",
+    "sourceSha256": {
+      "liquidglass/src/commonMain/kotlin/com/wexpa/liquidglass/GlassPoseDynamics.kt": "9afe555345daa5df73c93cd03a233114ccb6db122aeded159cd31a8e55c75bb3",
+      "liquidglass/src/jvmTest/kotlin/com/wexpa/liquidglass/GlassPhoneTapOpticsTest.kt": "0b074e4d738eb7a42f80f13825794b09ed57c252900fdd6b9caa8d1748107667"
+    }
+  },
+  "limits": [
+    "Allthree sequences used in calibration",
+    "Original pointer times and hidden backdrop unknown",
+    "No continuous frame pacing or input latency proof",
+    "Full iOS parity remains open"
+  ],
+  "nativeShort": {
+    "phases": 10,
+    "checksPassed": true,
+    "inspected": true,
+    "duration": "48s",
+    "restRecoveryPixelIdenticalToPriorWideFix": {
+      "00-rest.png": true,
+      "15-short-recovered.png": true
+    },
+    "limits": "Independent replays, not source-aligned presentation timing"
+  }
+}

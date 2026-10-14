@@ -1,0 +1,459 @@
+{
+  "sourceSha256": "186e1eb34e6baf896b16bffe839176fc298b2b7a6823d11cb39204ed960ebc06",
+  "samples": [
+    {
+      "file": "frame-001.png",
+      "ys": [
+        132,
+        134,
+        136
+      ],
+      "xs": [
+        729,
+        737,
+        745,
+        753,
+        761
+      ],
+      "left": [
+        601,
+        618
+      ],
+      "right": [
+        872,
+        889
+      ],
+      "top": [
+        36,
+        52
+      ],
+      "bottom": [
+        200,
+        216
+      ]
+    },
+    {
+      "file": "frame-002.png",
+      "ys": [
+        132,
+        134,
+        136
+      ],
+      "xs": [
+        729,
+        737,
+        745,
+        753,
+        761
+      ],
+      "left": [
+        601,
+        618
+      ],
+      "right": [
+        872,
+        889
+      ],
+      "top": [
+        36,
+        52
+      ],
+      "bottom": [
+        200,
+        216
+      ],
+      "inspectionFlags": {
+        "vertical": [
+          "Bottom gradient reaches the excluded bar boundary; retain unresolved rather than fitting height"
+        ]
+      }
+    },
+    {
+      "file": "frame-003.png",
+      "ys": [
+        132,
+        134,
+        136
+      ],
+      "xs": [
+        729,
+        737,
+        745,
+        753,
+        761
+      ],
+      "left": [
+        601,
+        618
+      ],
+      "right": [
+        872,
+        889
+      ],
+      "top": [
+        36,
+        52
+      ],
+      "bottom": [
+        200,
+        216
+      ]
+    },
+    {
+      "file": "frame-004.png",
+      "ys": [
+        132,
+        134,
+        136
+      ],
+      "xs": [
+        729,
+        737,
+        745,
+        753,
+        761
+      ],
+      "left": [
+        601,
+        618
+      ],
+      "right": [
+        872,
+        889
+      ],
+      "top": [
+        36,
+        52
+      ],
+      "bottom": [
+        200,
+        216
+      ]
+    },
+    {
+      "file": "frame-005.png",
+      "ys": [
+        132,
+        134,
+        136
+      ],
+      "xs": [
+        727,
+        735,
+        743,
+        751,
+        759
+      ],
+      "left": [
+        597,
+        614
+      ],
+      "right": [
+        873,
+        890
+      ],
+      "top": [
+        36,
+        52
+      ],
+      "bottom": [
+        200,
+        216
+      ]
+    },
+    {
+      "file": "frame-006.png",
+      "ys": [
+        132,
+        134,
+        136
+      ],
+      "xs": [
+        722,
+        730,
+        738,
+        746,
+        754
+      ],
+      "left": [
+        586,
+        603
+      ],
+      "right": [
+        873,
+        890
+      ],
+      "top": [
+        36,
+        52
+      ],
+      "bottom": [
+        200,
+        216
+      ]
+    },
+    {
+      "file": "frame-007.png",
+      "ys": [
+        132,
+        134,
+        136
+      ],
+      "xs": [
+        705,
+        713,
+        721,
+        729,
+        737
+      ],
+      "left": [
+        562,
+        579
+      ],
+      "right": [
+        856,
+        880
+      ],
+      "top": [
+        34,
+        50
+      ],
+      "bottom": [
+        200,
+        216
+      ]
+    },
+    {
+      "file": "frame-008.png",
+      "ys": [
+        132,
+        134,
+        136
+      ],
+      "xs": [
+        675,
+        683,
+        691,
+        699,
+        707
+      ],
+      "left": [
+        531,
+        548
+      ],
+      "right": [
+        836,
+        853
+      ],
+      "top": [
+        26,
+        41
+      ],
+      "bottom": [
+        211,
+        226
+      ],
+      "inspectionFlags": {
+        "vertical": [
+          "Selector approaches the outer-bar boundary; strongest gradient may belong to bar, not independent selector height"
+        ]
+      }
+    },
+    {
+      "file": "frame-009.png",
+      "ys": [
+        132,
+        134,
+        136
+      ],
+      "xs": [
+        648,
+        656,
+        664,
+        672,
+        680
+      ],
+      "left": [
+        503,
+        520
+      ],
+      "right": [
+        808,
+        825
+      ],
+      "top": [
+        24,
+        39
+      ],
+      "bottom": [
+        212,
+        227
+      ],
+      "inspectionFlags": {
+        "vertical": [
+          "Selector approaches the outer-bar boundary; strongest gradient may belong to bar, not independent selector height"
+        ]
+      }
+    },
+    {
+      "file": "frame-010.png",
+      "ys": [
+        146,
+        148,
+        150
+      ],
+      "xs": [
+        620,
+        628,
+        636,
+        644,
+        652
+      ],
+      "left": [
+        470,
+        487
+      ],
+      "right": [
+        785,
+        802
+      ],
+      "top": [
+        24,
+        39
+      ],
+      "bottom": [
+        214,
+        229
+      ],
+      "samplingNote": "Rows146,148,150 avoid refracted icon pixels. Model must be intersected at identical source rows."
+    },
+    {
+      "file": "frame-011.png",
+      "ys": [
+        146,
+        148,
+        150
+      ],
+      "xs": [
+        592,
+        600,
+        608,
+        616,
+        624
+      ],
+      "left": [
+        440,
+        457
+      ],
+      "right": [
+        760,
+        777
+      ],
+      "top": [
+        20,
+        35
+      ],
+      "bottom": [
+        217,
+        232
+      ],
+      "samplingNote": "Rows146,148,150 avoid refracted icon pixels. Model must be intersected at identical source rows."
+    },
+    {
+      "file": "frame-012.png",
+      "ys": [
+        146,
+        148,
+        150
+      ],
+      "xs": [
+        569,
+        577,
+        585,
+        593,
+        601
+      ],
+      "left": [
+        415,
+        432
+      ],
+      "right": [
+        739,
+        756
+      ],
+      "top": [
+        17,
+        32
+      ],
+      "bottom": [
+        219,
+        234
+      ],
+      "samplingNote": "Rows146,148,150 avoid refracted icon pixels. Model must be intersected at identical source rows."
+    },
+    {
+      "file": "frame-013.png",
+      "ys": [
+        120,
+        124,
+        128,
+        132,
+        136
+      ],
+      "xs": [
+        528,
+        536,
+        544,
+        552,
+        560
+      ],
+      "left": [
+        373,
+        390
+      ],
+      "right": [
+        700,
+        719
+      ],
+      "top": [
+        18,
+        31
+      ],
+      "bottom": [
+        220,
+        233
+      ]
+    },
+    {
+      "file": "frame-014.png",
+      "ys": [
+        132,
+        134,
+        136
+      ],
+      "xs": [
+        514,
+        522,
+        530,
+        538,
+        546
+      ],
+      "left": [
+        356,
+        373
+      ],
+      "right": [
+        688,
+        705
+      ],
+      "top": [
+        17,
+        32
+      ],
+      "bottom": [
+        221,
+        236
+      ]
+    }
+  ]
+}

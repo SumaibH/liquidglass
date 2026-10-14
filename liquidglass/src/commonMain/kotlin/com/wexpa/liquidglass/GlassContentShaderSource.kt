@@ -41,6 +41,8 @@ uniform float   uScale;
 uniform float   uMaterialize;
 uniform float   uProfile;
 uniform float   uFormation;
+uniform float   uFoldCorners;
+uniform float   uRimMirror;
 uniform float   uHeldLens;     // GlassProfile.Held: how far the tab-bar lens has formed, 0 to 1
 uniform float   uHeldMagnification; // interior zoom of the held lens at full formation (GlassStyle.heldMagnification)
 uniform float   uRestMap;      // resting-corner source map: 0 legacy, 1 the measured table (GlassRestMap)
@@ -115,6 +117,33 @@ float snellShift(float slope, float ior) {
 
 $GLASS_SOURCE_MAP_SKSL
 
+// The measured family's source map, or the reflective rim (GlassStyle.rimMirror): within b of
+// the band a pixel at depth u shows depth 2b - u, mirrored about b; inside it, identity.
+// A moving held lens (GlassStyle.rimMirror with the held family): blend the held map toward the
+// reflective rim at its caps by uFormation, here the lens's travel. Still lenses keep the map.
+float heldMirror(float u, float map, float corner) {
+    if (uRimMirror <= 0.0) return map;
+    float b = clamp(uRimMirror, 0.0, 1.0);
+    float mirrored = (u < b) ? (2.0 * b - u) : u;
+    float k = clamp(uFormation, 0.0, 1.0) * mix(1.0, corner, clamp(uFoldCorners, 0.0, 1.0));
+    return mix(map, mirrored, k);
+}
+
+// The colour-split zone of the measured family: the fold's measured outer 0.28, or the
+// reflective rim's own mirrored band when GlassStyle.rimMirror is set.
+float rimZone(float u) {
+    if (uRimMirror <= 0.0) return 1.0 - smoothstep(0.24, 0.32, u);
+    float b = clamp(uRimMirror, 0.0, 1.0);
+    return 1.0 - smoothstep(b * 0.8, b * 1.1, u);
+}
+
+float measuredSource(float u, float formation, float corner) {
+    if (uRimMirror <= 0.0) return foldSource(u, formation, corner);
+    float b = clamp(uRimMirror, 0.0, 1.0);
+    float mirrored = (u < b) ? (2.0 * b - u) : u;
+    return mix(u, mirrored, clamp(formation, 0.0, 1.0));
+}
+
 half4 main(float2 coord) {
     float2 local = coord - float2(uPad);
     float2 halfSize = uSize * 0.5;
@@ -179,7 +208,7 @@ half4 main(float2 coord) {
     // zooms about the body's centre, so the held item reads larger and the bar's own edge is
     // carried outward inside the lens, which is what the calm held references show. Zero for
     // every other profile, and it rises and falls with the lens itself.
-    if (uHeldMagnification > 0.0 && uProfile >= 1.5) {
+    if (uHeldMagnification > 0.0 && uProfile >= 1.5 && uProfile < 2.5) {
         float2 magCentre = (uBodyKind > 1.5) ? uPoseC.xy
             : ((uBodyKind > 0.5) ? float2((uBody.x + uBody.y) * 0.5, uBodyY) : float2(0.0));
         base -= (p - magCentre) * (uHeldMagnification * clamp(uHeldLens, 0.0, 1.0) * mat);
@@ -189,7 +218,7 @@ half4 main(float2 coord) {
     float split = uInkSplit * bend;
     float2 pushR = push * (1.0 - split);
     float2 pushB = push * (1.0 + split);
-    if (uProfile >= 0.5) {
+    if (uProfile >= 0.5 && uProfile < 2.5) {
         // The same inward fold the backdrop goes through; see the panel shader.
         float W = max(uRefractBand, 0.001);
         float u = clamp(depth / W, 0.0, 1.0);
@@ -201,10 +230,10 @@ half4 main(float2 coord) {
         float heldFamily = step(1.5, uProfile);
         float held = heldFamily * clamp(uHeldLens, 0.0, 1.0);
         float heldMap = (uHeldInk > 0.5) ? heldSourceContinuous(u) : heldSource(u);
-        float src = mix(foldSource(u, uFormation, corner), mix(u, heldMap, held), heldFamily);
+        float src = mix(measuredSource(u, uFormation * mix(1.0, corner, clamp(uFoldCorners, 0.0, 1.0)), corner), mix(u, heldMirror(u, heldMap, corner), held), heldFamily);
         float shift = (depth < W) ? (src * W - depth) : 0.0;
         shift = mix(max(shift, 0.0), shift, heldFamily) * mat * axisFade * smoothstep(0.0, 1.5, depth);
-        float mirrorZone = mix((1.0 - smoothstep(0.24, 0.32, u)) * clamp(uFormation, 0.0, 1.0),
+        float mirrorZone = mix(rimZone(u) * clamp(uFormation, 0.0, 1.0),
             (1.0 - smoothstep(0.45, 0.55, u)) * held, heldFamily);
         float delta = uInkSplit * W * 0.5 * mirrorZone * mat;
         push = -n * shift;
@@ -215,6 +244,14 @@ half4 main(float2 coord) {
         pushB = -n * mix(max(shift - delta, 0.0), shift + delta, heldFamily);
     }
 
+    if (uProfile >= 2.5) {
+        // Do not layer a tab fold or fingertip-centred warp over a free magnifier.
+        base = coord + clearLensDelta(p, halfSize, uHeldMagnification * mat);
+        push = float2(0.0);
+        pushR = float2(0.0);
+        pushB = float2(0.0);
+        bend = 0.0;
+    }
     // One sharp sample is the default for semantic ink: a maximum-of-three-alpha union is not
     // correct per-channel transmission over an arbitrary background, so bulk ink dispersion is
     // off unless a consumer asks for it (V3-MODEL section 8.3). uAberration still drives the

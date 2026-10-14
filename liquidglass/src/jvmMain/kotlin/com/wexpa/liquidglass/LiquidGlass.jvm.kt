@@ -31,6 +31,8 @@ actual object LiquidGlassSupport {
     actual val hasBackdropBlur: Boolean = true
 }
 
+internal actual val supportsGlassEndpointInputs: Boolean = true
+
 /** One opaque pixel, so the `field` child is always bound even when nothing samples it. */
 private val placeholderFieldShader: org.jetbrains.skia.Shader by lazy {
     org.jetbrains.skia.Image.makeRaster(
@@ -49,13 +51,19 @@ private val runtimeEffect: RuntimeEffect? by lazy {
     runCatching { RuntimeEffect.makeForShader(GLASS_SHADER_SOURCE) }.getOrNull()
 }
 
+private val wideRuntimeEffect: RuntimeEffect by lazy {
+    RuntimeEffect.makeForShader(glassShaderWithWideInput(GLASS_SHADER_SOURCE))
+}
+
 internal actual fun createGlassRenderEffect(
     uniforms: GlassUniforms,
 ): androidx.compose.ui.graphics.RenderEffect? {
-    val effect = runtimeEffect ?: return null
+    val useWideInput = uniforms.wideStrip >= 1f && uniforms.wideScale > 0f
+    val effect = (if (useWideInput) wideRuntimeEffect else runtimeEffect) ?: return null
     if (uniforms.width <= 0f || uniforms.height <= 0f) return null
 
     val builder = RuntimeShaderBuilder(effect)
+    if (useWideInput) builder.child("wideContent", placeholderFieldShader)
     builder.uniform("uSize", uniforms.width, uniforms.height)
     builder.uniform(
         "uRadii",
@@ -118,6 +126,8 @@ internal actual fun createGlassRenderEffect(
     builder.uniform("uEdgeShadow", uniforms.edgeShadow)
     builder.uniform("uRimSoft", uniforms.rimSoft)
     builder.uniform("uTintAbsorb", uniforms.tintAbsorb)
+    builder.uniform("uTintMaskX", uniforms.tintMaskX[0], uniforms.tintMaskX[1], uniforms.tintMaskX[2], uniforms.tintMaskX[3])
+    builder.uniform("uTintMaskY", uniforms.tintMaskY[0], uniforms.tintMaskY[1], uniforms.tintMaskY[2], uniforms.tintMaskY[3])
     builder.uniform("uEdgeLight", uniforms.edgeLight)
     builder.uniform("uBevelPeak", uniforms.bevelPeak)
     builder.uniform(
@@ -131,9 +141,12 @@ internal actual fun createGlassRenderEffect(
     builder.uniform("uAdaptive", uniforms.adaptivity)
     builder.uniform("uProfile", uniforms.profile)
     builder.uniform("uFormation", uniforms.formation)
+    builder.uniform("uFoldCorners", uniforms.foldCorners)
+    builder.uniform("uRimMirror", uniforms.rimMirror)
     builder.uniform("uHeldLens", uniforms.heldLens)
     builder.uniform("uHeldMagnification", uniforms.heldMagnification)
     builder.uniform("uHeldGlow", uniforms.heldGlow)
+    builder.uniform("uHeldGlowReach", uniforms.heldGlowReach)
     builder.uniform("uHeldEdgeRecovery", uniforms.heldEdgeRecovery)
     builder.uniform("uRestMap", uniforms.restMap)
     builder.uniform(
@@ -166,6 +179,9 @@ internal actual fun createGlassRenderEffect(
         ImageFilter.makeBlur(sigma, sigma, FilterTileMode.CLAMP)
     } else {
         null
+    }
+    if (useWideInput) {
+        return glassWideInputFilter(builder, uniforms.wideStrip, uniforms.wideScale, prepared).asComposeRenderEffect()
     }
     return ImageFilter.makeRuntimeShader(
         runtimeShaderBuilder = builder,
@@ -223,6 +239,8 @@ internal actual fun createGlassContentRenderEffect(
     builder.uniform("uTouchAmt", uniforms.touchAmount)
     builder.uniform("uProfile", uniforms.profile)
     builder.uniform("uFormation", uniforms.formation)
+    builder.uniform("uFoldCorners", uniforms.foldCorners)
+    builder.uniform("uRimMirror", uniforms.rimMirror)
     builder.uniform("uHeldLens", uniforms.heldLens)
     builder.uniform("uHeldMagnification", uniforms.heldMagnification)
     builder.uniform("uRestMap", uniforms.restMap)
@@ -263,6 +281,8 @@ internal actual fun createGlassEndpointRenderEffect(
     val builder = RuntimeShaderBuilder(effect)
     builder.uniform("uSize", uniforms.width, uniforms.height)
     builder.uniform("uPad", uniforms.pad)
+    builder.uniform("uInkStrip", uniforms.inkStrip)
+    builder.child("ink", placeholderFieldShader)
     builder.uniform(
         "uRadii",
         uniforms.radii.getOrElse(0) { 0f },
@@ -296,11 +316,20 @@ internal actual fun createGlassEndpointRenderEffect(
     builder.uniform("uPoseAInv", uniforms.poseAInv[0], uniforms.poseAInv[1], uniforms.poseAInv[2], uniforms.poseAInv[3])
     builder.uniform("uPoseC", uniforms.poseC[0], uniforms.poseC[1], uniforms.poseC[2], uniforms.poseC[3])
     builder.uniform("uPoseD", uniforms.poseD[0], uniforms.poseD[1], uniforms.poseD[2], uniforms.poseD[3])
-    return ImageFilter.makeRuntimeShader(
-        runtimeShaderBuilder = builder,
-        shaderName = "endpoint",
-        input = null,
-    ).asComposeRenderEffect()
+    return glassEndpointInputFilter(builder, uniforms.inkStrip).asComposeRenderEffect()
+}
+
+/** Shared by the actual render effect and the clipped-surface regression. Caller owns the filter. */
+internal fun glassEndpointInputFilter(builder: RuntimeShaderBuilder, inkStrip: Float): ImageFilter {
+    if (inkStrip > 0f) {
+        // RuntimeShader's zero-radius overload only promises same-coordinate sampling.
+        // Declare the ink translation in the filter graph, where Skia can propagate bounds.
+        // Sampling the strip with a shader offset drops offscreen ink on the native GPU.
+        return ImageFilter.makeOffset(0f, -inkStrip, null, null).use { shiftedInk ->
+            ImageFilter.makeRuntimeShader(builder, arrayOf("endpoint", "ink"), arrayOf(null, shiftedInk))
+        }
+    }
+    return ImageFilter.makeRuntimeShader(builder, "endpoint", null)
 }
 
 internal actual fun Shape.cornerRadiiPx(
@@ -324,13 +353,19 @@ private val containerEffect: RuntimeEffect? by lazy {
     runCatching { RuntimeEffect.makeForShader(GLASS_CONTAINER_SHADER_SOURCE) }.getOrNull()
 }
 
+private val wideContainerEffect: RuntimeEffect by lazy {
+    RuntimeEffect.makeForShader(glassShaderWithWideInput(GLASS_CONTAINER_SHADER_SOURCE))
+}
+
 internal actual fun createGlassContainerRenderEffect(
     uniforms: GlassContainerUniforms,
 ): androidx.compose.ui.graphics.RenderEffect? {
-    val effect = containerEffect ?: return null
+    val useWideInput = uniforms.wideStrip >= 1f && uniforms.wideScale > 0f
+    val effect = (if (useWideInput) wideContainerEffect else containerEffect) ?: return null
     if (uniforms.width <= 0f || uniforms.height <= 0f) return null
 
     val builder = RuntimeShaderBuilder(effect)
+    if (useWideInput) builder.child("wideContent", placeholderFieldShader)
     builder.uniform("uSize", uniforms.width, uniforms.height)
     builder.uniform("uRect", uniforms.rects)
     builder.uniform("uRadius", uniforms.radii)
@@ -395,6 +430,9 @@ internal actual fun createGlassContainerRenderEffect(
         ImageFilter.makeBlur(sigma, sigma, FilterTileMode.CLAMP)
     } else {
         null
+    }
+    if (useWideInput) {
+        return glassWideInputFilter(builder, uniforms.wideStrip, uniforms.wideScale, prepared).asComposeRenderEffect()
     }
     return ImageFilter.makeRuntimeShader(
         runtimeShaderBuilder = builder,

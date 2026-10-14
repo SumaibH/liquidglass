@@ -34,14 +34,68 @@ click handling on it (the bar owns the gesture and calls `onSelected`).
 
 Put the shadow on the bar's `modifier` with `clip = false`. The held lens is taller than the bar.
 
-## The deforming selector
+## Current Calm selector
 
-`GlassTabBarStyle.V3(dark = true)` replaces the capsule indicator with a small constrained body
-and turns on the two optical changes that go with it. It is opt-in; `GlassTabBarStyle.Measured`
-and every other preset keep the capsule.
+`GlassTabBarStyle.Calm(dark = true)` uses the pose controller. It couples projected area and
+spine length so short taps become rounder and longer trips flatten. Adjacent travel uses a
+slower authored rate, blending to the existing rate for longer trips. Tap deformation can
+extend beyond the resting bar; this does not grant held-gesture ownership. Off-axis drag
+strain belongs to the whole navigation bar, whose layout and hit targets stay anchored.
+
+Dark Calm's development tap appearance also fades the inset pigment and emphasizes selected
+ink during travel. Projected area and stretch along the travel axis drive that appearance;
+pigment recovers gradually when both subside. These are authored response parameters calibrated
+against the original short/long tap sequences, not recovered Apple mechanics. Its held refraction
+band, rim and whole-bar lift retain their separate
+response. Use `tapTintFade = 0f` and `tapSelectedScale = 1f` to disable those two additions.
+Light Calm and historical presets retain these defaults. See the [API reference](api-reference.md)
+for the field contract and [current research](research/atlas-stabilization.md) for the measured
+comparisons, authored choices and remaining limitations.
+
+Since 13 October, dark Calm's moving selector also shows the lens optics (`tapOptics`) while its
+pigment keeps its measured fade, a thrown lens stays formed until it settles, and wall landings
+stay flat against the end. Since 14 October a fast landing presses into the bar's end and the
+pill narrows briefly from behind before widening back, as in iOS. See the
+[continuous comparison](https://github.com/shayann07/liquidglass/blob/codex/atlas-stabilization/review/atlas/reference-replay-2026-10-13/README.md).
+
+## A neighbouring control: the search button
+
+iOS 26 places a separate round search button beside the Phone tab bar. It is its own glass, but
+while the bar is held, the bar's growth closes the 8 pt gap and the two join through a liquid
+neck that parts again on release. Describe the neighbour with `trailingAccessory` and lay it out
+yourself, after the bar so its glass draws on top:
 
 ```kotlin
-style = GlassTabBarStyle.V3(dark = true)
+Box {
+    GlassTabBar(
+        state = glass, itemCount = 3, selectedIndex = selected, onSelected = { selected = it },
+        style = GlassTabBarStyle.Calm(),
+        trailingAccessory = GlassTabBarAccessory(size = 62.dp, gap = 8.dp),
+        modifier = Modifier.offset(x = 21.dp).width(278.dp),
+    ) { index, isSelected -> Tab(index, isSelected) }
+
+    // 21 + 278 + 8 dp: the gap beyond the bar's trailing end, vertically centred on it.
+    Box(
+        Modifier.offset(x = 307.dp).size(62.dp)
+            .liquidGlass(glass, CircleShape, GlassTabBarStyle.Calm().bar)
+            .clickable(onClick = openSearch),
+        contentAlignment = Alignment.Center,
+    ) { SearchIcon() }
+}
+```
+
+The bar never draws or moves the accessory. Its outline is a smooth union with the accessory's
+circle (`fusion`, 6 dp by default), anchored so only the bar's own press growth closes the gap;
+a `fusion` under twice the `gap` keeps them apart at rest. Reduced motion disables the fusion.
+
+## Historical horizontal selector
+
+`V3()` and `Calm()` use the pose controller by default. The following older two-disk controller
+remains available for comparison by setting `poseMotion = false`. Its containment and tuning
+rules do not describe the current Calm pose controller. `Measured()` retains the original capsule.
+
+```kotlin
+style = GlassTabBarStyle.V3(dark = true, spec = GlassSelectorSpec(poseMotion = false))
 ```
 
 What changes:

@@ -23,6 +23,10 @@ actual object LiquidGlassSupport {
     actual val hasBackdropBlur: Boolean = Build.VERSION.SDK_INT >= Build.VERSION_CODES.S
 }
 
+// Java RenderEffect exposes only one dynamic RuntimeShader input. Keep the verified composed
+// endpoint until a multi-input backend exists; never enable offscreen strip reads speculatively.
+internal actual val supportsGlassEndpointInputs: Boolean = false
+
 /**
  * Compiling the shader is not free, so one instance is reused for the life of the process and
  * only its uniforms change per frame. RuntimeShader is not thread-safe, but every caller here
@@ -122,6 +126,8 @@ internal actual fun createGlassRenderEffect(
     shader.setFloatUniform("uEdgeShadow", uniforms.edgeShadow)
     shader.setFloatUniform("uRimSoft", uniforms.rimSoft)
     shader.setFloatUniform("uTintAbsorb", uniforms.tintAbsorb)
+    shader.setFloatUniform("uTintMaskX", uniforms.tintMaskX)
+    shader.setFloatUniform("uTintMaskY", uniforms.tintMaskY)
     shader.setFloatUniform("uEdgeLight", uniforms.edgeLight)
     shader.setFloatUniform("uBevelPeak", uniforms.bevelPeak)
     shader.setFloatUniform(
@@ -135,9 +141,12 @@ internal actual fun createGlassRenderEffect(
     shader.setFloatUniform("uAdaptive", uniforms.adaptivity)
     shader.setFloatUniform("uProfile", uniforms.profile)
     shader.setFloatUniform("uFormation", uniforms.formation)
+    shader.setFloatUniform("uFoldCorners", uniforms.foldCorners)
+    shader.setFloatUniform("uRimMirror", uniforms.rimMirror)
     shader.setFloatUniform("uHeldLens", uniforms.heldLens)
     shader.setFloatUniform("uHeldMagnification", uniforms.heldMagnification)
     shader.setFloatUniform("uHeldGlow", uniforms.heldGlow)
+    shader.setFloatUniform("uHeldGlowReach", uniforms.heldGlowReach)
     shader.setFloatUniform("uHeldEdgeRecovery", uniforms.heldEdgeRecovery)
     shader.setFloatUniform("uRestMap", uniforms.restMap)
     shader.setFloatUniform(
@@ -239,6 +248,8 @@ internal actual fun createGlassContentRenderEffect(
     shader.setFloatUniform("uTouchAmt", uniforms.touchAmount)
     shader.setFloatUniform("uProfile", uniforms.profile)
     shader.setFloatUniform("uFormation", uniforms.formation)
+    shader.setFloatUniform("uFoldCorners", uniforms.foldCorners)
+    shader.setFloatUniform("uRimMirror", uniforms.rimMirror)
     shader.setFloatUniform("uHeldLens", uniforms.heldLens)
     shader.setFloatUniform("uHeldMagnification", uniforms.heldMagnification)
     shader.setFloatUniform("uRestMap", uniforms.restMap)
@@ -276,6 +287,8 @@ internal actual fun createGlassEndpointRenderEffect(
 
     shader.setFloatUniform("uSize", uniforms.width, uniforms.height)
     shader.setFloatUniform("uPad", uniforms.pad)
+    shader.setFloatUniform("uInkStrip", uniforms.inkStrip)
+    shader.setInputShader("ink", placeholderFieldShader)
     shader.setFloatUniform(
         "uRadii",
         uniforms.radii.getOrElse(0) { 0f },

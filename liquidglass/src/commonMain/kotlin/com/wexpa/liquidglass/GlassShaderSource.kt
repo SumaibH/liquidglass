@@ -58,6 +58,9 @@ uniform float   uFormation;    // measured lens: 0 a committed pull (small inwar
 uniform float   uHeldLens;     // GlassProfile.Held: how far the tab-bar lens has formed, 0 to 1
 uniform float   uHeldMagnification; // interior zoom of the held lens at full formation (GlassStyle.heldMagnification)
 uniform float   uHeldGlow;     // share of the held lens inward rim glow that is drawn (GlassStyle.heldGlow)
+uniform float   uFoldCorners;  // 0 folds every edge, 1 only corner arcs (GlassStyle.foldAtCorners)
+uniform float   uRimMirror;    // reflective rim band fraction for the measured family; 0 the fold (GlassStyle.rimMirror)
+uniform float   uHeldGlowReach; // px the held glow reaches inward; 0 uses the bevel (GlassStyle.heldGlowReach)
 uniform float   uHeldEdgeRecovery; // layer-pixel recovery length; 0 preserves the narrow side contour
 uniform float   uRestMap;      // resting-corner source map: 0 legacy, 1 the measured table (GlassRestMap)
 uniform float   uWideStrip;    // layer row where a quarter-scale blurred copy of the backdrop starts; 0 disables it
@@ -82,6 +85,8 @@ uniform float   uHiChroma;     // how much of the highlight is lightness rather 
 uniform float   uInnerShadow;  // strength of the inner thickness line
 
 uniform float4  uTint;         // rgb + strength
+uniform float4  uTintMaskX;   // inverse map from local pixels to native footprint: m00,m01,tx,enabled
+uniform float4  uTintMaskY;   // m10,m11,ty,unused; footprint reuses field for pose bodies
 uniform float   uAdaptive;     // how far the tint tone-maps against backdrop brightness
 uniform float   uLegibility;   // how far local backdrop contrast raises tint strength
 uniform float   uScale;        // element-size factor: 0 small and clear, 1 large and opaque
@@ -292,6 +297,33 @@ float snellShift(float slope, float ior) {
 
 $GLASS_SOURCE_MAP_SKSL
 
+// The measured family's source map, or the reflective rim (GlassStyle.rimMirror): within b of
+// the band a pixel at depth u shows depth 2b - u, mirrored about b; inside it, identity.
+// A moving held lens (GlassStyle.rimMirror with the held family): blend the held map toward the
+// reflective rim at its caps by uFormation, here the lens's travel. Still lenses keep the map.
+float heldMirror(float u, float map, float corner) {
+    if (uRimMirror <= 0.0) return map;
+    float b = clamp(uRimMirror, 0.0, 1.0);
+    float mirrored = (u < b) ? (2.0 * b - u) : u;
+    float k = clamp(uFormation, 0.0, 1.0) * mix(1.0, corner, clamp(uFoldCorners, 0.0, 1.0));
+    return mix(map, mirrored, k);
+}
+
+// The colour-split zone of the measured family: the fold's measured outer 0.28, or the
+// reflective rim's own mirrored band when GlassStyle.rimMirror is set.
+float rimZone(float u) {
+    if (uRimMirror <= 0.0) return 1.0 - smoothstep(0.24, 0.32, u);
+    float b = clamp(uRimMirror, 0.0, 1.0);
+    return 1.0 - smoothstep(b * 0.8, b * 1.1, u);
+}
+
+float measuredSource(float u, float formation, float corner) {
+    if (uRimMirror <= 0.0) return foldSource(u, formation, corner);
+    float b = clamp(uRimMirror, 0.0, 1.0);
+    float mirrored = (u < b) ? (2.0 * b - u) : u;
+    return mix(u, mirrored, clamp(formation, 0.0, 1.0));
+}
+
 // The wide tone kernel. The host records a quarter-scale copy of the padded backdrop under a
 // real Gaussian blur into a strip below the sharp copy; sampling it is one bilinear tap. It only
 // ever decides the material's tone, never its detail.
@@ -456,7 +488,7 @@ half4 main(float2 coord) {
     float split = uAberration * bend;
     float2 pushR = push * (1.0 - split);
     float2 pushB = push * (1.0 + split);
-    if (measured > 0.5) {
+    if (measured > 0.5 && uProfile < 2.5) {
         // Inward only. A pixel at depth d shows content from depth s inside the same edge.
         float W = max(uRefractBand, 0.001);
         float u = clamp(depth / W, 0.0, 1.0);
@@ -469,13 +501,13 @@ half4 main(float2 coord) {
         // The fold family, or the held-lens family blended from identity (GlassProfile.Held).
         float heldFamily = step(1.5, uProfile);
         float held = heldFamily * clamp(uHeldLens, 0.0, 1.0);
-        float src = mix(foldSource(u, uFormation, corner), mix(u, heldSource(u), held), heldFamily);
+        float src = mix(measuredSource(u, uFormation * mix(1.0, corner, clamp(uFoldCorners, 0.0, 1.0)), corner), mix(u, heldMirror(u, heldSource(u), corner), held), heldFamily);
         float shift = (depth < W) ? (src * W - depth) : 0.0;
         // The fold samples inward only; the held lens pulls the exterior in, so its shift may
         // point outward, into the margin the host recorded for it.
         shift = mix(max(shift, 0.0), shift, heldFamily) * mat * axisFade * smoothstep(0.0, 1.5, depth);
         // Dispersion lives in the fold's mirrored zone, and in the held lens's whole outer band.
-        float mirrorZone = mix((1.0 - smoothstep(0.24, 0.32, u)) * clamp(uFormation, 0.0, 1.0),
+        float mirrorZone = mix(rimZone(u) * clamp(uFormation, 0.0, 1.0),
             (1.0 - smoothstep(0.45, 0.55, u)) * held, heldFamily);
         float delta = uAberration * W * 0.5 * mirrorZone * mat;
         push = -n * shift;
@@ -485,6 +517,14 @@ half4 main(float2 coord) {
         pushR = -n * (shift + dR);
         pushB = -n * mix(max(shift - delta, 0.0), shift + delta, heldFamily);
         bend = clamp(abs(shift) / W, 0.0, 1.0);
+    }
+    if (uProfile >= 2.5) {
+        // Do not layer a tab fold or fingertip-centred warp over a free magnifier.
+        base = coord + clearLensDelta(p, halfSize, uHeldMagnification * mat);
+        push = float2(0.0);
+        pushR = float2(0.0);
+        pushB = float2(0.0);
+        bend = 0.0;
     }
     half3 sharp;
     float soften = uRimSoft * bend;
@@ -580,7 +620,14 @@ half4 main(float2 coord) {
     // keeps the shape and the lighting intact for anyone who still wants to see the edges.
     // The measured opacity is per role and already includes the element's size, so it is not
     // scaled by size again; the legacy path keeps its gentle size term.
-    float strength = uTint.a * mix(mix(0.9, 1.25, scale), 1.0, measured)
+    // Navigation's dark inset is a treatment of the bar substrate. A still-compressed
+    // recovering body must not paint that inset onto the page above/below the bar.
+    // Refraction, highlights and the geometric coverage stay independent of this tint mask.
+    float2 maskPoint = float2(dot(uTintMaskX.xy, local) + uTintMaskX.z,
+        dot(uTintMaskY.xy, local) + uTintMaskY.z);
+    float tintCoverage = (uTintMaskX.w > 0.5)
+        ? clamp(float(field.eval(maskPoint).a), 0.0, 1.0) : 1.0;
+    float strength = uTint.a * tintCoverage * mix(mix(0.9, 1.25, scale), 1.0, measured)
         + contrast * uLegibility * 0.25
         + clamp(uFrost, 0.0, 1.0) * 0.35;
     strength = clamp(strength * mat, 0.0, 0.95);
@@ -608,13 +655,13 @@ half4 main(float2 coord) {
     // The measured lift: the dark in-app material is black at its opacity plus a fixed 35/255;
     // the system backdrops lift by 142/255 minus 0.864 of the mean luma behind them, which is
     // what makes Control Center read light over dark content and dark over light.
-    float lift = uLift - uLiftAdapt * luma(wide);
+    float lift = (uLift - uLiftAdapt * luma(wide)) * tintCoverage;
     // Clamped only when it adapts: a fixed lift may be negative (the resting tab-bar indicator).
     lift = ((uLiftAdapt > 0.0) ? max(lift, 0.0) : lift) * mat;
     col += half3(half(lift));
 
     float facing = dot(n, uLight);
-    float heldAmt = step(1.5, uProfile) * clamp(uHeldLens, 0.0, 1.0);
+    float heldAmt = step(1.5, uProfile) * (1.0 - step(2.5, uProfile)) * clamp(uHeldLens, 0.0, 1.0);
     // Two rim geometries. At uBevelPeak 0 the bevel is a chamfer: brightest at the very edge,
     // fading inward, which is what a hairline-edged bar wants. Above 0 it is a bead: dark at
     // the edge, brightest a fraction of the bevel's width inside it, fading again toward the
@@ -661,9 +708,10 @@ half4 main(float2 coord) {
     // The measured rim line trails a faint glow inward, decaying over about a bevel width: on
     // the pill +10 at 4 px falling to +3 at 8 (rim fit, 2026-09-12); on the held tab-bar lens
     // 16 -> 1 over 15 px (FINDINGS 19). Top and bottom alike, nothing at the sides.
-    float glowAmt = ((uProfile >= 0.5) ? mix(0.05, 0.063, heldAmt) : 0.0)
-        * mix(1.0, clamp(uHeldGlow, 0.0, 1.0), heldAmt);
-    float heldGlow = glowAmt * exp(-max(depth - 0.67 * uBevel, 0.0) / max(uBevel, 1.0))
+    float glowAmt = ((uProfile >= 0.5 && uProfile < 2.5) ? mix(0.05, 0.063, heldAmt) : 0.0)
+        * mix(1.0, clamp(uHeldGlow, 0.0, 2.0), heldAmt);
+    float glowReach = (uHeldGlowReach > 0.0) ? mix(max(uBevel, 1.0), uHeldGlowReach, heldAmt) : max(uBevel, 1.0);
+    float heldGlow = glowAmt * exp(-max(depth - 0.67 * uBevel, 0.0) / glowReach)
         * (max(facing, 0.0) + counterLight * max(-facing, 0.0));
     float highlight = ((key + counter) * uSpecular
         + edgeLine * uSpecular * uEdgeLight

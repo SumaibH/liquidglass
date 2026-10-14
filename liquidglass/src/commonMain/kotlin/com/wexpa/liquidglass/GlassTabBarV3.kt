@@ -319,6 +319,8 @@ internal fun GlassSelectorBar.clampCentre(x: Float, halfWidth: Float): Float {
 internal class GlassPoseHandle(val controller: GlassPoseController) {
     var render: GlassPoseRender? by mutableStateOf(null)
     var formation: Float by mutableFloatStateOf(0f)
+    var transitAppearance: Float by mutableFloatStateOf(0f)
+    var heldTravel: Float by mutableFloatStateOf(0f)
     var held: Boolean by mutableStateOf(false)
     var centreX: Float by mutableFloatStateOf(0f)
     var centreY: Float by mutableFloatStateOf(0f)
@@ -360,6 +362,8 @@ internal class GlassPoseHandle(val controller: GlassPoseController) {
         left = extents.left
         right = extents.right
         formation = controller.formation
+        transitAppearance = controller.transitAppearance
+        heldTravel = controller.heldTravel
         held = controller.isHeld
         taper = controller.taperX
         // Bar-local to the element's CENTRED frame, which is what the shaders work in:
@@ -418,7 +422,7 @@ internal fun GlassPoseFrameLoop(
                     handle.previousFrame = nanos
                     handle.controller.motionEnabled = currentMotion
                     handle.controller.attach(currentBar(), currentBounds, currentCentres, currentInk)
-                    handle.controller.advanceTo(handle.clock)
+                    handle.controller.advanceFrameTo(handle.clock)
                     handle.publish()
                     handle.controller.isIdle
                 }
@@ -426,6 +430,7 @@ internal fun GlassPoseFrameLoop(
             }
             val next = snapshotFlow { handle.epoch }.first { it != seen }
             seen = next
+            handle.clock = handle.controller.resumedFrameTime(handle.clock)
             handle.previousFrame = -1L
         }
     }

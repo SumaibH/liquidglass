@@ -1,0 +1,332 @@
+{
+  "sourceSha256": "186e1eb34e6baf896b16bffe839176fc298b2b7a6823d11cb39204ed960ebc06",
+  "samples": [
+    {
+      "file": "frame-006.png",
+      "ys": [
+        132,
+        134,
+        136
+      ],
+      "xs": [
+        722,
+        730,
+        738,
+        746,
+        754
+      ],
+      "left": [
+        586,
+        603
+      ],
+      "right": [
+        866,
+        887
+      ],
+      "top": [
+        36,
+        52
+      ],
+      "bottom": [
+        200,
+        216
+      ],
+      "inspectionFlags": {
+        "vertical": [
+          "Bar-contact and private background obscure height; this independent episode is centre-only"
+        ]
+      }
+    },
+    {
+      "file": "frame-007.png",
+      "ys": [
+        132,
+        134,
+        136
+      ],
+      "xs": [
+        705,
+        713,
+        721,
+        729,
+        737
+      ],
+      "left": [
+        562,
+        579
+      ],
+      "right": [
+        854,
+        892
+      ],
+      "top": [
+        34,
+        50
+      ],
+      "bottom": [
+        200,
+        216
+      ],
+      "inspectionFlags": {
+        "vertical": [
+          "Bar-contact and private background obscure height; this independent episode is centre-only"
+        ]
+      }
+    },
+    {
+      "file": "frame-008.png",
+      "ys": [
+        132,
+        134,
+        136
+      ],
+      "xs": [
+        675,
+        683,
+        691,
+        699,
+        707
+      ],
+      "left": [
+        531,
+        548
+      ],
+      "right": [
+        834,
+        865
+      ],
+      "top": [
+        26,
+        41
+      ],
+      "bottom": [
+        211,
+        226
+      ],
+      "inspectionFlags": {
+        "vertical": [
+          "Bar-contact and private background obscure height; this independent episode is centre-only"
+        ]
+      }
+    },
+    {
+      "file": "frame-009.png",
+      "ys": [
+        132,
+        134,
+        136
+      ],
+      "xs": [
+        648,
+        656,
+        664,
+        672,
+        680
+      ],
+      "left": [
+        503,
+        520
+      ],
+      "right": [
+        806,
+        837
+      ],
+      "top": [
+        24,
+        39
+      ],
+      "bottom": [
+        212,
+        227
+      ],
+      "inspectionFlags": {
+        "vertical": [
+          "Bar-contact and private background obscure height; this independent episode is centre-only"
+        ]
+      }
+    },
+    {
+      "file": "frame-010.png",
+      "ys": [
+        146,
+        148,
+        150
+      ],
+      "xs": [
+        620,
+        628,
+        636,
+        644,
+        652
+      ],
+      "left": [
+        470,
+        487
+      ],
+      "right": [
+        783,
+        814
+      ],
+      "top": [
+        24,
+        39
+      ],
+      "bottom": [
+        214,
+        229
+      ],
+      "samplingNote": "Rows146,148,150 avoid refracted icon pixels. Model must be intersected at identical source rows.",
+      "inspectionFlags": {
+        "vertical": [
+          "Bar-contact and private background obscure height; this independent episode is centre-only"
+        ]
+      }
+    },
+    {
+      "file": "frame-011.png",
+      "ys": [
+        146,
+        148,
+        150
+      ],
+      "xs": [
+        592,
+        600,
+        608,
+        616,
+        624
+      ],
+      "left": [
+        440,
+        457
+      ],
+      "right": [
+        758,
+        789
+      ],
+      "top": [
+        20,
+        35
+      ],
+      "bottom": [
+        217,
+        232
+      ],
+      "samplingNote": "Rows146,148,150 avoid refracted icon pixels. Model must be intersected at identical source rows.",
+      "inspectionFlags": {
+        "vertical": [
+          "Bar-contact and private background obscure height; this independent episode is centre-only"
+        ]
+      }
+    },
+    {
+      "file": "frame-012.png",
+      "ys": [
+        146,
+        148,
+        150
+      ],
+      "xs": [
+        569,
+        577,
+        585,
+        593,
+        601
+      ],
+      "left": [
+        415,
+        432
+      ],
+      "right": [
+        737,
+        768
+      ],
+      "top": [
+        17,
+        32
+      ],
+      "bottom": [
+        219,
+        234
+      ],
+      "samplingNote": "Rows146,148,150 avoid refracted icon pixels. Model must be intersected at identical source rows.",
+      "inspectionFlags": {
+        "vertical": [
+          "Bar-contact and private background obscure height; this independent episode is centre-only"
+        ]
+      }
+    },
+    {
+      "file": "frame-013.png",
+      "ys": [
+        146,
+        148,
+        150
+      ],
+      "xs": [
+        555,
+        563,
+        571,
+        579,
+        587
+      ],
+      "left": [
+        392,
+        407
+      ],
+      "right": [
+        736,
+        751
+      ],
+      "top": [
+        25,
+        39
+      ],
+      "bottom": [
+        214,
+        226
+      ],
+      "inspectionFlags": {
+        "vertical": [
+          "Bar-contact and private background obscure height; this independent episode is centre-only"
+        ]
+      }
+    },
+    {
+      "file": "frame-014.png",
+      "ys": [
+        146,
+        148,
+        150
+      ],
+      "xs": [
+        539,
+        547,
+        555,
+        563,
+        571
+      ],
+      "left": [
+        374,
+        389
+      ],
+      "right": [
+        714,
+        734
+      ],
+      "top": [
+        25,
+        39
+      ],
+      "bottom": [
+        214,
+        226
+      ],
+      "inspectionFlags": {
+        "vertical": [
+          "Bar-contact and private background obscure height; this independent episode is centre-only"
+        ]
+      }
+    }
+  ]
+}

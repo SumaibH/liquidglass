@@ -1,0 +1,100 @@
+{
+  "baselineRevision": "e597b599e6d78c82d6ad298622082417694cdbb3",
+  "runtimeSource": "liquidglass/src/commonMain/kotlin/com/wexpa/liquidglass/GlassPoseDynamics.kt",
+  "committedRuntimeSha256": "4cb51b3e568e868d0ea840eea4dd460c34d9b993b4cc3e69e844dd05a1e115f7",
+  "productionSamples": 7215,
+  "alternatives": 15,
+  "sourceSamples": {
+    "first": 14,
+    "repeat": 9
+  },
+  "firstOverlaysInspected": true,
+  "repeatOverlaysInspected": true,
+  "repeatImagesPublished": false,
+  "measurementMethod": "Strongest adjacent RGB gradients in inspected fixed windows. Rejected axes retained. Bar boundary and ink false detections retained in private v1/v2 attempts.",
+  "compile": "compileKotlinJvm SUCCESS56s, private wrapper, no full test rerun for export",
+  "diagnosticTools": {
+    "tools/PhoneTapSequenceProbe.java": "5965678b1aae56a8eb622a58531c87d74b87e48034407b36b3559a9e02531e13",
+    "tools/measure_phone_tap.py": "35f9fc57428142d83ecf5504064bed4ddfd38fcc11de2ecd3e6621c25fcb3c80",
+    "tools/compare_phone_tap_sequence.py": "2a744d2cc5269a8da29e7bee7c758155d336a11a690c8061e8007292c286e452",
+    "tools/fit_phone_tap_centre.py": "9256b253be6612ff073e99e4b1ddf0288218461bac6ff05dc064dca595ddac99",
+    "tools/compare_phone_tap_timing.py": "46f202b1db89ded22d2a1135d4e94c467c381945074fdcd4d997ce67d215f3db"
+  },
+  "limits": "Partial travel windows, optical edge centres and source PTS. Not finger timing, full contours/optics, native frame pacing or complete iOS parity. Repeated-episode images contain private text and stay local.",
+  "candidateFocused": {
+    "tests": 28,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "command": "Eight focused motion classes; candidate5 SUCCESS15s",
+    "sourceSha256": {
+      "liquidglass/src/commonMain/kotlin/com/wexpa/liquidglass/GlassPoseDynamics.kt": "c21e64ca9146128ed506259d16b6d21b4442af9056d3f5f196d99df17ba19692",
+      "liquidglass/src/jvmTest/kotlin/com/wexpa/liquidglass/GlassPhoneTapTimingTest.kt": "e67bb5c0e15224134f714e60ab266d9e941db86f420af7d4bd1ac2bab255694a"
+    },
+    "fullAndNative": "Full360-case inventory verified;33native phases and static image inspected; focused10-phase adjacent replay also passed and inspected."
+  },
+  "candidateProductionTraceSha256": "44e22aa53c6327b1f49befbe7e571c1ef8efae962149294a4970527777a68305",
+  "candidateComparisonSha256": "4b0c4b2a40c4fd7433713ce31bf4d4fb48e2e2284e7741713927ca5a382ef0bc",
+  "knownRemainingMismatch": "Repeated episode nominal width RMS14.341px, max20.639px. First episode width RMS5.254/max9.359px; height RMS3.935/max7.180px. Not full shape/optical parity.",
+  "candidateFull": {
+    "library": {
+      "tests": 360,
+      "passed": 333,
+      "skipped": 27,
+      "failures": 0,
+      "errors": 0,
+      "recoveredPasses": 322,
+      "freshFollowupCases": 38,
+      "method": "Gradle report-only recovery from interrupted generic binary results plus exact missing-test follow-up; full360-case inventory matched, same source hashes. Cancelled test is replaced, not counted as an optional skip."
+    },
+    "desktop": {
+      "tests": 2,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "testcaseSeconds": 128.13,
+      "passed": 2
+    },
+    "android": "assembleDebug passed",
+    "followupDuration": "3m 15s",
+    "interruptedRun": "Cancelled19m1s after client connection reset;322passes recovered from binary results",
+    "nativeChecksPassed": true,
+    "nativePhases": 33,
+    "nativeImagesInspected": true,
+    "staticImagesInspected": true,
+    "sourceSha256": {
+      "liquidglass/src/commonMain/kotlin/com/wexpa/liquidglass/GlassPoseDynamics.kt": "c21e64ca9146128ed506259d16b6d21b4442af9056d3f5f196d99df17ba19692",
+      "liquidglass/src/jvmTest/kotlin/com/wexpa/liquidglass/GlassPhoneTapTimingTest.kt": "e67bb5c0e15224134f714e60ab266d9e941db86f420af7d4bd1ac2bab255694a"
+    },
+    "nativeInspection": "All33phase contact sheet and native-size release160ms,both formed flings,top-right boundary inspected. Inset retained, dark exterior caps removed; faint outer rim remains. Static grid lens continuous.",
+    "nativeCommandDuration": "3m10s",
+    "staticCommandDuration": "14s",
+    "staticSubmission": {
+      "metric": "native static-scene forced redraw; GPU submission, not presented FPS",
+      "backend": "DIRECT3D",
+      "width": 1920,
+      "height": 1051,
+      "samples": 120,
+      "warmup": 10,
+      "p50_ms": 8.6425,
+      "p95_ms": 12.014,
+      "max_ms": 12.4433
+    },
+    "firstHeldRedrawMs": 726.5197,
+    "firstHeldReadbackMs": 2527.6866
+  },
+  "shortNative": {
+    "phases": 10,
+    "checksPassed": true,
+    "imagesInspected": true,
+    "commandDuration": "1m2s",
+    "inspection": "Contact sheet all10 phases plus native-size left70ms and right25ms inspected; middle selection, deformation and resting recovery present. Independent replays, not continuous timing.",
+    "sourceSha256": {
+      "desktop/build.gradle.kts": "df0108473bfe2275ee8b0eabb4eb82f71e9e599bee0b75c8a5d0288f7728bd64",
+      "desktop/src/jvmMain/kotlin/com/wexpa/liquidglass/sample/desktop/Main.kt": "570ba8e410833aca905477acfd8c36a9df95d09e31ad40158cc84e05dd11287d",
+      "desktop/src/jvmMain/kotlin/com/wexpa/liquidglass/sample/desktop/AtlasMotionCapture.kt": "19eb7ce92ba147c50b090880a973a626829a9fe7a677ce5fe8630d14d4fd9516"
+    }
+  },
+  "sourceAfterVerification": "Only centreOmega KDoc clarified after library/native verification; runtime expressions/constants unchanged. Sample-only focused diagnostic was separately compiled and replayed after full tests.",
+  "finalRuntimeSourceSha256": "d76d66c3ba07a55b78bf35108ca5e0e71158552e1aee2b38dfd6ba7ffcd14814"
+}
