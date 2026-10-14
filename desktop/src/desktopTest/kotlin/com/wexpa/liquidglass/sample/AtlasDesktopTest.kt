@@ -32,7 +32,7 @@ class AtlasDesktopTest {
     @Test fun actualAtlasSceneSwitchingAndControlsRecover() = runComposeUiTest(testTimeout = 12.minutes) {
         val report = File("build/reports/atlas").apply { mkdirs() }
         setContent {
-            CompositionLocalProvider(LocalDensity provides Density(1f)) {
+            CompositionLocalProvider(LocalDensity provides Density(.75f)) {
                 // Reduced motion: switching is checked without rendering every transition frame on the
                 // CPU test raster (an animated tap costs minutes there); motion is covered by the replay.
                 // 640 x 420 keeps the top bar, navigation and magnifier; the wide-only card is covered by the replay.
@@ -64,7 +64,7 @@ class AtlasDesktopTest {
     @Test fun actualAtlasExtremeDragsRemainAnchoredAndRecover() = runComposeUiTest(testTimeout = 12.minutes) {
         val report = File("build/reports/atlas").apply { mkdirs() }
         setContent {
-            CompositionLocalProvider(LocalDensity provides Density(1f)) {
+            CompositionLocalProvider(LocalDensity provides Density(.75f)) {
                 // Small and without elastic motion: every frame is shaded on the CPU test raster.
                 Box(Modifier.size(640.dp, 420.dp)) { LoupeScreen(initialScene = 2, reduceMotion = true, animateBackdrop = false) }
             }
@@ -78,7 +78,7 @@ class AtlasDesktopTest {
         lens.performTouchInput { down(center) }
         for ((direction, point) in listOf("right" to Offset(3000f, 0f), "left" to Offset(-3000f, 0f),
             "top" to Offset(0f, -3000f), "bottom" to Offset(0f, 3000f), "diagonal" to Offset(3000f, 3000f))) {
-            lens.performTouchInput { moveTo(point, 150) }
+            lens.performTouchInput { moveTo(point) }
             waitForIdle()
             val bounds = lens.fetchSemanticsNode().boundsInRoot
             assertTrue(bounds.left >= canvas.left && bounds.right <= canvas.right, "$direction horizontal escape")

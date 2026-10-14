@@ -149,7 +149,7 @@ fun LoupeScreen(reduceMotion: Boolean = false, modifier: Modifier = Modifier,
                 .size(with(density) { diameter.toDp() }).testTag("atlas-lens")
                 .semantics { contentDescription = "Magnifier, ${(magnification * 100).roundToInt()} percent" }
                 .liquidGlass(glassState, CircleShape, loupeStyle.copy(heldMagnification = 1f - 1f / magnification),
-                    interaction = LensDrag, pressSource = lensPress)
+                    interaction = if (moving) LensDrag else null, pressSource = lensPress)
                 .pointerInput(viewport, diameter) {
                     detectDragGestures(onDragStart = { lensPress.press(it) }, onDragEnd = lensPress::release,
                         onDragCancel = lensPress::release) { change, amount ->
