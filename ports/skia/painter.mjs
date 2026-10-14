@@ -169,6 +169,54 @@ export function createGlassPainter(kit, sources = glassShaderSources) {
       }
     },
 
+    /**
+     * Draw the selected ink inside the selector, as Compose's content pass does: `ink` is an image
+     * of the bar's items drawn in their selected appearance on a transparent ground, in device px
+     * with its origin at the bar's top-left (the same layout as the ordinary row the host draws on
+     * the bar). Only what lies under the selector shows, refracted, colour-split and folded by the
+     * same body, map and band as `drawSelector`; draw it right after `drawSelector`. Every item may
+     * be in the image: the lens shows each in its selected colour as it passes (as Calm does).
+     */
+    drawSelectorInk(canvas,{x,y,width,height},{pose,formation=0,transit=0,heldTravel=0},ink,options={}) {
+      checkAlive();
+      if(![x,y,width,height,formation,transit,heldTravel].every(Number.isFinite)||width<=0||height<=0)
+        throw new RangeError('Selector ink requires a finite bar rect, formation, transit and held travel');
+      if(!pose||![pose.a,pose.aInv,pose.c,pose.d].every(v=>Array.isArray(v)&&v.length===4&&v.every(Number.isFinite)))
+        throw new TypeError('Selector ink requires a pose from CalmSelectorController.render()');
+      if(!ink||typeof ink.makeShaderOptions!=='function')throw new TypeError('Selector ink requires a live CanvasKit Image');
+      const {dark=true,density=1,materialize=1}=options;
+      if(!Number.isFinite(density)||density<=0)throw new RangeError('Selector density must be positive');
+      const mx=height*.6,my=height*.4,nodeW=width+2*mx,nodeH=height+2*my,pad=2;
+      const originX=x-mx-pad,originY=y-my-pad;
+      const {values,uFormation}=calmSelectorMaterial({dark,formation,transit,heldTravel});
+      const px=calmMaterialUniforms(values,density);
+      const material=clearMaterialUniforms(effects,{width:nodeW,height:nodeH,pad,magnification:1});
+      const [cx,cy,bx,by]=pose.c;
+      Object.assign(material,px,{
+        uFormation,uBodyKind:2,uPoseA:pose.a,uPoseAInv:pose.aInv,uPoseD:pose.d,
+        uPoseC:[cx-width/2,cy-height/2,bx,by],uRefractBand:pose.d[3],
+        uRadii:Array(4).fill(Math.min(nodeW,nodeH)/2),uScale:sizeFactor(nodeW,nodeH,density),uMaterialize:materialize,
+      });
+      // The content pass shares the material's geometry and optics; it emits the ink premultiplied
+      // and clipped to the body (uEndpointAlpha 0), to be drawn over the material.
+      const uniforms={};
+      for(const u of effects.layout('content'))
+        uniforms[u.name]=u.name in material?material[u.name]:(u.columns*u.rows===1?0:Array(u.columns*u.rows).fill(0));
+      uniforms.uEndpointAlpha=0;uniforms.uInkSplit=px.uInkSplit;uniforms.uHeldInk=px.uHeldInk;
+      let shader,content;
+      try {
+        // The ink's origin is the bar's: in the padded node frame that is (mx + pad, my + pad).
+        content=ink.makeShaderOptions(kit.TileMode.Decal,kit.TileMode.Decal,kit.FilterMode.Linear,kit.MipmapMode.None,
+          kit.Matrix.translated(mx+pad,my+pad));
+        shader=effects.shader('content',uniforms,{content,field:content});
+        paint.setShader(shader);canvas.save();
+        try {
+          canvas.translate(originX,originY);
+          canvas.drawRect(kit.XYWHRect(0,0,nodeW+2*pad,nodeH+2*pad),paint);
+        } finally {canvas.restore();}
+      } finally {paint.setShader(null);shader?.delete();content?.delete();}
+    },
+
     dispose() {
       if (!disposed) {
         disposed = true;

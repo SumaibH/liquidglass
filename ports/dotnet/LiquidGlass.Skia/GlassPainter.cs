@@ -11,6 +11,7 @@ public sealed record GlassSurfaceOptions(bool Dark = false, float TintAmount = 5
 public sealed class GlassPainter : IDisposable
 {
     private readonly GlassEffectPass material = new("material");
+    private GlassEffectPass? contentPass;
     private readonly SKPaint paint = new();
     private SKImage? source;
     private SKImage? ownedSource;
@@ -167,6 +168,48 @@ public sealed class GlassPainter : IDisposable
         Draw(canvas, v, shader, origin);
     }
 
+    /// <summary>Draw the selected ink inside the selector, as Compose's content pass does. <paramref name="ink"/>
+    /// is the bar's items drawn in their selected appearance on a transparent ground, in device px with its
+    /// origin at the bar's top-left. Only what lies under the selector shows, refracted, colour-split and folded
+    /// by the same body, map and band as <see cref="DrawSelector"/>; draw it right after.</summary>
+    public void DrawSelectorInk(SKCanvas canvas, SKRect bar, CalmSelectorPose pose, SKImage ink, float formation = 0,
+        GlassSurfaceOptions? options = null, float transit = 0, float heldTravel = 0)
+    {
+        Ready(canvas, bar); ArgumentNullException.ThrowIfNull(ink);
+        if (!float.IsFinite(formation) || !float.IsFinite(transit) || !float.IsFinite(heldTravel))
+            throw new ArgumentOutOfRangeException(nameof(formation));
+        if (new[] { pose.A, pose.AInv, pose.C, pose.D }.Any(v => v is null || v.Length != 4 || v.Any(x => !float.IsFinite(x))))
+            throw new ArgumentException("Pose from CalmSelectorController.Render required", nameof(pose));
+        options ??= new(Dark: true);
+        if (!float.IsFinite(options.Density) || options.Density <= 0) throw new ArgumentOutOfRangeException(nameof(options));
+        float mx = bar.Height * .6f, my = bar.Height * .4f;
+        var node = SKRect.Create(bar.Left - mx, bar.Top - my, bar.Width + 2 * mx, bar.Height + 2 * my);
+        var calm = CalmSelectorMaterial.Selector(options.Dark, formation, transit, heldTravel);
+        var m = ClearUniforms(material, node.Width, node.Height, 2, 1);
+        Apply(m, calm, options);
+        Set(m, "uFormation", calm.Formation);
+        Set(m, "uBodyKind", 2); Set(m, "uPoseA", pose.A); Set(m, "uPoseAInv", pose.AInv); Set(m, "uPoseD", pose.D);
+        Set(m, "uPoseC", pose.C[0] - bar.Width / 2, pose.C[1] - bar.Height / 2, pose.C[2], pose.C[3]);
+        Set(m, "uRefractBand", pose.D[3]);
+        Set(m, "uRadii", Enumerable.Repeat(Math.Min(node.Width, node.Height) / 2, 4).ToArray());
+        Set(m, "uScale", Math.Clamp((Math.Min(node.Width, node.Height) / options.Density - 56) / 264, 0, 1));
+        // The content pass shares the material's geometry and optics; it emits the ink premultiplied and
+        // clipped to the body (uEndpointAlpha 0), drawn over the material.
+        contentPass ??= new GlassEffectPass("content");
+        var v = contentPass.CreateUniforms();
+        foreach (var key in v.Keys.ToList()) if (m.TryGetValue(key, out var value)) v[key] = value;
+        Set(v, "uEndpointAlpha", 0);
+        Set(v, "uInkSplit", calm.Values["uInkSplit"]); Set(v, "uHeldInk", calm.Values["uHeldInk"]);
+        var origin = new SKPoint(node.Left - 2, node.Top - 2);
+        // The ink's origin is the bar's: in the padded node frame that is (mx + pad, my + pad).
+        using var content = ink.ToShader(SKShaderTileMode.Decal, SKShaderTileMode.Decal, Sampling, SKMatrix.CreateTranslation(mx + 2, my + 2));
+        using var shader = contentPass.CreateShader(v, new Dictionary<string, SKShader> { { "content", content }, { "field", content } });
+        paint.Shader = shader;
+        canvas.Save();
+        try { canvas.Translate(origin.X, origin.Y); canvas.DrawRect(0, 0, node.Width + 4, node.Height + 4, paint); }
+        finally { canvas.Restore(); paint.Shader = null; }
+    }
+
     // The material pass's share of a Calm material, in px (ink-only terms belong to the content pass).
     private static void Apply(Dictionary<string, float[]> v, CalmMaterial calm, GlassSurfaceOptions o)
     {
@@ -291,5 +334,5 @@ public sealed class GlassPainter : IDisposable
         var i = 0; while (i < table.Length - 2 && table[i + 1].X <= x) i++;
         var a = table[i]; var b = table[i + 1]; return a.Y + (b.Y - a.Y) * (x - a.X) / (b.X - a.X);
     }
-    public void Dispose() { if (!disposed) { disposed = true; source = null; ownedSource?.Dispose(); ownedSource = null; wideImage?.Dispose(); wideImage = null; paint.Dispose(); material.Dispose(); } }
+    public void Dispose() { if (!disposed) { disposed = true; source = null; ownedSource?.Dispose(); ownedSource = null; wideImage?.Dispose(); wideImage = null; paint.Dispose(); material.Dispose(); contentPass?.Dispose(); } }
 }

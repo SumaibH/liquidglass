@@ -43,6 +43,20 @@ r=[(float(x['t']),float(x['cx'])) for x in csv.DictReader(open('v2.csv'))]
 REST=[217,479,742]; Y=546; N=len(r)
 cxs=[c for _,c in r]
 med=[sorted(cxs[max(0,i-1):i+2])[len(cxs[max(0,i-1):i+2])//2] for i in range(N)]
+# Mid-throw the centroid snaps to the middle tab's ink while the lens passes over it: a plateau of
+# at most four samples at that tab, entered and left in the same direction at speed, is the lens
+# travelling on. Interpolate through it (34.7 s; 2026-10-14).
+i=1
+while i<N-1:
+    if abs(med[i]-REST[1])<=12 and abs(med[i-1]-REST[1])>20:
+        j=i
+        while j+1<N and abs(med[j+1]-REST[1])<=12 and j-i<4: j+=1
+        if j+1<N and j-i<4 and abs(med[j+1]-REST[1])>20 and (med[i-1]-REST[1])*(med[j+1]-REST[1])<0:
+            t0,x0,t1,x1=r[i-1][0],med[i-1],r[j+1][0],med[j+1]
+            if abs(x1-x0)/(t1-t0)>1500:
+                for q in range(i,j+1): med[q]=x0+(x1-x0)*(r[q][0]-t0)/(t1-t0)
+        i=j+1
+    else: i+=1
 def tab(cx,tol):
     k=min(range(3),key=lambda k:abs(cx-REST[k])); return k if abs(cx-REST[k])<=tol else None
 def settled(i,tol=22):

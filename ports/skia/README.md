@@ -123,7 +123,10 @@ the production pill, lens and bar styles exported by the Kotlin tests and blende
 checked against 96 Kotlin-computed uniform sets). Like Compose, the lens looks through the bar:
 `drawSelector(canvas, bar, state, {through})` takes the page with the bar's glass drawn over it,
 which the scene layer renders for you (one extra page-sized pass per navigation layer and frame).
-Selected ink inside the lens, labels and accessibility stay with the host. [Evidence](../../review/atlas/ports-selector-2026-10-14/README.md).
+For the selected ink, render your items in their selected appearance into an image (transparent
+ground, device px, the bar's origin) and pass it with `layer.setSelectedInk(image)` or
+`painter.drawSelectorInk(...)`: it is drawn through the production content pass, so it shows only
+under the selector, refracted and folded with it. Labels and accessibility stay with the host. [Evidence](../../review/atlas/ports-selector-2026-10-14/README.md).
 
 ## Draw a lens without managing uniforms
 

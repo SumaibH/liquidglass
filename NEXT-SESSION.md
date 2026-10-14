@@ -48,7 +48,9 @@ recordings through the real renderer and comparing **continuous sequences**, not
 ## Next, in order
 
 1. Owner visual acceptance of the selector (pass 9) and of the redesigned Atlas Studio.
-2. Residuals (pass 10): 9.9 s landing passes rest by 36.5 px vs 41; left width series' first
+2. Pass 11 (14 Oct): dragPressShare .7 (bar relaxes while its lens is dragged), neck median 0 ms,
+   rim dispersion .05, ported selected ink, mid-throw centroid stalls interpolated. Owner review
+   videos: `.local/comparisons/2026-10-14-pass11/`. Residuals (pass 10, still current): 9.9 s landing passes rest by 36.5 px vs 41; left width series' first
    frames narrow up to 11.2 px less; iOS's cap petals carry stronger rainbow fringes; neck median
    17 ms late, 34.8 s 133 ms (bar and lens disagree on that lift). 28.66 s landing is an input
    artefact (source frame gap). Left landings: `.local/sxs/wallscorel.py` (rows 495–498).

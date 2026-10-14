@@ -381,8 +381,10 @@ internal fun Modifier.liquidGlassCore(
     val balloonX = pressTarget(measured.width, panelPosition.x, viewportSize.width)
     val balloonY = pressTarget(measured.height, panelPosition.y, viewportSize.height)
     val pressDown = glassPressIsDown(interaction, press)
+    // A press that drags something keeps only its drag share ([GlassInteraction.dragPressShare]).
+    val dragShare = if (press.dragging) (interaction?.dragPressShare ?: 1f).coerceIn(0f, 1f) else 1f
     val pressAmount by animateFloatAsState(
-        targetValue = if (pressDown) 1f else 0f,
+        targetValue = if (pressDown) dragShare else 0f,
         animationSpec = if (!pressDown && (interaction?.releaseStiffness ?: 0f) > 0f) {
             GlassLeadingSpec(androidx.compose.animation.core.spring(dampingRatio = interaction!!.releaseDamping.coerceIn(.05f, 2f),
                 stiffness = interaction.releaseStiffness), GLASS_RELEASE_LEAD_NANOS)
@@ -394,7 +396,7 @@ internal fun Modifier.liquidGlassCore(
     // Reach toward the finger ([GlassInteraction.pressReach]): signed extra width share, the far
     // side keeping its ordinary growth. Material drawing only; the touch is bounded to the panel.
     val reach = interaction?.takeIf { it.pull && it.pressReach > 0f && press.x > -1e4f && measured.width > 0f }
-        ?.let { it.pressReach * pressAmount * ((press.x - measured.width / 2f) / (measured.width / 2f)).coerceIn(-1f, 1f) } ?: 0f
+        ?.let { it.pressReach * pressAmount * dragShare * ((press.x - measured.width / 2f) / (measured.width / 2f)).coerceIn(-1f, 1f) } ?: 0f
     val animatedPressX = 1f + (balloonX - 1f) * pressAmount + abs(reach)
     val animatedPressY = 1f + (balloonY - 1f) * pressAmount
     val pressScaleX = if (interaction?.pull == true) glassPressScaleInViewport(
@@ -415,14 +417,14 @@ internal fun Modifier.liquidGlassCore(
     // LaunchedEffect first lets Animatable.endAnimation reset it to zero on EVERY move,
     // making tracking depend on the pointer packet rate and damping release momentum away.
     val pullX by animateFloatAsState(
-        targetValue = if (pullDown) press.pullX * compliance else 0f,
+        targetValue = if (pullDown) press.pullX * compliance * dragShare else 0f,
         animationSpec = if (interaction?.response == GlassResponse.Calm) {
             if (pullDown) GlassMotion.CalmFollow else GlassMotion.CalmUp
         } else if (pullDown) GlassMotion.PullFollow else GlassMotion.PullRelease,
         label = "glass_pull_x",
     )
     val pullY by animateFloatAsState(
-        targetValue = if (pullDown) press.pullY * compliance else 0f,
+        targetValue = if (pullDown) press.pullY * compliance * dragShare else 0f,
         animationSpec = if (interaction?.response == GlassResponse.Calm) {
             if (pullDown) GlassMotion.CalmFollow else GlassMotion.CalmUp
         } else if (pullDown) GlassMotion.PullFollow else GlassMotion.PullRelease,

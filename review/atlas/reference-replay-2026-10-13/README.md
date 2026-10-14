@@ -379,6 +379,49 @@ now loses its glass on iOS's frames (within 3 grey levels from 6.03 s). The cont
 while it holds; an idle report there had let the GPU replay's frame loop sleep with the lens
 formed (`aStillReleaseKeepsItsGlassBrieflyThenLosesIt`).
 
+### Pass 11: the bar while dragging, the last neck, fringes, port ink (14 October)
+
+**The bar while a lens is dragged.** iOS's bar grows about 25 px a side while held still, but
+once its lens is dragged it keeps only about 10 px, wherever the finger is (left edge 44–47 px
+against 55 at rest, through the reversal episode and every held throw). Ours kept the whole press,
+its reach and its pull, so its finger-side edge swung between 17 and 45 px with the finger. New
+opt-in `GlassInteraction.dragPressShare` (dark Calm .7): once the press drags something (the tab
+bar marks it when the finger passes touch slop; a hold alone does not), its growth, reach and pull
+keep that share. Our bar's left edge against iOS's over the drags and holds: rms 4.9 px, mean
+−1.9 (6.3 / −4.4 before; .45 gave 6.0 / +1.0).
+
+![The bar during the held reversals, pass 10 and pass 11 (our renders only)](drag-bar.png)
+
+**The neck.** With the bar no longer swollen through drags, it now separates a median 0 ms from
+iOS's (17 ms in pass 10); 22 of 23 releases are within ±67 ms. The input also stops stalling
+mid-throw: where the selected-ink centroid snaps to the middle tab's icon for up to four frames
+while the lens passes, the generator now interpolates through it (`v2script.py`, landings
+unchanged at 4.8 px). One outlier remains: at 34.8 s iOS's bar starts returning about 80 ms
+before the lift that the lens's arrival and darkening both place, and nothing else in the
+recording separates the two; ours parts 100 ms late there.
+
+**Landings.** A fixed-overshoot trailing model (the edge heading for a point past its rest) fit
+worse (6.3 px) and a finer search of the current one gains under 0.1 px, so the parameters stay.
+Rendered, the 9.9 s landing now peaks at 639 px against iOS's 645 and returns within 2 px; the
+remaining differences are of the size of one frame of the inferred lift. The 28.66 s throw's
+arrival falls across a dropped source frame next to a snapped centroid; neither the ink nor the
+bar (whose reach shifts during a throw) places its lift, so it stays excluded.
+
+**Fringes.** The moving selector's rim colour split rises from .025 to .05: icon fragments drawn
+out at the caps now carry rainbow edges of iOS's extent; .12 was garish. Authored on side-by-side
+frames.
+
+**Port ink.** `drawSelectorInk` (CanvasKit; scene layer `setSelectedInk`) and
+`GlassPainter.DrawSelectorInk` (.NET) draw the host's selected-appearance items through the
+production content pass with the selector's own uniforms: only what lies under the selector shows,
+refracted and folded like the material. CanvasKit 34/34, .NET 13/13, each with a check that the
+ink shows inside the selector and not beyond it. Compose additionally composes ink and material in
+one endpoint pass; the ports draw the ink over the material.
+
+**For owner review (local only, contains the private recordings).**
+`.local/comparisons/2026-10-14-pass11/v1-bar.mp4` and `v2-bar.mp4`: iOS / before (32bf46c) /
+after, the bar region at full resolution, 60 fps.
+
 ### Re-reading the landing evidence
 
 The removed impact model was calibrated to one frame, video 2 at 2.5567 s ("frame082": width
@@ -392,8 +435,8 @@ the impact. The narrowing itself is real and is listed below.
 - Wall landings (pass 10): rms 5.5 px right / 4.1 px left; the 9.9 s landing passes its rest by
   36.5 px against 41; the left width series' first frames narrow up to 11.2 px less; the 28.66 s
   landing is an input artefact (source frame gap).
-- Cap swirl (pass 9): comparable petals; iOS's rainbow fringes along them are stronger.
-- Neck timing (pass 10): median 17 ms late; 34.8 s 133 ms late (bar and lens disagree on its lift).
+- Cap swirl (pass 9, fringes pass 11): comparable petals and fringes, judged by eye.
+- Neck timing (pass 11): median 0 ms; 34.8 s 100 ms late (bar and lens disagree on its lift).
 - The rebuilt reversal input and the full video 2 script (`v2-script.txt`) are inferred; the
   per-episode lag numbers above are relative to that inference.
 - Hold onset is aligned by construction (pass 7); it cannot be tested from these recordings.
@@ -421,7 +464,7 @@ the impact. The narrowing itself is real and is listed below.
 ## Files
 
 - `before-after.png`, `lens-edge.png`, `moving-lens.png`, `landing.png`, `cap-swirl.png`,
-  `landing-99.png`, `landing-left.png`, `swirl-gain.png`, `neck-timing.png`, `atlas-studio.mp4` —
+  `landing-99.png`, `landing-left.png`, `drag-bar.png`, `swirl-gain.png`, `neck-timing.png`, `atlas-studio.mp4` —
   public, our renders only.
 - Pass 9 scoring (local, reads the private recording's row dumps): `.local/sxs/wallscore.py`
   (right landings), `wallscorel.py` (left landings), `neck.py` (neck timing), `liftonset.py` and

@@ -55,6 +55,11 @@ export interface GlassPainter {
   /** A navigation selector's pose body over the bar rect (device px), in the Compose Calm selector material. */
   drawSelector(canvas: Canvas, bar: GlassRect,
     selector: {pose: CalmSelectorPose; formation?: number; transit?: number; heldTravel?: number}, options?: CalmSelectorDrawOptions): void;
+  /** The selected ink inside the selector (Compose's content pass): `ink` is the bar's items in their
+   * selected appearance, transparent ground, device px, origin at the bar's top-left. */
+  drawSelectorInk(canvas: Canvas, bar: GlassRect,
+    selector: {pose: CalmSelectorPose; formation?: number; transit?: number; heldTravel?: number}, ink: Image,
+    options?: Omit<CalmSelectorDrawOptions, 'through'>): void;
   dispose(): void;
 }
 export function createGlassPainter(kit: CanvasKit, sources?: GlassShaderSources): GlassPainter;
@@ -86,6 +91,8 @@ export interface GlassNavigationLayer {
   up(x: number, y: number, time: number): void;
   cancel(time: number): void;
   select(index: number): void;
+  /** The bar's items in their selected appearance (transparent ground, device px, bar origin), shown through the selector. */
+  setSelectedInk(image: Image | null): void;
   remove(): void;
 }
 export interface GlassViewport { width: number; height: number; pixelRatio?: number }

@@ -135,6 +135,30 @@ internal static class SelectorChecks
         Check(pill.All(q => Lum(with, q.Item1, q.Item2) < Lum(bare, q.Item1, q.Item2)), "Native resting selector did not darken its bar");
         Check(Lum(with, 290, 71) == Lum(bare, 290, 71), "Native selector changed the far end of the bar");
 
+        // Ink: the selected ink shows inside the selector and nowhere else.
+        using var inkBitmap = new SKBitmap(new SKImageInfo(300, 62, SKColorType.Rgba8888, SKAlphaType.Premul));
+        inkBitmap.Erase(SKColors.Transparent);
+        foreach (var dot in new[] { 50, 150, 250 }) for (var y = 21; y < 41; y++) for (var x = dot - 10; x < dot + 10; x++)
+            inkBitmap.SetPixel(x, y, new SKColor(40, 110, 255));
+        using var inkImage = SKImage.FromBitmap(inkBitmap);
+        byte[] Inked()
+        {
+            using var surface = SKSurface.Create(new SKImageInfo(w, h, SKColorType.Rgba8888, SKAlphaType.Premul));
+            surface.Canvas.DrawImage(image, 0, 0, new SKSamplingOptions(SKFilterMode.Linear, SKMipmapMode.None));
+            painter.DrawCalmBar(surface.Canvas, rect, 0, new GlassSurfaceOptions(Dark: true));
+            painter.DrawSelector(surface.Canvas, rect, selector.Render(), 0, new GlassSurfaceOptions(Dark: true));
+            painter.DrawSelectorInk(surface.Canvas, rect, selector.Render(), inkImage, 0, new GlassSurfaceOptions(Dark: true));
+            surface.Canvas.Flush();
+            using var read = new SKBitmap(new SKImageInfo(w, h, SKColorType.Rgba8888, SKAlphaType.Premul));
+            Check(surface.ReadPixels(read.Info, read.GetPixels(), read.RowBytes, 0, 0), "Pixel read failed");
+            var pixels = new byte[w * h * 4]; Marshal.Copy(read.GetPixels(), pixels, 0, pixels.Length); return pixels;
+        }
+        var inked = Inked();
+        (int R, int G, int B) Px(byte[] p, int x, int y) { var i = (y * w + x) * 4; return (p[i], p[i + 1], p[i + 2]); }
+        var under = Px(inked, 20 + 50, 40 + 31); var beyond = Px(inked, 20 + 250, 40 + 31);
+        Check(under.B > 200 && under.B > under.R + 120, $"Native selected ink missing inside the selector: {under}");
+        Check(beyond.B < 120, $"Native selected ink leaked outside the selector: {beyond}");
+
         return new { check = "Calm selector matches Kotlin trajectories and material; navigation and drawing", scenarios, frames, worstPx,
             materialSamples = samples, worstMaterial, passed = true };
     }

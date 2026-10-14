@@ -62,8 +62,9 @@ rather than one: after the lift the trailing edge travels on underdamped (rms 4.
 landings, 15.4 before; the 9.9 s landing now narrows like the others), a formed lens presses past
 the bar's end as iOS's does, the moving lens's caps draw content out radially (and a clamp that had
 halved the rim mirror was fixed), and the search button's neck gives way to an arriving lens. A tenth
-pass scored the left-wall landings too (rms 4.1 px) and brought the neck to a median 17 ms of iOS's
-(67 before). The Calm selector's motion, gestures and material are ported to the
+pass scored the left-wall landings too (rms 4.1 px); an eleventh made the bar relax while its lens is
+dragged, as iOS's does, which brought the search-button neck to a median 0 ms of iOS's (67 before),
+and the ports now draw the selected ink inside the selector. The Calm selector's motion, gestures and material are ported to the
 CanvasKit and .NET packages, checked against the Kotlin controller and material factory. On Android, the
 selector and Atlas Studio were verified on an API 37 emulator through the AGSL path
 ([emulator record](https://github.com/shayann07/liquidglass/blob/main/review/atlas/android-emulator-2026-10-14/README.md));
@@ -143,13 +144,13 @@ trace was produced and no permission changes were made. See [performance](perfor
 
 ## What remains
 
-1. Remaining differences from the continuous comparison: the 9.9 s landing passes its rest by
-   36.5 px against iOS's 41 and the left width series' first frames narrow up to 11.2 px less;
-   iOS's cap petals carry stronger rainbow fringes; the neck parts a median 17 ms late (133 ms at
-   34.8 s). Owner visual acceptance is pending.
+1. Remaining differences from the continuous comparison: the 9.9 s landing peaks 6 px short of
+   iOS's and the left width series' first frames narrow up to 11.2 px less, both of the size of one
+   frame of the inferred lift; the neck parts 100 ms late at one release (34.8 s). Owner visual
+   acceptance is pending.
 2. Verify all directional extreme envelopes and Android composition on appropriate hardware.
 3. Resolve ordinary interaction/display performance and final wide/narrow Atlas visual acceptance.
-4. Ported selected ink and additional host integrations, with executable evidence.
+4. Additional host integrations, with executable evidence.
 5. Physical Android device check. No release/tag is authorized.
 
 The current checklist has 27 completed and 22 open entries of unequal size; this is not a progress

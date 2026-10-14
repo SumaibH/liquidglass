@@ -135,6 +135,9 @@ export function createGlassScene(kit, options) {
       cancel(time) { attached(); const t = timeAt(time); nav.cancel(t); layer.state = motion.release(t); down = null; clock = t; },
       /** The host's selection (after onSelect, or from elsewhere). */
       select(index) { attached(); nav.select(index); },
+      /** The bar's items drawn in their selected appearance (transparent ground, device px, bar
+       * origin), shown through the selector; null removes it. Borrowed: keep it alive while set. */
+      setSelectedInk(image) { attached(); layer.ink = image ?? null; },
       remove() { layers.delete(layer); },
     };
   }
@@ -195,10 +198,11 @@ export function createGlassScene(kit, options) {
             d: [p.d[0] * r, p.d[1] * r, p.d[2], p.d[3] * r]};
           // As in Compose, the lens looks through the bar: the page with the bar's glass over it.
           const through = barThrough(canvas, layer, deviceBounds, ratio);
+          const barRect = {x: bounds.x * r, y: bounds.y * r, width: bounds.width * r, height: bounds.height * r};
+          const state = {pose, formation: s.formation, transit: s.transitAppearance, heldTravel: s.heldTravel};
           try {
-            painter.drawSelector(canvas, {x: bounds.x * r, y: bounds.y * r, width: bounds.width * r, height: bounds.height * r},
-              {pose, formation: s.formation, transit: s.transitAppearance, heldTravel: s.heldTravel},
-              {...navMaterial(layer, ratio), through});
+            painter.drawSelector(canvas, barRect, state, {...navMaterial(layer, ratio), through});
+            if (layer.ink) painter.drawSelectorInk(canvas, barRect, state, layer.ink, navMaterial(layer, ratio));
           } finally { through?.delete(); }
         }
       }

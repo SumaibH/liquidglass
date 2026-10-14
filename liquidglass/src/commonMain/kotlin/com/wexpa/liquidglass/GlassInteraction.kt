@@ -47,6 +47,8 @@ internal data class GlassPress(
     val pullY: Float = 0f,
     /** Whether the finger is down and still owns the gesture (a scroll that takes it ends this). */
     val pulling: Boolean = false,
+    /** Whether the press now drags something (the tab bar's selector); see [GlassInteraction.dragPressShare]. */
+    val dragging: Boolean = false,
 ) {
     companion object {
         /** Far enough off-panel that the Gaussian is zero, so an idle panel costs nothing. */
@@ -119,6 +121,14 @@ data class GlassInteraction(
      */
     val releaseStiffness: Float = 0f,
     val releaseDamping: Float = 1f,
+    /**
+     * Share of the press (its growth, [pressReach] and pull) that remains while the press drags
+     * something, 0 to 1: a tab bar whose selector is being dragged. One keeps the whole press.
+     * Dark Calm navigation uses 0.7: once a held iOS 26 Phone bar's lens is dragged, the bar
+     * grows about 10 px a side wherever the finger is, against about 25 px while held still
+     * (video2, held throws and the reversal episode, 2026-10-14). Authored: its edges fit best at 0.7.
+     */
+    val dragPressShare: Float = 1f,
 ) {
     companion object {
         val Default = GlassInteraction()
@@ -216,6 +226,8 @@ class GlassPressSource internal constructor() {
     internal var localPosition by mutableStateOf(Offset.Zero)
     internal var pullOffset by mutableStateOf(Offset.Zero)
     internal var isPressed by mutableStateOf(false)
+    /** The press now drags something ([GlassInteraction.dragPressShare]); cleared on release. */
+    internal var dragging by mutableStateOf(false)
 
     /** Call on every pointer move as well as on down, so the glow tracks rather than jumps. */
     fun press(localPosition: Offset, pullOffset: Offset = Offset.Zero) {
@@ -232,6 +244,7 @@ class GlassPressSource internal constructor() {
      */
     fun release() {
         isPressed = false
+        dragging = false
     }
 }
 
@@ -259,7 +272,7 @@ internal fun rememberGlassPress(
             label = "glass_press_amount_external",
         )
         return GlassPress(source.localPosition.x, source.localPosition.y, amount,
-            source.pullOffset.x, source.pullOffset.y, pulling = source.isPressed) to Modifier
+            source.pullOffset.x, source.pullOffset.y, pulling = source.isPressed, dragging = source.dragging) to Modifier
     }
 
     var point by remember { mutableStateOf(Offset.Zero) }

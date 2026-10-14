@@ -56,7 +56,13 @@ CanvasKit 33/33 tests and .NET 13/13 checks, including the 96 material samples a
 that the lens looks through the bar (+20 luminance over the bare page inside the resting pill) and
 leaves the bar's far end untouched.
 
-**Limits.** The ports draw no selected ink: labels, ink inside the lens and accessibility stay with
-the host, so the content pass (selected-ink fold, held ink) is not ported. The bar's press reach,
+**Selected ink (pass 11).** `drawSelectorInk` / `DrawSelectorInk` (and the CanvasKit scene layer's
+`setSelectedInk`) draw the host's selected-appearance items through the production content pass
+with the selector's uniforms: the ink shows only under the selector, refracted and folded with it
+(checked: blue ink inside the resting pill, none at the far tab). Compose composes material and ink
+in one endpoint pass; the ports draw the ink over the material.
+
+**Limits.** Labels and accessibility stay with the host, which also renders the selected-appearance
+image. The bar's press reach,
 release spring and accessory fusion are Compose-side; the port bar uses the scene's press scale.
 Accommodation to item bounds is supported when the host passes them; the scene layer does not.

@@ -167,11 +167,11 @@ class GlassPhoneLandingSequenceTest {
             272f,274f,277f,278f,281f,282f,283f,284f,283f,283f,284f,284f)
         // (ms, op, video x): down, moves, up as GlassTabBar issues them. The press is held
         // (past the hold threshold) before it moves, so the drag needs no separate beginDrag.
-        val rightThrow = listOf(Triple(1203,"down",217f), Triple(2124,"move",285.4f), Triple(2140,"move",480f),
-            Triple(2157,"move",484.4f), Triple(2174,"move",627.1f), Triple(2190,"move",742f),
+        val rightThrow = listOf(Triple(1203,"down",217f), Triple(2124,"move",285.4f), Triple(2140,"move",399.3f),
+            Triple(2157,"move",513.2f), Triple(2174,"move",627.1f), Triple(2190,"move",742f),
             Triple(2206,"move",884.4f), Triple(2207,"up",884.4f))
-        val leftThrow = listOf(Triple(3386,"down",742f), Triple(4157,"move",681.7f), Triple(4174,"move",485.2f),
-            Triple(4190,"move",477.5f), Triple(4207,"move",397.2f), Triple(4224,"move",248.5f),
+        val leftThrow = listOf(Triple(3386,"down",742f), Triple(4157,"move",681.7f), Triple(4174,"move",586.9f),
+            Triple(4190,"move",492.1f), Triple(4207,"move",397.2f), Triple(4224,"move",248.5f),
             Triple(4240,"move",217f), Triple(4256,"move",153f), Triple(4257,"up",153f))
         val held = phoneBar.height * GlassPoseSpec.Calm.heldHeightRatio
         for ((events, series, start, tolerance) in listOf(

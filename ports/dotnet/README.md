@@ -149,8 +149,11 @@ painter.DrawSelector(canvas, barRect, c.Render(), (float)c.Formation, options,
 `DrawCalmBar` and `DrawSelector` use the Compose Calm bar and selector material itself
 (`CalmSelectorMaterial`: the production styles exported by the Kotlin tests, blended by the same
 rules and checked against 96 Kotlin-computed uniform sets). Pass `through` so the lens looks through
-the bar as in Compose; without it the lens sees the page alone. Selected ink, labels, accessibility
-and the WinForms control wiring stay with the host.
+the bar as in Compose; without it the lens sees the page alone. For the selected ink, draw your items
+in their selected appearance into an image at the bar's origin and pass it to
+`DrawSelectorInk(canvas, barRect, c.Render(), ink, ...)` after `DrawSelector`: it shows only under the
+selector, through the production content pass. Labels, accessibility and the WinForms control wiring
+stay with the host.
 
 ## Geometry, options and lifetime
 

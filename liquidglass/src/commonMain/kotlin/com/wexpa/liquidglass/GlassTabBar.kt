@@ -687,6 +687,11 @@ fun GlassTabBar(
                                 }
                                 tracker.addPosition(change.uptimeMillis, change.position)
                                 liveVelocity = tracker.calculateVelocity().x
+                                // The press now drags the lens (a hold alone does not): the bar keeps
+                                // only its drag share ([GlassInteraction.dragPressShare]).
+                                if (!barPress.dragging && abs(change.position.x - down.position.x) > viewConfiguration.touchSlop) {
+                                    barPress.dragging = true
+                                }
                                 handle?.controller?.pointerMove(change.position.x, change.uptimeMillis / 1000.0)
                                 handle?.wake()
                                 poseHandle?.controller?.pointerMove(
@@ -1452,6 +1457,8 @@ data class GlassTabBarStyle(
                 pressReach = if (dark) .03f else 0f,
                 // iOS's bar snaps back after lift (0.12 s, ~10% overshoot) and parts from the button.
                 releaseStiffness = if (dark) 530f else 0f, releaseDamping = if (dark) .6f else 1f,
+                // Once its lens is dragged, iOS's bar keeps about 10 px of growth a side.
+                dragPressShare = if (dark) .7f else 1f,
             ),
         ) }
         // Declaration order matters here: the constructor's defaults read RestingInset and
@@ -1857,7 +1864,7 @@ internal fun glassSelectorMaterial(style: GlassTabBarStyle, formation: Float, tr
 internal const val GlassSelectorRimMirror = 1.0f
 /** Radial draw of the moving selector's mirrored caps (authored, 2026-10-14 second pass). */
 internal const val GlassSelectorRimGain = 0.4f
-internal const val GlassSelectorRimDispersion = 0.025f
+internal const val GlassSelectorRimDispersion = 0.05f
 
 /** `lensFormation` for the selector: the transit fold while unheld, the held lens's travel
  * (rim-mirror blend at its caps) while held. */

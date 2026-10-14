@@ -50,6 +50,11 @@ This file records user-visible development changes. Published artifacts are iden
 - Phone and Atlas Studio: the search button's neck gives way to a lens pressing into its end
   (`GlassTabBarAccessory.yieldsToLens`); with the bar's release spring now starting one frame in,
   the neck parts a median 17 ms after iOS's (67 before).
+- Calm dark bar: once its lens is dragged it keeps 70% of its press, reach and pull
+  (`GlassInteraction.dragPressShare`), as iOS's does; the search-button neck now parts with
+  iOS's (median 0 ms). The moving selector's rim colour split is .05 (was .025).
+- Ports: `drawSelectorInk` / `DrawSelectorInk` and the scene's `setSelectedInk` draw the host's
+  selected ink inside the selector through the production content pass.
 - Calm landings: a more stretched lens closes faster (`releaseTrailingStiffening`), scored on the
   left-wall landings too (rms 4.1 px left, 5.5 right); a lens released still keeps its glass
   briefly (`releaseStillHoldSeconds`), as iOS's does after a stationary hold.
@@ -69,6 +74,7 @@ This file records user-visible development changes. Published artifacts are iden
 - `GlassPoseSpec.releaseTrailingInOmega`, `releaseTrailingInZeta`, `releaseTrailingCarry`,
   `releaseTrailingStiffening`, `releaseWallGive`, `releaseStillHoldSeconds` and the
   `CalmCriticalLanding` preset; all off by default.
+- `GlassInteraction.dragPressShare`: the share of a press that remains while it drags something; 1 by default.
 - `GlassTabBarAccessory(yieldsToLens = true)`: a formed pose selector takes the neck's place; off by default.
 - CanvasKit `calmSelectorMaterial`, `calmBarMaterial`, `painter.drawCalmBar`; .NET
   `CalmSelectorMaterial`, `GlassPainter.DrawCalmBar`; `drawSelector` / `DrawSelector` take transit,
