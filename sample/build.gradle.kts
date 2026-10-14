@@ -25,6 +25,8 @@ dependencies {
 android {
     namespace = "com.wexpa.liquidglass.sample"
     compileSdk = libs.versions.android.compileSdk.get().toInt()
+    // Material 3 1.13 alphas pull in Compose foundation that needs Android API 37.1 to compile.
+    compileSdkMinor = libs.versions.android.compileSdkMinor.get().toInt()
 
     defaultConfig {
         applicationId = "com.wexpa.liquidglass.sample"
