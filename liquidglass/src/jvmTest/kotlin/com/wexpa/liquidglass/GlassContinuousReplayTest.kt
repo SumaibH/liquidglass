@@ -97,7 +97,7 @@ class GlassContinuousReplayTest {
         // A tap in transit: the folding rim mirror at the caps, at its transit strength.
         val transit = glassSelectorMaterial(style, 0.05f, 0.9f)
         assertEquals(GlassProfile.Measured, transit.profile)
-        assertEquals(1f, transit.foldAtCorners); assertTrue(transit.rimMirror > 0f)
+        assertEquals(GlassSelectorTransitFoldCorners, transit.foldAtCorners); assertTrue(transit.rimMirror > 0f)
         assertEquals(0.9f, glassSelectorFormation(style, 0.05f, 0.9f, 0f), 1e-6f)
         // A held lens: the measured held map, blended toward the mirror only with travel.
         val held = glassSelectorMaterial(style, 1f, 0f)

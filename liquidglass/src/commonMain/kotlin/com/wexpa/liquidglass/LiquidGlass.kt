@@ -454,7 +454,11 @@ internal fun Modifier.liquidGlassCore(
     // it during drawing, so they do not run separate springs or transform pointer targets.
     SideEffect {
         materialDrawing?.drawing = GlassMaterialDrawing(pullDeformation, pressScaleX, pressScaleY,
-            Offset(measured.width / 2f, measured.height / 2f), footprint)
+            Offset(measured.width / 2f, measured.height / 2f), footprint,
+            // The content leaves out the reach: its extra width and its shift toward the finger.
+            contentPull = if (reach == 0f) pullDeformation else
+                pullDeformation.copy(translationX = pullDeformation.translationX - reach * measured.width / 2f),
+            contentPressX = pressScaleX - abs(reach))
     }
 
     this
@@ -540,6 +544,7 @@ internal fun Modifier.liquidGlassCore(
                         rimMirror = style.rimMirror.coerceIn(0f, 1f),
                         rimMirrorGain = style.rimMirrorGain.coerceIn(.05f, 1f),
                         heldEdgeRecovery = style.heldEdgeRecovery.toPx().coerceAtLeast(0f),
+                        heldEdgeTone = style.heldEdgeTone.coerceIn(0f, 1f),
                         restMap = style.restMap.uniform,
                         body = body?.let {
                             floatArrayOf(
@@ -1099,6 +1104,8 @@ internal data class GlassUniforms(
     val rimMirrorGain: Float = 1f,
     /** [GlassStyle.heldEdgeRecovery], in layer pixels. */
     val heldEdgeRecovery: Float = 0f,
+    /** [GlassStyle.heldEdgeTone]. */
+    val heldEdgeTone: Float = 0f,
     /** Resting-corner source map: 0 the legacy map, 1 the measured table ([GlassRestMap]). */
     val restMap: Float = 0f,
     /** V3 body: left centre x, right centre x, left radius, right radius, in the centred frame. */
@@ -1223,7 +1230,7 @@ internal data class GlassUniforms(
             heldMagnification == other.heldMagnification && heldGlow == other.heldGlow &&
             heldGlowReach == other.heldGlowReach && foldCorners == other.foldCorners &&
             rimMirror == other.rimMirror && rimMirrorGain == other.rimMirrorGain &&
-            heldEdgeRecovery == other.heldEdgeRecovery &&
+            heldEdgeRecovery == other.heldEdgeRecovery && heldEdgeTone == other.heldEdgeTone &&
             restMap == other.restMap &&
             body.contentEquals(other.body) && bodyY == other.bodyY && bodyKind == other.bodyKind &&
             poseA.contentEquals(other.poseA) && poseAInv.contentEquals(other.poseAInv) &&

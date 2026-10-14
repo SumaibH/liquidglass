@@ -7,7 +7,12 @@ import kotlin.test.assertEquals
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
-/** Spatial envelope only: IMG6735 has no recorded input timestamps. */
+/**
+ * Spatial envelope only: IMG6735 has no recorded input timestamps. Since pass 12 (14 October) the
+ * current Calm follows the owner's timed video2 instead, whose travelling lens flattens further
+ * ([calmHeldTravelWidensAndFlattensLikeVideo2]); the IMG6735 envelope is kept on the retained
+ * [GlassPoseSpec.CalmWallLanding].
+ */
 class GlassHeldTravelReferenceTest {
     private fun referenceBar() = GlassSelectorBar(1044f, 186f, 27f, 5, 93f, 115f, 81f, 90f,
         150f, 112.5f, 3f, 700f)
@@ -46,7 +51,7 @@ class GlassHeldTravelReferenceTest {
             assertEquals(b.height, a.height, .001f, "ordinary press height changed")
         }
         for (wait in listOf(0f, .06f, .12f, .8f)) {
-            val c = controller(GlassPoseSpec.Calm)
+            val c = controller(GlassPoseSpec.CalmWallLanding)
             c.advanceTo(wait); c.beginDrag(bar.centreOf(0), bar.centreY)
             for (i in 1..120) {
                 val elapsed = i / 480f
@@ -74,7 +79,7 @@ class GlassHeldTravelReferenceTest {
         var middleWidth = 0f
         var middleHeight = 0f
         for (duration in listOf(.06f, .08f, .10f, .14f, .20f, .30f, .50f, 1f, 1.5f)) {
-            val controller = GlassPoseController(GlassPoseSpec.Calm)
+            val controller = GlassPoseController(GlassPoseSpec.CalmWallLanding)
             controller.attach(bar, null, null); controller.snapToRest(0)
             controller.pointerDown(bar.centreOf(0), bar.centreY, 0.0, true)
             for (i in 1..384) controller.advanceTo(i / 480f)
@@ -115,5 +120,73 @@ class GlassHeldTravelReferenceTest {
         assertTrue(minimumHeight >= 136f, "travel exceeds the selected conservative compression bound")
         assertEquals(326f, middleWidth, 6f, "intermediate travel remains too narrow")
         assertEquals(174f, middleHeight, 6f, "intermediate travel height")
+    }
+
+    /**
+     * Video2's fast held reversal (18.58-19.05 s, the inferred finger in
+     * tools/reference-replay/v2-script.txt, bar-local x = video x - 63) on the Phone bar: iOS's
+     * travelling lens is 458 x 145 px at 19.0 s on a 192 px bar, 0.755 of its height, from a held
+     * still lens of about 340 x 215. The held travel strain widens and flattens it at about
+     * constant area; a still hold and an ordinary press are unchanged, and the first throw's quick
+     * flick releases before the strain has built.
+     */
+    @Test fun calmHeldTravelWidensAndFlattensLikeVideo2() {
+        val bar = run {
+            val width = 834f; val height = 186f; val inset = 24f; val density = 3f
+            val slot = (width - inset * 2f) / 3f
+            val rest = minOf(285f / 2f, (inset + slot / 2f - density).coerceAtLeast(density))
+            val half = minOf(height / 2f - 12f, rest)
+            GlassSelectorBar(width, height, inset, 3, height / 2f, rest, half,
+                maxOf(half, height / 2f - density), half, rest, density, width)
+        }
+        val events = File("../tools/reference-replay/v2-script.txt").readLines().mapNotNull { line ->
+            val w = line.trim().split(Regex("""\s+"""))
+            if (w.size == 4 && w[1] in setOf("down", "move", "up")) Triple(w[0].toInt(), w[1], w[2].toFloat()) else null
+        }
+        fun run(spec: GlassPoseSpec, from: Int, until: Int, selected: Int, sample: (Double, GlassPoseController) -> Unit) {
+            val c = GlassPoseController(spec)
+            c.attach(bar, null, null); c.snapToRest(selected)
+            val window = events.filter { it.first in from..until }
+            var next = 0
+            var frame = (from / 1000.0 * 60).toInt()
+            while (frame / 60.0 <= until / 1000.0) {
+                val t = frame / 60.0
+                while (next < window.size && window[next].first / 1000.0 <= t) {
+                    val (ms, op, x) = window[next++]
+                    when (op) {
+                        "down" -> c.pointerDown(x - 63f, bar.centreY, ms / 1000.0, true)
+                        "move" -> c.pointerMove(x - 63f, bar.centreY, ms / 1000.0)
+                        "up" -> c.pointerUp(selected)
+                    }
+                }
+                c.advanceFrameTo(t.toFloat())
+                assertFalse(c.solverFailed)
+                sample(t, c)
+                frame++
+            }
+        }
+        val e = GlassPoseExtents()
+        var travelling: Pair<Float, Float>? = null
+        var still: Pair<Float, Float>? = null
+        // The held still lens: video2's first hold, at 1.8 s.
+        run(GlassPoseSpec.Calm, 1203, 1800, 0) { t, c ->
+            if (abs(t - 1.8) < 1e-3) { c.extents(e); still = e.width to e.height }
+        }
+        run(GlassPoseSpec.Calm, 18580, 19000, 0) { t, c ->
+            if (abs(t - 19.0) < 1e-3) { c.extents(e); travelling = e.width to e.height }
+        }
+        val (w0, h0) = still!!
+        val (w1, h1) = travelling!!
+        println("VIDEO2_REVERSAL still=${w0}x$h0 travelling=${w1}x$h1")
+        // Probe-scale targets: iOS 458 x 145 on its 192 px bar is 444 x 140 on this 186 px bar.
+        assertEquals(.755f, h1 / bar.height, .05f, "travelling lens height against the bar")
+        assertTrue(w1 >= 410f, "travelling lens width $w1")
+        // Bounding-box area against the held still lens: iOS (458 x 145) / (340 x 215) = 0.91;
+        // ours 427 x 144 / 346 x 223 = 0.80, about 12 % smaller (pass 12).
+        assertEquals(.91f, w1 * h1 / (w0 * h0), .12f, "travelling lens area against the held still lens")
+        // Without the strain the same reversal stays nearly full height (the pass 11 Calm: 368 x 185).
+        run(GlassPoseSpec.CalmWallLanding, 18580, 19000, 0) { t, c ->
+            if (abs(t - 19.0) < 1e-3) { c.extents(e); assertTrue(e.height > h1 + 25f, "previous Calm already flattened") }
+        }
     }
 }

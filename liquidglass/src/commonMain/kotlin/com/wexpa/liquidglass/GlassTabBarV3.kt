@@ -417,7 +417,20 @@ internal fun GlassPoseFrameLoop(
         while (true) {
             while (true) {
                 val idle = withFrameNanos { nanos ->
-                    if (handle.previousFrame < 0L) handle.previousFrame = nanos
+                    if (handle.previousFrame < 0L) {
+                        // Waking: the input that woke the loop has already advanced the
+                        // simulation to its own timestamp, but this frame presents later than
+                        // that. Present the frame's own time, or the whole gesture runs that far
+                        // behind the finger: about 1.5 frames on video2's throws after a still
+                        // hold (2026-10-14 pass 12). Only when the pointer and frame clocks
+                        // visibly share a base (0-50 ms apart); travel-only (Calm) specs only.
+                        val c = handle.controller
+                        if (c.spec.travelOnly && c.hasPointerClock) {
+                            val lag = nanos / 1_000_000_000.0 - c.lastPointerSeconds
+                            if (lag > 0.0 && lag <= WAKE_CATCH_UP_SECONDS) handle.clock += lag.toFloat()
+                        }
+                        handle.previousFrame = nanos
+                    }
                     handle.clock += (nanos - handle.previousFrame) / 1_000_000_000f
                     handle.previousFrame = nanos
                     handle.controller.motionEnabled = currentMotion
@@ -435,3 +448,6 @@ internal fun GlassPoseFrameLoop(
         }
     }
 }
+
+/** The most a woken pose loop catches up from its waking input to the frame: three 60 Hz frames. */
+private const val WAKE_CATCH_UP_SECONDS = 0.05

@@ -422,6 +422,69 @@ one endpoint pass; the ports draw the ink over the material.
 `.local/comparisons/2026-10-14-pass11/v1-bar.mp4` and `v2-bar.mp4`: iOS / before (32bf46c) /
 after, the bar region at full resolution, 60 fps.
 
+### Pass 12: held ink, outline, moving shape, tap fold, throw timing, scene (14 October)
+
+The owner compared the pass 11 videos with the recordings and listed six differences. Each was
+measured on the private recordings, changed, and re-measured on full replays of both videos.
+
+**Held ink.** iOS's selected icon under a still held lens sits where the bar's 1.05 press puts it:
+203.6 px at 1.8 s, 203.2 at 5.75 s (the unselected Keypad icon 755.7, ours 755.1). Ours sat at
+166.5. Two causes: the selected ink followed the bar's reach toward the finger
+(`GlassMaterialDrawing.contentPull`, now the press and pull without the reach), and it was scaled
+about the selector node's origin instead of the bar's centre, because the foreground modifier draws
+in the bar-sized child's frame (`GlassTabBar.kt`, the endpoint ink's `glassMaterialForeground`).
+Now 203.1 and 203.8 px.
+
+![Held still lens at 1.8 s, main and pass 12 (our renders only, desktop Direct3D replay, deterministic 60 fps, inferred input)](pass12-held.png)
+
+**Outline.** iOS's held lens outline is a grey line of about 65 levels over the bar (83) and over
+the black page alike. Ours was a white ring (top rim 102, bottom 136) from the additive bevel lobe
+and the inward glow. New opt-in `GlassStyle.heldEdgeTone` draws the outermost pixels as that grey;
+Calm's lens uses 65/255 with specular .08 (was .26) and `heldGlow` 0 (was 2). Column profile
+through the still lens: top rim 86 then 66 (iOS 85, 66). The bottom edge is still brighter (100
+against 83), and iOS's soft halo outside the lens over the black page (about 35-50 levels) is not
+reproduced.
+
+**Moving shape.** At the 19.0 s reversal (finger about 15 slots/s) iOS's lens is 458 x 145 px on a
+192 px bar, 0.755 of its height, with continuously curved ends; ours was a full-height capsule,
+375 x 182. New opt-in `GlassPoseSpec.heldTravelStrain`: a held lens travelling fast widens by e^u
+and flattens by e^-u (constant area), built at `heldTravelStrainOmega` so a sustained drag strains
+and a quick flick releases nearly unstrained. The two-edge landing reads the strained width, so it
+stays continuous. Calm: strain .5 at 10/s, held reference speed 8 slots/s (was 12), squeeze .52
+(was .47): 427 x 144 at 19.0 s (port probe, 186 px bar; iOS scaled to it 444 x 140). Costs: the
+wall-landing scores move from 5.3 / 4.3 to 5.7 / 5.1 px rms (right / left); the first two landing
+width series from 3.1 / 6.7 to 3.1 / 6.1. The travelling lens's bounding box is 0.80 of the still
+lens's against iOS's 0.91. The earlier spine-only attempt (elongation .46) widened it but doubled
+the landing error and was dropped. The previous Calm is `GlassPoseSpec.CalmWallLanding`.
+
+![The held reversal at 18.90-19.05 s, main and pass 12 (our renders only, same replay)](pass12-moving.png)
+
+**Tap fold.** On a tap iOS's lens bends what lies under its straight top and bottom too, not only
+its caps: the Keypad dots stretch up the top rim and the label bends along the bottom as it lands
+(video1 0.95-1.03 s). Ours folded the caps only (`foldAtCorners` 1), so icons near the rim stayed
+clean. The transit fold now runs at a quarter strength along the runs (`foldAtCorners` .75;
+.5 folded the label away, .85 left the runs nearly clean). Tap timing itself already matched (both
+arrive 1.00-1.03 s; the pill darkens over 1.10-1.25 s in both).
+
+![A tap from Calls to Keypad at 0.97-1.02 s, main and pass 12 (our renders only, same replay)](pass12-tap.png)
+
+**Throw timing.** Mid-throw the lens trailed iOS by about one frame (2.157 s: lens centre 265 px
+against iOS's 345). The controller was not the cause: the ported controller, driven by the same
+input, was on time. The Compose frame loop sleeps during a still hold; the move that woke it had
+already advanced the simulation to its own timestamp, but the first frame after waking added no
+time, so the whole throw ran 1.5 frames behind. A woken loop now presents its frame's own time
+(the gap from the waking input, used only when the two clocks are 0-50 ms apart; travel-only
+specs). Lens centre at 2.15 s 312 px (port controller 302), 2.167 s 418 (428). Taps move by under
+a fifth of a frame. A faster grasp (220/s) was tried first; it overshot and worsened landings.
+
+![The first throw at 2.15-2.20 s, main and pass 12 (our renders only, same replay)](pass12-throw.png)
+
+**Scene.** `PhoneScene`'s page uses neutral placeholder names and iOS-like call-log typography
+(17 sp names, 16 sp detail rows, handset and person glyphs).
+
+**For owner review (local only, contains the private recordings).**
+`.local/comparisons/2026-10-14-pass12/v1.mp4` and `v2.mp4`: iOS / main (8cb49ec) / pass 12.
+
 ### Re-reading the landing evidence
 
 The removed impact model was calibrated to one frame, video 2 at 2.5567 s ("frame082": width
@@ -432,7 +495,11 @@ the impact. The narrowing itself is real and is listed below.
 
 ## Remaining differences
 
-- Wall landings (pass 10): rms 5.5 px right / 4.1 px left; the 9.9 s landing passes its rest by
+- Pass 12: the held lens's bottom edge reads 100 against iOS's 83, and iOS's soft halo outside a
+  held lens over the black page (35-50 levels) is missing. The travelling lens is about 12 %
+  smaller in bounding-box area than iOS's and its ends are capsule caps, where iOS's look
+  elliptical. Throws now run on time; mid-throw our lens can lead iOS's by up to about 30 px.
+- Wall landings (pass 12): rms 5.7 px right / 5.1 px left (pass 10: 5.5 / 4.1); the 9.9 s landing passes its rest by
   36.5 px against 41; the left width series' first frames narrow up to 11.2 px less; the 28.66 s
   landing is an input artefact (source frame gap).
 - Cap swirl (pass 9, fringes pass 11): comparable petals and fringes, judged by eye.
@@ -450,6 +517,13 @@ the impact. The narrowing itself is real and is listed below.
 
 ## Verification
 
+- Pass 12: full library suite 387 cases, 360 passed, 27 optional showcase skips, 0 failures
+  (`:liquidglass:jvmTest --rerun`, 12 m 23 s). CanvasKit port 34/34, .NET checks 13/13, with the
+  Kotlin fixtures (`selector-calm.json`, `selector-material.json`) and shaders re-exported. Two
+  IMG6735 envelope tests now target the retained `CalmWallLanding`; a new test replays video2's
+  reversal (`calmHeldTravelWidensAndFlattensLikeVideo2`). Both videos replayed on the desktop
+  Direct3D path; main (8cb49ec) replayed from a separate worktree for the before images.
+
 - Full library suite before the bar-fold change: 374 cases, 347 passed, 27 optional showcase
   skips, 0 failures (`:liquidglass:jvmTest --rerun`, 12 m 46 s).
 - After the bar-fold change, every tab-bar, Calm, Phone, bar, ink, endpoint, material and replay
@@ -464,7 +538,8 @@ the impact. The narrowing itself is real and is listed below.
 ## Files
 
 - `before-after.png`, `lens-edge.png`, `moving-lens.png`, `landing.png`, `cap-swirl.png`,
-  `landing-99.png`, `landing-left.png`, `drag-bar.png`, `swirl-gain.png`, `neck-timing.png`, `atlas-studio.mp4` —
+  `landing-99.png`, `landing-left.png`, `drag-bar.png`, `swirl-gain.png`, `neck-timing.png`,
+  `pass12-held.png`, `pass12-moving.png`, `pass12-tap.png`, `pass12-throw.png`, `atlas-studio.mp4` —
   public, our renders only.
 - Pass 9 scoring (local, reads the private recording's row dumps): `.local/sxs/wallscore.py`
   (right landings), `wallscorel.py` (left landings), `neck.py` (neck timing), `liftonset.py` and

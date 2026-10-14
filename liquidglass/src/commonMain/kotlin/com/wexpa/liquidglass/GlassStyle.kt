@@ -164,6 +164,14 @@ data class GlassStyle(
      */
     val heldEdgeRecovery: Dp = 0.dp,
     /**
+     * Opt-in: the held lens's outermost pixels as a grey line of this level (0 to 1), drawn
+     * nearly opaque over whatever lies behind, instead of only the additive rim light. Zero keeps
+     * the historical additive rim. The held iOS 26 Phone lens's outline reads about 65 grey levels
+     * over the bar (83) and over the black page alike: a line, not a highlight (video2, held and
+     * moving lens, 2026-10-14). Calm's lens uses 65/255.
+     */
+    val heldEdgeTone: Float = 0f,
+    /**
      * A share of the raw backdrop added on top of the glass this element looks
      * [through][liquidGlass], 0 to 1. The measured tab-bar lens shows the bar's output plus
      * 0.11 of the content behind the bar, which is what makes its interior read clearer than

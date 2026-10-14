@@ -59,7 +59,7 @@ export function calmSelectorMaterial({dark = true, formation = 0, transit = 0, h
     }
     const mirror = {uFoldCorners: DATA.fold.foldCorners, uRimMirror: DATA.fold.rimMirror,
       uRimMirrorGain: DATA.fold.rimMirrorGain, uAberration: DATA.fold.dispersion, uInkSplit: DATA.fold.dispersion};
-    if (fold > 0) values = {...values, ...mirror, uProfile: DATA.fold.measuredProfile};
+    if (fold > 0) values = {...values, ...mirror, uFoldCorners: DATA.fold.transitFoldCorners, uProfile: DATA.fold.measuredProfile};
     else if (style.tapOpticsFold > 0 && formation >= .5) values = {...values, ...mirror};
   }
   const uFormation = style.tapOpticsFold > 0 && formation >= .5

@@ -21,6 +21,7 @@ public sealed record CalmSelectorSpec
     public double ReferenceSpeed { get; init; } = 11.5; public double HeldReferenceSpeed { get; init; } = 20;
     public double VelocityTau { get; init; } = .035; public double ReferenceAcceleration { get; init; } = 26;
     public double ElongationSlots { get; init; } = .5; public double StretchGain { get; init; } = 0;
+    public double HeldTravelStrain { get; init; } = 0; public double HeldTravelStrainOmega { get; init; } = 10;
     public double MaxStrain { get; init; } = .42; public double PullStrainPerDp { get; init; } = .0038;
     public double PullPressurePerDp { get; init; } = -.0007; public double PullOnsetDp { get; init; } = 12;
     public double PullMaxStrain { get; init; } = .12; public double PullFollow { get; init; } = .2;
@@ -57,14 +58,14 @@ public sealed record CalmSelectorSpec
         CentreOmega = 24, SpineOmega = 30, SpineZeta = .78, TapSpineOmega = 26, TapSpineZeta = .45,
         TapElongationSlots = .36, TapReferenceSpeed = 10, SpineReleaseOmega = 22, PressureOmega = 22,
         PressureFallOmega = 14, FormRiseOmega = 30, TapPressureOmega = 45, HeldHeightRatio = 1.2,
-        HeldReferenceSpeed = 12, ElongationSlots = .28, Squeeze = .47, PullStrainPerDp = 0,
+        HeldReferenceSpeed = 8, ElongationSlots = .28, Squeeze = .52, PullStrainPerDp = 0,
         PullPressurePerDp = 0, PullFollow = 0, EndTravelCapRatio = .025, MaxAccommodationSlots = .15,
         TravelOnly = true, ReleaseTravel = true, TapRecoilArea = true, HeldTravelPressureOmega = 60,
         TapSpineLimitSlots = .45, TapAreaGain = .51, TapShortTripRate = .75, TapAppearanceArea = .44,
         TapAppearanceSpine = .13, TapAppearanceFallOmega = 45, ReleaseFormationSpeed = 3,
         GraspOmega = 120, HeldFormRiseOmega = 50, ReleaseTrailingEdge = true, ReleaseRecoveryOmega = 13,
         ReleaseTrailingInOmega = 9, ReleaseTrailingInZeta = .3, ReleaseTrailingCarry = .1, ReleaseWallGive = .35,
-        ReleaseTrailingStiffening = .5, ReleaseStillHoldSeconds = .18,
+        ReleaseTrailingStiffening = .5, ReleaseStillHoldSeconds = .18, HeldTravelStrain = .5, HeldTravelStrainOmega = 10,
     };
 }
 
@@ -271,6 +272,7 @@ public sealed class CalmSelectorController
     private readonly SelectorPose pose = new(), velocity = new(), equilibrium = new(), lastGood = new(), lastGoodVelocity = new(),
         lastPublished = new(), probePose = new(), scratchPose = new();
     private readonly SelectorFrame frame = new(), probeFrame = new(), derivFrame = new();
+    private readonly SelectorSpring strainDrive = new();
     private readonly SelectorSpring form = new(), transit = new(), travel = new(), tapArea = new(), releaseEdge = new(),
         releaseTrail = new(), graspX = new(), graspY = new(), scratch = new();
     private readonly double[] contour = new double[ContourSamples * 2];
@@ -300,7 +302,7 @@ public sealed class CalmSelectorController
     public double CentreY => pose.Cy;
     public CalmSelectorBar Bar => bar ?? throw new InvalidOperationException("Attach a bar first");
     public bool IsIdle => Mode != CalmSelectorMode.PressPending && !tapAreaActive && TransitAppearance < 1e-4 &&
-        HeldTravel < 1e-4 && quietSteps >= QuietSteps &&
+        HeldTravel < 1e-4 && quietSteps >= QuietSteps && strainDrive.Value == 0 &&
         // A still release keeping its glass: nothing moves yet, but the formation still has to fall.
         !(Mode == CalmSelectorMode.Released && releasedFromHold && releasedStill && form.Value > .01 &&
           now - releasedAt < Spec.ReleaseStillHoldSeconds + .05);
@@ -465,8 +467,16 @@ public sealed class CalmSelectorController
     }
     private static double HeldPressure(double ratio, double barHeight, double referenceHeight) =>
         referenceHeight <= 1e-4 || barHeight <= 1e-4 ? 0 : Math.Log(ratio * barHeight / referenceHeight);
-    private double LandingHalfWidth() => reference.R * Math.Exp(pose.P) + pose.Dx + Math.Max(pose.Acc, 0);
-    private double LandingHalfWidthVelocity() => reference.R * Math.Exp(pose.P) * velocity.P + velocity.Dx + (pose.Acc > 0 ? velocity.Acc : 0);
+    // The held travel strain (HeldTravelStrain) widens the rendered body by e^u; zero leaves it 1.
+    private double StrainScale() => Spec.HeldTravelStrain > 0 ? Math.Exp(pose.U) : 1;
+    private double LandingHalfWidth() => (reference.R * Math.Exp(pose.P) + pose.Dx + Math.Max(pose.Acc, 0)) * StrainScale();
+    private double LandingHalfWidthVelocity()
+    {
+        var eu = StrainScale();
+        var b = reference.R * Math.Exp(pose.P) + pose.Dx + Math.Max(pose.Acc, 0);
+        return (reference.R * Math.Exp(pose.P) * velocity.P + velocity.Dx + (pose.Acc > 0 ? velocity.Acc : 0)) * eu +
+            (eu != 1 ? b * eu * velocity.U : 0);
+    }
 
     private void Substep(double dt)
     {
@@ -556,7 +566,14 @@ public sealed class CalmSelectorController
             var psi = Math.Atan2(pullY, vx * s.PullTiltSeconds) - Math.Atan2(frame.SinTheta, frame.CosTheta);
             pullU = pullStrain * Math.Cos(2 * psi); pullV = pullStrain * Math.Sin(2 * psi);
         }
-        equilibrium.U = gain * (nvx * nvx - .5 * speed2) / denom + pullU;
+        if (s.HeldTravelStrain > 0)
+        {
+            // Sustained held travel builds the strain; a short flick releases before it has.
+            strainDrive.Target = Mode == CalmSelectorMode.Held && MotionEnabled ? sv * formation : 0;
+            strainDrive.Step(dt, s.HeldTravelStrainOmega, 1);
+            if (Math.Abs(strainDrive.Value) < 1e-4 && Math.Abs(strainDrive.Velocity) < .002 && strainDrive.Target == 0) strainDrive.SnapTo(0);
+        }
+        equilibrium.U = gain * (nvx * nvx - .5 * speed2) / denom + pullU + s.HeldTravelStrain * strainDrive.Value;
         equilibrium.V = gain * (nvx * nvy) / denom + pullV;
         var held = HeldPressure(s.HeldHeightRatio, b.Height, refr.Height);
         var squeeze = Mode == CalmSelectorMode.Held ? s.Squeeze * sv : 0;
@@ -715,10 +732,13 @@ public sealed class CalmSelectorController
                 var caps = refr.R * Math.Exp(pose.P) + Math.Max(pose.Acc, 0);
                 var capsVelocity = refr.R * Math.Exp(pose.P) * velocity.P + (pose.Acc > 0 ? velocity.Acc : 0);
                 var minimum = caps + .002;
-                if (dir * (releaseEdge.Value - releaseTrail.Value) < 2 * minimum)
-                { releaseTrail.Value = releaseEdge.Value - dir * 2 * minimum; releaseTrail.Velocity = releaseEdge.Velocity - dir * 2 * capsVelocity; }
-                pose.Dx = dir * (releaseEdge.Value - releaseTrail.Value) * .5 - caps;
-                velocity.Dx = dir * (releaseEdge.Velocity - releaseTrail.Velocity) * .5 - capsVelocity;
+                var eu = StrainScale();
+                if (dir * (releaseEdge.Value - releaseTrail.Value) < 2 * minimum * eu)
+                { releaseTrail.Value = releaseEdge.Value - dir * 2 * minimum * eu; releaseTrail.Velocity = releaseEdge.Velocity - dir * 2 * capsVelocity * eu; }
+                // The edges are rendered extents; the held travel strain scales the body by e^u.
+                var half = dir * (releaseEdge.Value - releaseTrail.Value) * .5;
+                pose.Dx = half / eu - caps;
+                velocity.Dx = (dir * (releaseEdge.Velocity - releaseTrail.Velocity) * .5 - (eu != 1 ? half * velocity.U : 0)) / eu - capsVelocity;
                 pose.Dy = 0; velocity.Dy = 0;
             }
             pose.Cx = releaseEdge.Value - dir * LandingHalfWidth(); velocity.Cx = releaseEdge.Velocity - dir * LandingHalfWidthVelocity();

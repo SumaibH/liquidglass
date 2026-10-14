@@ -107,7 +107,11 @@ public static class CalmSelectorMaterial
                 values["uFoldCorners"] = [fold["foldCorners"]]; values["uRimMirror"] = [fold["rimMirror"]];
                 values["uRimMirrorGain"] = [fold["rimMirrorGain"]];
                 values["uAberration"] = [fold["dispersion"]]; values["uInkSplit"] = [fold["dispersion"]];
-                if (folded > 0) values["uProfile"] = [fold["measuredProfile"]];
+                if (folded > 0)
+                {
+                    values["uProfile"] = [fold["measuredProfile"]];
+                    values["uFoldCorners"] = [fold["transitFoldCorners"]];
+                }
             }
         }
         var band = style.TapOpticsFold > 0 && f >= .5f ? Math.Clamp(h * style.TapOpticsFold, 0, 1) : folded;

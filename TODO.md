@@ -44,6 +44,12 @@ bounded completed work, **not completion of full iOS parity**. All open rows rem
 - [x] Pass 10: left-wall landings scored (rows 495–498); stretch-stiffened trailing edge (rms 4.1 px
   left, 5.5 right); reversal end lifts moving; release spring one frame in; neck median 17 ms;
   still release keeps its glass .18 s (stationary hold darkens on time again).
+- [x] Pass 12: held selected ink on iOS's position (pivot and reach fixed; 203 vs 204 px); grey
+  held outline (`heldEdgeTone`, glow off); moving lens widens and flattens (`heldTravelStrain`,
+  427 x 144 vs iOS 458 x 145); tap fold along the runs (.75); frame-loop wake lag fixed (throws on
+  time); neutral scene page. Landings 5.7 / 5.1 px rms. Evidence: `review/atlas/reference-replay-2026-10-13`.
+- [ ] Pass 12 residuals: held bottom edge bright (100 vs 83); no halo outside a held lens; moving
+  lens 12 % small, capsule rather than elliptical ends.
 - [ ] Owner visual acceptance of the navigation selector.
 
 ## P0 — current visible failures

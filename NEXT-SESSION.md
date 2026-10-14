@@ -54,7 +54,13 @@ recordings through the real renderer and comparing **continuous sequences**, not
    frames narrow up to 11.2 px less; iOS's cap petals carry stronger rainbow fringes; neck median
    17 ms late, 34.8 s 133 ms (bar and lens disagree on that lift). 28.66 s landing is an input
    artefact (source frame gap). Left landings: `.local/sxs/wallscorel.py` (rows 495–498).
-3. Ports draw no selected ink (content pass); hosts own labels and ink.
+3. Pass 12 (14 Oct, branch `claude/parity-2`): the owner's six differences after pass 11 — held
+   ink pivot/reach, grey outline (`heldEdgeTone`, `heldGlow` 0), moving-lens strain
+   (`heldTravelStrain` .5 @ 10/s, held reference speed 8, squeeze .52; old Calm kept as
+   `CalmWallLanding`), transit fold .75 along the runs, frame-loop wake clock (throws were 1.5
+   frames late), placeholder scene page. Renders `.local/sxs/p12d-v1`/`p12d-v2`, baseline
+   `main-v1`/`main-v2` (from a temporary 8cb49ec worktree, `.local/sxs/rrm.sh`); owner videos `.local/comparisons/2026-10-14-pass12/`.
+   Residuals in the review record's "Remaining differences".
 4. CI: Atlas UI tests now take ~2.6 min locally (density 0.75, reduced motion, no per-move waits;
    they took 14 min on CI before). Hosted runner speed varies ~2x (36 min on 31bd210 with
    unchanged classes 1.9x slower), so the build job limit is 55 min.

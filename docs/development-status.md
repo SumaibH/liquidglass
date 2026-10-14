@@ -64,7 +64,11 @@ the bar's end as iOS's does, the moving lens's caps draw content out radially (a
 halved the rim mirror was fixed), and the search button's neck gives way to an arriving lens. A tenth
 pass scored the left-wall landings too (rms 4.1 px); an eleventh made the bar relax while its lens is
 dragged, as iOS's does, which brought the search-button neck to a median 0 ms of iOS's (67 before),
-and the ports now draw the selected ink inside the selector. The Calm selector's motion, gestures and material are ported to the
+and the ports now draw the selected ink inside the selector. A twelfth pass fixed the held lens's
+selected ink (scaled about the wrong point, 17 px off) and a frame-loop wake that left throws from a
+still hold 1.5 frames behind the finger, made the moving lens widen and flatten as iOS's does
+(458 x 145 px at its fastest reversal, ours 427 x 144), gave the held lens a thin grey outline
+instead of a white ring, and let a tapped selector bend icons along its top and bottom edges. The Calm selector's motion, gestures and material are ported to the
 CanvasKit and .NET packages, checked against the Kotlin controller and material factory. On Android, the
 selector and Atlas Studio were verified on an API 37 emulator through the AGSL path
 ([emulator record](https://github.com/shayann07/liquidglass/blob/main/review/atlas/android-emulator-2026-10-14/README.md));

@@ -61,6 +61,24 @@ This file records user-visible development changes. Published artifacts are iden
 - CanvasKit and .NET selectors use the Compose Calm bar and selector material itself
   (`calmSelectorMaterial`, `drawCalmBar`, `through`), checked value by value against the Kotlin
   factory; the resting inset reads 33 over a dark page (12 with the earlier approximation).
+- Pass 12 (14 October), dark Calm against both recordings:
+  - Fixed: the selected ink inside a held lens was scaled about the wrong point (the node's origin
+    instead of the bar's centre), so it sat about 17 px left and 10 px up of where the bar's own
+    press puts it. It now lands on iOS's position (203 px against 204 at 1.8 s and 5.75 s).
+    The selected ink also no longer follows the bar's reach toward the finger.
+  - Fixed: after a still hold, the pose frame loop woke behind the frame it presents, so a throw
+    from rest ran about 1.5 frames behind the finger throughout. A woken loop now presents its
+    frame's own time, catching up from the waking input's timestamp (only when the two clocks are
+    0-50 ms apart; travel-only specs).
+  - The held lens's outline is a ~65-level grey line over any ground (`GlassStyle.heldEdgeTone`)
+    with its inward glow off (`heldGlow` 0, was 2), instead of a bright white ring.
+  - A held lens travelling fast widens and flattens at constant area (`GlassPoseSpec.heldTravelStrain`
+    .5 at 10/s; held reference speed 8, squeeze .52): 427 x 144 px at the 19.0 s reversal against
+    iOS's 458 x 145 (375 x 182 before). Wall-landing scores move from 5.3 / 4.3 to 5.7 / 5.1 px rms.
+    The previous Calm is kept as `GlassPoseSpec.CalmWallLanding`.
+  - A tapped selector's fold also runs, at a quarter strength, along its straight top and bottom
+    (`foldAtCorners` .75 in transit), bending icons and labels at those edges as iOS's does.
+  - Comparison scene: neutral placeholder page with iOS-like call-log typography and glyphs.
 
 ### Added
 
@@ -75,6 +93,10 @@ This file records user-visible development changes. Published artifacts are iden
   `releaseTrailingStiffening`, `releaseWallGive`, `releaseStillHoldSeconds` and the
   `CalmCriticalLanding` preset; all off by default.
 - `GlassInteraction.dragPressShare`: the share of a press that remains while it drags something; 1 by default.
+- `GlassStyle.heldEdgeTone` (`uHeldEdgeTone`): the held lens's outermost pixels as a grey line of
+  this level; 0 (default) keeps the additive rim.
+- `GlassPoseSpec.heldTravelStrain` / `heldTravelStrainOmega` and the `CalmWallLanding` preset; the
+  strain is off by default. CanvasKit and .NET selector specs carry the same fields.
 - `GlassTabBarAccessory(yieldsToLens = true)`: a formed pose selector takes the neck's place; off by default.
 - CanvasKit `calmSelectorMaterial`, `calmBarMaterial`, `painter.drawCalmBar`; .NET
   `CalmSelectorMaterial`, `GlassPainter.DrawCalmBar`; `drawSelector` / `DrawSelector` take transit,

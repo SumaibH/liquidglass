@@ -1018,8 +1018,11 @@ fun GlassTabBar(
                                     scaleX = barScale
                                     scaleY = barScale
                                 }
-                                .glassMaterialForeground(barDrawing,
-                                    Offset(nodeLeftPx.toFloat(), nodeTopPx.toFloat())),
+                                // In the bar-sized child's own frame (the layout above measures
+                                // everything after it at the bar's size), so the press pivots on
+                                // the bar centre: passing the node origin moved the held ink about
+                                // 17 px left and 10 up of the bar's own icons (video2, 1.8 s).
+                                .glassMaterialForeground(barDrawing),
                         ) {
                             ItemRow(
                                 count = itemCount,
@@ -1420,7 +1423,10 @@ data class GlassTabBarStyle(
             // Inside the lens the page shows through crisply: text +27 to +37 over the interior
             // (p95/p99 at 1.7 s) from 133-level page text, about 0.28 of the raw page; V3's .01
             // left it as the bar's frost.
-            lens = v3.lens.copy(specular = 0.26f, heldGlow = 2f, heldGlowReach = 6.dp, rawShare = 0.28f),
+            // The outline is a ~65-level line over any ground (video2 held/moving lens, 14 October):
+            // drawn as such (heldEdgeTone) with the additive lobe lowered, so it is no white ring.
+            lens = v3.lens.copy(specular = 0.08f, heldGlow = 0f, heldGlowReach = 6.dp, rawShare = 0.28f,
+                heldEdgeTone = 65f / 255f),
             // Measured over the black page of the owner's primary references (docs/1.MP4,
             // docs/2.MP4, recorded brightness space, 2026-10-13): bar 45 at rest and 53 held,
             // resting selector 24-30 (about .58 of the bar). V3's 32/44 and "0.5 x bar - 10"
@@ -1853,7 +1859,7 @@ internal fun glassSelectorMaterial(style: GlassTabBarStyle, formation: Float, tr
     val material = lerpGlassStyle(style.pill, style.lens, opticalLift).copy(tint = pigment.tint, tintLift = pigment.tintLift)
     // A moving, unheld selector folds its band (see [glassSelectorFold]) instead of the held map.
     return if (glassSelectorFold(style, formation, transitAppearance) > 0f)
-        material.copy(profile = GlassProfile.Measured, foldAtCorners = 1f, rimMirror = GlassSelectorRimMirror, rimMirrorGain = GlassSelectorRimGain, dispersion = GlassSelectorRimDispersion, inkDispersion = GlassSelectorRimDispersion)
+        material.copy(profile = GlassProfile.Measured, foldAtCorners = GlassSelectorTransitFoldCorners, rimMirror = GlassSelectorRimMirror, rimMirrorGain = GlassSelectorRimGain, dispersion = GlassSelectorRimDispersion, inkDispersion = GlassSelectorRimDispersion)
     // A held lens keeps the measured held map when still and blends toward the same rim mirror
     // at its caps as it travels ([glassSelectorFormation] carries the travel amount).
     else if (style.tapOpticsFold > 0f && formation >= 0.5f) material.copy(foldAtCorners = 1f, rimMirror = GlassSelectorRimMirror, rimMirrorGain = GlassSelectorRimGain, dispersion = GlassSelectorRimDispersion, inkDispersion = GlassSelectorRimDispersion)
@@ -1865,6 +1871,12 @@ internal const val GlassSelectorRimMirror = 1.0f
 /** Radial draw of the moving selector's mirrored caps (authored, 2026-10-14 second pass). */
 internal const val GlassSelectorRimGain = 0.4f
 internal const val GlassSelectorRimDispersion = 0.05f
+/** How far the unheld transit fold is confined to the caps (1) rather than running along the
+ * whole rim (0). iOS's tapped lens also folds a little along its straight runs, the Keypad dots
+ * stretching up its top rim and the label bending along its bottom one as it lands (video1,
+ * 0.95-1.03 s). Authored against that frame sequence (2026-10-14 pass 12): .5 folded the label
+ * away and drew the dots into bars, .85 left the runs nearly clean. */
+internal const val GlassSelectorTransitFoldCorners = 0.75f
 
 /** `lensFormation` for the selector: the transit fold while unheld, the held lens's travel
  * (rim-mirror blend at its caps) while held. */

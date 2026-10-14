@@ -30,6 +30,12 @@ internal data class GlassMaterialDrawing(
     val pressY: Float = 1f,
     val centre: Offset = Offset.Zero,
     val footprint: ImageBitmap? = null,
+    /** The transform the material's content follows: the press and pull without the reach toward
+     * the finger ([GlassInteraction.pressReach]), which shapes the outline only. On iOS the held
+     * bar's icons follow its plain press scale while its edge reaches for the finger (video2,
+     * held at Calls: selected ink at 204 px, the 1.05 scale's position, 2026-10-14). */
+    val contentPull: GlassPullDeformation = pull,
+    val contentPressX: Float = pressX,
 )
 
 @Stable
@@ -73,6 +79,6 @@ internal fun Modifier.glassMaterialForeground(
     state: GlassMaterialDrawingState?, origin: Offset = Offset.Zero,
 ): Modifier = if (state == null) this else drawWithContent {
     val frame = state.drawing
-    withGlassMaterialPull(frame.pull, frame.pressX, frame.pressY,
+    withGlassMaterialPull(frame.contentPull, frame.contentPressX, frame.pressY,
         pivot = frame.centre - origin) { this@drawWithContent.drawContent() }
 }

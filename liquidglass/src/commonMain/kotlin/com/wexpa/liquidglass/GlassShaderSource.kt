@@ -61,6 +61,7 @@ uniform float   uHeldGlow;     // share of the held lens inward rim glow that is
 uniform float   uFoldCorners;  // 0 folds every edge, 1 only corner arcs (GlassStyle.foldAtCorners)
 uniform float   uRimMirror;    // reflective rim band fraction for the measured family; 0 the fold (GlassStyle.rimMirror)
 uniform float   uRimMirrorGain; // mirrored depth per unit of band; 0 or 1 the plain mirror (GlassStyle.rimMirrorGain)
+uniform float   uHeldEdgeTone; // grey of the held lens's outermost pixels, drawn as a line; 0 off (GlassStyle.heldEdgeTone)
 uniform float   uHeldGlowReach; // px the held glow reaches inward; 0 uses the bevel (GlassStyle.heldGlowReach)
 uniform float   uHeldEdgeRecovery; // layer-pixel recovery length; 0 preserves the narrow side contour
 uniform float   uRestMap;      // resting-corner source map: 0 legacy, 1 the measured table (GlassRestMap)
@@ -747,6 +748,12 @@ half4 main(float2 coord) {
     // On the held lens the step belongs to the sides only; the lit line owns the top and bottom.
     rimDark *= mix(1.0, 1.0 - abs(facing), heldAmt);
     col -= half3(half(rimDark * uEdgeShadow * mat));
+    // The held lens's outline as a line of a fixed grey (GlassStyle.heldEdgeTone): it reads dark
+    // over the bar and light over a black page, as the reference's does, never a white ring.
+    if (uHeldEdgeTone > 0.0 && heldAmt > 0.0) {
+        float line = smoothstep(2.4, 0.6, depth) * heldAmt * mat;
+        col = mix(col, half3(half(uHeldEdgeTone)), half(0.85 * line));
+    }
 
     // Illumination from within, under the fingertip. A sixth of a stop at the peak: measured
     // against a device, where anything near 0.2 reads as a camera flash rather than as glass

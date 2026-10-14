@@ -67,7 +67,9 @@ object PhoneGeometry {
         base.copy(height = barHeight, contentPadding = itemInset, pillWidth = pillWidth)
 }
 
-private val Names = listOf("Alex Morgan", "Jordan Lee", "Sam Rivera", "Taylor Kim", "Riley Chen", "Casey Park")
+// Neutral placeholders. The row behind the bar has a name and subtitle of the reference's length,
+// so the glass bends glyph runs of the same extent; no private content is reproduced.
+private val Names = listOf("Alex Morgan", "Jordan Lee", "Avery Westbrook", "Taylor Kim", "Riley Chen", "Casey Park")
 
 /**
  * A phone-sized navigation scene matching the geometry of the owner's iOS references: a
@@ -138,17 +140,19 @@ private fun CallList(palette: PhonePalette, contacts: Boolean, scroll: Float) {
                     BasicText(Names[i].split(" ").joinToString("") { it.take(1) },
                         style = TextStyle(color = palette.primary, fontSize = 17.sp, fontWeight = FontWeight.Bold))
                 }
-                Spacer(Modifier.width(14.dp))
+                // Measured in video2 (2026-10-14): names start 70 pt from the left, 17 pt semibold;
+                // subtitles and dates 16 pt; a 40 pt dark call button with a handset.
+                Spacer(Modifier.width(9.dp))
                 Column(Modifier.weight(1f)) {
-                    BasicText(Names[i], style = TextStyle(color = palette.primary, fontSize = 15.sp, fontWeight = FontWeight.SemiBold))
-                    if (!contacts) BasicText(if (i % 2 == 0) "↗ Audio" else "↙ Audio",
-                        style = TextStyle(color = palette.secondary, fontSize = 14.sp))
+                    BasicText(Names[i], style = TextStyle(color = palette.primary, fontSize = 17.sp, fontWeight = FontWeight.SemiBold))
+                    if (!contacts) BasicText(if (i % 2 == 0) "↗ Network Audio" else "↙ Network Audio",
+                        style = TextStyle(color = palette.secondary, fontSize = 16.sp))
                 }
                 if (!contacts) {
-                    BasicText("Yesterday", style = TextStyle(color = palette.secondary, fontSize = 14.sp))
+                    BasicText("Yesterday", style = TextStyle(color = palette.secondary, fontSize = 16.sp))
                     Spacer(Modifier.width(10.dp))
                     Box(Modifier.size(40.dp).background(palette.button, CircleShape), contentAlignment = Alignment.Center) {
-                        Canvas(Modifier.size(16.dp)) { drawCircle(palette.accent, size.minDimension / 3f) }
+                        Canvas(Modifier.size(18.dp)) { handsetGlyph(palette.accent) }
                     }
                 }
             }
@@ -176,20 +180,29 @@ private fun DrawScope.clockGlyph(color: Color) {
     drawCircle(color, r)
     val c = center
     drawLine(Color.Black.copy(alpha = .55f), c, Offset(c.x, c.y - r * .55f), r * .16f, StrokeCap.Round)
-    drawLine(Color.Black.copy(alpha = .55f), c, Offset(c.x + r * .4f, c.y), r * .16f, StrokeCap.Round)
+    // iOS's Calls clock reads ten to nine-ish: one hand up, one to the left (video2).
+    drawLine(Color.Black.copy(alpha = .55f), c, Offset(c.x - r * .4f, c.y), r * .16f, StrokeCap.Round)
 }
 
 private fun DrawScope.personGlyph(color: Color) {
     val r = size.minDimension / 2
     drawCircle(color, r)
-    drawCircle(Color.Black.copy(alpha = .55f), r * .3f, Offset(center.x, center.y - r * .2f))
-    drawArc(Color.Black.copy(alpha = .55f), 200f, 140f, false,
-        Offset(center.x - r * .6f, center.y + r * .25f), Size(r * 1.2f, r * 1.1f), style = Stroke(r * .22f))
+    // A filled head and a filled shoulder cut by the circle, as iOS's person.crop.circle.fill.
+    drawCircle(Color.Black.copy(alpha = .55f), r * .3f, Offset(center.x, center.y - r * .22f))
+    drawArc(Color.Black.copy(alpha = .55f), 200f, 140f, true,
+        Offset(center.x - r * .62f, center.y + r * .22f), Size(r * 1.24f, r * 1.0f))
 }
 
 private fun DrawScope.keypadGlyph(color: Color) {
     val step = size.minDimension / 3
     for (row in 0..2) for (col in 0..2) drawCircle(color, step * .42f, Offset(step * (col + .5f), step * (row + .5f)))
+}
+
+private fun DrawScope.handsetGlyph(color: Color) {
+    // A telephone handset: two ear/mouth pieces joined by a curved grip, drawn as a thick arc.
+    val w = size.minDimension
+    drawArc(color, 110f, 140f, false, Offset(w * .08f, w * .08f), Size(w * .84f, w * .84f),
+        style = Stroke(w * .2f, cap = StrokeCap.Round))
 }
 
 private fun DrawScope.searchGlyph(color: Color) {

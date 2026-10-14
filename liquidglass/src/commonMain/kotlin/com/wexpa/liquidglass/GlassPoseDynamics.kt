@@ -115,6 +115,18 @@ internal data class GlassPoseSpec(
 
     /** Trace-free strain gain from *speed*. Zero: the recording's pills stretch at constant height. */
     val stretchGain: Float = 0f,
+    /**
+     * Opt-in: the strain a **held** lens builds while it travels, at full speed (`sv`) and
+     * formation: the body widens by `e^u` along the bar and flattens by `e^-u` across it at
+     * constant area, rather than lengthening its spine. It builds at [heldTravelStrainOmega],
+     * so a sustained drag strains and a short flick releases nearly unstrained, and it relaxes
+     * on the shape spring once the finger lifts. Zero (default) keeps every existing path. Calm
+     * uses .5: video2's travelling lens at the 19.0 s reversal is 458 x 145 px from a held
+     * 340 x 215 (2026-10-14 pass 12).
+     */
+    val heldTravelStrain: Float = 0f,
+    /** Critical build-up rate of [heldTravelStrain], per second. Authored 10/s (pass 12). */
+    val heldTravelStrainOmega: Float = 10f,
     val maxStrain: Float = 0.42f,
     /**
      * The stretch of a held body pulled **off** the bar, per dp of its centre's displacement from
@@ -405,7 +417,7 @@ internal data class GlassPoseSpec(
          * the test throw; 12 and 14/s gave 4.0 / 7.3);
          * 2026-10-14 pass in review/atlas/reference-replay-2026-10-13. */
         val CalmCriticalLanding = CalmFreeLanding.copy(releaseTrailingEdge = true, releaseRecoveryOmega = 13f)
-        /** Current Calm: [CalmCriticalLanding] whose trailing edge travels on to the wall
+        /** The 14 Oct 2026 wall-landing Calm, retained for comparison: [CalmCriticalLanding] whose trailing edge travels on to the wall
          * underdamped (9/s, damping .3) and keeps a tenth of its speed once its leading edge meets the end, then
          * recovers on the 13/s critical spring. Authored against nine right-wall landings of
          * video2 (trailing edge on a clear row, 2026-10-14 pass, finger leading the ink by 33 ms):
@@ -413,9 +425,19 @@ internal data class GlassPoseSpec(
          * passes its rest by 33 px against iOS's 41 (was 12). Its
          * formed lens presses up to .35 bar heights past the end ([releaseWallGive]), as iOS's clear
          * lens does, which also covers the bar/search fusion neck while the lens is there. */
-        val Calm = CalmCriticalLanding.copy(releaseTrailingInOmega = 9f, releaseTrailingInZeta = .3f,
+        val CalmWallLanding = CalmCriticalLanding.copy(releaseTrailingInOmega = 9f, releaseTrailingInZeta = .3f,
             releaseTrailingCarry = .1f, releaseWallGive = .35f, releaseTrailingStiffening = .5f,
             releaseStillHoldSeconds = .18f)
+        /** Current Calm: [CalmWallLanding] whose held lens widens and flattens as it travels, as
+         * video2's does. At the 19.0 s reversal (finger about 15 slots/s) iOS's travelling lens is
+         * 458 x 145 px on a 192 px bar (0.755 of its height) where this one was 375 x 182: a held
+         * travel strain of .5 built at 10/s ([heldTravelStrain]), held reference speed 8 slots/s
+         * (was 12) and squeeze .52 (was .47) give 427 x 144 (port probe, bar 186). Authored
+         * against video2 18.85-19.05 s; the wall-landing scores move from 5.3 / 4.3 to 5.7 / 5.1 px
+         * rms right / left, the first two landing width series from 3.1 / 6.7 to 3.1 / 6.1
+         * (2026-10-14 pass 12). Taps are unchanged. */
+        val Calm = CalmWallLanding.copy(heldTravelStrain = .5f, heldTravelStrainOmega = 10f,
+            heldReferenceSpeed = 8f, squeeze = .52f)
     }
 }
 
@@ -490,6 +512,8 @@ internal class GlassPoseController(
      * Optics only: drives the rim mirror of a moving held lens, never geometry or ownership. */
     val heldTravel: Float get() = travel.value.coerceIn(0f, 1f)
     private val tapArea = GlassSpring()
+    /** The held travel that drives [GlassPoseSpec.heldTravelStrain], filtered at its own rate. */
+    private val strainDrive = GlassSpring()
     private var tapAreaActive = false
     private var tapDistance = 0f
     private var releaseImpactActive = false
@@ -544,6 +568,9 @@ internal class GlassPoseController(
     private var lastPointerX: Float = 0f
     private var lastPointerY: Float = 0f
     private var lastPointerTime: Double = 0.0
+    /** The newest pointer event's own timestamp, seconds, in the host's pointer clock. */
+    internal val lastPointerSeconds: Double get() = lastPointerTime
+    internal val hasPointerClock: Boolean get() = hasPointerTime
     private var hasPointerTime: Boolean = false
     private var pointerClockOrigin: Double = 0.0
     private var pointerSimulationOrigin: Float = 0f
@@ -1105,7 +1132,13 @@ internal class GlassPoseController(
             pullU = pullStrain * cos(2f * psi)
             pullV = pullStrain * sin(2f * psi)
         }
-        equilibrium.u = gain * (nvx * nvx - 0.5f * speed2) / denom + pullU
+        if (spec.heldTravelStrain > 0f) {
+            // Sustained held travel builds the strain; a short flick releases before it has.
+            strainDrive.target = if (mode == GlassPoseMode.Held && motionEnabled) sv * formation else 0f
+            strainDrive.step(dt, spec.heldTravelStrainOmega, 1f)
+            if (abs(strainDrive.value) < .0001f && abs(strainDrive.velocity) < .002f && strainDrive.target == 0f) strainDrive.snapTo(0f)
+        }
+        equilibrium.u = gain * (nvx * nvx - 0.5f * speed2) / denom + pullU + spec.heldTravelStrain * strainDrive.value
         equilibrium.v = gain * (nvx * nvy) / denom + pullV
 
         val heldPressure = poseHeldPressure(spec.heldHeightRatio, bar.height, reference.height)
@@ -1381,12 +1414,16 @@ internal class GlassPoseController(
                 val caps = reference.r * exp(pose.p) + max(pose.acc, 0f)
                 val capsVelocity = reference.r * exp(pose.p) * velocity.p + if (pose.acc > 0f) velocity.acc else 0f
                 val minimum = caps + .002f
-                if (endpointDirection * (releaseEdge.value - releaseTrail.value) < 2f * minimum) {
-                    releaseTrail.value = releaseEdge.value - endpointDirection * 2f * minimum
-                    releaseTrail.velocity = releaseEdge.velocity - endpointDirection * 2f * capsVelocity
+                val eu = strainScale()
+                if (endpointDirection * (releaseEdge.value - releaseTrail.value) < 2f * minimum * eu) {
+                    releaseTrail.value = releaseEdge.value - endpointDirection * 2f * minimum * eu
+                    releaseTrail.velocity = releaseEdge.velocity - endpointDirection * 2f * capsVelocity * eu
                 }
-                pose.dx = endpointDirection * (releaseEdge.value - releaseTrail.value) * .5f - caps
-                velocity.dx = endpointDirection * (releaseEdge.velocity - releaseTrail.velocity) * .5f - capsVelocity
+                // The edges are rendered extents; the held travel strain scales the body by e^u.
+                val half = endpointDirection * (releaseEdge.value - releaseTrail.value) * .5f
+                pose.dx = half / eu - caps
+                velocity.dx = (endpointDirection * (releaseEdge.velocity - releaseTrail.velocity) * .5f -
+                    (if (eu != 1f) half * velocity.u else 0f)) / eu - capsVelocity
                 pose.dy = 0f; velocity.dy = 0f
             }
             pose.cx = releaseEdge.value - endpointDirection * landingHalfWidth()
@@ -1509,11 +1546,18 @@ internal class GlassPoseController(
 
     private val shapeVel = FloatArray(2)
 
-    private fun landingHalfWidth(): Float = reference.r * exp(pose.p) +
-        pose.dx + max(pose.acc, 0f)
+    /** The rendered body's extra width from [GlassPoseSpec.heldTravelStrain]; exactly 1 without it. */
+    private fun strainScale(): Float = if (spec.heldTravelStrain > 0f) exp(pose.u) else 1f
 
-    private fun landingHalfWidthVelocity(): Float = reference.r * exp(pose.p) * velocity.p +
-        velocity.dx + if (pose.acc > 0f) velocity.acc else 0f
+    private fun landingHalfWidth(): Float = (reference.r * exp(pose.p) +
+        pose.dx + max(pose.acc, 0f)) * strainScale()
+
+    private fun landingHalfWidthVelocity(): Float {
+        val eu = strainScale()
+        val base = reference.r * exp(pose.p) + pose.dx + max(pose.acc, 0f)
+        return (reference.r * exp(pose.p) * velocity.p + velocity.dx + (if (pose.acc > 0f) velocity.acc else 0f)) * eu +
+            if (eu != 1f) base * eu * velocity.u else 0f
+    }
 
     private fun updateShapeVelocity() {
         val h = 1f / 4800f
@@ -1905,7 +1949,8 @@ internal class GlassPoseController(
      */
     val isIdle: Boolean
         get() = mode != GlassPoseMode.PressPending && !tapAreaActive &&
-            transitAppearance < .0001f && heldTravel < .0001f && quietSteps >= QUIET_STEPS && !holdingStill
+            transitAppearance < .0001f && heldTravel < .0001f && quietSteps >= QUIET_STEPS && !holdingStill &&
+            strainDrive.value == 0f
 
     /** A still release keeping its glass ([GlassPoseSpec.releaseStillHoldSeconds]): nothing moves
      * yet, but the formation still has to fall, so the frame loop must not sleep. */

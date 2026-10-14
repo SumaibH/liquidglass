@@ -18,7 +18,7 @@ const DEFAULT_SPEC = Object.freeze({
   tapPressureOmega: 0, pressureFallOmega: 14, formRiseOmega: 60, heldFormRiseOmega: 0,
   formOmega: 18, formZeta: 1, holdThresholdSeconds: .12, referenceSpeed: 11.5,
   heldReferenceSpeed: 20, velocityTau: .035, referenceAcceleration: 26, elongationSlots: .5,
-  acrossElongation: 0, stretchGain: 0, maxStrain: .42, pullStrainPerDp: .0038,
+  acrossElongation: 0, stretchGain: 0, heldTravelStrain: 0, heldTravelStrainOmega: 10, maxStrain: .42, pullStrainPerDp: .0038,
   pullPressurePerDp: -.0007, pullOnsetDp: 12, pullMaxStrain: .12, pullFollow: .2,
   pullFollowCapRatio: .1, endTravelCapRatio: .08, pullTiltSeconds: .08, heldHeightRatio: 1.2,
   squeeze: .4, taperFromAcceleration: 0, taperFromVelocity: 0, maxTaper: 0,
@@ -43,14 +43,14 @@ export const CALM_SELECTOR_SPEC = Object.freeze({
   centreOmega: 24, spineOmega: 30, spineZeta: .78, tapSpineOmega: 26, tapSpineZeta: .45,
   tapElongationSlots: .36, tapReferenceSpeed: 10, spineReleaseOmega: 22, pressureOmega: 22,
   pressureFallOmega: 14, formRiseOmega: 30, tapPressureOmega: 45, heldHeightRatio: 1.2,
-  heldReferenceSpeed: 12, elongationSlots: .28, squeeze: .47, pullStrainPerDp: 0,
+  heldReferenceSpeed: 8, elongationSlots: .28, squeeze: .52, pullStrainPerDp: 0,
   pullPressurePerDp: 0, pullFollow: 0, endTravelCapRatio: .025, maxAccommodationSlots: .15,
   travelOnly: true, releaseTravel: true, tapRecoilArea: true, heldTravelPressureOmega: 60,
   tapSpineLimitSlots: .45, tapAreaGain: .51, tapShortTripRate: .75, tapAppearanceArea: .44,
   tapAppearanceSpine: .13, tapAppearanceFallOmega: 45, releaseFormationSpeed: 3,
   graspOmega: 120, heldFormRiseOmega: 50, releaseTrailingEdge: true, releaseRecoveryOmega: 13,
   releaseTrailingInOmega: 9, releaseTrailingInZeta: .3, releaseTrailingCarry: .1, releaseWallGive: .35,
-  releaseTrailingStiffening: .5, releaseStillHoldSeconds: .18,
+  releaseTrailingStiffening: .5, releaseStillHoldSeconds: .18, heldTravelStrain: .5, heldTravelStrainOmega: 10,
 });
 
 const MODE = Object.freeze({Rest: 'rest', TapTransit: 'tap', PressPending: 'pending', Held: 'held', Released: 'released'});
@@ -264,6 +264,7 @@ export class CalmSelectorController {
     this.frame = new Frame(); this.reference = new Reference(1, 1); this.bar = null;
     this.mode = MODE.Rest; this.motionEnabled = true; this.started = false;
     this.form = new Spring(); this.transit = new Spring(); this.travel = new Spring(); this.tapArea = new Spring();
+    this.strainDrive = new Spring();
     this.tapAreaActive = false; this.tapDistance = 0; this.releaseImpactActive = false;
     this.releaseEdge = new Spring(); this.releaseTrail = new Spring(); this.releaseEdgeActive = false; this.trailImpact = false;
     this.releasedAt = 0; this.releasedStill = false;
@@ -294,7 +295,7 @@ export class CalmSelectorController {
   get centreVelocityX() { return this.velocity.cx; }
   get isIdle() {
     return this.mode !== MODE.PressPending && !this.tapAreaActive && this.transitAppearance < 1e-4 &&
-      this.heldTravel < 1e-4 && this.quietSteps >= QUIET_STEPS &&
+      this.heldTravel < 1e-4 && this.quietSteps >= QUIET_STEPS && this.strainDrive.value === 0 &&
       // A still release keeping its glass: nothing moves yet, but the formation still has to fall.
       !(this.mode === MODE.Released && this.releasedFromHold && this.releasedStill && this.form.value > .01 &&
         this.now - this.releasedAt < this.spec.releaseStillHoldSeconds + .05);
@@ -464,9 +465,13 @@ export class CalmSelectorController {
   anchoredCentre(x) {
     return anchoredTravel(x, centreOf(this.bar, 0), centreOf(this.bar, this.bar.count - 1), this.spec.endTravelCapRatio * this.bar.height);
   }
-  landingHalfWidth() { return this.reference.r * Math.exp(this.pose.p) + this.pose.dx + Math.max(this.pose.acc, 0); }
+  // The held travel strain (heldTravelStrain) widens the rendered body by e^u; zero leaves it 1.
+  strainScale() { return this.spec.heldTravelStrain > 0 ? Math.exp(this.pose.u) : 1; }
+  landingHalfWidth() { return (this.reference.r * Math.exp(this.pose.p) + this.pose.dx + Math.max(this.pose.acc, 0)) * this.strainScale(); }
   landingHalfWidthVelocity() {
-    return this.reference.r * Math.exp(this.pose.p) * this.velocity.p + this.velocity.dx + (this.pose.acc > 0 ? this.velocity.acc : 0);
+    const eu = this.strainScale(), base = this.reference.r * Math.exp(this.pose.p) + this.pose.dx + Math.max(this.pose.acc, 0);
+    return (this.reference.r * Math.exp(this.pose.p) * this.velocity.p + this.velocity.dx + (this.pose.acc > 0 ? this.velocity.acc : 0)) * eu +
+      (eu !== 1 ? base * eu * this.velocity.u : 0);
   }
 
   substep(dt) {
@@ -559,7 +564,13 @@ export class CalmSelectorController {
       const psi = Math.atan2(pullY, tiltX) - Math.atan2(this.frame.sinTheta, this.frame.cosTheta);
       pullU = pullStrain * Math.cos(2 * psi); pullV = pullStrain * Math.sin(2 * psi);
     }
-    eq.u = gain * (nvx * nvx - .5 * speed2) / denom + pullU;
+    if (s.heldTravelStrain > 0) {
+      // Sustained held travel builds the strain; a short flick releases before it has.
+      this.strainDrive.target = this.mode === MODE.Held && this.motionEnabled ? sv * formation : 0;
+      this.strainDrive.step(dt, s.heldTravelStrainOmega, 1);
+      if (Math.abs(this.strainDrive.value) < 1e-4 && Math.abs(this.strainDrive.velocity) < .002 && this.strainDrive.target === 0) this.strainDrive.snapTo(0);
+    }
+    eq.u = gain * (nvx * nvx - .5 * speed2) / denom + pullU + s.heldTravelStrain * this.strainDrive.value;
     eq.v = gain * (nvx * nvy) / denom + pullV;
     const held = heldPressure(s.heldHeightRatio, bar.height, ref.height);
     const squeeze = this.mode === MODE.Held ? s.squeeze * sv : 0;
@@ -703,13 +714,15 @@ export class CalmSelectorController {
         } else this.releaseTrail.step(dt, s.releaseRecoveryOmega, s.releaseRecoveryZeta);
         const caps = ref.r * Math.exp(pose.p) + Math.max(pose.acc, 0);
         const capsVelocity = ref.r * Math.exp(pose.p) * vel.p + (pose.acc > 0 ? vel.acc : 0);
-        const minimum = caps + .002;
-        if (dir * (this.releaseEdge.value - this.releaseTrail.value) < 2 * minimum) {
-          this.releaseTrail.value = this.releaseEdge.value - dir * 2 * minimum;
-          this.releaseTrail.velocity = this.releaseEdge.velocity - dir * 2 * capsVelocity;
+        const minimum = caps + .002, eu = this.strainScale();
+        if (dir * (this.releaseEdge.value - this.releaseTrail.value) < 2 * minimum * eu) {
+          this.releaseTrail.value = this.releaseEdge.value - dir * 2 * minimum * eu;
+          this.releaseTrail.velocity = this.releaseEdge.velocity - dir * 2 * capsVelocity * eu;
         }
-        pose.dx = dir * (this.releaseEdge.value - this.releaseTrail.value) * .5 - caps;
-        vel.dx = dir * (this.releaseEdge.velocity - this.releaseTrail.velocity) * .5 - capsVelocity;
+        // The edges are rendered extents; the strain scales the body by e^u along the bar.
+        const half = dir * (this.releaseEdge.value - this.releaseTrail.value) * .5;
+        pose.dx = half / eu - caps;
+        vel.dx = (dir * (this.releaseEdge.velocity - this.releaseTrail.velocity) * .5 - (eu !== 1 ? half * vel.u : 0)) / eu - capsVelocity;
         pose.dy = 0; vel.dy = 0;
       }
       pose.cx = this.releaseEdge.value - dir * this.landingHalfWidth();

@@ -58,7 +58,12 @@ stay flat against the end. Since 14 October a fast landing presses into the bar'
 pill narrows briefly from behind before widening back, as in iOS: after the lift its trailing edge
 travels on for about 0.3 s and passes its rest by about 40 px, scored on every wall landing of the
 reference recording, and a still-formed lens presses past the bar's end. The moving lens draws the
-content under its caps out toward the rim (`GlassStyle.rimMirrorGain`). See the
+content under its caps out toward the rim (`GlassStyle.rimMirrorGain`). Since pass 12 a held
+lens dragged quickly widens and flattens at constant area (`GlassPoseSpec.heldTravelStrain`),
+reaching about 0.75 of the bar's height at iOS's fast reversals; a quick flick releases before the
+strain has built, so wall landings keep their shape. Its outline is a thin grey line
+(`GlassStyle.heldEdgeTone`) rather than a white ring, and a tapped selector's fold also bends what
+lies under its straight top and bottom. See the
 [continuous comparison](https://github.com/shayann07/liquidglass/blob/main/review/atlas/reference-replay-2026-10-13/README.md).
 
 ## A neighbouring control: the search button
