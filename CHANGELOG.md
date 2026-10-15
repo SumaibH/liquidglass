@@ -99,6 +99,31 @@ This file records user-visible development changes. Published artifacts are iden
   - The inferred finger for the first second of video 2's held reversals moves rightward 20 ms
     earlier (`tools/reference-replay/reversal-script.txt`): the lens reaches each icon a mean
     2 ms after iOS's going right (10 ms before) and 3 ms going left, over the whole episode.
+- Pass 15 (15 October): the owner's recordings are HDR10 and had been compared decoded as if
+  they were sRGB, which raised every dark level. Every comparison is now made in display colours
+  over five recordings (docs/1, docs/2 and three more Phone-bar recordings in the private
+  dataset), and the dark Calm material is re-fitted there:
+  - Bar at rest 32/255 lift (was 45), resting pill black .55 (was .42), held lift 10/255 (was 8):
+    the bar reads 33 against iOS's 33 over 44 rest moments (was 46), the pill 15 against 10 on a
+    black page and 15 against 15 on a Calls page (26-27 before).
+  - The previous calibration stays available as `GlassTabBarStyle.CalmRecordedSpace()`; the
+    Atlas replay's `calm-recorded` variant renders it with the old scene palette.
+  - Review fixes: the lift's own position reaches the pose controller before the release (Compose,
+    CanvasKit, .NET); a lens thrown from a hold keeps its travelling cap mirror while it flies; the
+    pose body's cap weight is full from where the cap begins; the fold's colour split stays at the
+    caps and a held lens's fringe order follows its rim mirror; both ports keep the move that crosses
+    the touch slop; CanvasKit no longer blurs an unused copy of the page each frame; the press reach
+    no longer squares its drag share.
+- Pass 16 (15 October):
+  - `GlassTabBarStyle.touchLift` (new, off by default; on in dark `Calm()`): the bar's held lift
+    also applies for any touch, a tap included, as iOS's whole bar lifts on every touch. A tap's
+    travelling pill now reads 47-51 against iOS's 48-53 (38-43 without it); the bar at the tab a
+    tap never visits follows iOS's from 50 ms on.
+  - Calm held lift 13/255 (was 10), held lens tint 0x2B at .55 (was 0x3A) and resting pill black
+    .58 (was .55): held bar 46 against iOS's 45-47, held lens over a black page 48 against 48 (was
+    55), resting pill 14 on both pages (iOS 10 and 15).
+  - Sample `PhoneScene`: tab labels Medium with 0.7 sp spacing and a wider keypad grid, measured
+    against iOS (labels 11% wider at the same height; grid 72 x 69 px).
 
 ### Added
 

@@ -1077,7 +1077,11 @@ internal class GlassPoseController(
             else -> spec.referenceSpeed
         }, 1e-3f)
         val sv = speed2 / (vRef * vRef + speed2)
-        travel.target = if (mode == GlassPoseMode.Held && motionEnabled) sv else 0f
+        // A lens thrown from a hold is still travelling: its caps keep the rim mirror until it
+        // slows, as iOS's flying lens does, instead of losing it at the lift (2026-10-15 review).
+        // heldTravel drives only the selector's optics and the idle test.
+        travel.target = if (motionEnabled && (mode == GlassPoseMode.Held ||
+                (mode == GlassPoseMode.Released && releasedFromHold))) sv else 0f
         travel.step(dt, 60f, 1f)
         if (abs(travel.value) < .0001f && abs(travel.velocity) < .002f && travel.target == 0f) travel.snapTo(0f)
         // A press that is not yet a hold already forms a little: the rim of n2045.

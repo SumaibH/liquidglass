@@ -67,6 +67,14 @@ lies under its straight top and bottom. Since pass 13 a held lens sits where the
 its tab, as iOS's does, and its inward glow shows only over darker ground (`GlassStyle.heldGlowFloor`). See the
 [continuous comparison](https://github.com/shayann07/liquidglass/blob/main/review/atlas/reference-replay-2026-10-13/README.md).
 
+Since 15 October dark Calm's levels are fitted in display colours: the reference recordings are
+HDR10, and earlier passes had compared them decoded as if they were sRGB, which raised every dark
+level by 10-13 grey levels. The bar rests at 33 and the pill at 10-15 as iOS's do; the earlier
+calibration is `GlassTabBarStyle.CalmRecordedSpace()`. The whole bar lifts for any touch, a tap
+included (`GlassTabBarStyle.touchLift`, off by default and on in dark `Calm()`): iOS's bar lights
+on every touch, and a tap's travelling pill, which shows the bar through it, needs that lift to read
+as bright as iOS's.
+
 ## A neighbouring control: the search button
 
 iOS 26 places a separate round search button beside the Phone tab bar. It is its own glass, but

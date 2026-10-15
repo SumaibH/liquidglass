@@ -551,6 +551,54 @@ left. Landings and the 19.0 s shape are unchanged (wall scores 6.0 / 5.4 px).
 
 **For owner review (local only).** `.local/comparisons/2026-10-15-pass14/v1.mp4` and `v2.mp4`.
 
+### Passes 15 and 16: display colours and five recordings (15 October)
+
+**Every level above this section was read in the wrong colours.** The owner's recordings are HDR10
+(HEVC Main 10, PQ, BT.2020); passes 1-14 decoded them as if they were sRGB, which lifts every dark
+level (the bar read 45 where a display shows 33). The geometry and timing results do not depend on
+it and were re-scored on the correct decode (research/README.md II.4, within a level on the
+calibration target's grey ramp): wall landings 5.95 / 4.40 px rms, reversal icon crossings +2 /
++6 ms, whole-video ink timing +4 ms, neck median 0 ms. Levels were re-fitted in display colours over
+five Phone-bar recordings (docs/1, docs/2 and three in the private dataset), with the page palette
+of our comparison scene re-measured the same way.
+
+**Presses read from the bar.** The scripts for the three new recordings came first from the
+selected ink, which misses a hold on the middle tab and splits a long held drag into separate
+throws (one recording's last 12 s is a single touch dragged across all three tabs). iOS's whole bar
+lifts while touched, within two frames of the press, so the touches are read from it (rows above
+the icons; the lift from the bar's far end returning, the rule the docs/2 script used for holds).
+On docs/2 this reproduces the checked script's downs (21 of 23 within 20 ms) and lifts (16 of 23,
+median 0); on docs/1 its taps (32 of 37). A tap and a flick cannot be told apart by timing, so the
+owner's answer decides which short touches are taps.
+
+**Levels, ours against iOS (display grey levels, median over the moments):**
+
+| | iOS | pass 14 | pass 15 | pass 16 |
+| :-- | --: | --: | --: | --: |
+| Bar at rest (docs/1, docs/2) | 32-33 | 45-46 | 32-33 | 32-33 |
+| Resting pill, docs/1 (black) / docs/2 (Calls page) | 10 / 15 | 26 / 27 | 15 / 15 | 14 / 14 |
+| Bar held (docs/2, LOLL8185) | 45-47 | 54 (docs/2) | 42-43 | 46 |
+| Held lens over a black page (LOLL8185) | 48 | not scored | 55 | 48 |
+| Tap's travelling pill at +100 ms (docs/1, 37 taps) | 53 | 54 | 42 | 51 |
+
+Pass 15 is the display-colour re-fit (bar lift 32/255, pill black .55, held lift 10/255); pass 16
+adds the touch lift, held lift 13/255, lens tint 0x2B and pill black .58.
+
+The tap pill needed a behaviour, not a level: iOS's bar lifts for any touch, a tap included (+13
+at the tab a tap never visits, back by 350 ms), and the travelling pill shows the bar through it.
+`GlassTabBarStyle.touchLift` (off by default, on in dark `Calm()`) lifts ours the same way; its
+pass-15 plateau was 38-43. The earlier calibration is `GlassTabBarStyle.CalmRecordedSpace()`.
+
+**The comparison scene.** Measured on the decoded recordings, iOS's tab labels are 11% wider than
+ours at the same height and lighter, and its keypad grid 10% wider: labels are now Medium with
+0.7 sp spacing and the grid 72 x 69 px like iOS's. The held lens's ink magnification already matched
+(x1.17 against x1.18): the earlier "magnified less" was the glyph size.
+
+**Generalisation.** Holds and drags on the two new recordings that have them track iOS's selected
+ink at 11.0 and 9.2 px rms (best shift -8 ms), against the docs/2 baseline's 31.5 px with throws.
+
+![Rest, held and tapped selector, pass 14 and pass 16 (our renders only, desktop Direct3D replay, deterministic 60 fps, inferred input; pass 14 predates the label and keypad glyph change)](pass16-levels.png)
+
 ### Re-reading the landing evidence
 
 The removed impact model was calibrated to one frame, video 2 at 2.5567 s ("frame082": width
@@ -561,9 +609,14 @@ the impact. The narrowing itself is real and is listed below.
 
 ## Remaining differences
 
-- Pass 14: a tapped selector's pill strip reads 58 against iOS's 67 at 1.0 s; the held lens's plain
-  interior 62 against 64 and its text p95 80 against 84. Pass 13's avatar and reversal residuals
-  are resolved above.
+- Pass 16 (display colours): a held lens over page content: iOS's brightens what it shows (docs/2:
+  88 against our 61 over the avatar); no tint or raw page share reproduces it (fits by replay). The
+  resting pill reads 3 above iOS's on black pages. iOS's bar lights 33 ms before a tap's ink
+  leaves; our inferred tap presses 16 ms before (finger timing).
+- iOS's search button presses (x1.27, 32 to 94), stretches toward the finger (up to 1.8:1) and
+  springs back (zeta ~0.5); ours is passive. Measured on the private dataset, not yet modelled.
+- Pass 14's level residuals (58 against 67, 62 against 64) were read on the sRGB-decoded recordings
+  and are superseded above.
 - Wall landings (pass 13): rms 6.0 px right / 5.4 px left (pass 10: 5.5 / 4.1); the 9.9 s landing passes its rest by
   36.5 px against 41; the left width series' first frames narrow up to 11.2 px less; the 28.66 s
   landing is an input artefact (source frame gap).
@@ -572,7 +625,6 @@ the impact. The narrowing itself is real and is listed below.
 - The rebuilt reversal input and the full video 2 script (`v2-script.txt`) are inferred; the
   per-episode lag numbers above are relative to that inference.
 - Hold onset is aligned by construction (pass 7); it cannot be tested from these recordings.
-- Selected ink inside a moving lens is magnified less than iOS.
 - Page text under the bar is slightly more smeared than iOS.
 - Calibration conflict, unresolved: an earlier early-transit patch (video1 frame 6) reads the
   inset at 0.38 of the bar, against 0.57–0.69 at rest. Its test keeps the previous pill law.
@@ -582,6 +634,14 @@ the impact. The narrowing itself is real and is listed below.
 
 ## Verification
 
+- Passes 15-16: full library suite 388 cases, 361 passed, 27 optional showcase skips, 0 failures
+  (`:liquidglass:jvmTest --rerun`, 26 m); `:desktop:desktopTest` and `:sample:assembleDebug`
+  passed; CanvasKit port 35/35 (a new touch-lift check), .NET checks 13/13, with the Kotlin
+  fixtures and shaders re-exported. The Calm held-bar reference now checks `Calm()` against iOS's
+  45 in display colours and `CalmRecordedSpace()` against the earlier 53; a new test pins
+  `touchLift` to dark `Calm()` only. All five recordings replayed on the desktop Direct3D path
+  (`.local/sxs/levels.py`, `trackscore.py`, `tapprofile.py`); owner videos with the references in
+  display colours: `.local/comparisons/2026-10-15-pass16/` (local only).
 - Pass 12: full library suite 387 cases, 360 passed, 27 optional showcase skips, 0 failures
   (`:liquidglass:jvmTest --rerun`, 12 m 23 s). CanvasKit port 34/34, .NET checks 13/13, with the
   Kotlin fixtures (`selector-calm.json`, `selector-material.json`) and shaders re-exported. Two

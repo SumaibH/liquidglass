@@ -16,6 +16,8 @@ export interface CalmSelectorPose {
 export interface CalmSelectorExtents { left: number; right: number; top: number; bottom: number; width: number; height: number }
 export interface CalmSelectorState {
   centreX: number; centreY: number; extents: CalmSelectorExtents; formation: number;
+  /** The bar's touch lift amount, 0 to 1 (GlassTabBarStyle.touchLift). */
+  touch: number;
   transitAppearance: number; heldTravel: number; held: boolean; protrusion: number; pose: CalmSelectorPose;
 }
 export type CalmSelectorSpec = Readonly<Record<string, number | boolean>>;

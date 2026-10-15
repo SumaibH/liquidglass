@@ -67,11 +67,20 @@ private fun replay(args: Array<String>) {
         "v3" -> GlassTabBarStyle.V3().copy(height = PhoneGeometry.barHeight)
         // The 2026-10-13 scene geometry (slot-wide pill, 6 dp ends), for before/after renders.
         "calm-slot" -> GlassTabBarStyle.Calm().copy(height = PhoneGeometry.barHeight)
+        // The material calibrated on the wrongly decoded recordings, with their dimmed palette.
+        "calm-recorded" -> PhoneGeometry.style(GlassTabBarStyle.CalmRecordedSpace())
         else -> PhoneGeometry.style(GlassTabBarStyle.Calm())
+    }.let { base ->
+        // "calm+lens=<alpha>,<grey 0-255>[,<rawShare>]": a lens tint candidate, for fitting by replay.
+        val lens = variant.substringAfter("+lens=", "").split(',').mapNotNull { it.toFloatOrNull() }
+        if (lens.size < 2) base else base.copy(lens = base.lens.copy(
+            tint = androidx.compose.ui.graphics.Color(lens[1] / 255f, lens[1] / 255f, lens[1] / 255f, lens[0]),
+            rawShare = lens.getOrElse(2) { base.lens.rawShare },
+        ))
     }
-    // "natural" renders ordinary display colours for presentation; comparisons use the
-    // recordings' own brightness space.
-    val palette = if (variant.endsWith("natural")) PhonePalette.Natural else PhonePalette.Recorded
+    // Display colours measured on the correctly decoded recordings; "-recorded" reproduces the
+    // passes that compared against the recordings decoded as sRGB (2026-10-15).
+    val palette = if (variant.endsWith("recorded")) PhonePalette.Recorded else PhonePalette.Natural
 
     lateinit var scene: ImageComposeScene
     lateinit var composeScene: ComposeScene

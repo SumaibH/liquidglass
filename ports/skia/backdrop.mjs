@@ -18,6 +18,17 @@ export function createBackdropSampler(kit) {
     reset,
     /** Returned shader belongs to the caller; one blurred source is cached for this canvas. */
     shader(canvas,image,originX,originY,sigma) {
+      // No wide kernel: the shader never reads the strip (uWideStrip 0), so build no blurred
+      // tone buffer at all; the sharp page stands in for both children.
+      if(!(sigma>=1)) {
+        const sharp=image.makeShaderOptions(kit.TileMode.Clamp,kit.TileMode.Clamp,
+          kit.FilterMode.Linear,kit.MipmapMode.None);
+        try {
+          const threshold=Math.max(1,image.height()-originY+1);
+          const strip=threshold+Math.max(0,originY/4)+1;
+          return {strip,shader:effect.makeShaderWithChildren(new Float32Array([originX,originY,strip,threshold]),[sharp,sharp])};
+        } finally {sharp.delete();}
+      }
       // getCanvas() returns fresh JS wrappers around the same native canvas. Comparing only
       // wrapper identity would silently rebuild this blur on every animation frame.
       const sameCanvas=cache&&(cache.canvas===canvas||cache.canvas.isAliasOf?.(canvas));

@@ -530,7 +530,8 @@ public sealed class CalmSelectorController
         var longTapDrive = 1 - Math.Exp(-distanceExcess * distanceExcess / (distanceExcess + .5));
         var vRef = Math.Max(Mode == CalmSelectorMode.Held ? s.HeldReferenceSpeed : tapMotion ? s.TapReferenceSpeed : s.ReferenceSpeed, 1e-3);
         var sv = speed2 / (vRef * vRef + speed2);
-        travel.Target = Mode == CalmSelectorMode.Held && MotionEnabled ? sv : 0;
+        travel.Target = MotionEnabled && (Mode == CalmSelectorMode.Held ||
+            (Mode == CalmSelectorMode.Released && releasedFromHold)) ? sv : 0;
         travel.Step(dt, 60, 1);
         if (Math.Abs(travel.Value) < 1e-4 && Math.Abs(travel.Velocity) < .002 && travel.Target == 0) travel.SnapTo(0);
         var pressResponse = heldNow ? 1 : pointerDownActive && pressEligible ? s.PressFormation : 0;
@@ -1010,6 +1011,9 @@ public sealed class CalmNavigation
     private readonly double touchSlop, flingVelocity;
     private Gesture? gesture;
     private double clock;
+    // GlassTabBarStyle.touchLift: the bar lifts for any touch. As Compose's animateFloatAsState with
+    // tween(50) on the press and tween(260) on the lift: FastOutSlowIn, restarting from where it is.
+    private (double From, double To, double T0, double Duration) touch = (0, 0, 0, 1);
     private sealed class Gesture
     {
         public double X0, Y0, T0; public int LastIndex; public bool Dragging; public readonly List<(double T, double X)> Samples = [];
@@ -1037,6 +1041,7 @@ public sealed class CalmNavigation
         var index = Nearest(x);
         gesture = new Gesture { X0 = x, Y0 = y, T0 = seconds, LastIndex = index };
         gesture.Samples.Add((seconds, x));
+        if (Controller.MotionEnabled) TouchTo(1, seconds);
         Controller.PointerDown(x, y, seconds, Controller.MotionEnabled); Controller.Retarget(index);
     }
 
@@ -1049,7 +1054,9 @@ public sealed class CalmNavigation
             if (!Controller.MotionEnabled) return;
             double dx = x - g.X0, dy = y - g.Y0; var held = seconds - g.T0 >= Controller.Spec.HoldThresholdSeconds;
             var crossed = held ? Math.Sqrt(dx * dx + dy * dy) > touchSlop : Math.Abs(dx) > touchSlop;
-            if (crossed) { g.Dragging = true; Controller.BeginDrag(g.X0, g.Y0); }
+            // As GlassTabBar: the drag begins from the down, then the crossing move is applied again,
+            // or BeginDrag would leave the pointer at the down until the next move.
+            if (crossed) { g.Dragging = true; Controller.BeginDrag(g.X0, g.Y0); Controller.PointerMove(x, y, seconds); }
             else if (!held && Math.Abs(dy) > touchSlop) { Cancel(seconds); return; }
             else return;
         }
@@ -1060,20 +1067,48 @@ public sealed class CalmNavigation
     {
         if (gesture is not { } g) return;
         gesture = null;
+        TouchTo(0, seconds);
         if (!g.Dragging) { Controller.Cancel(g.LastIndex); Selected = g.LastIndex; onSelect(g.LastIndex); return; }
         g.Samples.Add((seconds, x));
+        // The lift is the gesture's last sample, as in GlassTabBar.
+        Controller.PointerMove(x, y, seconds);
         var v = Velocity(g.Samples);
         var projected = Math.Clamp(v > flingVelocity ? g.LastIndex + 1 : v < -flingVelocity ? g.LastIndex - 1 : g.LastIndex, 0, bar.Count - 1);
         Controller.PointerUp(projected); Selected = projected; onSelect(projected);
     }
 
-    public void Cancel(double seconds) { gesture = null; Controller.Cancel(Selected); }
+    public void Cancel(double seconds) { gesture = null; TouchTo(0, seconds); Controller.Cancel(Selected); }
+
+    /// <summary>The bar's touch lift amount at the last frame, 0 to 1 (GlassTabBarStyle.touchLift).</summary>
+    public double Touch => TouchAt(clock);
+
+    private double TouchAt(double seconds)
+    {
+        var u = Math.Clamp((seconds - touch.T0) / touch.Duration, 0, 1);
+        return touch.From + (touch.To - touch.From) * FastOutSlowIn(u);
+    }
+
+    private void TouchTo(double to, double seconds)
+    {
+        if (touch.To == to) return;
+        touch = (TouchAt(seconds), to, seconds, to > 0 ? .05 : .26);
+    }
+
+    /// <summary>Compose's FastOutSlowInEasing, cubic-bezier(0.4, 0, 0.2, 1).</summary>
+    private static double FastOutSlowIn(double u)
+    {
+        if (u <= 0 || u >= 1) return Math.Clamp(u, 0, 1);
+        static double Bez(double t, double p1, double p2) => 3 * (1 - t) * (1 - t) * t * p1 + 3 * (1 - t) * t * t * p2 + t * t * t;
+        double lo = 0, hi = 1, t = u;
+        for (var i = 0; i < 30; i++) { t = (lo + hi) / 2; if (Bez(t, .4, .2) < u) lo = t; else hi = t; }
+        return Bez(t, 0, 1);
+    }
 
     /// <summary>Advance to the display time. True while another frame is needed.</summary>
     public bool Frame(double seconds)
     {
         clock = Controller.ResumedFrameTime(Math.Max(clock, seconds)); Controller.AdvanceFrameTo(clock);
-        return !Controller.IsIdle || gesture is not null;
+        return !Controller.IsIdle || gesture is not null || clock < touch.T0 + touch.Duration;
     }
 
     /// <summary>Least-squares slope over the last 100 ms, as a stand-in for Compose's VelocityTracker.</summary>

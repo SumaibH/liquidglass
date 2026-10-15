@@ -154,8 +154,11 @@ trace was produced and no permission changes were made. See [performance](perfor
 
 1. Remaining differences from the continuous comparison: the 9.9 s landing peaks 6 px short of
    iOS's and the left width series' first frames narrow up to 11.2 px less, both of the size of one
-   frame of the inferred lift; the neck parts 100 ms late at one release (34.8 s). Owner visual
-   acceptance is pending.
+   frame of the inferred lift; the neck parts 100 ms late at one release (34.8 s). In display
+   colours (since 15 October, five recordings) the rest, held and tap levels are within 0-4 grey
+   levels except a held lens over page content, which iOS brightens (docs/2: 88 against our 61), and
+   iOS's search button, which presses, stretches toward the finger and springs back while ours is
+   passive. Owner visual acceptance is pending.
 2. Verify all directional extreme envelopes and Android composition on appropriate hardware.
 3. Resolve ordinary interaction/display performance and final wide/narrow Atlas visual acceptance.
 4. Additional host integrations, with executable evidence.

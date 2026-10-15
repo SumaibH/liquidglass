@@ -140,7 +140,7 @@ var nav = new CalmNavigation(bar, selected: 0, onSelect: index => Route(index));
 nav.Down(x, y, seconds); nav.Move(x, y, seconds); nav.Up(x, y, seconds);
 if (nav.Frame(seconds)) RequestRedraw();
 var c = nav.Controller; var options = new GlassSurfaceOptions(Dark: true, Density: 1);
-painter.DrawCalmBar(canvas, barRect, (float)c.Formation, options);
+painter.DrawCalmBar(canvas, barRect, (float)c.Formation, options, (float)nav.Touch);   // Touch: the bar's lift for any touch
 using var through = surface.Snapshot();   // the page with the bar's glass over it
 painter.DrawSelector(canvas, barRect, c.Render(), (float)c.Formation, options,
     (float)c.TransitAppearance, (float)c.HeldTravel, through);

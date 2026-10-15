@@ -96,9 +96,10 @@ export function createGlassPainter(kit, sources = glassShaderSources) {
 
     /**
      * Draw a Calm navigation bar's glass with the Compose Calm bar material (GlassTabBarStyle.Calm,
-     * its held lift following the selector's `formation`). Device px; `density` is px per dp.
+     * its held lift following the selector's `formation`, or for any touch the navigation's `touch`).
+     * Device px; `density` is px per dp.
      */
-    drawCalmBar(canvas,{x,y,width,height},{dark=true,density=1,formation=0,materialize=1,
+    drawCalmBar(canvas,{x,y,width,height},{dark=true,density=1,formation=0,touch=0,materialize=1,
       reducedTransparency=0,increasedContrast=0}={}) {
       checkAlive();
       if(!source)throw new Error('Call setSource before drawing glass');
@@ -106,7 +107,7 @@ export function createGlassPainter(kit, sources = glassShaderSources) {
         throw new RangeError('Calm bar requires finite geometry, positive dimensions and density');
       const pad=2,originX=x-pad,originY=y-pad;
       const uniforms=clearMaterialUniforms(effects,{width,height,pad,magnification:1});
-      assignMaterial(uniforms,calmMaterialUniforms(calmBarMaterial({dark,formation}),density));
+      assignMaterial(uniforms,calmMaterialUniforms(calmBarMaterial({dark,formation,touch}),density));
       Object.assign(uniforms,{
         uRadii:Array(4).fill(height/2),uRefractBand:.6*height/2,uFormation:0,
         uScale:sizeFactor(width,height,density),uMaterialize:materialize,uFrost:reducedTransparency,uContrast:increasedContrast,
@@ -160,7 +161,7 @@ export function createGlassPainter(kit, sources = glassShaderSources) {
             throw new TypeError('through must be a live image the size of the source');
           composed=composeThrough(canvas,through,values.rawShare);view=composed;
         }
-        const backdrop=sampler.shader(canvas,view,originX,originY,Math.max(uniforms.uWideKernel,1));
+        const backdrop=sampler.shader(canvas,view,originX,originY,uniforms.uWideKernel);
         uniforms.uWideStrip=uniforms.uWideKernel>=1?backdrop.strip:0;
         draw(canvas,uniforms,backdrop.shader,originX,originY);
       } finally {

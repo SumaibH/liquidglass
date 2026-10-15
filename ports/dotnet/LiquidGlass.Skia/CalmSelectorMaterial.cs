@@ -13,7 +13,7 @@ public sealed record CalmMaterial(IReadOnlyDictionary<string, float[]> Values, f
 public static class CalmSelectorMaterial
 {
     private sealed record Style(Dictionary<string, float[]> Pill, Dictionary<string, float[]> Lens, Dictionary<string, float[]> Bar,
-        float HeldLift, bool PillInkFollows, bool LensInkFollows, float TapOptics, float TapOpticsFold, float TapTintFade);
+        float HeldLift, bool TouchLift, bool PillInkFollows, bool LensInkFollows, float TapOptics, float TapOpticsFold, float TapTintFade);
 
     private static readonly HashSet<string> Snap = ["uProfile", "uRestMap", "uHeldInk"];
     private static readonly Lazy<(HashSet<string> Dp, Dictionary<string, float> Fold, Style Dark, Style Light)> Data = new(Load);
@@ -35,7 +35,7 @@ public static class CalmSelectorMaterial
         {
             var s = root.GetProperty("styles").GetProperty(name);
             return new(Map(s.GetProperty("pill")), Map(s.GetProperty("lens")), Map(s.GetProperty("bar")), s.GetProperty("heldLift").GetSingle(),
-                s.GetProperty("pillInkFollows").GetBoolean(), s.GetProperty("lensInkFollows").GetBoolean(),
+                s.GetProperty("touchLift").GetBoolean(), s.GetProperty("pillInkFollows").GetBoolean(), s.GetProperty("lensInkFollows").GetBoolean(),
                 s.GetProperty("tapOptics").GetSingle(), s.GetProperty("tapOpticsFold").GetSingle(), s.GetProperty("tapTintFade").GetSingle());
         }
         return (dp, fold, Read("dark"), Read("light"));
@@ -118,13 +118,16 @@ public static class CalmSelectorMaterial
         return new(values, Math.Clamp(band, 0, 1), values["rawShare"][0]);
     }
 
-    /// <summary>The Calm bar's material; its held lift follows the selector's formation.</summary>
-    public static CalmMaterial Bar(bool dark, double formation)
+    /// <summary>The Calm bar's material; its held lift follows the selector's formation, or, where the
+    /// style lifts for any touch (GlassTabBarStyle.touchLift), the larger of that and <paramref name="touch"/>
+    /// (<see cref="CalmNavigation.Touch"/>).</summary>
+    public static CalmMaterial Bar(bool dark, double formation, double touch = 0)
     {
         var (_, _, darkStyle, lightStyle) = Data.Value;
         var style = dark ? darkStyle : lightStyle;
         var values = style.Bar.ToDictionary(p => p.Key, p => (float[])p.Value.Clone());
-        values["uLift"] = [values["uLift"][0] + style.HeldLift * Math.Clamp((float)formation, 0, 1)];
+        var lift = style.TouchLift ? Math.Max(formation, touch) : formation;
+        values["uLift"] = [values["uLift"][0] + style.HeldLift * Math.Clamp((float)lift, 0, 1)];
         return new(values, 0, values["rawShare"][0]);
     }
 }

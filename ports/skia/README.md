@@ -117,7 +117,8 @@ The motion is a line-by-line port of the Compose pose controller (`selector.mjs`
 `CalmSelectorController`, `calmSelectorBar`, `createCalmNavigation`), checked frame by frame against
 trajectories the Kotlin controller exports (`fixtures/selector-calm.json`: taps, a held throw into
 the wall, held reversals, a stationary hold; 0.05 px). The navigation layer draws its bar in the
-Compose Calm bar material (`painter.drawCalmBar`) and the selector through the production shader's
+Compose Calm bar material (`painter.drawCalmBar`; it lifts for any touch as dark Calm's does, from
+the navigation state's `touch`) and the selector through the production shader's
 pose body in the Compose Calm selector material (`painter.drawSelector`, `calmSelectorMaterial`:
 the production pill, lens and bar styles exported by the Kotlin tests and blended by the same rules,
 checked against 96 Kotlin-computed uniform sets). Like Compose, the lens looks through the bar:

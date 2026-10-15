@@ -10,6 +10,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.DrawScope
@@ -25,14 +26,18 @@ import com.wexpa.liquidglass.*
 /**
  * Colours for [PhoneScene].
  *
- * [Recorded] matches the owner's iOS reference recordings pixel for pixel in their own,
- * dimmer, brightness space (white labels read about 133 there); the navigation material was
- * calibrated in that space, so side-by-side comparisons use it. [Natural] is the same scene in
- * ordinary display colours for demonstrations.
+ * [Natural] is the iOS Phone page in display colours, measured on the owner's recordings decoded
+ * correctly from HDR10 (PQ, BT.2020) to sRGB (research/README.md II.4; docs/2.MP4 at 0.2 s and
+ * IMG_6756 at 3 s, 2026-10-15): names white, detail text 145, dividers 42, call buttons 15, keypad
+ * keys 32, the avatar a vertical gradient. Comparisons use it.
+ *
+ * [Recorded] is the earlier palette that matched the recordings decoded as if they were sRGB
+ * (white about 130): a decode error, kept only to reproduce passes 1-14.
  */
 data class PhonePalette(
     val page: Color, val primary: Color, val secondary: Color, val divider: Color,
     val avatar: Color, val button: Color, val accent: Color, val ink: Color, val call: Color,
+    val avatarEnd: Color = avatar, val key: Color = button, val missed: Color = primary,
 ) {
     companion object {
         val Recorded = PhonePalette(
@@ -41,9 +46,10 @@ data class PhonePalette(
             accent = Color(0xFF5A6A8C), ink = Color(0xFF808080), call = Color(0xFF4F7A4F),
         )
         val Natural = PhonePalette(
-            page = Color.Black, primary = Color.White, secondary = Color(0xFF98989F),
-            divider = Color(0xFF38383A), avatar = Color(0xFF7D7A91), button = Color(0xFF2C2C2E),
-            accent = Color(0xFF0A84FF), ink = Color(0xFFEBEBF5), call = Color(0xFF30D158),
+            page = Color.Black, primary = Color.White, secondary = Color(0xFF919191),
+            divider = Color(0xFF2A2A2A), avatar = Color(0xFF514C61), button = Color(0xFF0F0F0F),
+            accent = Color(0xFF369CFE), ink = Color.White, call = Color(0xFF177F2F),
+            avatarEnd = Color(0xFF342C4A), key = Color(0xFF202020), missed = Color(0xFFF74E53),
         )
     }
 }
@@ -125,7 +131,10 @@ private fun PhoneTab(index: Int, color: Color) {
         Spacer(Modifier.height(3.dp))
         BasicText(
             listOf("Calls", "Contacts", "Keypad")[index],
-            style = TextStyle(color = color, fontSize = 10.sp, fontWeight = FontWeight.SemiBold),
+            // Measured on the decoded recordings (2026-10-15): iOS's labels are as tall as these
+            // but 11% wider (Contacts 137 px against 122, Calls 72 against 64, at 3 px/pt) and
+            // lighter; the spacing takes up the width, which the font alone does not.
+            style = TextStyle(color = color, fontSize = 10.sp, fontWeight = FontWeight.Medium, letterSpacing = 0.7.sp),
         )
     }
 }
@@ -136,7 +145,8 @@ private fun CallList(palette: PhonePalette, contacts: Boolean, scroll: Float) {
         repeat(Names.size) { i ->
             Row(Modifier.fillMaxWidth().height(75.dp).padding(horizontal = 16.dp),
                 verticalAlignment = Alignment.CenterVertically) {
-                Box(Modifier.size(45.dp).background(palette.avatar, CircleShape), contentAlignment = Alignment.Center) {
+                Box(Modifier.size(45.dp).background(Brush.verticalGradient(listOf(palette.avatar, palette.avatarEnd)), CircleShape),
+                    contentAlignment = Alignment.Center) {
                     BasicText(Names[i].split(" ").joinToString("") { it.take(1) },
                         style = TextStyle(color = palette.primary, fontSize = 17.sp, fontWeight = FontWeight.Bold))
                 }
@@ -144,7 +154,9 @@ private fun CallList(palette: PhonePalette, contacts: Boolean, scroll: Float) {
                 // subtitles and dates 16 pt; a 40 pt dark call button with a handset.
                 Spacer(Modifier.width(9.dp))
                 Column(Modifier.weight(1f)) {
-                    BasicText(Names[i], style = TextStyle(color = palette.primary, fontSize = 17.sp, fontWeight = FontWeight.SemiBold))
+                    // The second row is a missed call, red, as in the reference.
+                    BasicText(Names[i], style = TextStyle(color = if (i == 1 && !contacts) palette.missed else palette.primary,
+                        fontSize = 17.sp, fontWeight = FontWeight.SemiBold))
                     if (!contacts) BasicText(if (i % 2 == 0) "↗ Network Audio" else "↙ Network Audio",
                         style = TextStyle(color = palette.secondary, fontSize = 16.sp))
                 }
@@ -167,7 +179,7 @@ private fun Keypad(palette: PhonePalette) {
     // top, then the call button, centred, above the navigation bar.
     Box(Modifier.fillMaxSize()) {
         listOf(93.dp, 195.dp, 297.dp).forEach { x ->
-            Box(Modifier.offset(x - 39.dp, (-71).dp).size(78.dp).background(palette.button, CircleShape))
+            Box(Modifier.offset(x - 39.dp, (-71).dp).size(78.dp).background(palette.key, CircleShape))
         }
         Box(Modifier.offset(156.dp, 26.dp).size(78.dp).background(palette.call, CircleShape), contentAlignment = Alignment.Center) {
             Canvas(Modifier.size(28.dp)) { drawCircle(palette.ink, size.minDimension / 3f) }
@@ -194,8 +206,12 @@ private fun DrawScope.personGlyph(color: Color) {
 }
 
 private fun DrawScope.keypadGlyph(color: Color) {
+    // iOS's grid is 75 x 72 px against the 68 x 69 this drew at a 23 dp square (decoded
+    // recordings, 2026-10-15): wider spacing across than down, and slightly larger dots.
     val step = size.minDimension / 3
-    for (row in 0..2) for (col in 0..2) drawCircle(color, step * .42f, Offset(step * (col + .5f), step * (row + .5f)))
+    val r = step * .45f
+    for (row in 0..2) for (col in 0..2) drawCircle(color, r,
+        Offset(center.x + (col - 1) * step * 1.115f, center.y + (row - 1) * step * 1.05f))
 }
 
 private fun DrawScope.handsetGlyph(color: Color) {

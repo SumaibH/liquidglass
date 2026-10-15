@@ -67,10 +67,15 @@ export function calmSelectorMaterial({dark = true, formation = 0, transit = 0, h
   return {values, uFormation: clamp(uFormation, 0, 1)};
 }
 
-/** The Calm bar's material (its held lift follows the selector's formation), lengths in dp. */
-export function calmBarMaterial({dark = true, formation = 0} = {}) {
+/**
+ * The Calm bar's material, lengths in dp. Its held lift follows the selector's formation, or, where
+ * the style lifts for any touch (GlassTabBarStyle.touchLift), the larger of that and `touch`
+ * (the navigation's touch amount).
+ */
+export function calmBarMaterial({dark = true, formation = 0, touch = 0} = {}) {
   const style = DATA.styles[dark ? 'dark' : 'light'];
-  return {...style.bar, uLift: style.bar.uLift + style.heldLift * clamp(formation, 0, 1)};
+  const lift = style.touchLift ? Math.max(formation, touch) : formation;
+  return {...style.bar, uLift: style.bar.uLift + style.heldLift * clamp(lift, 0, 1)};
 }
 
 /** Uniform values in device px for a density. */

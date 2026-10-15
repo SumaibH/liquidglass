@@ -112,16 +112,17 @@ public sealed class GlassPainter : IDisposable
     }
 
     /// <summary>Draw a Calm navigation bar's glass in the Compose Calm bar material
-    /// (GlassTabBarStyle.Calm; its held lift follows the selector's <paramref name="formation"/>).
+    /// (GlassTabBarStyle.Calm; its held lift follows the selector's <paramref name="formation"/>, or for
+    /// any touch <paramref name="touch"/>, <see cref="CalmNavigation.Touch"/>).
     /// Device px; <c>options.Density</c> is px per dp, <c>options.TintAmount</c> is not used.</summary>
-    public void DrawCalmBar(SKCanvas canvas, SKRect bar, float formation = 0, GlassSurfaceOptions? options = null)
+    public void DrawCalmBar(SKCanvas canvas, SKRect bar, float formation = 0, GlassSurfaceOptions? options = null, float touch = 0)
     {
         Ready(canvas, bar);
         options ??= new(Dark: true);
         if (!float.IsFinite(formation) || !float.IsFinite(options.Density) || options.Density <= 0)
             throw new ArgumentOutOfRangeException(nameof(formation));
         var v = ClearUniforms(material, bar.Width, bar.Height, 2, 1);
-        Apply(v, CalmSelectorMaterial.Bar(options.Dark, formation), options);
+        Apply(v, CalmSelectorMaterial.Bar(options.Dark, formation, touch), options);
         Set(v, "uRadii", Enumerable.Repeat(bar.Height / 2, 4).ToArray()); Set(v, "uRefractBand", .6f * bar.Height / 2);
         Set(v, "uFormation", 0); Set(v, "uScale", Math.Clamp((Math.Min(bar.Width, bar.Height) / options.Density - 56) / 264, 0, 1));
         var origin = new SKPoint(bar.Left - 2, bar.Top - 2);

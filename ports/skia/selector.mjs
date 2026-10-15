@@ -529,7 +529,8 @@ export class CalmSelectorController {
     const longTapDrive = 1 - Math.exp(-distanceExcess * distanceExcess / (distanceExcess + .5));
     const vRef = Math.max(this.mode === MODE.Held ? s.heldReferenceSpeed : tapMotion ? s.tapReferenceSpeed : s.referenceSpeed, 1e-3);
     const sv = speed2 / (vRef * vRef + speed2);
-    this.travel.target = this.mode === MODE.Held && this.motionEnabled ? sv : 0;
+    this.travel.target = this.motionEnabled && (this.mode === MODE.Held ||
+      (this.mode === MODE.Released && this.releasedFromHold)) ? sv : 0;
     this.travel.step(dt, 60, 1);
     if (Math.abs(this.travel.value) < 1e-4 && Math.abs(this.travel.velocity) < .002 && this.travel.target === 0) this.travel.snapTo(0);
     const pressResponse = heldNow ? 1 : (this.pointerDownActive && this.pressEligible ? s.pressFormation : 0);
@@ -979,11 +980,31 @@ function sameBar(a, b) {
  * Coordinates are bar-local px, times monotonic seconds. Selection is reported, never owned:
  * `onSelect(index)` is called on a tap or committed drag; the host then calls `select`.
  */
+/** Compose's FastOutSlowInEasing, cubic-bezier(0.4, 0, 0.2, 1). */
+function fastOutSlowIn(u) {
+  if (u <= 0 || u >= 1) return clamp(u, 0, 1);
+  const bez = (t, p1, p2) => 3 * (1 - t) * (1 - t) * t * p1 + 3 * (1 - t) * t * t * p2 + t * t * t;
+  let lo = 0, hi = 1, t = u;
+  for (let i = 0; i < 30; i++) { t = (lo + hi) / 2; if (bez(t, .4, .2) < u) lo = t; else hi = t; }
+  return bez(t, 0, 1);
+}
+
 export function createCalmNavigation({bar, selected = 0, onSelect = () => {}, spec = CALM_SELECTOR_SPEC,
   touchSlop = 8 * bar.density, flingVelocity = 420 * bar.density, motion = true} = {}) {
   const controller = new CalmSelectorController(spec);
   controller.motionEnabled = motion; controller.attach(bar); controller.snapToRest(selected);
   let current = selected, gesture = null, clock = 0;
+  // GlassTabBarStyle.touchLift: the bar lifts for any touch. As Compose's animateFloatAsState with
+  // tween(50) on the press and tween(260) on the lift: FastOutSlowIn, restarting from where it is.
+  let touch = {from: 0, to: 0, t0: 0, duration: 1};
+  const touchAt = time => {
+    const u = clamp((time - touch.t0) / touch.duration, 0, 1);
+    return touch.from + (touch.to - touch.from) * fastOutSlowIn(u);
+  };
+  const touchTo = (to, time) => {
+    if (touch.to === to) return;
+    touch = {from: touchAt(time), to, t0: time, duration: to > 0 ? .05 : .26};
+  };
   const nearest = x => clamp(Math.floor((x - bar.inset) / bar.slotWidth), 0, bar.count - 1);
   const firstCentre = () => centreOf(bar, 0), lastCentre = () => centreOf(bar, bar.count - 1);
   function velocity(samples) {
@@ -1004,6 +1025,7 @@ export function createCalmNavigation({bar, selected = 0, onSelect = () => {}, sp
     down(x, y, time) {
       const index = nearest(x);
       gesture = {x0: x, y0: y, t0: time, lastIndex: index, dragging: false, samples: [{t: time, x}]};
+      if (controller.motionEnabled) touchTo(1, time);
       controller.pointerDown(x, y, time, controller.motionEnabled);
       controller.retarget(index);
     },
@@ -1016,7 +1038,9 @@ export function createCalmNavigation({bar, selected = 0, onSelect = () => {}, sp
         if (!controller.motionEnabled) return;
         const dx = x - g.x0, dy = y - g.y0, held = time - g.t0 >= controller.spec.holdThresholdSeconds;
         const crossed = held ? Math.hypot(dx, dy) > touchSlop : Math.abs(dx) > touchSlop;
-        if (crossed) { g.dragging = true; controller.beginDrag(g.x0, g.y0); }
+        // As GlassTabBar: the drag begins from the down, then the crossing move is applied again,
+        // or beginDrag would leave the pointer at the down until the next move.
+        if (crossed) { g.dragging = true; controller.beginDrag(g.x0, g.y0); controller.pointerMove(x, y, time); }
         else if (!held && Math.abs(dy) > touchSlop) { this.cancel(time); return; }
         else return;
       }
@@ -1025,27 +1049,30 @@ export function createCalmNavigation({bar, selected = 0, onSelect = () => {}, sp
     up(x, y, time) {
       if (!gesture) return;
       const g = gesture; gesture = null;
+      touchTo(0, time);
       if (!g.dragging) {
         // A tap: the tab under the finger. The host's onSelect owns the selection.
         controller.cancel(g.lastIndex); current = g.lastIndex; onSelect(g.lastIndex); return;
       }
       g.samples.push({t: time, x});
+      // The lift is the gesture's last sample, as in GlassTabBar.
+      controller.pointerMove(x, y, time);
       const v = velocity(g.samples);
       const projected = clamp(v > flingVelocity ? g.lastIndex + 1 : v < -flingVelocity ? g.lastIndex - 1 : g.lastIndex, 0, bar.count - 1);
       controller.pointerUp(projected); current = projected; onSelect(projected);
     },
     /** Another owner took the pointer: settle back to the host's selection, commit nothing. */
-    cancel(time) { gesture = null; controller.cancel(current); },
+    cancel(time) { gesture = null; touchTo(0, time ?? clock); controller.cancel(current); },
     /** Advance to the display time. Returns true while another frame is needed. */
     frame(time) {
       clock = controller.resumedFrameTime(Math.max(clock, time));
       controller.advanceFrameTo(clock);
-      return !controller.isIdle || !!gesture;
+      return !controller.isIdle || !!gesture || clock < touch.t0 + touch.duration;
     },
     state(originX = 0, originY = 0) {
       const e = controller.extents();
       return {centreX: controller.centreX, centreY: controller.centreY, extents: e,
-        formation: controller.formation, transitAppearance: controller.transitAppearance,
+        formation: controller.formation, transitAppearance: controller.transitAppearance, touch: touchAt(clock),
         heldTravel: controller.heldTravel, held: controller.isHeld, protrusion: controller.protrusion(),
         pose: controller.render(originX, originY)};
     },

@@ -5,6 +5,7 @@ import androidx.compose.animation.core.animate
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.snap
 import androidx.compose.animation.core.spring
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.selection.selectableGroup
 import androidx.compose.foundation.gestures.awaitEachGesture
@@ -349,6 +350,12 @@ fun GlassTabBar(
         // the protruding held lens: only an eligible press that outlives the hold threshold, or
         // a recognized drag, forms it.
         val lift = poseHandle?.formation ?: handle?.formation ?: v2Lift
+        // [GlassTabBarStyle.touchLift]: the bar's material lift for any touch, not only a hold.
+        val touchAmount by animateFloatAsState(
+            targetValue = if (gestureDown && style.touchLift && motionEnabled) 1f else 0f,
+            animationSpec = if (gestureDown) tween(50) else tween(260),
+            label = "glass_tab_bar_touch",
+        )
         val pillHeight: Dp = barHeightDp - style.pillInset * 2
         val lensHeight: Dp = barHeightDp + style.lensOverflow * 2
         val pillWidthDp: Dp = if (style.pillWidth.isSpecified) maxOf(style.pillWidth, slotWidthDp) else slotWidthDp
@@ -721,6 +728,11 @@ fun GlassTabBar(
                                 ?: return@awaitEachGesture   // cancelled: no selection, releaseToSelection below
                             committed = true
                             if (poseHandle != null) {
+                                // The lift is the gesture's last sample: integrate up to it and
+                                // install its position, or the travel between the last move and
+                                // the lift is lost to the release (2026-10-15 review).
+                                if (terminalUp) poseHandle.controller.pointerMove(
+                                    terminal!!.position.x, terminal.position.y, terminal.uptimeMillis / 1000.0)
                                 // Every pose coordinate and velocity is preserved; only the
                                 // equilibria move to the resting body, so translation and shape
                                 // recover together from the shape the body actually has.
@@ -808,7 +820,7 @@ fun GlassTabBar(
             }
             val margin = (style.heldScale - 1f).coerceAtLeast(0f)
             val barStyle = if (style.heldLift != 0f) {
-                style.bar.copy(tintLift = style.bar.tintLift + style.heldLift * lift)
+                style.bar.copy(tintLift = style.bar.tintLift + style.heldLift * max(lift, touchAmount))
             } else {
                 style.bar
             }
@@ -1369,6 +1381,13 @@ data class GlassTabBarStyle(
     val heldScale: Float = 1f,
     /** Additive lift of the bar's material while held, as a fraction of white: 16/255 on iOS 27. */
     val heldLift: Float = 0f,
+    /**
+     * Whether [heldLift] also lifts the bar for any touch, a tap included, rising within 50 ms of
+     * the press and falling over 260 ms after the lift. iOS's whole bar lifts on every touch:
+     * +13 grey levels at the tab a tap never visits, back to rest ~350 ms after the ink leaves
+     * (docs/1, 2026-10-15). False lifts only a formed (held) selector's bar, as before.
+     */
+    val touchLift: Boolean = false,
     /** How much the tab under the lens grows about its own centre while held: 1.18 on iOS 27. */
     val selectedScale: Float = 1f,
     /**
@@ -1425,7 +1444,33 @@ data class GlassTabBarStyle(
     companion object {
         /** Recommended navigation preset. Material responds gently; the selector deforms
          * along travel only. Existing V3/Measured presets remain available for comparison. */
-        fun Calm(dark: Boolean = true): GlassTabBarStyle = V3(
+        fun Calm(dark: Boolean = true): GlassTabBarStyle = CalmRecordedSpace(dark).let { recorded ->
+            if (!dark) recorded else recorded.copy(
+                // Re-fitted in display colours (2026-10-15): the recordings are HDR10 and had been
+                // decoded as if sRGB, which raised every dark level. Measured over five recordings
+                // decoded correctly (docs/1, docs/2, IMG_6756, JGEY2190, LOLL8185; 117 rest moments,
+                // .local/sxs/levels.py): iOS's bar at rest 33 (ours read 46 at lift 45/255), its
+                // resting pill 15 (ours 27 at .42 black), its held bar 43.5 (ours 53).
+                bar = recorded.bar.copy(tintLift = 32f / 255f),
+                // Pass 16 (all five recordings, catalogued from the touches the bar shows): iOS's held
+                // bar 45-47 (ours 42-43 at 10/255), its held lens on a black page only ~2 above its
+                // bar (ours +12: 55 against 48-49), its resting pill 10 on black pages and 15 on
+                // docs/2's Calls page (ours 14-15 and 15 at .55 black). The lens's grey falls from
+                // 0x3A to 0x2B; the pill's black rises to .58, between the two pages (30 Calls-page
+                // moments at 0, 14 black-page moments at +4).
+                heldLift = 13f / 255f,
+                touchLift = true,
+                pill = recorded.pill.copy(tint = Color.Black.copy(alpha = 0.58f)),
+                lens = recorded.lens.copy(tint = Color(0xFF2B2B2B).copy(alpha = 0.55f)),
+            )
+        }
+
+        /**
+         * [Calm] as calibrated before 15 October 2026, against the owner's recordings decoded as
+         * if they were sRGB (they are HDR10): every dark level about 10-13 grey levels too light
+         * on a real display. Kept to reproduce the earlier passes and their evidence.
+         */
+        fun CalmRecordedSpace(dark: Boolean = true): GlassTabBarStyle = V3(
             dark = dark, spec = GlassSelectorSpec(response = GlassResponse.Calm),
         ).let { v3 -> v3.copy(
             // The held lens's rim over black in video2 (x 190, 1.7 s): an outer edge line of 62,

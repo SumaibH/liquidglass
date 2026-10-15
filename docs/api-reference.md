@@ -186,7 +186,8 @@ data class GlassTabBarStyle(
     val flingVelocity: Dp = 420.dp,
     val gel: Float = 0.06f, val gelReference: Dp = 1200.dp, val gelSpring: AnimationSpec<Float>,
     val pillWidth: Dp = Dp.Unspecified,
-    val heldScale: Float = 1f, val heldLift: Float = 0f, val selectedScale: Float = 1f,
+    val heldScale: Float = 1f, val heldLift: Float = 0f, val touchLift: Boolean = false,
+    val selectedScale: Float = 1f,
     val lensFuse: Dp = 0.dp,
     val selector: GlassSelectorSpec? = null,
     val barInteraction: GlassInteraction? = null,
@@ -198,6 +199,10 @@ data class GlassTabBarStyle(
 
 `Dark` is the measured preset. `RestingInset` and `HeldLens` are the two materials the indicator
 morphs between, exposed so a host can start from them.
+`touchLift` applies `heldLift` for any touch, a tap included (rising within 50 ms of the press,
+falling over 260 ms after the lift), as iOS's bar lifts on every touch; off by default, on in dark
+`Calm()`. `CalmRecordedSpace()` is dark Calm as calibrated before 15 October, against recordings
+decoded as if they were sRGB.
 
 #### `selector` — the deforming body
 

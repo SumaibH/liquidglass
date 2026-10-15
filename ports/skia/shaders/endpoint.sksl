@@ -233,7 +233,9 @@ float poseCorner(float2 x, float4 uPoseAInv, float4 uPoseC, float4 uPoseD) {
     float zx = (scaleX == 1.0) ? zi.x : (zi.x / max(scaleX, 1e-6));
     float halfSpine = (scaleX == 1.0) ? spine : (spine / max(scaleX, 1e-6));
     float soft = max(0.25 * uPoseD.y, 1.0);
-    return clamp(smoothstep(halfSpine - soft, halfSpine + soft, abs(zx)), 0.0, 1.0);
+    // Full from where the cap begins, ramping in along the run, as cornerWeight and bodyCorner do;
+    // straddling the cap start left the cap's shoulders and a circular body's middle at half.
+    return clamp(smoothstep(halfSpine - soft, halfSpine, abs(zx)), 0.0, 1.0);
 }
 
 

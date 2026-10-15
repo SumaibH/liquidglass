@@ -61,6 +61,23 @@ test('navigation: a tap selects the tab under the finger and settles there', () 
   assert.ok(Math.abs(nav.state().centreX - nav.controller.bar.inset - 2.5 * nav.controller.bar.slotWidth) < .5);
 });
 
+test('navigation: any touch lifts the bar (touchLift), rising in 50 ms and gone 260 ms after the lift', () => {
+  const nav = createCalmNavigation({bar: bar()});
+  nav.frame(0); assert.equal(nav.state().touch, 0);
+  nav.down(700, 93, .1); nav.frame(.125);
+  const rising = nav.state().touch;
+  assert.ok(rising > 0 && rising < 1, `half-way through the rise: ${rising}`);
+  nav.frame(.15); assert.equal(nav.state().touch, 1);
+  nav.up(700, 93, .16); nav.frame(.29);
+  const falling = nav.state().touch;
+  assert.ok(falling > 0 && falling < 1, `half-way through the fall: ${falling}`);
+  nav.frame(.42); assert.equal(nav.state().touch, 0);
+  // A tap never forms the selector, so only the touch lifts the bar.
+  const dark = calmBarMaterial({dark: true, formation: 0, touch: 1}).uLift;
+  assert.ok(dark > calmBarMaterial({dark: true}).uLift + 12 / 255, 'dark Calm lifts for a touch');
+  assert.equal(calmBarMaterial({dark: false, touch: 1}).uLift, calmBarMaterial({dark: false}).uLift, 'light Calm does not');
+});
+
 test('navigation: a hold-and-drag commits where the finger ends, a fling carries one further', () => {
   const b = bar(), selected = [];
   const nav = createCalmNavigation({bar: b, onSelect: i => selected.push(i)});
@@ -98,7 +115,7 @@ test('reduced motion snaps to rest and never holds', () => {
 });
 
 // ---- material: the Compose Calm selector's own uniforms (GlassSelectorPortMaterialTest)
-import {calmSelectorMaterial} from './selector-material.mjs';
+import {calmSelectorMaterial, calmBarMaterial} from './selector-material.mjs';
 import {createGlassPainter} from './painter.mjs';
 import CanvasKitInit from 'canvaskit-wasm';
 

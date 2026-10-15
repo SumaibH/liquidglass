@@ -396,7 +396,9 @@ internal fun Modifier.liquidGlassCore(
     // Reach toward the finger ([GlassInteraction.pressReach]): signed extra width share, the far
     // side keeping its ordinary growth. Material drawing only; the touch is bounded to the panel.
     val reach = interaction?.takeIf { it.pull && it.pressReach > 0f && press.x > -1e4f && measured.width > 0f }
-        ?.let { it.pressReach * pressAmount * dragShare * ((press.x - measured.width / 2f) / (measured.width / 2f)).coerceIn(-1f, 1f) } ?: 0f
+        // pressAmount already settles to the drag share; multiplying by it again squared the share
+        // and stepped the reach up on the release frame, when `dragging` clears (2026-10-15 review).
+        ?.let { it.pressReach * pressAmount * ((press.x - measured.width / 2f) / (measured.width / 2f)).coerceIn(-1f, 1f) } ?: 0f
     val animatedPressX = 1f + (balloonX - 1f) * pressAmount + abs(reach)
     val animatedPressY = 1f + (balloonY - 1f) * pressAmount
     val pressScaleX = if (interaction?.pull == true) glassPressScaleInViewport(

@@ -49,11 +49,118 @@ The plan, in order:
 After that: the light-mode App Store and WhatsApp bars from JGEY2190 and LOLL8185.
 
 Progress:
-- Step 1: `.local/sxs/hdr.py` written; on COSG3073 at 2 s the grey ramp matches the target within
-  1 level (0,20,39..236 vs 0,20,39..236). Row dumps and scorers NOT yet rebuilt.
+- Step 1 DONE: `.local/sxs/hdr.py` (grey ramp within 1 level). Rebuilt `v2-row568.sdr.gray`,
+  `v2-row495.sdr.gray`, `ios2-ink.sdr.npy` (1993 frames, same timestamps); scorers switched (old
+  copies `*.py.pq`), pill/bar threshold 36->21. Conclusions hold: walls R 5.95 / L 4.40 px rms
+  (old 6.04 / 5.41), reversal crossings +2 / +6 ms, ink timing +4 ms, neck median 0 ms (20/22).
 - Step 2: decoded docs/2 page colours measured at 0.2 s: names 255, secondary text 145, dividers
   42, call-button backgrounds 15, red names (247,78,83), accent blue ~(25,144,248), avatar a
-  vertical gradient (81,76,97) top to (52,44,74) bottom. `PhonePalette` NOT yet updated.
+  vertical gradient (81,76,97) top to (52,44,74) bottom. Step 2 DONE: `PhonePalette.Natural` set to these
+  (plus keys 32, call green (23,127,47), missed red, accent (54,156,254)); replays default to it,
+  `calm-recorded` reproduces the old palette.
+- Episodes to catalogue (owner notes): IMG_6756 around 3.0 s, the search button pressed AND pulled
+  upward (press-and-pull of the accessory, stretched toward the finger), not just pressed. Score the
+  search button's pull against it (never scored in passes 1-14).
+- Step 3 (in progress): `.local/sxs/track2.py <video> <name>` writes `.local/sxs/ref/<name>/` (track.csv with a
+  Phone-bar signature, pts.txt, row568/495 .sdr.gray); `gen.py <ref-dir> [--rev ...]` = v2script for any
+  recording (reproduces v2-script: same 46 presses/lifts); `taps.py <ref-dir> t0 t1` = v1 tap inference
+  (reproduces v1-script: 37 taps within 17 ms). Catalogued: docs1 (37 taps), docs2, IMG_6756 (0-34 s
+  search-button press/pull in all directions, not tab episodes; 34.8-53 s holds and throws; 60-100 s
+  keypad keys), JGEY2190 (0-3.1 s throw; 4.6-47 s 47 TAPS, owner-confirmed; later segments other apps),
+  LOLL8185 (19.8-44 s throws and holds).
+- External code review (owner-supplied, 15 Oct), each claim checked against the code:
+  1 lift sample dropped before pointerUp: REAL; Compose, CanvasKit and .NET now feed the lift to the
+    controller first. ("1-sample integration lag" is the intended sample-and-hold; not changed.)
+  2 dragPressShare squared in reach + release step: REAL (LiquidGlass.kt reach); fixed. No Calm effect
+    (Calm reach is 0 since pass 13).
+  3 poseCorner straddles the cap start: REAL (quoted code was not the real code); now ramps in along the
+    run like cornerWeight/bodyCorner. Changes cap fold/mirror strength on pose lenses: judge vs iOS.
+  4 fold colour split unmasked on straight runs; held fringe order under rim mirror: REAL; masked by
+    the fold weight, and the order follows the mirror where it takes over.
+  5 thrown lens loses heldTravel (cap mirror) at lift: REAL; kept while a lens thrown from a hold flies
+    (Kotlin and both ports). transit==formation step: crossing measured at ~0.01, not visible; not changed.
+  6 frame-loop freeze after release: NOT reproduced (0 of 162 post-lift frame pairs repeat); the pass 12
+    wake fix covers the mechanism.
+  7 ports clobber the slop-crossing move with beginDrag(x0): REAL (CanvasKit and .NET); fixed as Compose
+    does (re-apply the move). This was the "port ignores the first move" seen in pass 12.
+  8 per-frame wide blur: REAL in CanvasKit only (backdrop.mjs builds a tone buffer for any sigma);
+    now skipped below 1 px. .NET already passes the real kernel.
+  9 Android shared RuntimeShader race: NOT a bug (each RenderEffect snapshots uniforms at creation; the
+    emulator showed many distinct panels). Harness: AtlasMotionCapture's left-side edge pulls started
+    on their expected tab (could not fail); now start at the opposite end.
+- Second external review (owner-supplied, 15 Oct, "parity blueprint"), checked against the code:
+  most of its diagnoses quote code this tree does not have (a `sampleAlongBar` with 5 jittered taps,
+  `pose.vx = 0f` under a Held wall clamp, `wallGive` gated on Released, `heldMagnification` 0 on Calm and
+  centred on uSize/2). In fact: Calm's lens has heldMagnification .12, centred on uPoseC (pose) or the
+  body; the fine blur under 4 px is a 5-tap rotated square, the wide blur is already an ImageFilter on
+  JVM; the held wall is handled by the two-edge release (pass 10+). Its items 1.2(1-2), 4.3 were the
+  first review's (done). Kept as measurements to make in steps 4-5 before any optic change:
+  a) ink scale inside a MOVING lens, iOS vs ours (residual "magnified less", pass 11 record);
+  b) text detail under the bar (high-frequency energy, display colours) for "slightly more smeared";
+  c) the bar outline next to a held lens: does iOS's bow out (lensFuse is off on V3)?;
+  d) the colour split where the held map and rim mirror blend (displacement-driven split can vanish
+     there): judge on frames. Android packed endpoint inputs (false) stays a known platform gap.
+- Step 3 correction (15 Oct): gen.py's catalogues were wrong for the new recordings. It reads presses from
+  the selected ink alone, so holds on the middle tab were invisible and long held drags read as separate
+  throws with lifts between. The bar shows the touch directly: while touched iOS's whole bar lifts ~10
+  levels (rows 460-472) within two frames of the press. `.local/sxs/form.py` (per-tab level, search
+  level, bar ends) -> `touches.py` (touch intervals) -> `gen3.py` (scripts: `ref/<name>/script3.txt`,
+  `catalogue3.txt`). Lifts from the bar end away from the lens returning (gen.py's bar_release, both
+  ends), calibrated +27 ms to v2-script. Checks: docs2 downs 21/23 and lifts 16/23 within 20 ms of the
+  checked v2-script (median 0; two flicks 103 ms early); docs1 taps 32/37 within 20 ms of v1-script.
+  Found: IMG_6756 41.25-53.0 one touch (drags 2-1-0-1-0-1-2 with holds); 34.7-40.9 three holds at Keypad
+  (lens pulled ~25 px); LOLL8185 21.1-33.2 one touch (drags across all tabs); its 36-44 s is the App
+  Store's dark five-tab bar (excluded; useful for the App Store work); JGEY2190 15.3-24.4 a held scrub
+  (lens formed and still at 16.4 s, bar stretched, neck out) and 11.0-13.0 a hold, inside the owner's
+  "taps" window, whose short touches stay taps (`--taps 4.5 15.2 25.5 48`; a tap and a flick cannot be
+  told apart by timing). Scene glyphs re-measured: labels Medium + 0.7 sp spacing (iOS 11% wider, same
+  height), keypad grid 72x69 px like iOS; magnification inside the held lens already matches (iOS x1.17,
+  ours x1.18), so the "ink magnified less" residual was glyph size. Search-button episodes (IMG_6756
+  0-34 s) are not scripted yet.
+- Search button (IMG_6756 0-34 s, `.local/sxs/ref/IMG_6756/search-catalogue.txt`): 7 presses, 4 pulled up
+  (top up to 110-174 px), 3 held. Pressed: grows ~1.25x (right edge +24..26 px), lightens 33 -> ~95, fuses
+  to the bar with a neck. Pulled: a tall ellipse following the finger, detached from the bar, glyph
+  stretched with it, dimming with distance. Released: lands squashed wide (overshoot 23-32 px below rest)
+  and rebounds. Our accessory is passive (GlassTabBarAccessory has no press or pull): model it with the
+  pose controller on a circular body, opt-in, then score extent/level per frame against search.npy.
+- Pass 15 scored (re-fit + review fixes + scene glyphs; docs1/docs2 from v1/v2-script, the others from
+  script3): rest bar +0 on all five (44 moments; was +13); rest pill +4 on black pages, 0 on Calls pages
+  (was +12..+16); held bar -3 (16); held lens +6/+7 on black pages (IMG_6756, LOLL8185), -9 on docs2,
+  whose lens shows a milky veil of the page above the bar; tap pill -11 on docs1 and JGEY2190 (was +1).
+  The tap pill's plateau is short of iOS's (iOS 51-53, ours 38-43), its start and tail now right
+  (`tapprofile.py`). Cause: iOS lights the whole bar on every touch, a tap included (+13 at the tab a tap
+  never visits, from before the ink leaves, back by ~350 ms; `tapprofile.py --bar`); ours only while held
+  (+3). Pass 16: `GlassTabBarStyle.touchLift` (opt-in, Calm on), heldLift 13/255, lens grey 0x2B, pill
+  black .58 (`.local/sxs/fit16.py`). Rendering p16.
+- Step 5 (tracking, `trackscore.py`, holds and drags; taps excluded because iOS recolours the destination
+  early and the ink centroid jumps): docs2 31.5 px rms (throws included, the validated baseline), IMG_6756
+  11.0, LOLL8185 9.2, best shift -8 ms on both: the pose dynamics generalise to the new recordings.
+  JGEY2190 needs p16 (its scrub script was cut 0.1 s in by the wall-lift rule; fixed: final approach only;
+  its start selection came from a non-Phone frame; fixed).
+- Pass 16 scored (docs1, docs2, LOLL8185 full; touchLift on, heldLift 13/255, lens 0x2B .55, pill .58):
+  rest bar +0 (20), rest pill +3 black pages / -1 Calls page, held bar +0.5 (8), held lens +0 on black
+  pages (LOLL8185 5 moments; IMG_6756 slice 48/48), tap pill plateau 47-51 against iOS 48-53 (was
+  38-43) and the bar's tap profile matches from +50 ms (`tapprofile.py`). Residuals: (1) iOS's bar lights
+  33 ms before the ink leaves, our inferred tap presses 16 ms before (finger timing, unresolved; moving
+  it would undo the ink alignment v1-script was fitted to); (2) docs2's held lens: iOS 63 / 88 (top band /
+  lower interior) against ours 49 / 61. iOS's held lens brightens the page under it (the avatar reads
+  91-111 through it, brighter than the avatar); ours adds a constant. Lens fits by replay (`lensfit.sh`,
+  the `calm+lens=a,grey,raw` replay variant): no tint/raw-share pair meets both pages (raw share
+  saturates at ~75 on docs2; a brighter tint lifts black pages equally). Kept the black-page fit (13 of
+  16 held moments); the page gain is a structural residual for a later pass.
+- Pass 16 closed (15 Oct): all five replayed. Levels (ours - iOS): rest bar +0 (44), rest pill +3,
+  held bar +0 (16), held lens -0.9 (black pages 0; docs2 -16, the page veil), tap pill at +170 ms -8
+  (plateau matches; ours falls ~50 ms sooner). Tracking (holds/drags): IMG_6756 11.0, LOLL8185 9.2,
+  JGEY2190 26.9 px rms, best shift -8 ms on all three. Suite 388/361/27 skipped/0 failed; desktopTest,
+  assembleDebug, CanvasKit 35/35 (touchLift ported: `calmBarMaterial({touch})`, navigation
+  `state().touch`), .NET 13/13 (`CalmNavigation.Touch`, `DrawCalmBar(..., touch)`). Owner videos:
+  `.local/comparisons/2026-10-15-pass16/`. NEXT: the search-button model (opt-in, see the measured
+  search catalogue above), then the held lens's page gain, then the light App Store / WhatsApp bars.
+- Step 4 (first fit): `.local/sxs/levels.py` (bar/pill at rest, held bar/lens, tap pill; iOS vs ours per
+  catalogue moment). Pass-14 Calm in display colours, five recordings: rest bar iOS 33 / ours 46,
+  rest pill 15 / 27, held bar 43.5 / 53, held lens 48 / 60, tap pill 54 / 52. Re-fit: bar lift 45->32/255,
+  pill black .42->.55, held lift 8->10/255; old values kept as `GlassTabBarStyle.CalmRecordedSpace()`
+  (replay variant `calm-recorded`). Re-rendering all five as `ref/<name>/p15` to re-score.
 
 ## How work is judged now
 

@@ -5,8 +5,8 @@ export {CalmSelectorController, calmSelectorBar, createCalmNavigation} from './s
 /** The Compose Calm selector material as shader uniforms (lengths in dp) and its band blend. */
 export function calmSelectorMaterial(state?: {dark?: boolean; formation?: number; transit?: number; heldTravel?: number}):
   {values: Readonly<Record<string, number | readonly number[]>>; uFormation: number};
-/** The Compose Calm bar material (lengths in dp), its held lift following `formation`. */
-export function calmBarMaterial(state?: {dark?: boolean; formation?: number}): Readonly<Record<string, number | readonly number[]>>;
+/** The Compose Calm bar material (lengths in dp), its held lift following `formation` (or `touch`, for any touch). */
+export function calmBarMaterial(state?: {dark?: boolean; formation?: number; touch?: number}): Readonly<Record<string, number | readonly number[]>>;
 export interface CalmSelectorDrawOptions {
   dark?: boolean; density?: number; materialize?: number; reducedTransparency?: number; increasedContrast?: number;
   /** The source-sized backdrop with the bar's glass drawn over it: the lens looks through the bar. */
@@ -51,7 +51,7 @@ export interface GlassPainter {
   drawLens(canvas: Canvas, bounds: GlassLensBounds): void;
   drawSurface(canvas: Canvas, bounds: GlassSurfaceBounds, material?: GlassMaterial): void;
   /** A Calm navigation bar's glass in the Compose Calm bar material (device px). */
-  drawCalmBar(canvas: Canvas, bar: GlassRect, options?: Omit<CalmSelectorDrawOptions, 'through'> & {formation?: number}): void;
+  drawCalmBar(canvas: Canvas, bar: GlassRect, options?: Omit<CalmSelectorDrawOptions, 'through'> & {formation?: number; touch?: number}): void;
   /** A navigation selector's pose body over the bar rect (device px), in the Compose Calm selector material. */
   drawSelector(canvas: Canvas, bar: GlassRect,
     selector: {pose: CalmSelectorPose; formation?: number; transit?: number; heldTravel?: number}, options?: CalmSelectorDrawOptions): void;
