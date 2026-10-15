@@ -4,6 +4,57 @@ Updated 14 October 2026 (Claude takeover from Codex). The previous, longer hando
 at commit `efcc3b5` and in `.local/handoffs/`. Full iOS parity and owner visual acceptance are
 **not** established. Read [TODO.md](TODO.md) and the full objective before changing source.
 
+## CURRENT PLAN (15 Oct 2026, owner-approved) — read this first
+
+Two mistakes found by the owner, both affecting every pass 1-14 level measurement:
+
+1. **Only docs/1.MP4 and docs/2.MP4 were used.** `research/datasets/` holds ~1000 s more iOS 26
+   footage at the same resolution. Phone bar: `ios27-phone/bubble/IMG_6756.MP4` (101 s, Keypad bar,
+   taps/holds/drags/throws, keypad keys), `bubble/JGEY2190.MP4` (102 s, Calls/Keypad bar plus
+   WhatsApp, Messages and App Store bars), `LOLL8185.MP4` (3 min, Phone keypad and App Store bars).
+   Material over calibration targets: `COSG3073`, `LQCO6923`, `PUSM9766`; stills and
+   `iphone's-ref-bubble/`; `mac-rig/captures/`. All private: nothing from them goes to GitHub.
+2. **Wrong decode.** Every recording is HDR10 (HEVC Main 10, PQ/smpte2084, BT.2020, TV range). A
+   plain decode shows the PQ signal as sRGB (white ~130, everything washed out). The comparison
+   scene's `PhonePalette.Recorded` was dimmed to match that, and the Calm dark material's levels
+   were calibrated in it. Correct decode (research/README.md II.4): `.local/sxs/hdr.py`
+   (`frame(path, t)`, `frames(path, t0, dur)`), the zscale chain to display sRGB. Geometry and
+   timing measurements are unaffected; every brightness level is not.
+   Correctly decoded docs/2: white labels 255 (was 131-141), resting pill 15 (was 29), bar rest 22
+   (29), bar held 42 (49), held lens interior 66 (64).
+
+The plan, in order:
+
+1. **Fix the measuring instrument.** One decode path for every reference frame (`hdr.py`), checked
+   against the grey ramp in the calibration recordings (target: within 1 level). Rebuild the row
+   dumps and caches the scorers read (`v2-row568.gray`, `v2-row495.gray`, `ios2-ink.npy`;
+   `wallscore.py`, `wallscorel.py`, `neck.py`, `baredge.py`, `inklag.py`, `revevents.py`, `v2script.py`
+   bar release) from correctly decoded frames; re-check their thresholds in display space.
+2. **Make our side comparable.** Replay the scene in real display colours (`calm-natural` variant)
+   and set its page colours from the correctly decoded iOS page (text, avatars, dividers), not by
+   eye, so the page under the glass matches before judging the glass.
+3. **Catalogue every Phone-bar episode in the dataset**: IMG_6756, JGEY2190 and LOLL8185 as well as
+   docs/1 and 2: every tap, hold, drag, throw and landing with its time, plus an inferred finger
+   script for each, built by the same generator.
+4. **Re-fit the Calm brightness levels** against all those episodes in display space: resting pill
+   and bar (rest and held); lens interior, outline, inner glow and the veil; page text through the
+   lens and the tap-transit pill. Each level fitted across all episodes with its spread reported.
+   The current values stay available as a named preset for comparison; every change states what
+   it was scored against.
+5. **Check geometry and timing generalise.** Re-run the size/squeeze, landing, neck and timing
+   scorers on the new recordings and report per recording (were passes 9-14 over-fitted to video 2?).
+6. **Republish:** review images and owner videos in correct colours; docs and the record; full test
+   suite and both ports; then update PR #14 (`claude/parity-2`).
+
+After that: the light-mode App Store and WhatsApp bars from JGEY2190 and LOLL8185.
+
+Progress:
+- Step 1: `.local/sxs/hdr.py` written; on COSG3073 at 2 s the grey ramp matches the target within
+  1 level (0,20,39..236 vs 0,20,39..236). Row dumps and scorers NOT yet rebuilt.
+- Step 2: decoded docs/2 page colours measured at 0.2 s: names 255, secondary text 145, dividers
+  42, call-button backgrounds 15, red names (247,78,83), accent blue ~(25,144,248), avatar a
+  vertical gradient (81,76,97) top to (52,44,74) bottom. `PhonePalette` NOT yet updated.
+
 ## How work is judged now
 
 Core visible behaviour first. Every motion/material change is checked by replaying both owner
