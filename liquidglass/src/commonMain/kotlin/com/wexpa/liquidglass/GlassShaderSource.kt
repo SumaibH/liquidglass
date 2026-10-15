@@ -630,8 +630,13 @@ half4 main(float2 coord) {
     // Navigation's dark inset is a treatment of the bar substrate. A still-compressed
     // recovering body must not paint that inset onto the page above/below the bar.
     // Refraction, highlights and the geometric coverage stay independent of this tint mask.
-    float2 maskPoint = float2(dot(uTintMaskX.xy, local) + uTintMaskX.z,
-        dot(uTintMaskY.xy, local) + uTintMaskY.z);
+    // A held lens tints what it shows, so its mask is read where the refracted view comes
+    // from: read at the pixel, the bar's footprint tinted the black band the lens pulls in
+    // beyond the bar's image (pass 14). Every other profile keeps the pixel's own mask.
+    float heldMask = step(1.5, uProfile) * (1.0 - step(2.5, uProfile)) * step(0.001, uHeldLens);
+    float2 maskLocal = local + (base + push - coord) * heldMask;
+    float2 maskPoint = float2(dot(uTintMaskX.xy, maskLocal) + uTintMaskX.z,
+        dot(uTintMaskY.xy, maskLocal) + uTintMaskY.z);
     float tintCoverage = (uTintMaskX.w > 0.5)
         ? clamp(float(field.eval(maskPoint).a), 0.0, 1.0) : 1.0;
     float strength = uTint.a * tintCoverage * mix(mix(0.9, 1.25, scale), 1.0, measured)

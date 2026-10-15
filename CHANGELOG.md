@@ -90,6 +90,15 @@ This file records user-visible development changes. Published artifacts are iden
     82/105 against iOS's 84/109 (108/112 before).
   - Held travel strain .6 with squeeze back at .47: 444 x 145 at the 19.0 s reversal (iOS about
     444 x 141 at this bar size). Wall landings 6.0 / 5.4 px rms; landing series 2.8 / 5.2.
+- Pass 14 (15 October), the pass 13 residuals:
+  - The held lens lays a grey veil over what it shows (tint .55 of 0x3A, raw page share .22):
+    the page avatar under it reads 82.5 against iOS's 80 (98 before), text p95/p99 80/105
+    against 84/109, plain interior 62 against 64.
+  - A held lens's tint mask is read where its refracted view comes from, so the band of black
+    page it pulls in beyond the bar is not tinted (15.4 against iOS's 15.3-15.8).
+  - The inferred finger for the first second of video 2's held reversals moves rightward 20 ms
+    earlier (`tools/reference-replay/reversal-script.txt`): the lens reaches each icon a mean
+    2 ms after iOS's going right (10 ms before) and 3 ms going left, over the whole episode.
 
 ### Added
 

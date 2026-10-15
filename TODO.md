@@ -50,8 +50,9 @@ bounded completed work, **not completion of full iOS parity**. All open rows rem
   time); neutral scene page. Landings 5.7 / 5.1 px rms. Evidence: `review/atlas/reference-replay-2026-10-13`.
 - [x] Pass 13: held lens on the pressed tab, bar reach removed (cap band as iOS); glow as a floor
   (band 26..10 vs 36..9); rawShare .05 (text p95 82 vs 84); strain .6 (444 x 145 vs ~444 x 141).
-- [ ] Pass 13 residuals: page avatar under a held lens reads +18 brighter than iOS; mid-reversal
-  (19.0 s) lens about 65 px ahead of iOS's although the whole-video ink timing is within 4 ms.
+- [x] Pass 14: grey veil on the held lens (avatar 82.5 vs 80, text 80/105 vs 84/109); refracted
+  tint mask (band 15.4 vs 15.3); reversal input refit on icon crossings (right +2 ms, left +3 ms).
+- [ ] Tap transit pill strip reads 58 against iOS's 67 at 1.0 s (pre-existing, seen in pass 14).
 - [ ] Owner visual acceptance of the navigation selector.
 
 ## P0 — current visible failures

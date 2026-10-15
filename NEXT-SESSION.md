@@ -65,6 +65,9 @@ recordings through the real renderer and comparing **continuous sequences**, not
    pressed tab, Calm `pressReach` 0, `heldGlowFloor` 1 with glow 1.5 / 5 dp, `rawShare` .05,
    strain .6 / squeeze .47. Renders `.local/sxs/p13-v1`, `p13-v2`; `.local/sxs/inklag.py` scores
    whole-video ink timing (p13 +4 ms, main +20 ms).
+5. Pass 14 (15 Oct, same branch): held lens veil (tint .55 of 0x3A, rawShare .22), refracted tint
+   mask for the held profile, reversal input rightward moves 18.7-19.6 s 20 ms earlier
+   (`.local/sxs/revevents.py` scores icon crossings). Renders `.local/sxs/p14b-v1`, `p14b-v2`.
 4. CI: Atlas UI tests now take ~2.6 min locally (density 0.75, reduced motion, no per-move waits;
    they took 14 min on CI before). Hosted runner speed varies ~2x (36 min on 31bd210 with
    unchanged classes 1.9x slower), so the build job limit is 55 min.

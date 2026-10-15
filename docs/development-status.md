@@ -70,7 +70,9 @@ still hold 1.5 frames behind the finger, made the moving lens widen and flatten 
 (458 x 145 px at its fastest reversal, ours 427 x 144), gave the held lens a thin grey outline
 instead of a white ring, and let a tapped selector bend icons along its top and bottom edges. A
 thirteenth placed the held lens on the bar's pressed tab with the bar no longer reaching past it,
-restored its inward glow as a floor, and matched the page text seen through it. The Calm selector's motion, gestures and material are ported to the
+restored its inward glow as a floor, and matched the page text seen through it. A fourteenth
+matched what the held lens shows of the page beneath it and corrected the inferred reversal
+input from the recording's own icon-crossing times. The Calm selector's motion, gestures and material are ported to the
 CanvasKit and .NET packages, checked against the Kotlin controller and material factory. On Android, the
 selector and Atlas Studio were verified on an API 37 emulator through the AGSL path
 ([emulator record](https://github.com/shayann07/liquidglass/blob/main/review/atlas/android-emulator-2026-10-14/README.md));

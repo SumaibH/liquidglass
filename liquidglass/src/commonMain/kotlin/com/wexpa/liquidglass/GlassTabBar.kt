@@ -1443,7 +1443,12 @@ data class GlassTabBarStyle(
             // bright lines on a travelling lens). Raw page share .05, re-scored in pass 13 on the
             // page text under the held lens at 1.8 s: p95/p99 82/105 against iOS's 84/109 (.28
             // read 108/112 once the lens looked through the bar, which already shows the page).
-            lens = v3.lens.copy(specular = 0.08f, heldGlow = 1.5f, heldGlowReach = 5.dp, rawShare = 0.05f,
+            lens = v3.lens.copy(specular = 0.08f, heldGlow = 1.5f, heldGlowReach = 5.dp, rawShare = 0.22f,
+                // A grey veil over what the lens shows (tint .55 of 0x3A): iOS's held lens pulls the
+                // page under it toward a mid grey, so the avatar under it reads 80 where a clear lens
+                // read 98; with the raw share at .22 the text keeps its edge (p95/p99 80/105 against
+                // 84/109) and the plain interior is 62 against 64 (video2 1.8 s, pass 14).
+                tint = Color(0xFF3A3A3A).copy(alpha = 0.55f),
                 heldEdgeTone = 65f / 255f, heldGlowFloor = 1f),
             // Measured over the black page of the owner's primary references (docs/1.MP4,
             // docs/2.MP4, recorded brightness space, 2026-10-13): bar 45 at rest and 53 held,

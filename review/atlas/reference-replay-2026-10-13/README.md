@@ -526,6 +526,31 @@ iOS's at its own timestamps (`.local/sxs/inklag.py`): pass 13 is best aligned 4 
 **For owner review (local only).** `.local/comparisons/2026-10-15-pass13/v1.mp4` and `v2.mp4`:
 iOS / main (8cb49ec) / pass 13.
 
+### Pass 14: the pass 13 residuals (15 October)
+
+**The page under the held lens.** iOS's held lens adds about the same to whatever it shows: the
+plain bar 45 to 64, the page avatar under the bar 62 to 81. Ours added 12 to the plain bar and 35
+to the avatar. Not the raw page share, the lens's magnification, its blur, its legibility or the
+bar's fingertip illumination (each tested: under 5 levels); the bar it looks through already shows
+the avatar at full strength, and a clear lens passes it on. iOS's lens pulls what it shows toward a
+mid grey. Calm's lens now carries a grey veil (tint .55 of 0x3A) with the raw page share at .22 so
+text keeps its edge: avatar 82.5 against 80, text p95/p99 80/105 against 84/109, plain interior
+62 against 64. Read at the lens pixel, the bar's tint mask also tinted the black band the lens
+pulls in beyond the bar (24 against 15); a held lens now reads the mask where its refracted view
+comes from (15.4 against 15.3-15.8). Other profiles keep the pixel's own mask.
+
+**The reversal.** Pass 13's "65 px ahead at 19.0 s" was read from a crop by eye. Measured as the
+times the lens's selected ink first reaches each icon (`.local/sxs/revevents.py`; the ink shows
+only inside the lens), the episode was within a frame going left (median 3 ms early) but going
+right in its first second 13-30 ms late. The finger there is inferred from turning points; its
+rightward moves in 18.7-19.6 s now start 20 ms earlier (`reversal-script.txt`). Over the whole
+episode the lens reaches each icon a mean 2 ms after iOS's going right (10 before) and 3 ms going
+left. Landings and the 19.0 s shape are unchanged (wall scores 6.0 / 5.4 px).
+
+![Held still lens at 1.8 s, pass 13 and pass 14, levels x2.4 (our renders only, desktop Direct3D replay, deterministic 60 fps, inferred input)](pass14-held.png)
+
+**For owner review (local only).** `.local/comparisons/2026-10-15-pass14/v1.mp4` and `v2.mp4`.
+
 ### Re-reading the landing evidence
 
 The removed impact model was calibrated to one frame, video 2 at 2.5567 s ("frame082": width
@@ -536,10 +561,9 @@ the impact. The narrowing itself is real and is listed below.
 
 ## Remaining differences
 
-- Pass 13: the page avatar under a held lens reads +18 brighter than iOS's (98 against 80 at 1.8 s);
-  at the 19.0 s reversal our lens is about 65 px ahead of iOS's, although whole-video ink timing
-  is within 4 ms. Pass 12's "halo" was the band glow (fixed) and its 12 % area shortfall was
-  partly a unit slip (fixed: width).
+- Pass 14: a tapped selector's pill strip reads 58 against iOS's 67 at 1.0 s; the held lens's plain
+  interior 62 against 64 and its text p95 80 against 84. Pass 13's avatar and reversal residuals
+  are resolved above.
 - Wall landings (pass 13): rms 6.0 px right / 5.4 px left (pass 10: 5.5 / 4.1); the 9.9 s landing passes its rest by
   36.5 px against 41; the left width series' first frames narrow up to 11.2 px less; the 28.66 s
   landing is an input artefact (source frame gap).
@@ -581,7 +605,7 @@ the impact. The narrowing itself is real and is listed below.
 - `before-after.png`, `lens-edge.png`, `moving-lens.png`, `landing.png`, `cap-swirl.png`,
   `landing-99.png`, `landing-left.png`, `drag-bar.png`, `swirl-gain.png`, `neck-timing.png`,
   `pass12-held.png`, `pass12-moving.png`, `pass12-tap.png`, `pass12-throw.png`, `pass13-held.png`,
-  `pass13-moving.png`, `atlas-studio.mp4` —
+  `pass13-moving.png`, `pass14-held.png`, `atlas-studio.mp4` —
   public, our renders only.
 - Pass 9 scoring (local, reads the private recording's row dumps): `.local/sxs/wallscore.py`
   (right landings), `wallscorel.py` (left landings), `neck.py` (neck timing), `liftonset.py` and
