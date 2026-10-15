@@ -71,12 +71,18 @@ private fun replay(args: Array<String>) {
         "calm-recorded" -> PhoneGeometry.style(GlassTabBarStyle.CalmRecordedSpace())
         else -> PhoneGeometry.style(GlassTabBarStyle.Calm())
     }.let { base ->
-        // "calm+lens=<alpha>,<grey 0-255>[,<rawShare>]": a lens tint candidate, for fitting by replay.
-        val lens = variant.substringAfter("+lens=", "").split(',').mapNotNull { it.toFloatOrNull() }
+        // "calm+lens=<alpha>,<grey 0-255>[,<rawShare>[,<lift in /255>]]": a lens candidate, for fitting by replay.
+        val lens = variant.substringAfter("+lens=", "").substringBefore('+').split(',').mapNotNull { it.toFloatOrNull() }
         if (lens.size < 2) base else base.copy(lens = base.lens.copy(
             tint = androidx.compose.ui.graphics.Color(lens[1] / 255f, lens[1] / 255f, lens[1] / 255f, lens[0]),
             rawShare = lens.getOrElse(2) { base.lens.rawShare },
+            tintLift = lens.getOrNull(3)?.let { it / 255f } ?: base.lens.tintLift,
         ))
+    }.let { base ->
+        // "+pill=<black alpha>,<lift in /255>": a resting pill candidate, for fitting by replay.
+        val pill = variant.substringAfter("+pill=", "").substringBefore('+').split(',').mapNotNull { it.toFloatOrNull() }
+        if (pill.size < 2) base else base.copy(pill = base.pill.copy(
+            tint = androidx.compose.ui.graphics.Color(0f, 0f, 0f, pill[0]), tintLift = pill[1] / 255f))
     }
     // Display colours measured on the correctly decoded recordings; "-recorded" reproduces the
     // passes that compared against the recordings decoded as sRGB (2026-10-15).

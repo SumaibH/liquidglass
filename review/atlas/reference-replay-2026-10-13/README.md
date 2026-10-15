@@ -628,6 +628,35 @@ iOS's. The CanvasKit and .NET ports do not have the free pull yet.
 
 ![The search button at rest, pressed, pulled, landing and pulled toward the bar, pass 17 (our renders only, desktop Direct3D replay, deterministic 60 fps, inferred input)](pass17-search.png)
 
+### Pass 18: what the glass shows of the page (15 October)
+
+Over a black page a tint and a clear glass with an offset read the same; over content they do not.
+iOS's resting pill passes the page under it (its 75th percentile 51 over docs/2's Calls page, ours
+29), and its held lens follows held = 41-46 + 1.33-1.48 x the same pixel at rest (three docs/2 holds;
+`.local/sxs/lensgain.py`). Fitted by replay on a content page and a black page together
+(`pillfit.sh`): the resting pill is the bar less 22/255 with no tint, which is the inset's original
+measured law ("0.857 of the bar minus 17/255", read on the sRGB-decoded recordings); the held lens is
+the bar plus 0.30 of the raw page less 3/255.
+
+| docs/2 p10 / p50 / p75 (black page) | iOS | pass 17 | pass 18 |
+| :-- | --: | --: | --: |
+| Resting pill | 15 / 25 / 51 (10) | 14 / 21 / 29 (13) | 12 / 29 / 47 (10) |
+| Held lens | 62 / 80 / 135 (48 / 49) | 50 / 60 / 87 (48 / 48) | 52 / 75 / 135 (48 / 49) |
+
+**Text under the bar.** iOS's bar shows the page's text as one soft, legible copy. Ours drew ghost
+copies of every glyph about 16 and 34 px to either side (the fine term is a high-pass along the bar,
+its average taken from five taps along it) and turned the rest into grain (its scatter is rotated per
+pixel). `GlassStyle.softDetail` draws the detail as the wide kernel's tone plus a share of an unrotated
+fine blur: horizontal detail over the text 2.72 against iOS's 2.77 (4.94 before). On dark Calm's bar
+and lens. The along-bar high-pass came from the Photos toolbar target read in the wrong colours; the
+grain was a deliberate cost trade, kept as the default.
+
+With both, over all five recordings: rest bar and pill 0, held bar +0.5, held lens over a black page
++1, a tap's travelling pill 47-50 against iOS's 48-53. Still open: iOS's held lens adds a milky haze
+over dark parts near content (docs/2's lens p10 52 against 62).
+
+![The text under the bar and the held lens over content, pass 17 and pass 18 (our renders only, desktop Direct3D replay, deterministic 60 fps, inferred input)](pass18-page.png)
+
 ### Re-reading the landing evidence
 
 The removed impact model was calibrated to one frame, video 2 at 2.5567 s ("frame082": width
@@ -642,6 +671,8 @@ the impact. The narrowing itself is real and is listed below.
   88 against our 61 over the avatar); no tint or raw page share reproduces it (fits by replay). The
   resting pill reads 3 above iOS's on black pages. iOS's bar lights 33 ms before a tap's ink
   leaves; our inferred tap presses 16 ms before (finger timing).
+- Held lens over content (pass 18): iOS's adds a milky haze over dark parts near content (docs/2 p10
+  52 against 62; the top band 13 below iOS's).
 - Search button (pass 17): the rise peaks 3-6 px short; sideways pulls squash 8 px less across;
   brightness 8 levels rms. The ports do not have the free pull.
 - Pass 14's level residuals (58 against 67, 62 against 64) were read on the sRGB-decoded recordings
@@ -663,6 +694,10 @@ the impact. The narrowing itself is real and is listed below.
 
 ## Verification
 
+- Pass 18: full library suite 391 cases, 364 passed, 27 optional showcase skips, 0 failures (14 m);
+  `:desktop:desktopTest` and `:sample:assembleDebug` passed; CanvasKit port 35/35 and .NET checks 13/13
+  with the material fixture and shaders re-exported (`uSoftDetail`). All five recordings replayed
+  (IMG_6756 with its search episodes); owner videos `.local/comparisons/2026-10-15-pass18/` (local).
 - Pass 17: full library suite 391 cases, 364 passed, 27 optional showcase skips, 0 failures
   (12 m); `:desktop:desktopTest` and `:sample:assembleDebug` passed. New: `GlassFreePullTest` (free
   travel against anchored Adaptive, the landing floor, the stadium inside a stretched accessory).

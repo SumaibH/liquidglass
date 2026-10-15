@@ -577,6 +577,7 @@ internal fun Modifier.liquidGlassCore(
                         heldEdgeRecovery = style.heldEdgeRecovery.toPx().coerceAtLeast(0f),
                         heldEdgeTone = style.heldEdgeTone.coerceIn(0f, 1f),
                         heldGlowFloor = style.heldGlowFloor.coerceIn(0f, 1f),
+                        softDetail = style.softDetail.coerceIn(0f, 1f),
                         restMap = style.restMap.uniform,
                         body = body?.let {
                             floatArrayOf(
@@ -1159,6 +1160,8 @@ internal data class GlassUniforms(
     val heldEdgeTone: Float = 0f,
     /** [GlassStyle.heldGlowFloor]. */
     val heldGlowFloor: Float = 0f,
+    /** [GlassStyle.softDetail]. */
+    val softDetail: Float = 0f,
     /** Resting-corner source map: 0 the legacy map, 1 the measured table ([GlassRestMap]). */
     val restMap: Float = 0f,
     /** V3 body: left centre x, right centre x, left radius, right radius, in the centred frame. */
@@ -1283,7 +1286,7 @@ internal data class GlassUniforms(
             heldMagnification == other.heldMagnification && heldGlow == other.heldGlow &&
             heldGlowReach == other.heldGlowReach && foldCorners == other.foldCorners &&
             rimMirror == other.rimMirror && rimMirrorGain == other.rimMirrorGain &&
-            heldEdgeRecovery == other.heldEdgeRecovery && heldEdgeTone == other.heldEdgeTone && heldGlowFloor == other.heldGlowFloor &&
+            heldEdgeRecovery == other.heldEdgeRecovery && heldEdgeTone == other.heldEdgeTone && softDetail == other.softDetail && heldGlowFloor == other.heldGlowFloor &&
             restMap == other.restMap &&
             body.contentEquals(other.body) && bodyY == other.bodyY && bodyKind == other.bodyKind &&
             poseA.contentEquals(other.poseA) && poseAInv.contentEquals(other.poseAInv) &&

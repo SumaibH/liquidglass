@@ -147,6 +147,22 @@ Progress:
   the `calm+lens=a,grey,raw` replay variant): no tint/raw-share pair meets both pages (raw share
   saturates at ~75 on docs2; a brighter tint lifts black pages equally). Kept the black-page fit (13 of
   16 held moments); the page gain is a structural residual for a later pass.
+- Next target found (15 Oct): the "light App Store / WhatsApp" bars in these recordings are DARK five-tab
+  bars: JGEY2190 50-74 s WhatsApp (Updates/Calls/Communities/Chats/You), 78-101 s App Store (Today/
+  Games/Apps/Arcade/Search), LOLL8185 36-44 s App Store. LOLL8185's other segments: home screen over the
+  calibration target (dock, widgets, Control Centre). Personal content in all: local only.
+  App Store dark bar (LOLL8185 37.5 s, display colours): x 63-1106 (348 pt), rows 453-638 (62 pt), five
+  tabs at x 200/393/585/777/969 (192 px), resting pill ~x 78-328 (~83 pt). Needs its own replay scene.
+- Pass 18 (done, 15 Oct): clear pill and lens, softDetail on bar and lens. All five at p18: rest bar/pill 0,
+  held bar 0, held lens +0.1 (docs2 haze -13), tap pill -8 at +170 ms (plateau ok); suite 391/0 failed;
+  ports 35/35, 13/13; videos .local/comparisons/2026-10-15-pass18/. Earlier notes: iOS's held lens follows held = 41-46 + 1.33-1.48 x
+  (the same pixel at rest) on docs2 (`.local/sxs/lensgain.py`); its resting pill passes the page (p75 51
+  vs our 29). Both are clear glass plus an offset: pill = bar - 22/255 (the originally measured inset
+  law, "0.857 of the bar minus 17/255"), lens = bar + 0.30 raw page - 3/255. Slices (`pillfit.sh`): pill
+  black 10/10, content 12/29/47 vs 15/25/51; lens black 48/49 vs 48/49, content 52/75/135 vs 62/80/135
+  (p10 gap = iOS's milky haze). Applied to dark Calm; p18 renders running. Next found: text under the
+  bar is grainy in ours (per-pixel rotated scatter taps + jittered axis mean), smooth in iOS: test an
+  unjittered/smooth fine term once the renders free the shaders.
 - Pass 17 (15 Oct): the search button. `GlassPullShape.Free` (body + glyph follow the finger, landing
   floor squash), `GlassMotion.FreeRelease` (.45 / 264, near-edge fit), `GlassInteraction.pullLiftShare`
   (.7), `GlassAccessoryLink` (bar outline follows the button, read at draw time; composition read

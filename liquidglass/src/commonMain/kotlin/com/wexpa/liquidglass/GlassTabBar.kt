@@ -1455,7 +1455,8 @@ data class GlassTabBarStyle(
                 // decoded correctly (docs/1, docs/2, IMG_6756, JGEY2190, LOLL8185; 117 rest moments,
                 // .local/sxs/levels.py): iOS's bar at rest 33 (ours read 46 at lift 45/255), its
                 // resting pill 15 (ours 27 at .42 black), its held bar 43.5 (ours 53).
-                bar = recorded.bar.copy(tintLift = 32f / 255f),
+                // Page text under the bar reads as one soft copy, as iOS's does ([GlassStyle.softDetail]).
+                bar = recorded.bar.copy(tintLift = 32f / 255f, softDetail = 1f),
                 // Pass 16 (all five recordings, catalogued from the touches the bar shows): iOS's held
                 // bar 45-47 (ours 42-43 at 10/255), its held lens on a black page only ~2 above its
                 // bar (ours +12: 55 against 48-49), its resting pill 10 on black pages and 15 on
@@ -1464,8 +1465,16 @@ data class GlassTabBarStyle(
                 // moments at 0, 14 black-page moments at +4).
                 heldLift = 13f / 255f,
                 touchLift = true,
-                pill = recorded.pill.copy(tint = Color.Black.copy(alpha = 0.58f)),
-                lens = recorded.lens.copy(tint = Color(0xFF2B2B2B).copy(alpha = 0.55f)),
+                // Pass 18: both are clear glass with an offset, not a tint. Over a black page that
+                // reads the same as a tint; over content it does not. The resting pill shows the bar
+                // less 22/255, as the inset was first measured ("0.857 of the bar minus 17/255", in
+                // the sRGB-decoded space): docs/2's Calls page under it p10/50/75 12/29/47 against
+                // iOS's 15/25/51 (14/21/29 at .58 black), black 10 against 10. The held lens shows
+                // the bar plus 0.30 of the raw page, less 3/255: docs/2 52/75/135 against 62/80/135
+                // (50/60/87 with the grey tint), IMG_6756's black page 48/49 against 48/49.
+                pill = recorded.pill.copy(tint = Color.Transparent, tintLift = -22f / 255f),
+                lens = recorded.lens.copy(tint = Color.Transparent, rawShare = 0.30f, tintLift = -3f / 255f,
+                    softDetail = 1f),
             )
         }
 

@@ -180,6 +180,16 @@ data class GlassStyle(
      */
     val heldGlowFloor: Float = 0f,
     /**
+     * How the detail seen through the glass is drawn, 0 to 1. At 0 (the default) it is the measured
+     * high-pass along the element's long axis (FINDINGS 22), sampled through a per-pixel rotated
+     * scatter. At 1 it is a plain soft copy: the wide kernel's tone plus [fineShare] of the fine
+     * blur, sampled without rotation. Read in display colours, iOS 26's Phone bar shows page text
+     * under it as one soft, legible copy; the along-axis high-pass draws ghost copies of every
+     * glyph about 16 and 34 px to either side and the rotation turns the rest into grain
+     * (docs/2, horizontal detail 2.72 against iOS's 2.77, 4.94 at 0; 2026-10-15).
+     */
+    val softDetail: Float = 0f,
+    /**
      * A share of the raw backdrop added on top of the glass this element looks
      * [through][liquidGlass], 0 to 1. The measured tab-bar lens shows the bar's output plus
      * 0.11 of the content behind the bar, which is what makes its interior read clearer than

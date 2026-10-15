@@ -136,6 +136,16 @@ This file records user-visible development changes. Published artifacts are iden
     is pressed (a neck) and pulled away (the neck breaks), read while drawing so it never trails.
   - Sample `PhoneScene`: the search button uses them. Against iOS over seven presses: centre 1.9 /
     3.0 px rms (14.3 / 41.1 passive), height 4.3, width 2.8, brightness 8.0 levels (19.1).
+- Pass 18 (15 October): what the glass shows of the page.
+  - Calm dark resting pill and held lens are clear glass with an offset, not a tint. Over a black
+    page they read as before; over content iOS's pass far more of the page. Pill: the bar less
+    22/255 (the inset's originally measured law), docs/2 p10/50/75 12/29/47 against iOS's 15/25/51
+    (14/21/29 at .58 black), black 10 against 10. Held lens: the bar plus 0.30 of the raw page less
+    3/255, docs/2 52/75/135 against 62/80/135 (50/60/87), black 48/49 against 48/49.
+  - `GlassStyle.softDetail` (new, default 0; 1 on dark Calm's bar and lens): page text under the
+    glass is one soft copy, as iOS's is, instead of the along-axis high-pass whose taps drew ghost
+    copies of every glyph and whose rotated scatter turned the rest into grain (horizontal detail
+    2.72 against iOS's 2.77; 4.94 before).
 
 ### Added
 

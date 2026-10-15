@@ -151,6 +151,7 @@ internal actual fun createGlassRenderEffect(
     builder.uniform("uHeldEdgeRecovery", uniforms.heldEdgeRecovery)
     builder.uniform("uHeldEdgeTone", uniforms.heldEdgeTone)
     builder.uniform("uHeldGlowFloor", uniforms.heldGlowFloor)
+    builder.uniform("uSoftDetail", uniforms.softDetail)
     builder.uniform("uRestMap", uniforms.restMap)
     builder.uniform(
         "uBody",

@@ -31,6 +31,7 @@ uniform float   uFoldCorners;  // 0 folds every edge, 1 only corner arcs (GlassS
 uniform float   uRimMirror;    // reflective rim band fraction for the measured family; 0 the fold (GlassStyle.rimMirror)
 uniform float   uRimMirrorGain; // mirrored depth per unit of band; 0 or 1 the plain mirror (GlassStyle.rimMirrorGain)
 uniform float   uHeldGlowFloor; // 0 adds the held glow, 1 lays it as a floor under darker glass (GlassStyle.heldGlowFloor)
+uniform float   uSoftDetail;   // 0 the along-axis high-pass with a dithered scatter, 1 a plain soft copy (GlassStyle.softDetail)
 uniform float   uHeldEdgeTone; // grey of the held lens's outermost pixels, drawn as a line; 0 off (GlassStyle.heldEdgeTone)
 uniform float   uHeldGlowReach; // px the held glow reaches inward; 0 uses the bevel (GlassStyle.heldGlowReach)
 uniform float   uHeldEdgeRecovery; // layer-pixel recovery length; 0 preserves the narrow side contour
@@ -952,7 +953,9 @@ half4 main(float2 coord) {
 
     // Scatter, keyed to distance from the edge. Squared, so the crisp compressed image stays
     // tight against the rim while the displacement itself still spans the whole band.
-    float2 rot = tapRotation(coord);
+    // A soft copy ([GlassStyle.softDetail]) samples its scatter unrotated: the rotation is what
+    // turns a sparse kernel's ghosts into grain.
+    float2 rot = (uSoftDetail >= 0.5) ? float2(1.0, 0.0) : tapRotation(coord);
     // At Tinted the fine share is 0 and the fine scatter would be thrown away: skip it.
     half3 soft = (uWideStrip >= 1.0 && uFineShare < 0.02)
         ? sharp
@@ -998,6 +1001,9 @@ half4 main(float2 coord) {
         // with no halo. The 0.7 calibrates the seven taps against the strip's own Gaussian: at
         // 1.0 the step response overshoots by 11 levels, at 0.7 by none.
         half3 line = axisMeanAt(base + push, uWideKernel * 0.7 * mat, rot);
+        // A soft copy takes its detail against the wide kernel's own tone: the two-kernel mix,
+        // with no ghost copies of the glyphs along the bar ([GlassStyle.softDetail]).
+        line = mix(line, wide, half(clamp(uSoftDetail, 0.0, 1.0)));
         bg = wide + (bg - line) * half(clamp(uFineShare, 0.0, 1.0));
     }
 

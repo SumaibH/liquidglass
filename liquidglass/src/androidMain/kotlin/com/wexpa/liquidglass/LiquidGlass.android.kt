@@ -151,6 +151,7 @@ internal actual fun createGlassRenderEffect(
     shader.setFloatUniform("uHeldEdgeRecovery", uniforms.heldEdgeRecovery)
     shader.setFloatUniform("uHeldEdgeTone", uniforms.heldEdgeTone)
     shader.setFloatUniform("uHeldGlowFloor", uniforms.heldGlowFloor)
+    shader.setFloatUniform("uSoftDetail", uniforms.softDetail)
     shader.setFloatUniform("uRestMap", uniforms.restMap)
     shader.setFloatUniform(
         "uBody",

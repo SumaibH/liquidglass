@@ -73,7 +73,10 @@ level by 10-13 grey levels. The bar rests at 33 and the pill at 10-15 as iOS's d
 calibration is `GlassTabBarStyle.CalmRecordedSpace()`. The whole bar lifts for any touch, a tap
 included (`GlassTabBarStyle.touchLift`, off by default and on in dark `Calm()`): iOS's bar lights
 on every touch, and a tap's travelling pill, which shows the bar through it, needs that lift to read
-as bright as iOS's.
+as bright as iOS's. Its resting pill and held lens are clear glass with an offset rather than a
+tint, so the page shows through them as through iOS's (the pill darkens black to 10 yet passes an
+avatar under it), and page text under the bar is one soft copy (`GlassStyle.softDetail`) rather than
+a grainy, ghosted one.
 
 ## A neighbouring control: the search button
 
