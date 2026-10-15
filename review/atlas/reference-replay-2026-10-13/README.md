@@ -599,6 +599,35 @@ ink at 11.0 and 9.2 px rms (best shift -8 ms), against the docs/2 baseline's 31.
 
 ![Rest, held and tapped selector, pass 14 and pass 16 (our renders only, desktop Direct3D replay, deterministic 60 fps, inferred input; pass 14 predates the label and keypad glyph change)](pass16-levels.png)
 
+### Pass 17: the search button (15 October)
+
+iOS's Phone search button is its own glass, and IMG_6756 presses and pulls it seven times. Measured
+per frame in display colours: pressed, it grows 1.27 times and lightens from 32 to 95, joining the bar
+through a neck; pulled, it leaves its place with the finger (up to 114 px), 297-303 px tall and
+158-166 wide, dimming to 70; released, it springs back, and its edge away from the pull stays at its
+resting position while the near edge overshoots 32 px, so it lands squashed (154 x 182 px against a
+186 px rest) and rebounds. Ours was passive.
+
+The pull law was already in the library (`GlassInteraction.Pullable`, fitted on this button in
+September) but anchored to the layout, as generic controls are. `GlassPullShape.Free` keeps the
+measured travel and carries the glyph with the body; the landing floor gives the squash; the release
+spring is re-fitted on the leading edge (the centroid fit reads more damped because the floor halves
+the centroid's overshoot); the glow settles to 0.7 once dragged. The bar follows the button through
+`GlassAccessoryLink`, read while drawing: read during composition, its fused copy of the button
+trailed by a frame and showed as a ghost at landing speed. The finger is inferred from the body's
+travel through the modifier's own resistance (`.local/sxs/searchscript.py`).
+
+| Seven presses, ours against iOS (rms) | passive (pass 16) | pass 17 |
+| :-- | --: | --: |
+| Centre x / y | 14.3 / 41.1 px | 1.9 / 3.0 px |
+| Height / half-width | 6.4 / 4.4 px | 4.3 / 2.8 px |
+| Brightness | 19.1 levels | 8.0 levels |
+
+The rise peaks 106-109 px against iOS's 110-114; sideways pulls squash 8 px less across than
+iOS's. The CanvasKit and .NET ports do not have the free pull yet.
+
+![The search button at rest, pressed, pulled, landing and pulled toward the bar, pass 17 (our renders only, desktop Direct3D replay, deterministic 60 fps, inferred input)](pass17-search.png)
+
 ### Re-reading the landing evidence
 
 The removed impact model was calibrated to one frame, video 2 at 2.5567 s ("frame082": width
@@ -613,8 +642,8 @@ the impact. The narrowing itself is real and is listed below.
   88 against our 61 over the avatar); no tint or raw page share reproduces it (fits by replay). The
   resting pill reads 3 above iOS's on black pages. iOS's bar lights 33 ms before a tap's ink
   leaves; our inferred tap presses 16 ms before (finger timing).
-- iOS's search button presses (x1.27, 32 to 94), stretches toward the finger (up to 1.8:1) and
-  springs back (zeta ~0.5); ours is passive. Measured on the private dataset, not yet modelled.
+- Search button (pass 17): the rise peaks 3-6 px short; sideways pulls squash 8 px less across;
+  brightness 8 levels rms. The ports do not have the free pull.
 - Pass 14's level residuals (58 against 67, 62 against 64) were read on the sRGB-decoded recordings
   and are superseded above.
 - Wall landings (pass 13): rms 6.0 px right / 5.4 px left (pass 10: 5.5 / 4.1); the 9.9 s landing passes its rest by
@@ -634,6 +663,11 @@ the impact. The narrowing itself is real and is listed below.
 
 ## Verification
 
+- Pass 17: full library suite 391 cases, 364 passed, 27 optional showcase skips, 0 failures
+  (12 m); `:desktop:desktopTest` and `:sample:assembleDebug` passed. New: `GlassFreePullTest` (free
+  travel against anchored Adaptive, the landing floor, the stadium inside a stretched accessory).
+  Default shapes and presets unchanged. IMG_6756's first 34.4 s replayed on the desktop Direct3D path
+  (`.local/sxs/searchscore.py`); owner video `.local/comparisons/2026-10-15-pass16/IMG_6756-search.mp4`.
 - Passes 15-16: full library suite 388 cases, 361 passed, 27 optional showcase skips, 0 failures
   (`:liquidglass:jvmTest --rerun`, 26 m); `:desktop:desktopTest` and `:sample:assembleDebug`
   passed; CanvasKit port 35/35 (a new touch-lift check), .NET checks 13/13, with the Kotlin

@@ -242,6 +242,12 @@ fun Modifier.liquidGlass(
      * legacy profile.
      */
     lensFormation: Float = 0f,
+    /**
+     * Publishes this element's animated press and pull to a neighbour that fuses with it: pass the
+     * same link to [GlassTabBarAccessory.link] and the bar's outline follows the button as it is
+     * pressed and pulled away. Drawing only.
+     */
+    link: GlassAccessoryLink? = null,
 ): Modifier = liquidGlassCore(
     state = state,
     shape = shape,
@@ -256,6 +262,7 @@ fun Modifier.liquidGlass(
     lensFormation = lensFormation,
     body = null,
     endpointComposite = false,
+    materialDrawing = link?.drawing,
 )
 
 /**
@@ -330,12 +337,14 @@ internal fun Modifier.liquidGlassCore(
     // The size, for the same reason: reading `coordinates.size` in composition never sees a
     // resize in place, so the field, the band, the pad and the drag policy kept the first size.
     var layoutSize by remember { mutableStateOf(IntSize.Zero) }
+    val density = LocalDensity.current
     val (press, pressModifier) = rememberGlassPress(
         enabled = interaction != null,
         source = pressSource,
+        pullLiftShare = interaction?.pullLiftShare ?: 1f,
+        freeGlow = interaction?.pullShape == GlassPullShape.Free,
+        moveThreshold = 4f * density.density,
     )
-
-    val density = LocalDensity.current
     val direction = LocalLayoutDirection.current
     val measured = Size(layoutSize.width.toFloat(), layoutSize.height.toFloat())
     val footprint=rememberGlassFootprint(shape,measured,density,direction,materialDrawing!=null)
@@ -422,16 +431,25 @@ internal fun Modifier.liquidGlassCore(
         targetValue = if (pullDown) press.pullX * compliance * dragShare else 0f,
         animationSpec = if (interaction?.response == GlassResponse.Calm) {
             if (pullDown) GlassMotion.CalmFollow else GlassMotion.CalmUp
-        } else if (pullDown) GlassMotion.PullFollow else GlassMotion.PullRelease,
+        } else if (pullDown) GlassMotion.PullFollow
+        else if (interaction?.pullShape == GlassPullShape.Free) GlassMotion.FreeRelease else GlassMotion.PullRelease,
         label = "glass_pull_x",
     )
     val pullY by animateFloatAsState(
         targetValue = if (pullDown) press.pullY * compliance * dragShare else 0f,
         animationSpec = if (interaction?.response == GlassResponse.Calm) {
             if (pullDown) GlassMotion.CalmFollow else GlassMotion.CalmUp
-        } else if (pullDown) GlassMotion.PullFollow else GlassMotion.PullRelease,
+        } else if (pullDown) GlassMotion.PullFollow
+        else if (interaction?.pullShape == GlassPullShape.Free) GlassMotion.FreeRelease else GlassMotion.PullRelease,
         label = "glass_pull_y",
     )
+    // [GlassPullShape.Free]: the direction the body was last pulled in, which its landing squashes
+    // against ([glassFreeLanding]). Kept after the lift for the whole ring-down.
+    var freeAnchor by remember { mutableStateOf(Float.NaN) }
+    if (pullDown && interaction?.pullShape == GlassPullShape.Free &&
+        kotlin.math.hypot(press.pullX, press.pullY) > 4f * density.density) {
+        freeAnchor = kotlin.math.atan2(press.pullY, press.pullX) * (180f / kotlin.math.PI.toFloat())
+    }
     val pullDeformation = if (pullEnabled && interaction != null) {
         // The element's extent along the pull, as it is while pressed.
         val px = pullX
@@ -439,6 +457,13 @@ internal fun Modifier.liquidGlassCore(
         val radius = shape.glassRadii(measured, direction, density).minOrNull() ?: 0f
         val deformation = glassMaterialPull(measured.width, measured.height, radius,
             density.density, pressScaleX, pressScaleY, px, py, pullCentreLimit, interaction).let {
+            if (interaction.pullShape != GlassPullShape.Free) it else {
+                // The resting half extent along the anchor (a round button: its radius).
+                val a = freeAnchor * (kotlin.math.PI.toFloat() / 180f)
+                glassFreeLanding(it, freeAnchor, kotlin.math.hypot(measured.width / 2f * kotlin.math.cos(a),
+                    measured.height / 2f * kotlin.math.sin(a)))
+            }
+        }.let {
             // Scaling the extra reach about the centre, then moving it toward the finger by half
             // of it, leaves the far edge where the ordinary press puts it.
             if (reach == 0f) it else it.copy(translationX = it.translationX + reach * measured.width / 2f)
@@ -454,6 +479,9 @@ internal fun Modifier.liquidGlassCore(
 
     // Publish the already animated, viewport-bounded result once. Both ink variants read
     // it during drawing, so they do not run separate springs or transform pointer targets.
+    // [GlassPullShape.Free]: the content travels and stretches with the body.
+    val contentFollows = pullEnabled && interaction?.pullShape == GlassPullShape.Free
+
     SideEffect {
         materialDrawing?.drawing = GlassMaterialDrawing(pullDeformation, pressScaleX, pressScaleY,
             Offset(measured.width / 2f, measured.height / 2f), footprint,
@@ -518,7 +546,8 @@ internal fun Modifier.liquidGlassCore(
                     withGlassMaterialPull(pullDeformation, materialPressX, materialPressY) {
                         drawGlassFallback(style, light, radii, style.bevel.toPx())
                     }
-                    drawContent()
+                    if (contentFollows) withGlassMaterialPull(pullDeformation, materialPressX, materialPressY) {
+                        this@drawWithContent.drawContent() } else drawContent()
                     return@drawWithContent
                 }
                 val fusePx = fuse?.toMaterialPx(size, this, pullDeformation, materialPressX, materialPressY)
@@ -802,7 +831,8 @@ internal fun Modifier.liquidGlassCore(
                             }
                         }
                     } else {
-                        drawContent()
+                        if (contentFollows) withGlassMaterialPull(pullDeformation, materialPressX, materialPressY) {
+                            this@drawWithContent.drawContent() } else drawContent()
                     }
                     return@drawWithContent
                 }
@@ -811,7 +841,8 @@ internal fun Modifier.liquidGlassCore(
             withGlassMaterialPull(pullDeformation, materialPressX, materialPressY) {
                 drawGlassFallback(style, light, radii, style.bevel.toPx())
             }
-            drawContent()
+            if (contentFollows) withGlassMaterialPull(pullDeformation, materialPressX, materialPressY) {
+                this@drawWithContent.drawContent() } else drawContent()
         }
 }
 
@@ -835,12 +866,29 @@ class GlassFuse(
      */
     val anchored: Boolean = false,
 ) {
+    /**
+     * The neighbour's own press and pull ([GlassTabBarAccessory.link]); [bounds] is then where it
+     * is laid out. Read while drawing, after the neighbour has published this frame's value, so the
+     * outline does not trail a fast-moving neighbour by a frame.
+     */
+    internal var follow: GlassAccessoryLink? = null
+
     /** centre x, centre y (relative to the element's centre), half width, half height, radius, smoothing. */
     internal fun toPx(size: Size, density: Density): FloatArray = with(density) {
         val l = bounds.left.toPx()
         val t = bounds.top.toPx()
         val r = bounds.right.toPx()
         val b = bounds.bottom.toPx()
+        follow?.let { link ->
+            val drawn = link.drawing.drawing.accessoryExtents((r - l) / 2f, (b - t) / 2f)
+            // A stretched accessory is an ellipse; the outline reaches for the stadium inside it.
+            val stadium = glassInscribedStadium(drawn[2], drawn[3])
+            return floatArrayOf(
+                (l + r) / 2f + drawn[0] - size.width / 2f,
+                (t + b) / 2f + drawn[1] - size.height / 2f,
+                stadium[0], stadium[1], stadium[2], smoothing.toPx(),
+            )
+        }
         floatArrayOf(
             (l + r) / 2f - size.width / 2f,
             (t + b) / 2f - size.height / 2f,

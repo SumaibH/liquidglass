@@ -124,6 +124,18 @@ This file records user-visible development changes. Published artifacts are iden
     55), resting pill 14 on both pages (iOS 10 and 15).
   - Sample `PhoneScene`: tab labels Medium with 0.7 sp spacing and a wider keypad grid, measured
     against iOS (labels 11% wider at the same height; grid 72 x 69 px).
+- Pass 17 (15 October): iOS 26's Phone search button presses, pulls and lands.
+  - `GlassPullShape.Free` (new, opt-in): the body follows the finger, stretches and thins along
+    the pull, carries its content, and on release lands squashed against its resting edge away from
+    the pull before rebounding (`GlassMotion.FreeRelease`: 0.45 damping, 264 stiffness, fitted on the
+    leading edge of four releases, 4.8 px rms).
+  - `GlassInteraction.pullLiftShare` (new, default 1): the press glow settles to this share once the
+    finger moves (the search button: 0.7, from 95 to 70 grey levels).
+  - `GlassAccessoryLink`, `rememberGlassAccessoryLink()`, `liquidGlass(link = ...)`,
+    `GlassTabBarAccessory(link = ...)` (new, opt-in): the bar's outline follows the accessory as it
+    is pressed (a neck) and pulled away (the neck breaks), read while drawing so it never trails.
+  - Sample `PhoneScene`: the search button uses them. Against iOS over seven presses: centre 1.9 /
+    3.0 px rms (14.3 / 41.1 passive), height 4.3, width 2.8, brightness 8.0 levels (19.1).
 
 ### Added
 

@@ -156,9 +156,9 @@ trace was produced and no permission changes were made. See [performance](perfor
    iOS's and the left width series' first frames narrow up to 11.2 px less, both of the size of one
    frame of the inferred lift; the neck parts 100 ms late at one release (34.8 s). In display
    colours (since 15 October, five recordings) the rest, held and tap levels are within 0-4 grey
-   levels except a held lens over page content, which iOS brightens (docs/2: 88 against our 61), and
-   iOS's search button, which presses, stretches toward the finger and springs back while ours is
-   passive. Owner visual acceptance is pending.
+   levels except a held lens over page content, which iOS brightens (docs/2: 88 against our 61).
+   The search button presses, pulls and lands as iOS's does since pass 17 (centre 2-3 px rms); the
+   CanvasKit and .NET ports do not have the free pull yet. Owner visual acceptance is pending.
 2. Verify all directional extreme envelopes and Android composition on appropriate hardware.
 3. Resolve ordinary interaction/display performance and final wide/narrow Atlas visual acceptance.
 4. Additional host integrations, with executable evidence.

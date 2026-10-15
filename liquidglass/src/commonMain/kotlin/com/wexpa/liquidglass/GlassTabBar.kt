@@ -813,7 +813,11 @@ fun GlassTabBar(
                             trailingAccessory.fusion * (1f - glassAccessoryYield(poseHandle.formation, endEdge, barWidthPx, barHeightPx))
                         } else trailingAccessory.fusion,
                         anchored = true,
-                    )
+                    ).apply {
+                        // Where the accessory is drawn ([GlassTabBarAccessory.link]): its press growth
+                        // and pull move and reshape the rect the outline reaches for.
+                        follow = trailingAccessory.link
+                    }
                 }
             } else {
                 null
@@ -1896,13 +1900,19 @@ class GlassTabBarAccessory(
     val gap: Dp = 8.dp,
     val fusion: Dp = 6.dp,
     val yieldsToLens: Boolean = false,
+    /**
+     * The accessory's own press and pull, published by its [liquidGlass] (same link): the bar's
+     * outline reaches for where the accessory is drawn, so pressing it closes the gap through a
+     * neck and pulling it away breaks the neck, as on iOS. Null keeps the accessory's laid-out circle.
+     */
+    val link: GlassAccessoryLink? = null,
 ) {
     override fun equals(other: Any?): Boolean =
         other is GlassTabBarAccessory && size == other.size && gap == other.gap && fusion == other.fusion &&
-            yieldsToLens == other.yieldsToLens
+            yieldsToLens == other.yieldsToLens && link === other.link
 
-    override fun hashCode(): Int = ((size.hashCode() * 31 + gap.hashCode()) * 31 + fusion.hashCode()) * 31 +
-        yieldsToLens.hashCode()
+    override fun hashCode(): Int = (((size.hashCode() * 31 + gap.hashCode()) * 31 + fusion.hashCode()) * 31 +
+        yieldsToLens.hashCode()) * 31 + (link?.hashCode() ?: 0)
 }
 
 /**

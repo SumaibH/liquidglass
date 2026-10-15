@@ -148,6 +148,15 @@ Progress:
   the `calm+lens=a,grey,raw` replay variant): no tint/raw-share pair meets both pages (raw share
   saturates at ~75 on docs2; a brighter tint lifts black pages equally). Kept the black-page fit (13 of
   16 held moments); the page gain is a structural residual for a later pass.
+- Pass 17 (15 Oct): the search button. `GlassPullShape.Free` (body + glyph follow the finger, landing
+  floor squash), `GlassMotion.FreeRelease` (.45 / 264, near-edge fit), `GlassInteraction.pullLiftShare`
+  (.7), `GlassAccessoryLink` (bar outline follows the button, read at draw time; composition read
+  trailed a frame). Script: `.local/sxs/searchscript.py` (finger inverted through the modifier's
+  resistance) -> `ref/IMG_6756/search-script.txt`; score `searchscore.py IMG_6756 s4`: centre 1.9/3.0,
+  height 4.3, half-width 2.8 px, level 8.0 (passive 14.3/41.1/6.4/4.4/19.1). Tests GlassFreePullTest.
+  Ports: not ported (their interaction is the Calm preset). Owner video
+  `.local/comparisons/2026-10-15-pass16/IMG_6756-search.mp4`. NEXT: held-lens page gain; light App
+  Store / WhatsApp bars (LOLL8185 36-44 s has the App Store's dark bar too).
 - Pass 16 closed (15 Oct): all five replayed. Levels (ours - iOS): rest bar +0 (44), rest pill +3,
   held bar +0 (16), held lens -0.9 (black pages 0; docs2 -16, the page veil), tap pill at +170 ms -8
   (plateau matches; ours falls ~50 ms sooner). Tracking (holds/drags): IMG_6756 11.0, LOLL8185 9.2,

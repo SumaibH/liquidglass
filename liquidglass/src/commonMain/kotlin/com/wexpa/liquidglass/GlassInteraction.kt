@@ -34,6 +34,15 @@ enum class GlassPullShape {
      * These authored bounds fit selected Phone edges; finger gain is not identified.
      * Layout and ordinary labels stay fixed. Generic cards should keep Adaptive. */
     AreaPreserving,
+    /**
+     * A free-standing button pulled off its place, as iOS 26's Phone search button is: the body
+     * follows the finger by [GlassInteraction.pullFollow] (resisted by [GlassInteraction.pullLimit]),
+     * stretching along the pull and thinning across it, and its content moves and stretches with
+     * it. Drawing only: layout, hit targets and pointer coordinates stay where they were. The
+     * backdrop is still read at the button's layout position. Measured on IMG_6756 (display
+     * colours, 2026-10-15): the body rises up to 114 px, 297-303 px tall and 158-166 px wide.
+     */
+    Free,
 }
 
 /** Where the finger is on a panel and how far the press has come up, for the shader. */
@@ -129,6 +138,13 @@ data class GlassInteraction(
      * (video2, held throws and the reversal episode, 2026-10-14). Authored: its edges fit best at 0.7.
      */
     val dragPressShare: Float = 1f,
+    /**
+     * Share of the press glow ([pressLift] and [illumination]) that remains once the finger has
+     * moved more than 4 dp, reached over 0.35 s; one keeps it all. iOS 26's Phone search button
+     * reads 95 pressed and still and settles at 70 once dragged, any distance, against 32 at rest
+     * (IMG_6756 in display colours: 0.6 of the lift, 2026-10-15).
+     */
+    val pullLiftShare: Float = 1f,
 ) {
     companion object {
         val Default = GlassInteraction()
@@ -184,6 +200,15 @@ internal object GlassMotion {
      */
     val PullRelease = spring<Float>(dampingRatio = 0.51f, stiffness = 269f)
 
+    /**
+     * [GlassPullShape.Free]'s release. The same S01-family recordings fitted on the body's NEAR edge
+     * (the one leading the pull), which is what the travel drives once the far edge holds at rest
+     * ([glassFreeLanding]): four upward releases of IMG_6756 in display colours, 4.8 px rms, damping
+     * 0.45, 16.25 rad/s (2026-10-15). The centroid fit above reads more damped because the floored
+     * far edge halves the centroid's overshoot.
+     */
+    val FreeRelease = spring<Float>(dampingRatio = 0.45f, stiffness = 264f)
+
     /** Geometry during a morph: no visible overshoot on a large surface. */
     val Morph = spring<Float>(dampingRatio = 0.82f, stiffness = 380f)
 
@@ -192,6 +217,13 @@ internal object GlassMotion {
 
     /** And falls slowly enough that lifting off is not a snap. */
     val GlowOut = tween<Float>(durationMillis = 260)
+
+    /**
+     * [GlassPullShape.Free]'s glow after the lift, and its settling to [GlassInteraction.pullLiftShare]
+     * once dragged: IMG_6756's search button fades from 69 to 33 in 0.35 s with this curve, within
+     * 5% of the remaining lift at every frame of four releases (display colours, 2026-10-15).
+     */
+    val FreeGlow = tween<Float>(durationMillis = 350)
 
     /**
      * Materialising in and out. Apple: "instead of fading, Liquid Glass objects materialize in
@@ -262,6 +294,11 @@ fun rememberGlassPressSource(): GlassPressSource = remember { GlassPressSource()
 internal fun rememberGlassPress(
     enabled: Boolean,
     source: GlassPressSource?,
+    /** [GlassInteraction.pullLiftShare]; with [freeGlow], [GlassMotion.FreeGlow] after the lift. */
+    pullLiftShare: Float = 1f,
+    freeGlow: Boolean = false,
+    /** px past which the finger has moved for [pullLiftShare]. */
+    moveThreshold: Float = Float.POSITIVE_INFINITY,
 ): Pair<GlassPress, Modifier> {
     if (!enabled) return GlassPress.None to Modifier
 
@@ -280,9 +317,15 @@ internal fun rememberGlassPress(
     var downPoint by remember { mutableStateOf(Offset.Zero) }
     var pull by remember { mutableStateOf(Offset.Zero) }
     var pulling by remember { mutableStateOf(false) }
+    var moved by remember { mutableStateOf(false) }
     val amount by animateFloatAsState(
-        targetValue = if (down) 1f else 0f,
-        animationSpec = if (down) GlassMotion.GlowIn else GlassMotion.GlowOut,
+        targetValue = if (!down) 0f else if (moved) pullLiftShare.coerceIn(0f, 1f) else 1f,
+        animationSpec = when {
+            down && moved -> GlassMotion.FreeGlow
+            down -> GlassMotion.GlowIn
+            freeGlow -> GlassMotion.FreeGlow
+            else -> GlassMotion.GlowOut
+        },
         label = "glass_press_amount",
     )
 
@@ -292,6 +335,7 @@ internal fun rememberGlassPress(
             point = first.position
             downPoint = first.position
             pull = Offset.Zero
+            moved = false
             down = true
             pulling = true
             try {
@@ -300,6 +344,7 @@ internal fun rememberGlassPress(
                     if (!change.pressed || (change.isConsumed && change.position != change.previousPosition)) break
                     point = change.position
                     pull = change.position - downPoint
+                    if (pull.getDistance() > moveThreshold) moved = true
                 }
             } finally {
                 down = false

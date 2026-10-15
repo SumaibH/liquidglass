@@ -95,7 +95,10 @@ private fun replay(args: Array<String>) {
             if (atlas) LoupeScreen(initialScene = initial)
             else {
                 var selected by remember { mutableIntStateOf(initial) }
-                PhoneScene(selected, { selected = it }, palette = palette, style = style)
+                // "+passive": the search button without press and pull, as rendered before 15 October.
+                PhoneScene(selected, { selected = it }, palette = palette, style = style,
+                    search = if ("+passive" in variant) null else com.wexpa.liquidglass.GlassInteraction.Pullable.copy(
+                        pullShape = com.wexpa.liquidglass.GlassPullShape.Free, pullLiftShare = 0.7f))
             }
         }
         // ImageComposeScene draws into a CPU raster. Reuse its scene and frame clock, but draw

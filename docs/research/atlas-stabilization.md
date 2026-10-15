@@ -136,8 +136,9 @@ selector reads 10-15, its held lens over a black page matches, and a tap's trave
 47-51 against iOS's 48-53. The last needed a behaviour, not a level: iOS lifts the whole bar for
 any touch, a tap included (`GlassTabBarStyle.touchLift`). Two differences remain open. iOS's held
 lens brightens page content under it (an avatar reads brighter through it than without it), which
-neither tint nor raw page share reproduces. And iOS's search button presses, stretches toward the
-finger and springs back, while ours is passive. The calibration made against the sRGB reading is
+neither tint nor raw page share reproduces. iOS's search button presses, stretches toward the
+finger and lands squashed against its resting edge; since pass 17 ours does too
+(`GlassPullShape.Free`, `GlassAccessoryLink`), within 2-3 px of iOS's centre over seven presses. The calibration made against the sRGB reading is
 kept as `GlassTabBarStyle.CalmRecordedSpace()`.
 
 ## Why the magnifier is continuous

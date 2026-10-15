@@ -90,6 +90,9 @@ fun PhoneScene(
     palette: PhonePalette = PhonePalette.Recorded,
     style: GlassTabBarStyle = PhoneGeometry.style(GlassTabBarStyle.Calm()),
     scroll: Float = 0f,
+    // The search button presses and pulls off its place as iOS's does (GlassInteraction.Pullable is
+    // fitted on this button's own episodes in IMG_6756); null keeps it passive, as before 15 October.
+    search: GlassInteraction? = GlassInteraction.Pullable.copy(pullShape = GlassPullShape.Free, pullLiftShare = 0.7f),
 ) {
     val state = rememberLiquidGlassState(palette.page)
     Box(modifier.size(PhoneGeometry.width, PhoneGeometry.height).background(palette.page)) {
@@ -100,17 +103,20 @@ fun PhoneScene(
             }
         }
         val barTop = PhoneGeometry.barCentreY - PhoneGeometry.barHeight / 2
+        // The bar's outline follows the search button as it is pressed and pulled away.
+        val searchLink = if (search != null) rememberGlassAccessoryLink() else null
         GlassTabBar(
             state, 3, selected, onSelected,
             Modifier.offset(PhoneGeometry.barLeft, barTop).width(PhoneGeometry.barWidth).testTag("phone-bar"),
             style = style,
             // The search button is separate glass the bar fuses with while pressed.
             trailingAccessory = GlassTabBarAccessory(PhoneGeometry.barHeight,
-                gap = PhoneGeometry.searchLeft - PhoneGeometry.barLeft - PhoneGeometry.barWidth, yieldsToLens = true),
+                gap = PhoneGeometry.searchLeft - PhoneGeometry.barLeft - PhoneGeometry.barWidth, yieldsToLens = true,
+                link = searchLink),
         ) { index, isSelected -> PhoneTab(index, if (isSelected) palette.accent else palette.ink) }
         Box(
             Modifier.offset(PhoneGeometry.searchLeft, barTop).size(PhoneGeometry.barHeight)
-                .liquidGlass(state, CircleShape, style.bar, light = style.light),
+                .liquidGlass(state, CircleShape, style.bar, light = style.light, interaction = search, link = searchLink),
             contentAlignment = Alignment.Center,
         ) {
             Canvas(Modifier.size(26.dp)) { searchGlyph(palette.ink) }

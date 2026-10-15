@@ -101,6 +101,29 @@ Box {
 }
 ```
 
+To make the button press and pull as iOS's does, give it the free pull and link it to the bar.
+The button then grows by 8 dp a side and lightens when pressed, joining the bar through a neck.
+Pulled, it leaves its place with the finger, stretching up to about 1.3 times along the pull and
+thinning across it, and its glyph travels with it. On release it springs back, lands squashed
+against its resting edge and rebounds:
+
+```kotlin
+val link = rememberGlassAccessoryLink()
+GlassTabBar(..., trailingAccessory = GlassTabBarAccessory(size = 62.dp, gap = 8.dp, link = link))
+Box(
+    Modifier.offset(x = 307.dp).size(62.dp).liquidGlass(
+        glass, CircleShape, GlassTabBarStyle.Calm().bar,
+        interaction = GlassInteraction.Pullable.copy(pullShape = GlassPullShape.Free, pullLiftShare = 0.7f),
+        link = link,
+    ),
+    contentAlignment = Alignment.Center,
+) { SearchIcon() }
+```
+
+Against iOS 26's own search button (seven presses and pulls in one recording, display colours), its
+centre stays within 2-3 px rms, its height and width within 3-5 px, and its brightness within 8
+grey levels. Layout, hit targets and pointer coordinates stay where the button is laid out.
+
 The bar never draws or moves the accessory. Its outline is a smooth union with the accessory's
 circle (`fusion`, 6 dp by default), anchored so only the bar's own press growth closes the gap;
 a `fusion` under twice the `gap` keeps them apart at rest. Reduced motion disables the fusion.
