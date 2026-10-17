@@ -103,6 +103,8 @@ fun PhoneScene(
     search: GlassInteraction? = GlassInteraction.Pullable.copy(pullShape = GlassPullShape.Free, pullLiftShare = 0.6f),
     // LiquidGlassState.renderScale: the glass layers recorded at this fraction of full resolution.
     renderScale: Float = 1f,
+    // GlassTabBarAccessory.lensFusion: a held lens at the search end reaches the button through a neck.
+    lensFusion: androidx.compose.ui.unit.Dp = 12.dp,
 ) {
     val state = rememberLiquidGlassState(palette.page, renderScale = renderScale)
     Box(modifier.size(PhoneGeometry.width, PhoneGeometry.height).background(palette.page)) {
@@ -122,7 +124,7 @@ fun PhoneScene(
             // The search button is separate glass the bar fuses with while pressed.
             trailingAccessory = GlassTabBarAccessory(PhoneGeometry.barHeight,
                 gap = PhoneGeometry.searchLeft - PhoneGeometry.barLeft - PhoneGeometry.barWidth, yieldsToLens = true,
-                link = searchLink),
+                lensFusion = lensFusion, link = searchLink),
         ) { index, isSelected -> PhoneTab(index, if (isSelected) palette.accent else palette.ink) }
         Box(
             Modifier.offset(PhoneGeometry.searchLeft, barTop).size(PhoneGeometry.barHeight)

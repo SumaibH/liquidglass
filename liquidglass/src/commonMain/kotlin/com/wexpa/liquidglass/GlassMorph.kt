@@ -81,6 +81,10 @@ fun lerpGlassStyle(start: GlassStyle, stop: GlassStyle, fraction: Float): GlassS
         fresnel = f(start.fresnel, stop.fresnel),
         highlightChroma = f(start.highlightChroma, stop.highlightChroma),
         contactShadow = f(start.contactShadow, stop.contactShadow),
+        contactShadowInside = f(start.contactShadowInside, stop.contactShadowInside),
+        bodyBandScale = f(start.bodyBandScale, stop.bodyBandScale),
+        contactShadowBlur = d(start.contactShadowBlur, stop.contactShadowBlur),
+        contactShadowOffset = d(start.contactShadowOffset, stop.contactShadowOffset),
         innerShadow = f(start.innerShadow, stop.innerShadow),
         // Not interpolated: these are decisions, not quantities. A half-inverted element or a
         // half-opaque fallback is not a state anything wants to be in, so they snap at the

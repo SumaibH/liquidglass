@@ -14,8 +14,9 @@ class GlassFreePullTest {
     private val free = GlassInteraction.Pullable.copy(pullShape = GlassPullShape.Free)
 
     @Test fun aFreeBodyFollowsTheFingerWhileAdaptiveStaysAnchored() {
-        // A 62 dp button at 3 px/dp, pressed 1.258, pulled 314 px up (resisted): IMG_6756's 110 px rise.
-        val args = floatArrayOf(186f, 186f, 93f, 3f, 1.258f, 1.258f, 0f, -314f, 117f)
+        // A 62 dp button at 3 px/dp, pressed 1.258, pulled 550 px up (resisted): IMG_6756's 110 px rise
+        // at Pullable's follow of 0.2 (0.35 before 18 October reached it at 314 px).
+        val args = floatArrayOf(186f, 186f, 93f, 3f, 1.258f, 1.258f, 0f, -550f, 117f)
         fun pull(i: GlassInteraction) = glassMaterialPull(args[0], args[1], args[2], args[3], args[4], args[5],
             args[6], args[7], args[8], i)
         val f = pull(free)

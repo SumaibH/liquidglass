@@ -205,11 +205,13 @@ morphs between, exposed so a host can start from them.
 falling over 260 ms after the lift), as iOS's bar lifts on every touch; off by default, on in dark
 `Calm()`. `CalmRecordedSpace()` is dark Calm as calibrated before 15 October, against recordings
 decoded as if they were sRGB. `CalmClear()` is dark Calm with the clearer bar of WhatsApp's and the
-App Store's iOS bars (black at 0.10 instead of 0.41 over the same lift, and `legibility` 2.5 so it
-darkens over text as iOS's does; light appearance unchanged; [tab bar guide](tab-bar.md#a-clearer-bar)).
+App Store's iOS bars (black at 0.10 instead of 0.41 over the same lift, `legibility` 2 and a 7 dp blur
+so text under it is one soft copy as iOS's is; in light appearance WhatsApp's resting pill;
+[tab bar guide](tab-bar.md#a-clearer-bar)).
 `Calm(dark = false)` is measured on the owner's light recording (17 October): a bar passing 0.59 of the
 page plus 115 (white at 0.41 plus 10/255) with a darker rim and a faint shadow, a clear resting pill
-13/255 below it, a clear held lens with a light outline (243/255), touch lift and dark Calm's tap optics.
+10/255 below it, a clear held lens with a light outline (243/255) and a tight shadow under it, touch
+lift and dark Calm's tap optics.
 `CalmRecordedSpace(false)` keeps the light preset it replaced ([tab bar guide](tab-bar.md#light-appearance)).
 
 `slotWidth` lays the tabs on equal slots of that width centred in the bar, instead of sharing the
@@ -820,6 +822,11 @@ advanced tab-bar/container integration. `glass` does not make a button clickable
 | `GlassSelectorSpec.response` | Chooses the pose response family; default `Expressive` preserves V3. Other legacy fields still belong to the old horizontal controller. |
 | `GlassTabBarStyle.barInteraction` | Optional whole-bar feedback, default null; `Calm()` enables it and keeps label layout fixed. |
 | `GlassTabBarStyle.deformItemsWithBar` | Appended option, false for older presets and true in `Calm()`. Shares the material's resolved drawing transform with both ink variants; layout, hit targets and selector travel remain independent. Generic card foreground is unchanged. |
+| `GlassTabBarStyle.itemsFollowBarPress` | Appended option, default true. False: the ink and the selector's anchor follow the bar's press growth only as far as the selector has formed, so a tap leaves the icons in place and a hold carries them. `Calm()` uses false (18 October). |
+| `GlassTabBarStyle.tapTransitFold` | Appended option, default NaN (follows `tapOpticsFold`). The fold of a tapped selector while it travels; 0 shows the held lens's own optics, as a throw does. `Calm()` uses 0. |
+| `GlassTabBarAccessory.lensFusion` | Appended parameter, default 0 dp. With `yieldsToLens`, a formed lens at the accessory's end joins it through a neck of this strength. |
+| `GlassStyle.bodyBandScale` | Appended parameter, default 1. Scale on a selector body's refraction band (0.6 of its radius). `Calm()`'s lens uses 0.3. |
+| `GlassStyle.contactShadowInside`, `contactShadowBlur`, `contactShadowOffset` | Appended parameters, defaults 1, unspecified, unspecified. The share of the contact shadow drawn into the refracted backdrop, and the shadow's blur and downward offset (unspecified: sized from the panel). Light `Calm()`'s lens uses 0.5, 6 dp, 5 dp. |
 | `GlassPressSource.press(localPosition, pullOffset = Offset.Zero)` | Local pixels; optional displacement since down for a gesture owned by the host. Rejects non-finite coordinates. Call `release()` on up **and cancellation**. |
 
 `Lens` reuses `heldMagnification` internally as `1 - 1 / magnification`; prefer the factory to setting

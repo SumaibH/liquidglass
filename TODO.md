@@ -147,6 +147,16 @@ Progress:
   the `calm+lens=a,grey,raw` replay variant): no tint/raw-share pair meets both pages (raw share
   saturates at ~75 on docs2; a brighter tint lifts black pages equally). Kept the black-page fit (13 of
   16 held moments); the page gain is a structural residual for a later pass.
+- 18 Oct (owner device check, 6 points), branch claude/residuals-2: (2) icons: Calm itemsFollowBarPress=false
+  (follow bar only by held formation; iOS taps hold within 0.1 px, holds move 14 px; .local/sxs/icontrack.py);
+  (6) taps: tapTransitFold=0 (held optics on tap travel; fold smeared ink); (1) two glasses: lens bodyBandScale .3
+  (bar outline no longer a second capsule; hazescore within 2); (4) Pullable follow .2/.124 (owner: too
+  sensitive); (3) GlassTabBarAccessory.lensFusion (sample 12 dp) + shader fuse on selector bodies; (5) bar ends
+  refraction OPEN (edgeFold garbles straight runs; foldAtCorners needs formation; GlassRestMap.Measured barely
+  bends). Also: per-app light pills (Calm -10, CalmClear -19, App Store scene 0), light lens shadow geometry
+  (contactShadowBlur/Offset/Inside), CalmClear dark blur 7 dp + legibility 2 (68/79 vs 69/80). Raw-page clamp
+  tried and reverted (no effect on dark top band; haze above bar is heldGlow). Replay knobs: +tap, +lshadow,
+  +barfold, +barrest, +lring, +lband, +lfuse. Suite 401/0/27; ports 40/14/15.
 - 18 Oct, claude/residuals: selector contact shadow cast by the lens body (was the whole bar's node rect);
   light Calm lens contactShadow .5 (below-lens rms 2.6 vs IMG_7048); search width ratio 1.0 confirmed
   (0.8/0.6 worse); "sideways squash" is a release overshoot (iOS 6 px past rest vs 2); App Store light pill

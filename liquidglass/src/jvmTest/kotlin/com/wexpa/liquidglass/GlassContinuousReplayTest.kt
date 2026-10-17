@@ -93,8 +93,16 @@ class GlassContinuousReplayTest {
     }
 
     @Test fun aMovingSelectorMirrorsItsCapsAndAStillHoldKeepsTheHeldMap() {
-        val style = GlassTabBarStyle.Calm()
-        // A tap in transit: the folding rim mirror at the caps, at its transit strength.
+        // Calm since 18 October: a tap in transit shows the held lens's own optics, as a throw does
+        // (tapTransitFold 0), and never folds.
+        val calm = GlassTabBarStyle.Calm()
+        val calmTransit = glassSelectorMaterial(calm, 0.05f, 0.9f)
+        assertEquals(GlassProfile.Held, calmTransit.profile); assertEquals(0f, calmTransit.rimMirror)
+        assertEquals(0f, glassSelectorFormation(calm, 0.05f, 0.9f, 0f))
+        // A held lens's travel keeps its rim mirror at the caps.
+        assertEquals(0.6f, glassSelectorFormation(calm, 1f, 0f, 0.6f), 1e-6f)
+        // The fold it replaced stays on CalmRecordedSpace: the folding rim mirror at the caps.
+        val style = GlassTabBarStyle.CalmRecordedSpace()
         val transit = glassSelectorMaterial(style, 0.05f, 0.9f)
         assertEquals(GlassProfile.Measured, transit.profile)
         assertEquals(GlassSelectorTransitFoldCorners, transit.foldAtCorners); assertTrue(transit.rimMirror > 0f)
@@ -104,7 +112,7 @@ class GlassContinuousReplayTest {
         assertEquals(GlassProfile.Held, held.profile)
         assertEquals(0f, glassSelectorFormation(style, 1f, 0f, 0f))
         assertEquals(0.6f, glassSelectorFormation(style, 1f, 0f, 0.6f), 1e-6f)
-        assertTrue(style.lensInkAll)
+        assertTrue(calm.lensInkAll)
         // Historical styles never fold or mirror.
         val v3 = GlassTabBarStyle.V3()
         assertEquals(0f, glassSelectorFormation(v3, 0.05f, 0.9f, 0.6f))

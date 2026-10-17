@@ -53,7 +53,9 @@ response, around the bar's centre. Layout, accessibility bounds and pointer coor
 fixed. A same-gesture iOS audit shows that leaving visible glyphs fixed misses their vertical
 position by up to13.5px. One shared animated result drives the material and both ink variants;
 there are no duplicate springs or widget translations. Set `deformItemsWithBar = false` to retain
-fixed item drawing. Older presets default to false. This does not change generic card text.
+fixed item drawing. Older presets default to false. This does not change generic card text. Since
+18 October `Calm()` also sets `itemsFollowBarPress = false`: the items follow only while the lens is
+held, because iOS's icons hold still on a tap (within 0.1 px) and follow the bar on a hold.
 
 `GlassPullShape.Free` is the exception for a free-standing button, such as iOS 26's Phone search
 button: the body leaves its place with the finger (`pullFollow`, resisted by `pullLimit`), stretches

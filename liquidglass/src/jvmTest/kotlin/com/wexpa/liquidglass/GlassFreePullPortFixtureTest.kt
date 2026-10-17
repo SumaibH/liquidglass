@@ -114,7 +114,7 @@ class GlassFreePullPortFixtureTest {
 
     @Test fun freeButtonTrajectoriesForPorts() {
         val json = "{\"button\":{\"size\":186,\"density\":3,\"pressScale\":1.26,\"pressGrowth\":8,\"pressLift\":0.2," +
-            "\"pullFollow\":0.35,\"pullElongation\":0.217,\"pullWidthRatio\":1,\"pullLimit\":0.5,\"pullLiftShare\":${interaction.pullLiftShare}},\n" +
+            "\"pullFollow\":${interaction.pullFollow},\"pullElongation\":${interaction.pullElongation},\"pullWidthRatio\":1,\"pullLimit\":0.5,\"pullLiftShare\":${interaction.pullLiftShare}},\n" +
             "\"frameFields\":[\"t\",\"glow\",\"pressScale\",\"along\",\"across\",\"angle\",\"tx\",\"ty\",\"pullX\"],\n" +
             "\"scenarios\":[\n" + scenarios().joinToString(",\n") + "]}\n"
         val file = File("../ports/skia/fixtures/free-button.json")

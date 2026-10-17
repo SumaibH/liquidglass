@@ -42,9 +42,14 @@ object AppStoreGeometry {
     val itemInset = 13.67.dp
     val pillWidth = 83.7.dp
 
-    /** [base] with this scene's bar height, end padding and resting pill width. */
-    fun style(base: GlassTabBarStyle): GlassTabBarStyle =
-        base.copy(height = PhoneGeometry.barHeight, contentPadding = itemInset, pillWidth = pillWidth)
+    /**
+     * [base] with this scene's bar height, end padding and resting pill width. In [light] appearance
+     * the resting pill is invisible over white (IMG_7048 at 95 and 98 s: 255), so it sits at the bar's level.
+     */
+    fun style(base: GlassTabBarStyle, light: Boolean = false): GlassTabBarStyle =
+        base.copy(height = PhoneGeometry.barHeight, contentPadding = itemInset, pillWidth = pillWidth).let {
+            if (light) it.copy(pill = it.pill.copy(tintLift = 0f)) else it
+        }
 }
 
 private val AppStoreLabels = listOf("Today", "Games", "Apps", "Arcade", "Search")
