@@ -58,7 +58,7 @@ uniform float   uFormation;    // measured lens: 0 a committed pull (small inwar
 uniform float   uHeldLens;     // GlassProfile.Held: how far the tab-bar lens has formed, 0 to 1
 uniform float   uHeldMagnification; // interior zoom of the held lens at full formation (GlassStyle.heldMagnification)
 uniform float   uHeldGlow;     // share of the held lens inward rim glow that is drawn (GlassStyle.heldGlow)
-uniform float   uFoldCorners;  // 0 folds every edge, 1 only corner arcs (GlassStyle.foldAtCorners)
+uniform float   uFoldCorners;  // 0 folds every edge, 1 only corner arcs (GlassStyle.foldAtCorners); 1 + c also lenses the arcs at rest by c (GlassStyle.capFold)
 uniform float   uRimMirror;    // reflective rim band fraction for the measured family; 0 the fold (GlassStyle.rimMirror)
 uniform float   uRimMirrorGain; // mirrored depth per unit of band; 0 or 1 the plain mirror (GlassStyle.rimMirrorGain)
 uniform float   uHeldGlowFloor; // 0 adds the held glow, 1 lays it as a floor under darker glass (GlassStyle.heldGlowFloor)
@@ -512,10 +512,14 @@ half4 main(float2 coord) {
         float heldFamily = step(1.5, uProfile);
         float held = heldFamily * clamp(uHeldLens, 0.0, 1.0);
         float src = mix(measuredSource(u, uFormation * mix(1.0, corner, clamp(uFoldCorners, 0.0, 1.0)), corner), mix(u, heldMirror(u, heldSource(u), corner), held), heldFamily);
+        // GlassStyle.capFold (uFoldCorners above 1): the rounded ends of a resting bar lens what lies
+        // beyond them, as the held lens does, while its straight runs keep the rest offset.
+        float capLens = clamp(uFoldCorners - 1.0, 0.0, 1.0) * corner * (1.0 - heldFamily);
+        src = mix(src, heldSource(u), capLens);
         float shift = (depth < W) ? (src * W - depth) : 0.0;
         // The fold samples inward only; the held lens pulls the exterior in, so its shift may
         // point outward, into the margin the host recorded for it.
-        shift = mix(max(shift, 0.0), shift, heldFamily) * mat * axisFade * smoothstep(0.0, 1.5, depth);
+        shift = mix(max(shift, 0.0), shift, max(heldFamily, capLens)) * mat * axisFade * smoothstep(0.0, 1.5, depth);
         // Dispersion lives in the fold's mirrored zone, and in the held lens's whole outer band.
         // The colour split lives where the fold does: at the caps when uFoldCorners confines it.
         float foldMask = mix(1.0, corner, clamp(uFoldCorners, 0.0, 1.0));

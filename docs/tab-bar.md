@@ -92,8 +92,14 @@ Six notes from a check on a phone, each compared with the iOS recordings and cha
 - **The search button.** It follows a held swipe at 0.2 of the finger's travel (was 0.35).
 - **The lens at the search end.** A held lens there joins the button through a neck
   (`GlassTabBarAccessory.lensFusion`), as iOS's does, instead of stopping short of it.
-- **Text under the bar's ends.** iOS bends what lies under the bar's rounded ends; Calm's bar has no
-  edge fold (it garbled text along the straight runs). Still open.
+- **Text under the bar's ends.** iOS's rounded ends lens what lies beyond them: an icon's edge outside
+  the bar shows ~30 px inside its cap. Calm's bar now does the same at its ends only
+  (`GlassStyle.capFold`), leaving the straight runs alone, where a fold garbled text.
+
+![The bar's left end over an avatar, before and with its cap lens, dark and light](https://raw.githubusercontent.com/shayann07/liquidglass/main/review/atlas/reference-replay-2026-10-13/bar-ends.png)
+
+*Our renders only, desktop GPU replay at 3x, branch `claude/bar-ends`: before (left) and with
+`capFold` 1 (right).*
 
 ![Tap travel before and after, the held lens's rim band, and the lens's neck to the search button](https://raw.githubusercontent.com/shayann07/liquidglass/main/review/atlas/reference-replay-2026-10-13/owner-check-2026-10-18.png)
 

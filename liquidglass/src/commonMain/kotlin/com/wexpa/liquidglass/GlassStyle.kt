@@ -467,6 +467,15 @@ data class GlassStyle(
      */
     val foldAtCorners: Float = 0f,
     /**
+     * Lens the outline's corner arcs at rest, 0 to 1, with [GlassProfile.Measured]: the rounded ends of
+     * a capsule pull in what lies beyond them as the held lens's map does, while the straight runs keep
+     * their shallow rest offset. Zero, the default, leaves the arcs on the rest map. iOS 26's tab bar
+     * bends the page under its rounded ends, an icon's edge outside the bar showing ~30 px inside its cap
+     * (the owner's Contacts recording, IMG_7049, 18 October); a fold along the straight runs garbles
+     * text, so `Calm()` uses this instead of [edgeFold].
+     */
+    val capFold: Float = 0f,
+    /**
      * With [GlassProfile.Measured] and a formation, replace the measured fold with a reflective
      * rim: within this fraction b of the band a pixel at depth u shows the content at depth
      * 2b - u, mirrored about b, and the interior is shown in place. Continuous, with no hidden

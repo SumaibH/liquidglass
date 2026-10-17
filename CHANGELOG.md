@@ -7,6 +7,12 @@ This file records user-visible development changes. Published artifacts are iden
 
 ### Changed (18 October, the owner's device check)
 
+- `GlassTabBarStyle.Calm()`: the bar's rounded ends lens what lies beyond them (`GlassStyle.capFold`,
+  new, default 0; 1 in `Calm()`), as iOS's do (an icon's edge outside the bar shows ~30 px inside its cap,
+  IMG_7049); the straight runs keep their rest offset, since a fold there garbled text. Before, the caps
+  sampled inward only and mirrored the letters under them. Ports follow through the exported material
+  and shaders.
+
 - `GlassTabBarStyle.Calm()`: the tab icons stay where they are laid out on a tap and follow the bar's
   growth only while the lens is held (`GlassTabBarStyle.itemsFollowBarPress`, new, false in `Calm()`).
   iOS's icons hold within 0.1 px through a tap and move 14 px out (4% larger) on a hold (IMG_7048);

@@ -573,7 +573,8 @@ internal fun Modifier.liquidGlassCore(
                         heldMagnification = style.heldMagnification.coerceIn(0f, 0.6f),
                         heldGlow = style.heldGlow.coerceIn(0f, 2f),
                         heldGlowReach = style.heldGlowReach.toPx().coerceAtLeast(0f),
-                        foldCorners = style.foldAtCorners.coerceIn(0f, 1f),
+                        // GlassStyle.capFold rides on the same uniform above 1: arcs only, folded at rest.
+                        foldCorners = if (style.capFold > 0f) 1f + style.capFold.coerceIn(0f, 1f) else style.foldAtCorners.coerceIn(0f, 1f),
                         rimMirror = style.rimMirror.coerceIn(0f, 1f),
                         rimMirrorGain = style.rimMirrorGain.coerceIn(.05f, 1f),
                         heldEdgeRecovery = style.heldEdgeRecovery.toPx().coerceAtLeast(0f),
@@ -1537,7 +1538,7 @@ internal fun GlassStyle.recordPad(
     bandOverride: Float? = null,
 ): Float {
     val bandPx = bandOverride ?: bandPx(radii, size, density)
-    var pad = maxOf(padPx(density), if (profile == GlassProfile.Held) bandPx * 0.3f else 0f)
+    var pad = maxOf(padPx(density), if (profile == GlassProfile.Held || capFold > 0f) bandPx * 0.3f else 0f)
     if (fuse != null && fuse.anchored) {
         // Only the neck is ever this element's to draw; the neighbour covers its own body.
         val f = fuse.toPx(size, density)

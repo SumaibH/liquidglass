@@ -148,6 +148,9 @@ Progress:
   the `calm+lens=a,grey,raw` replay variant): no tint/raw-share pair meets both pages (raw share
   saturates at ~75 on docs2; a brighter tint lifts black pages equally). Kept the black-page fit (13 of
   16 held moments); the page gain is a structural residual for a later pass.
+- 18 Oct, claude/bar-ends: owner point 5 DONE: GlassStyle.capFold (uFoldCorners > 1 encodes it; shader
+  capLens = held map at corner arcs, outward sampling allowed; recordPad adds band*.3); Calm bar capFold 1
+  (dark + light). PR #21 (b8f57d5) merged the other five points; sample installed on the Pixel 7.
 - 18 Oct (owner device check, 6 points), branch claude/residuals-2: (2) icons: Calm itemsFollowBarPress=false
   (follow bar only by held formation; iOS taps hold within 0.1 px, holds move 14 px; .local/sxs/icontrack.py);
   (6) taps: tapTransitFold=0 (held optics on tap travel; fold smeared ink); (1) two glasses: lens bodyBandScale .3

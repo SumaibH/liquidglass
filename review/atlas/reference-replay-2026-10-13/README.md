@@ -862,7 +862,7 @@ The owner tried the build on a phone and listed six differences. Each was compar
 | Two glasses in the lens | the bar fills the held lens nearly to its rim; what lies beyond bends into a thin crescent (IMG_6756 35.47 s) | the bar's edges and rounded end showed as a second capsule | rim band 0.3 (`bodyBandScale`); region levels within 2 (top band 53 -> 51) |
 | Search button too sensitive | no finger trace in the recordings | gain 0.35 | 0.2 (authored, from the owner's check) |
 | Lens against the search button | the held lens pinches into the button (IMG_7048 38.5 / 42 s) | stopped short, a gap | joins it through a 12 dp neck (`lensFusion`) |
-| Text under the bar's ends | bent along the rounded ends (IMG_7049) | not bent | open: the bar's edge fold garbles text along the straight runs |
+| Text under the bar's ends | the caps lens what lies beyond them: an icon's edge outside the bar shows ~30 px inside the cap (IMG_7049 5.0 s) | the caps sampled inward only and mirrored the letters | the caps use the held lens's map (`capFold` 1); straight runs unchanged |
 
 ![Tap travel before and after, the held lens's rim band, and the lens's neck to the search button](owner-check-2026-10-18.png)
 
@@ -962,7 +962,13 @@ the impact. The narrowing itself is real and is listed below.
   p90 133 against 207.
 - Light appearance (IMG_7048, 17 October): the held lens casts its shadow since 18 October (profile rms
   2.6); the bar's ends read 234 against 179-221. Resting pills per app since 18 October (245 / 236 / 255).
-- Text under the bar's rounded ends is not bent as iOS's is (owner's check, 18 October).
+- Text under the bar's rounded ends: lensed since 18 October (`capFold`), judged by eye against IMG_7049;
+  not scored by region.
+
+![The bar's left end over an avatar, before and with its cap lens](bar-ends.png)
+
+*Our renders only: desktop GPU replay at 3x, branch `claude/bar-ends`. Dark (top) and light (bottom),
+before (left) and with `capFold` 1 (right).*
 - Search button (pass 17, lift share 0.6 since 17 October): the rise peaks 3-6 px short; brightness
   7.1 levels rms (8.0 at 0.7). The "min half-width 86 against 78" of sideways pulls is not the pull: it
   falls in the ~100 ms after release, when iOS's body overshoots its rest by 6 px against our 2 and
