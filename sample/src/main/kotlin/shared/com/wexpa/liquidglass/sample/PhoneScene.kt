@@ -51,6 +51,14 @@ data class PhonePalette(
             accent = Color(0xFF369CFE), ink = Color.White, call = Color(0xFF177F2F),
             avatarEnd = Color(0xFF342C4A), key = Color(0xFF202020), missed = Color(0xFFF74E53),
         )
+        /** iOS's light system colours (label, secondaryLabel, separator, systemBlue/Green/Red, the
+         * keypad's key grey), ASSUMED: there is no light recording to measure the page from. */
+        val Light = PhonePalette(
+            page = Color.White, primary = Color.Black, secondary = Color(0xFF8A8A8E),
+            divider = Color(0xFFC6C6C8), avatar = Color(0xFFA5ABB8), button = Color(0xFFF2F2F7),
+            accent = Color(0xFF007AFF), ink = Color.Black, call = Color(0xFF34C759),
+            avatarEnd = Color(0xFF858994), key = Color(0xFFE5E5EA), missed = Color(0xFFFF3B30),
+        )
     }
 }
 
@@ -193,21 +201,25 @@ private fun Keypad(palette: PhonePalette) {
     }
 }
 
+// The cut-outs in a filled glyph: dark on light ink, light on dark ink (light appearance).
+private fun cutOf(color: Color): Color =
+    if (color.red * .299f + color.green * .587f + color.blue * .114f > .35f) Color.Black.copy(alpha = .55f) else Color.White.copy(alpha = .85f)
+
 private fun DrawScope.clockGlyph(color: Color) {
     val r = size.minDimension / 2
     drawCircle(color, r)
     val c = center
-    drawLine(Color.Black.copy(alpha = .55f), c, Offset(c.x, c.y - r * .55f), r * .16f, StrokeCap.Round)
+    drawLine(cutOf(color), c, Offset(c.x, c.y - r * .55f), r * .16f, StrokeCap.Round)
     // iOS's Calls clock reads ten to nine-ish: one hand up, one to the left (video2).
-    drawLine(Color.Black.copy(alpha = .55f), c, Offset(c.x - r * .4f, c.y), r * .16f, StrokeCap.Round)
+    drawLine(cutOf(color), c, Offset(c.x - r * .4f, c.y), r * .16f, StrokeCap.Round)
 }
 
 private fun DrawScope.personGlyph(color: Color) {
     val r = size.minDimension / 2
     drawCircle(color, r)
     // A filled head and a filled shoulder cut by the circle, as iOS's person.crop.circle.fill.
-    drawCircle(Color.Black.copy(alpha = .55f), r * .3f, Offset(center.x, center.y - r * .22f))
-    drawArc(Color.Black.copy(alpha = .55f), 200f, 140f, true,
+    drawCircle(cutOf(color), r * .3f, Offset(center.x, center.y - r * .22f))
+    drawArc(cutOf(color), 200f, 140f, true,
         Offset(center.x - r * .62f, center.y + r * .22f), Size(r * 1.24f, r * 1.0f))
 }
 

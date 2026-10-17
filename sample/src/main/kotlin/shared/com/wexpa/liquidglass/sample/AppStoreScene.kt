@@ -61,21 +61,25 @@ fun AppStoreScene(
     modifier: Modifier = Modifier,
     style: GlassTabBarStyle = AppStoreGeometry.style(GlassTabBarStyle.CalmClear()),
     accent: Color = Color(0xFF369CFE),
+    // Light appearance, ASSUMED colours (systemBackground, secondarySystemBackground, label).
+    light: Boolean = false,
 ) {
-    val state = rememberLiquidGlassState(Color.Black)
-    Box(modifier.size(PhoneGeometry.width, PhoneGeometry.height).background(Color.Black)) {
+    val page = if (light) Color.White else Color.Black
+    val ink = if (light) Color.Black else Color.White
+    val state = rememberLiquidGlassState(page)
+    Box(modifier.size(PhoneGeometry.width, PhoneGeometry.height).background(page)) {
         Box(Modifier.fillMaxSize().liquidGlassSource(state)) {
             // The card: x 57-1112 px, its header at rows ~430-455 and a two-line headline behind the bar.
             Box(Modifier.offset(19.dp, 120.dp).size(352.dp, 200.dp)
-                .background(Color(0xFF1C1C1E), RoundedCornerShape(18.dp)))
+                .background(if (light) Color(0xFFF2F2F7) else Color(0xFF1C1C1E), RoundedCornerShape(18.dp)))
             BasicText("CARD HEADER", Modifier.offset(38.dp, 139.dp),
-                style = TextStyle(color = Color(0xFF969696), fontSize = 10.sp, fontWeight = FontWeight.SemiBold))
+                style = TextStyle(color = if (light) Color(0xFF8A8A8E) else Color(0xFF969696), fontSize = 10.sp, fontWeight = FontWeight.SemiBold))
             // The headline: three lines on a 77 px pitch, cap tops at rows 515 / 592 / 669, from x 115,
             // the first about 605 px wide and the visible third 370 px (about 41 px a character), as the recording
             // shows them above, through and below the bar.
             for ((i, line) in listOf("Top picks today", "worth your time", "this week").withIndex()) {
                 BasicText(line, Modifier.offset(38.dp, (159f + 25.67f * i).dp),
-                    style = TextStyle(color = Color.White, fontSize = 27.sp, fontWeight = FontWeight.Bold))
+                    style = TextStyle(color = ink, fontSize = 27.sp, fontWeight = FontWeight.Bold))
             }
         }
         val barTop = PhoneGeometry.barCentreY - PhoneGeometry.barHeight / 2
@@ -83,7 +87,7 @@ fun AppStoreScene(
             state, 5, selected, onSelected,
             Modifier.offset(AppStoreGeometry.barLeft, barTop).width(AppStoreGeometry.barWidth).testTag("appstore-bar"),
             style = style,
-        ) { index, isSelected -> AppStoreTab(index, if (isSelected) accent else Color.White) }
+        ) { index, isSelected -> AppStoreTab(index, if (isSelected) accent else ink) }
     }
 }
 

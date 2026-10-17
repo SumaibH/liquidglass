@@ -147,6 +147,15 @@ Progress:
   the `calm+lens=a,grey,raw` replay variant): no tint/raw-share pair meets both pages (raw share
   saturates at ~75 on docs2; a brighter tint lifts black pages equally). Kept the black-page fit (13 of
   16 held moments); the page gain is a structural residual for a later pass.
+- 17 Oct night (owner: merge everything, light mode, overnight): merged #18/#16/#15 (admin). Branch
+  claude/light-and-gaps: light Calm MEASURED (IMG_7048 light recording, research/datasets/ios27-phone/light/):
+  bar white .41 + 10/255 (0.59B+115), edgeShadow .12 no highlight, contactShadow .2, pill -13/255, lens
+  outline 243, tap optics (light taps refract too); CalmClear legibility 2.5 (App Store text p50/p75 67/98
+  vs 69/80); ports: accessoryFuse/AccessoryFuse (bar-button neck, fixture accessory-fuse.json); lens
+  refraction depth does not move the top band; the "8 px offset" was wrong (outlines within 2 px);
+  IMG_7049 settles tab-bar blur = one soft copy (dark+light). Device check DONE on Pixel 7 28121FDH2006ZF
+  (review/atlas/android-device-2026-10-17, local recordings .local/device/2026-10-17). Search-button
+  refit (sA/sB/sC: widthRatio 1.3, liftShare .6, limit .6) was started then STOPPED by owner; not scored.
 - 17 Oct: contact shadow under renderScale FIXED (LiquidGlass.kt): the in-backdrop copy was drawn inside
   glassLayer's scale(rs) although recorded already scaled, and sized to `size` inside record {} (= padded
   layer, not panel). GlassContactShadowScaleTest: rs .5 quadrants 1.4/0/0/0 -> 35 x4 (rs 1: 35 x4).

@@ -73,7 +73,9 @@ export interface GlassPainter {
   drawLens(canvas: Canvas, bounds: GlassLensBounds): void;
   drawSurface(canvas: Canvas, bounds: GlassSurfaceBounds, material?: GlassMaterial): void;
   /** A Calm navigation bar's glass in the Compose Calm bar material (device px). */
-  drawCalmBar(canvas: Canvas, bar: GlassRect, options?: Omit<CalmSelectorDrawOptions, 'through'> & {formation?: number; touch?: number; clear?: boolean}): void;
+  drawCalmBar(canvas: Canvas, bar: GlassRect, options?: Omit<CalmSelectorDrawOptions, 'through'> & {formation?: number; touch?: number; clear?: boolean;
+    /** accessoryFuse's six numbers, device px: the neck to a free button beside the bar. */
+    fuse?: readonly number[] | null}): void;
   /** A navigation selector's pose body over the bar rect (device px), in the Compose Calm selector material. */
   drawSelector(canvas: Canvas, bar: GlassRect,
     selector: {pose: CalmSelectorPose; formation?: number; transit?: number; heldTravel?: number}, options?: CalmSelectorDrawOptions): void;
@@ -132,3 +134,15 @@ export interface GlassScene {
   dispose(): void;
 }
 export function createGlassScene(kit: CanvasKit, options: GlassSceneOptions): GlassScene;
+
+/** Compose's GlassTabBarAccessory link: the rect a Calm bar's outline fuses with, beside it, from a free
+ * button's press and pull (createFreeButton's sample). Bar-local px; returns drawCalmBar's `fuse`:
+ * [centre x, centre y from the bar's centre, half width, half height, corner radius, smoothing]. */
+export function accessoryFuse(input: {
+  bar: {width: number; height: number; pressX?: number; pressY?: number};
+  button: GlassRect; transform?: Partial<FreeButtonTransform>; smoothing: number;
+}): [number, number, number, number, number, number];
+/** How much of the neck a formed lens reaching the bar's end has taken over, 0 to 1 (glassAccessoryYield). */
+export function accessoryYield(formation: number, endEdge: number, barWidth: number, barHeight: number): number;
+/** The largest stadium inside an axis-aligned ellipse: [half width, half height, corner radius]. */
+export function inscribedStadium(a: number, b: number): [number, number, number];

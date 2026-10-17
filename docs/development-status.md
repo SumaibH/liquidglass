@@ -164,16 +164,22 @@ trace was produced and no permission changes were made. See [performance](perfor
    the rim still reads 11 below iOS's. `GlassTabBarStyle.slotWidth` lays tabs on set slots as
    WhatsApp's bar does (all five centres within 2 px), in Compose and both ports.
    `GlassTabBarStyle.CalmClear()` is the clearer bar of WhatsApp and the App Store (bar 53 against
-   iOS's 54 over a grey card, Calm 46), in Compose and both ports; text under the App Store bar still
-   reads brighter than iOS's. WhatsApp's motion lands 14/14 and settles a median 21 ms early, read by
-   one tracker on both sides with inferred input.
+   iOS's 54 over a grey card, Calm 46), in Compose and both ports; with `legibility` 2.5 it compresses
+   text under it (p50 / p75 67 / 98 against iOS's 69 / 80). WhatsApp's motion lands 14/14 and settles a
+   median 21 ms early, read by one tracker on both sides with inferred input. Light `Calm()` is measured
+   on the owner's light recording (bar 0.59 of the page + 115, rim, shadow, pill, lens outline, tap
+   optics); its held lens lacks iOS's soft edge band and shadow. Text under a tab bar is one soft copy
+   in both appearances (IMG_7049), as the Calm presets draw it.
    The search button presses, pulls and lands as iOS's does since pass 17 (centre 2-3 px rms); the
    CanvasKit and .NET ports have its press, pull and landing (`createFreeButton` / `FreeButton`, checked frame
-   by frame against Kotlin) but not the bar's outline link. Owner visual acceptance is pending.
-2. Verify all directional extreme envelopes and Android composition on appropriate hardware.
-3. Resolve ordinary interaction/display performance and final wide/narrow Atlas visual acceptance.
+   by frame against Kotlin) and, since 17 October, the bar's fusion with it (`accessoryFuse` /
+   `AccessoryFuse`). Owner visual acceptance is pending.
+2. Verify all directional extreme envelopes on hardware. The physical-device check ran on 17 October
+   (Pixel 7, dark and light: tap, hold, drag, throw, search pulls; [record](https://github.com/shayann07/liquidglass/blob/main/review/atlas/android-device-2026-10-17/README.md)).
+3. Resolve ordinary interaction/display performance (Pixel 7 at 90 Hz: frame p50 19-20 ms, p90 30-31 ms
+   over the Phone scene's gestures) and final wide/narrow Atlas visual acceptance.
 4. Additional host integrations, with executable evidence.
-5. Physical Android device check. No release/tag is authorized.
+5. No release/tag is authorized.
 
 The current checklist has 27 completed and 22 open entries of unequal size; this is not a progress
 percentage. A passing checkpoint does not narrow the full goal.

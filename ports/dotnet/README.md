@@ -153,7 +153,13 @@ bar-local x to a tab.
 
 `DrawCalmBar(..., clear: true)` (and `CalmSelectorMaterial.Bar(..., clear: true)`) draws Compose's
 `GlassTabBarStyle.CalmClear()` bar: the clearer glass of WhatsApp's and the App Store's dark iOS
-bars (black at 0.10 instead of 0.41, same lift; light appearance unchanged).
+bars (black at 0.10 instead of 0.41, same lift, legibility 2.5; light appearance unchanged).
+
+A free button beside the bar (Compose's `GlassTabBarAccessory.link`) fuses with it:
+`AccessoryFuse.Compute(barWidth, barHeight, new RectD(x, y, w, h), button.Sample(t), smoothing, barPressX,
+barPressY)` gives `DrawCalmBar(..., fuse:)` the rect the bar's outline reaches for; scale `smoothing` by
+`1 - AccessoryFuse.Yield(formation, lensEdge, barWidth, barHeight)` as a lens arrives. Checked against the
+Kotlin-exported `accessory-fuse.json`.
 
 `DrawCalmBar` and `DrawSelector` use the Compose Calm bar and selector material itself
 (`CalmSelectorMaterial`: the production styles exported by the Kotlin tests, blended by the same

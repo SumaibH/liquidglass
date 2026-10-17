@@ -3,6 +3,7 @@ package com.wexpa.liquidglass
 import androidx.compose.ui.unit.dp
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertTrue
 
 /** Original 6756 T01: stable scene, untouched bar region, native PQ->sRGB values. */
 class GlassPhoneMaterialReferenceTest {
@@ -24,7 +25,8 @@ class GlassPhoneMaterialReferenceTest {
         // the tab a tap never visits). Opt-in: off by default and on the recorded-space preset.
         assertEquals(false, GlassTabBarStyle().touchLift)
         assertEquals(true, GlassTabBarStyle.Calm(dark = true).touchLift)
-        assertEquals(false, GlassTabBarStyle.Calm(dark = false).touchLift)
+        // Light Calm lifts too (17 October; measured on the light recording's touches).
+        assertEquals(true, GlassTabBarStyle.Calm(dark = false).touchLift)
         assertEquals(false, GlassTabBarStyle.CalmRecordedSpace(dark = true).touchLift)
     }
 
@@ -40,7 +42,7 @@ class GlassPhoneMaterialReferenceTest {
         assertEquals(46.0, restingBar(GlassTabBarStyle.Calm(dark = true), 23), 1.5)
         // Only the bar's tint differs, and light appearance has no recording.
         val calm = GlassTabBarStyle.Calm(dark = true)
-        assertEquals(calm.copy(bar = calm.bar.copy(tint = clear.bar.tint)), clear)
+        assertEquals(calm.copy(bar = calm.bar.copy(tint = clear.bar.tint, legibility = 2.5f)), clear)
         assertEquals(GlassTabBarStyle.Calm(dark = false), GlassTabBarStyle.CalmClear(dark = false))
     }
 
@@ -55,6 +57,22 @@ class GlassPhoneMaterialReferenceTest {
         assertEquals(10f, lerpGlassStyle(calm.pill, calm.lens, .5f).rawBlur.value, 1e-4f)
         assertEquals(0.dp, GlassTabBarStyle.Calm(dark = false).lens.rawBlur)
         assertEquals(0.dp, GlassTabBarStyle.V3(dark = true).lens.rawBlur)
+    }
+
+    @Test fun lightCalmMatchesTheLightRecording() {
+        // IMG_7048 (17 October, display colours): the App Store's light bar over its cards passes
+        // 0.58 of the page plus ~116; over white it reads 255; resting pills 236-246 (Phone, WhatsApp).
+        val light = GlassTabBarStyle.Calm(dark = false)
+        for ((page, ios) in listOf(171 to 220.0, 199 to 232.0, 181 to 214.0, 198 to 226.0, 228 to 254.0))
+            assertEquals(ios, restingBar(light, page), 9.0, "light bar over page $page")
+        assertEquals(255.0, restingBar(light, 255), 1.0)
+        assertEquals(0f, light.pill.tint.alpha)
+        assertEquals(-13f / 255f, light.pill.tintLift, 1e-6f)
+        assertEquals(0f, light.lens.tint.alpha)
+        assertEquals(0f, light.lens.rawShare)
+        assertEquals(243f / 255f, light.lens.heldEdgeTone, 1e-6f)
+        // The light preset it replaced stays reachable.
+        assertEquals(false, GlassTabBarStyle.CalmRecordedSpace(dark = false).touchLift)
     }
 
     private fun restingBar(style: GlassTabBarStyle, page: Int): Double {

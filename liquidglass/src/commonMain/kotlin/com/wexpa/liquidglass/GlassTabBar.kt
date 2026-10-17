@@ -1551,7 +1551,7 @@ data class GlassTabBarStyle(
         /** Recommended navigation preset. Material responds gently; the selector deforms
          * along travel only. Existing V3/Measured presets remain available for comparison. */
         fun Calm(dark: Boolean = true): GlassTabBarStyle = CalmRecordedSpace(dark).let { recorded ->
-            if (!dark) recorded else recorded.copy(
+            if (!dark) calmLight(recorded) else recorded.copy(
                 // Re-fitted in display colours (2026-10-15): the recordings are HDR10 and had been
                 // decoded as if sRGB, which raised every dark level. Measured over five recordings
                 // decoded correctly (docs/1, docs/2, IMG_6756, JGEY2190, LOLL8185; 117 rest moments,
@@ -1588,6 +1588,31 @@ data class GlassTabBarStyle(
         }
 
         /**
+         * Light [Calm], measured on the owner's light recording (IMG_7048, display colours, 17 October;
+         * Phone keypad page 36-60 s, App Store 64-100 s, WhatsApp 108-140 s). The bar passes 0.58 of
+         * the page plus ~116 (seven page levels 171-245 under the bar, least squares), the dark Phone
+         * bar's slope: white at 0.41 plus 10/255. Over white it reads 255. Its rim is a darker line
+         * (246 top and bottom, 179-221 at the ends; ours 246 / 234: [GlassStyle.edgeShadow] .12 with
+         * the highlight off, which over white only clips) and it casts a faint shadow (253; ours 251-253
+         * at [GlassStyle.contactShadow] .2). The resting pill is clear glass 13/255 below the bar: iOS's
+         * reads 246 on the Phone's white keypad page and 236 on WhatsApp's (ours 242 on both; the bar
+         * clips at white, so one offset cannot give both); the App Store's is darker still (217-228).
+         * The held lens is clear glass over the bar; its edge is a soft grey band to ~243-246 where dark
+         * Calm's is a 65-level line, so its outline tone is 243/255, and it adds no raw page. The bar lifts for any touch, page text under
+         * bar and lens is one soft copy, and tap optics follow dark Calm (behaviour, not levels).
+         * [CalmRecordedSpace] (false) keeps the light preset this replaced.
+         */
+        private fun calmLight(recorded: GlassTabBarStyle): GlassTabBarStyle = recorded.copy(
+            bar = recorded.bar.copy(tint = Color.White.copy(alpha = 0.41f), tintLift = 10f / 255f, softDetail = 1f,
+                edgeShadow = 0.12f, specular = 0f, bevelPeak = 0f, contactShadow = 0.2f),
+            touchLift = true,
+            pill = recorded.pill.copy(tint = Color.Transparent, tintLift = -13f / 255f),
+            lens = recorded.lens.copy(tint = Color.Transparent, rawShare = 0f, rawBlur = 0.dp, tintLift = 0f,
+                softDetail = 1f, heldEdgeTone = 243f / 255f),
+            tapTintFade = 1f, tapSelectedScale = 1.15f, tapOptics = 1f, tapOpticsFold = 1f,
+        )
+
+        /**
          * [Calm] with the clearer bar of WhatsApp's and the App Store's iOS 26 tab bars. Those
          * bars pass about 0.9 of the page under them where the Phone bar, which [Calm] is fitted
          * to, passes 0.59; over a black page both read the same. Measured in display colours on
@@ -1595,11 +1620,15 @@ data class GlassTabBarStyle(
          * over its grey settings card (23), the App Store's 32 over black and 57 over its card
          * (28); its resting pill 19 and 30 over the same pages. The bar is black at
          * [clearBarOpacity] over the Phone bar's 32/255 lift; the pill and held lens look through
-         * the bar as in [Calm], so they follow it. Light appearance has no recording and returns
-         * [Calm] unchanged.
+         * the bar as in [Calm], so they follow it. Over text iOS's App Store bar compresses
+         * (band p50 / p75 69 / 80 where a plain 0.9 gave 73 / 107): [GlassStyle.legibility] 2.5
+         * darkens the bar where the page under it has contrast and leaves a plain card alone,
+         * which gives 67 / 98 (stronger values saturate: 6 gives 63 / 95). Light appearance has
+         * no recording and returns [Calm] unchanged.
          */
         fun CalmClear(dark: Boolean = true): GlassTabBarStyle = Calm(dark).let { calm ->
-            if (!dark) calm else calm.copy(bar = calm.bar.copy(tint = Color.Black.copy(alpha = clearBarOpacity)))
+            if (!dark) calm else calm.copy(bar = calm.bar.copy(tint = Color.Black.copy(alpha = clearBarOpacity),
+                legibility = 2.5f))
         }
 
         /** Black opacity of [CalmClear]'s bar, fitted over the four page levels its notes list. */

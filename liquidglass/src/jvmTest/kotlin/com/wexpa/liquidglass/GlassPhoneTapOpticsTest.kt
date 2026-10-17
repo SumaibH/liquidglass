@@ -178,16 +178,23 @@ class GlassPhoneTapOpticsTest {
         assertEquals(0f,c.transitAppearance)
     }
 
-    @Test fun stationaryHoldAndLightStyleRetainExistingOptics() {
+    @Test fun stationaryHoldAndHistoricalStylesRetainExistingOptics() {
         val b=bar();val c=GlassPoseController(GlassPoseSpec.Calm)
         c.attach(b,null,null);c.snapToRest(0);c.pointerDown(b.firstCentre,b.centreY,0.0,true)
         for(i in 0..240){c.advanceTo(i/240f);assertEquals(0f,c.transitAppearance)}
         c.pointerUp(0)
         for(i in 1..240){c.advanceTo(1f+i/240f);assertEquals(0f,c.transitAppearance)}
+        // The light preset light Calm replaced keeps the old tap appearance.
+        val oldLight=GlassTabBarStyle.CalmRecordedSpace(dark=false)
+        val style=lerpGlassStyle(oldLight.pill,oldLight.lens,.15f)
+        assertEquals(style,glassTransitStyle(style,.95f,oldLight.tapTintFade))
+        assertEquals(1f,glassTransitInkScale(oldLight,.15f,.95f))
+        // Light Calm taps as dark Calm does: on the owner's light recording (IMG_7048 6.8-6.9 s) the
+        // travelling pill refracts as clear glass and the selected ink grows, as in dark.
         val light=GlassTabBarStyle.Calm(dark=false)
-        val style=lerpGlassStyle(light.pill,light.lens,.15f)
-        assertEquals(style,glassTransitStyle(style,.95f,light.tapTintFade))
-        assertEquals(1f,glassTransitInkScale(light,.15f,.95f))
+        assertEquals(GlassTabBarStyle.Calm().tapTintFade,light.tapTintFade)
+        assertEquals(GlassTabBarStyle.Calm().tapSelectedScale,light.tapSelectedScale)
+        assertTrue(glassTransitInkScale(light,.15f,.95f)>1f)
         assertEquals(GlassTabBarStyle.V3().tapSelectedScale,1f)
         assertEquals(GlassTabBarStyle.V3().tapTintFade,0f)
     }

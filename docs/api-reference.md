@@ -205,8 +205,12 @@ morphs between, exposed so a host can start from them.
 falling over 260 ms after the lift), as iOS's bar lifts on every touch; off by default, on in dark
 `Calm()`. `CalmRecordedSpace()` is dark Calm as calibrated before 15 October, against recordings
 decoded as if they were sRGB. `CalmClear()` is dark Calm with the clearer bar of WhatsApp's and the
-App Store's iOS bars (black at 0.10 instead of 0.41 over the same lift; light appearance unchanged;
-[tab bar guide](tab-bar.md#a-clearer-bar)).
+App Store's iOS bars (black at 0.10 instead of 0.41 over the same lift, and `legibility` 2.5 so it
+darkens over text as iOS's does; light appearance unchanged; [tab bar guide](tab-bar.md#a-clearer-bar)).
+`Calm(dark = false)` is measured on the owner's light recording (17 October): a bar passing 0.59 of the
+page plus 115 (white at 0.41 plus 10/255) with a darker rim and a faint shadow, a clear resting pill
+13/255 below it, a clear held lens with a light outline (243/255), touch lift and dark Calm's tap optics.
+`CalmRecordedSpace(false)` keeps the light preset it replaced ([tab bar guide](tab-bar.md#light-appearance)).
 
 `slotWidth` lays the tabs on equal slots of that width centred in the bar, instead of sharing the
 bar out inside `contentPadding`. Slots wider than the bar allows close up at the ends: an end tab
@@ -253,7 +257,9 @@ and selected ink grows about its own anchor. The response is bounded below full 
 formation and fades as held zoom takes over. It does not enable a hold, change the bar's lift
 or strain, move hit targets, or drive the selector's held band/rim parameters.
 Set these two fields to `0f` and `1f` respectively to retain the earlier tap appearance.
-Light Calm and historical presets keep those defaults. The gains are authored from measured
+Light `Calm()` uses them too since 17 October (its light recording shows the same refracting
+transit and growing ink); historical presets keep
+those defaults. The gains are authored from measured
 dark Phone patches and icon bounds; full optical parity remains unproven. See the
 [candidate evidence](https://github.com/shayann07/liquidglass/blob/main/review/atlas/tap-optics-candidate-2026-10-11/README.md)
 for current verification status.

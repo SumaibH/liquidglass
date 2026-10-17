@@ -102,22 +102,29 @@ export function createGlassPainter(kit, sources = glassShaderSources) {
     /**
      * Draw a Calm navigation bar's glass with the Compose Calm bar material (GlassTabBarStyle.Calm,
      * its held lift following the selector's `formation`, or for any touch the navigation's `touch`;
-     * `clear` for GlassTabBarStyle.CalmClear's clearer bar).
+     * `clear` for GlassTabBarStyle.CalmClear's clearer bar; `fuse` from accessoryFuse, in device px,
+     * for the neck to a free button beside the bar).
      * Device px; `density` is px per dp.
      */
     drawCalmBar(canvas,{x,y,width,height},{dark=true,density=1,formation=0,touch=0,materialize=1,
-      reducedTransparency=0,increasedContrast=0,clear=false}={}) {
+      reducedTransparency=0,increasedContrast=0,clear=false,fuse=null}={}) {
       checkAlive();
       if(!source)throw new Error('Call setSource before drawing glass');
       if(![x,y,width,height,density,formation].every(Number.isFinite)||width<=0||height<=0||density<=0)
         throw new RangeError('Calm bar requires finite geometry, positive dimensions and density');
-      const pad=2,originX=x-pad,originY=y-pad;
+      if(fuse&&(fuse.length!==6||!fuse.every(Number.isFinite)))throw new RangeError('fuse must be six finite numbers (accessoryFuse)');
+      // The fused outline reaches past the bar to the button: draw over it, and the neck's bow (a
+      // quarter of the smoothing) beyond, as Compose's recordPad does.
+      const fusing=fuse&&fuse[5]>0;
+      const pad=fusing?Math.ceil(Math.max(2,Math.abs(fuse[0])+fuse[2]-width/2,Math.abs(fuse[1])+fuse[3]-height/2)+fuse[5]/4+2):2;
+      const originX=x-pad,originY=y-pad;
       const uniforms=clearMaterialUniforms(effects,{width,height,pad,magnification:1});
       assignMaterial(uniforms,calmMaterialUniforms(calmBarMaterial({dark,formation,touch,clear}),density));
       Object.assign(uniforms,{
         uRadii:Array(4).fill(height/2),uRefractBand:.6*height/2,uFormation:0,
         uScale:sizeFactor(width,height,density),uMaterialize:materialize,uFrost:reducedTransparency,uContrast:increasedContrast,
       });
+      if(fusing)Object.assign(uniforms,{uFuse:fuse.slice(0,4),uFuseShape:[fuse[4],fuse[5]]});
       sampler??=createBackdropSampler(kit);
       const backdrop=sampler.shader(canvas,source,originX,originY,uniforms.uWideKernel);
       // Compose records the wide strip only for a kernel of at least a pixel (LiquidGlass.kt useWide).
