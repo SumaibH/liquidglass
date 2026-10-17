@@ -1596,11 +1596,13 @@ data class GlassTabBarStyle(
          * the highlight off, which over white only clips) and it casts a faint shadow (253; ours 251-253
          * at [GlassStyle.contactShadow] .2). The resting pill is clear glass 13/255 below the bar: iOS's
          * reads 246 on the Phone's white keypad page and 236 on WhatsApp's (ours 242 on both; the bar
-         * clips at white, so one offset cannot give both); the App Store's is darker still (217-228).
+         * clips at white, so one offset cannot give both); the App Store's is invisible over white (255).
          * The held lens is clear glass over the bar; its edge is a soft grey band to ~243-246 where dark
          * Calm's is a 65-level line, so its outline tone is 243/255 and a faint inner band
          * ([GlassStyle.innerShadow] .08) reads 245 at the rim (iOS 244, but ~4 px wide where iOS's is
-         * ~12); it adds no raw page. The bar lifts for any touch, page text under
+         * ~12); it adds no raw page. It casts a shadow under itself (iOS: 242 for ~15 px below the lens,
+         * fading by ~36 px; ours 241-243 then a longer fade at [GlassStyle.contactShadow] .5, 18 October),
+         * which also greys the lens where it overhangs the page. The bar lifts for any touch, page text under
          * bar and lens is one soft copy, and tap optics follow dark Calm (behaviour, not levels).
          * [CalmRecordedSpace] (false) keeps the light preset this replaced.
          */
@@ -1610,7 +1612,7 @@ data class GlassTabBarStyle(
             touchLift = true,
             pill = recorded.pill.copy(tint = Color.Transparent, tintLift = -13f / 255f),
             lens = recorded.lens.copy(tint = Color.Transparent, rawShare = 0f, rawBlur = 0.dp, tintLift = 0f,
-                softDetail = 1f, heldEdgeTone = 243f / 255f, innerShadow = 0.08f),
+                softDetail = 1f, heldEdgeTone = 243f / 255f, innerShadow = 0.08f, contactShadow = 0.5f),
             tapTintFade = 1f, tapSelectedScale = 1.15f, tapOptics = 1f, tapOpticsFold = 1f,
         )
 

@@ -168,7 +168,8 @@ trace was produced and no permission changes were made. See [performance](perfor
    text under it (p50 / p75 67 / 98 against iOS's 69 / 80). WhatsApp's motion lands 14/14 and settles a
    median 21 ms early, read by one tracker on both sides with inferred input. Light `Calm()` is measured
    on the owner's light recording (bar 0.59 of the page + 115, rim, shadow, pill, lens outline, tap
-   optics); its held lens lacks iOS's soft edge band and shadow. Text under a tab bar is one soft copy
+   optics, and since 18 October the held lens's shadow, cast by the lens rather than its node).
+   Text under a tab bar is one soft copy
    in both appearances (IMG_7049), as the Calm presets draw it.
    The search button presses, pulls and lands as iOS's does since pass 17 (centre 2-3 px rms); the
    CanvasKit and .NET ports have its press, pull and landing (`createFreeButton` / `FreeButton`, checked frame

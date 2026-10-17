@@ -148,6 +148,15 @@ Progress:
   the `calm+lens=a,grey,raw` replay variant): no tint/raw-share pair meets both pages (raw share
   saturates at ~75 on docs2; a brighter tint lifts black pages equally). Kept the black-page fit (13 of
   16 held moments); the page gain is a structural residual for a later pass.
+- 18 Oct (owner: "complete it already"), branch claude/residuals: (1) BUG FIXED: a selector's contact
+  shadow was the node's rect (whole bar) -> now cast by the lens body (glassShadowCaster: pose capsule via
+  A, or two-disk body); no shipped lens had a shadow, so outputs unchanged. Light Calm lens contactShadow .5
+  (IMG_7048 38.5/42 s: below-lens profile rms 2.6; renders .local/sxs/ref/light/sf0.5, sf1; replay variant
+  "+lshadow=<c>"). (2) Search width ratio rescored: 1.0 kept (half-width rms 3.4; 0.8 4.4; 0.6 6.6;
+  sW6/sW8). The "86 vs 78" is the ~100 ms after a sideways release (iOS overshoots rest 6 px vs 2), not
+  the pull. (3) App Store light pill: invisible over white (255); 217-228 was cards through it. Residuals
+  now: dark lens top band 53/64, App Store text p75 98/80, light lens edge band width, sideways release
+  overshoot, landing input residuals, owner acceptance, real-finger device check.
 - 18 Oct (overnight, cont.): search button pullLiftShare .6 everywhere (level rms 7.1, was 8.0; widthRatio
   1.3 and limit .6 rejected); light lens innerShadow .08 (band 245 vs 244, ~4 px vs ~12); device: 8-direction
   search pulls + off-axis drags clean; perf by stage on Pixel 7: UI 6.9 / RT 1.9 / GPU 8.5 ms p50, keeps

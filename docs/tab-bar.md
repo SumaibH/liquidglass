@@ -122,13 +122,20 @@ Phone keypad page, App Store cards, WhatsApp, Threads):
 The bar has the dark Phone bar's slope (white at 0.41 plus 10/255), clearer than the light toolbar the
 Photos screenshots measured (0.42 plus 140). Its rim is a darker line and it casts a faint shadow. The
 resting pill is clear glass 13/255 below the bar: because the bar reads white over a white page, one
-offset cannot give both iOS's Phone (246) and WhatsApp (236) pills, and the App Store's is darker
-again (217-228). The held lens is clear glass over the bar with a light outline (243/255), where dark
-Calm's is a 65-level line. The bar lifts for any touch, and the tap optics and motion are dark Calm's.
+offset cannot give iOS's Phone (246), WhatsApp (236) and App Store pills (invisible over white, 255;
+over its cards it reads the card's own level). The held lens is clear glass over the bar with a light
+outline (243/255), where dark Calm's is a 65-level line, and it casts a soft shadow under itself (iOS
+242 for ~15 px below the lens; ours 241-243, `contactShadow` 0.5), which also greys the lens where it
+overhangs the page. The bar lifts for any touch, and the tap optics and motion are dark Calm's.
 `CalmRecordedSpace(dark = false)` keeps the light preset this replaced.
 
-Still different: iOS's held lens shows a soft ~12 px grey band at its edge and a soft shadow under it
-(to 242); ours draws the band's level (245, an inner shadow of 0.08) over ~4 px and no shadow; the bar's ends read lighter than iOS's.
+![Light Calm's held lens before and after its shadow (18 October)](https://raw.githubusercontent.com/shayann07/liquidglass/main/review/atlas/reference-replay-2026-10-13/light-lens-shadow.png)
+
+*Our renders only: desktop GPU replay at 3x, a 1.2 s hold on Keypad; top without the lens's shadow, bottom
+with it (branch `claude/residuals`).*
+
+Still different: iOS's shadow holds its darkest level longer and ends sooner (ours fades over a longer
+tail); the bar's ends read lighter than iOS's.
 
 In both appearances iOS draws page text under a tab bar as one soft, legible copy (the owner's
 Contacts recording, IMG_7049), which is what `softDetail` gives the Calm presets; the toolbar role's
