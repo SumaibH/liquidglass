@@ -434,7 +434,11 @@ internal fun Modifier.liquidGlassCore(
         animationSpec = if (interaction?.response == GlassResponse.Calm) {
             if (pullDown) GlassMotion.CalmFollow else GlassMotion.CalmUp
         } else if (pullDown) GlassMotion.PullFollow
-        else if (interaction?.pullShape == GlassPullShape.Free) GlassMotion.FreeRelease else GlassMotion.PullRelease,
+        else if (interaction?.pullShape == GlassPullShape.Free) {
+            interaction.pullReleaseDampingX.takeIf { it.isFinite() }?.let {
+                androidx.compose.animation.core.spring(dampingRatio = it.coerceIn(.05f, 2f), stiffness = 264f)
+            } ?: GlassMotion.FreeRelease
+        } else GlassMotion.PullRelease,
         label = "glass_pull_x",
     )
     val pullY by animateFloatAsState(

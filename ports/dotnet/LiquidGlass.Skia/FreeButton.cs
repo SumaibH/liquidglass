@@ -83,17 +83,20 @@ public sealed class FreeButton
     private readonly double size, radius, density, balloon, limit, pressLift, follow, elongation, widthRatio, liftShare;
     private readonly Animated press = new(0), glow = new(0), px = new(0), py = new(0);
     private double anchor = double.NaN;
+    private readonly Spec releaseX;
     private bool moved;
 
     public FreeButton(double size, double density = 1, double pressScale = 1.26, double pressGrowth = 8, double pressLift = .2,
         double pullFollow = .2, double pullElongation = .124, double pullWidthRatio = 1, double pullLimit = .5,
-        double pullLiftShare = .6)
+        double pullLiftShare = .6, double pullReleaseDampingX = .3)
     {
         if (!(size > 0) || !(density > 0)) throw new ArgumentOutOfRangeException(nameof(size), "Positive size and density required");
         (this.size, radius, this.density) = (size, size / 2, density);
         balloon = Math.Min(1 + 2 * pressGrowth * density / size, pressScale);
         limit = size * balloon * pullLimit;
         (this.pressLift, follow, elongation, widthRatio, liftShare) = (pressLift, pullFollow, pullElongation, pullWidthRatio, pullLiftShare);
+        // Compose's GlassInteraction.pullReleaseDampingX: a separate x damping on release.
+        releaseX = double.IsFinite(pullReleaseDampingX) ? new Spec(0, Math.Clamp(pullReleaseDampingX, .05, 2), 264) : FreeRelease;
     }
 
     public void Down(double time)
@@ -117,7 +120,7 @@ public sealed class FreeButton
     public void Up(double time)
     {
         glow.To(time, 0, FreeGlow); press.To(time, 0, PressUp);
-        px.To(time, 0, FreeRelease); py.To(time, 0, FreeRelease);
+        px.To(time, 0, releaseX); py.To(time, 0, FreeRelease);
     }
 
     public FreeButtonTransform Sample(double time)

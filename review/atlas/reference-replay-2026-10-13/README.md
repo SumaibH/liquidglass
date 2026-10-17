@@ -873,6 +873,32 @@ before (left) and with its 0.3 band and 12 dp neck (right). Bottom: the light he
 The App Store bar (dark) now blurs the text under it (7 dp) with `legibility` 2: band p50 / p75 68 / 79
 against iOS's 69 / 80 (was 67 / 98); p90 133 against 207 (the brightest text pixels, softer than iOS's).
 
+### The dark held lens's top band and the search button's sideways release (18 October)
+
+The dark held lens read ~10 below iOS's over content in its upper half (top band 51 against 64) and
+matched over black. Its blurred raw page, wider and stronger, closes it without touching black:
+
+| Raw page (share, blur) | top band | bottom band | text p90 | text p50 | black | rms |
+| :-- | --: | --: | --: | --: | --: | --: |
+| iOS | 64 | 75 | 102 | 82 | 47 | |
+| 0.22, 20 dp (before) | 51 | 70 | 99 | 84 | 48 | 6.6 |
+| 0.4, 40 dp | 58 | 74 | 101 | 86 | 48 | 3.6 |
+| **0.5, 50 dp (shipped)** | 60 | 73 | 101 | 86 | 48 | 2.8 |
+| 0.6, 60 dp | 62 | 74 | 103 | 87 | 48 | 2.7 |
+
+A clamp of the raw page to the bar's bounds was tried first and changed nothing (52); the haze above
+the bar inside the lens is the held glow, not the raw page.
+
+The search button's finger script was re-inferred for the new drag gain (0.2): the replay scores as well
+as before (half-width rms 2.7, was 3.4). Released sideways, iOS's body springs further past its place
+than upward; a separate x damping fits it:
+
+| x release damping | centre x (sideways) | half-width (sideways) | narrowest (iOS 78) |
+| :-- | --: | --: | --: |
+| 0.45 (shared) | 2.6 / 2.1 / 1.6 | 2.7 / 2.2 / 2.1 | 86 |
+| **0.3 (shipped)** | 2.3 / 2.0 / 1.5 | 2.2 / 1.8 / 1.9 | 83 |
+| 0.2 | 3.1 / 2.7 / 1.6 | 2.2 / 1.8 / 1.8 | 80 |
+
 ### The held lens's shadow (18 October)
 
 A lens casts its contact shadow from its own body now. A selector's node spans the whole bar, and the
@@ -952,10 +978,8 @@ the impact. The narrowing itself is real and is listed below.
   88 against our 61 over the avatar); no tint or raw page share reproduces it (fits by replay). The
   resting pill reads 3 above iOS's on black pages. iOS's bar lights 33 ms before a tap's ink
   leaves; our inferred tap presses 16 ms before (finger timing).
-- Held lens over content (17 October, blurred raw share 0.22 / 20 dp): text and the bottom band
-  within 1-5 of iOS's, black unchanged; the top band near the rim reads 11 below iOS's (53 against
-  64), local to iOS's lens; refraction depth does not move it, and the lens's outline sits within 2 px
-  of iOS's vertically.
+- Held lens over content (18 October, blurred raw share 0.5 / 50 dp): every region within 4 of iOS's
+  (top band 60 against 64, text p50 86 against 82), five regions 2.8 rms.
 - WhatsApp motion (17 October): throws' flights reach the far tab ~40 ms before iOS's tracker shows
   them (p90 140 px); input is inferred and the fill cross-fade lags the tracker.
 - App Store bar: p50 / p75 68 / 79 against iOS's 69 / 80 since 18 October (7 dp blur, `legibility` 2);
@@ -969,8 +993,9 @@ the impact. The narrowing itself is real and is listed below.
 
 *Our renders only: desktop GPU replay at 3x, branch `claude/bar-ends`. Dark (top) and light (bottom),
 before (left) and with `capFold` 1 (right).*
-- Search button (pass 17, lift share 0.6 since 17 October): the rise peaks 3-6 px short; brightness
-  7.1 levels rms (8.0 at 0.7). The "min half-width 86 against 78" of sideways pulls is not the pull: it
+- Search button (pass 17, lift share 0.6 since 17 October, drag gain 0.2 and x release damping 0.3 since
+  18 October): the rise peaks 3-6 px short; brightness 7.1 levels rms; after a sideways release its
+  narrowest is 83 px against iOS's 78. The "min half-width 86 against 78" of sideways pulls is not the pull: it
   falls in the ~100 ms after release, when iOS's body overshoots its rest by 6 px against our 2 and
   squashes deeper against its held edge. Width ratio rescored on 18 October: 1.0 (shipped) half-width
   rms 3.4 / height 3.9 px; 0.8 4.4 / 5.3; 0.6 6.6 / 6.8 (over-wide upward pulls). The ports have the free pull and, since 17 October, the bar's fusion with it

@@ -177,7 +177,8 @@ function animated(initial) {
  * stretch along and across `angle` (degrees), the offset, and the glow and its lift.
  */
 export function createFreeButton({size, density = 1, pressScale = 1.26, pressGrowth = 8, pressLift = .2,
-  pullFollow = .2, pullElongation = .124, pullWidthRatio = 1, pullLimit = .5, pullLiftShare = .6} = {}) {
+  pullFollow = .2, pullElongation = .124, pullWidthRatio = 1, pullLimit = .5, pullLiftShare = .6,
+  pullReleaseDampingX = .3} = {}) {
   if (!(size > 0) || !(density > 0)) throw new RangeError('Positive size and density required');
   const growth = pressGrowth * density, radius = size / 2;
   const balloon = Math.min(1 + 2 * growth / size, pressScale);
@@ -223,7 +224,10 @@ export function createFreeButton({size, density = 1, pressScale = 1.26, pressGro
     },
     up(time) {
       glow.to(time, 0, FREE_SPECS.freeGlow); press.to(time, 0, FREE_SPECS.pressUp);
-      px.to(time, 0, FREE_SPECS.freeRelease); py.to(time, 0, FREE_SPECS.freeRelease);
+      // Compose's GlassInteraction.pullReleaseDampingX: a separate x damping on release.
+      const releaseX = Number.isFinite(pullReleaseDampingX)
+        ? {...FREE_SPECS.freeRelease, damping: Math.min(Math.max(pullReleaseDampingX, .05), 2)} : FREE_SPECS.freeRelease;
+      px.to(time, 0, releaseX); py.to(time, 0, FREE_SPECS.freeRelease);
     },
     sample(time) {
       const amount = press.value(time), scale = 1 + (balloon - 1) * amount;

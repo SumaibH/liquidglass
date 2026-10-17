@@ -159,7 +159,7 @@ trace was produced and no permission changes were made. See [performance](perfor
    colours (since 15 October, five recordings) the rest, held and tap levels are within 0-4 grey
    levels; since pass 18 the pill and lens pass page content as iOS's do and text under the bar is
    one soft copy. Since 17 October the held lens no longer passes the raw page, so text under it
-   is veiled as under iOS's; it adds the raw page blurred (`GlassStyle.rawBlur`, 0.22 / 20 dp), so
+   is veiled as under iOS's; it adds the raw page blurred (`GlassStyle.rawBlur`, 0.5 / 50 dp since 18 October), so
    it lifts over content as iOS's does (text p50 83 against 82, black unchanged); its top band near
    the rim still reads 11 below iOS's. `GlassTabBarStyle.slotWidth` lays tabs on set slots as
    WhatsApp's bar does (all five centres within 2 px), in Compose and both ports.
@@ -172,7 +172,8 @@ trace was produced and no permission changes were made. See [performance](perfor
    The owner's device check (18 October) changed five things: icons hold still on taps, taps travel
    as a lens, the held lens no longer shows the bar's outline as a second capsule, the search button
    follows a swipe less, and a held lens joins the search button through a neck; the bar's rounded
-   ends lens what lies beyond them (`capFold`).
+   ends lens what lies beyond them (`capFold`). The dark held lens is within 4 levels of iOS's in every
+   region (2.8 rms), and the search button's sideways release springs as iOS's does (x damping 0.3).
    Text under a tab bar is one soft copy
    in both appearances (IMG_7049), as the Calm presets draw it.
    The search button presses, pulls and lands as iOS's does since pass 17 (centre 2-3 px rms); the

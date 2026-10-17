@@ -148,6 +148,9 @@ Progress:
   the `calm+lens=a,grey,raw` replay variant): no tint/raw-share pair meets both pages (raw share
   saturates at ~75 on docs2; a brighter tint lifts black pages equally). Kept the black-page fit (13 of
   16 held moments); the page gain is a structural residual for a later pass.
+- 18 Oct, claude/lens-band: dark Calm lens rawShare .5 / rawBlur 50 dp (hazescore 2.8, top band 60/64; grid
+  rw* in .local/sxs/ref/slice); Pullable pullReleaseDampingX .3 (sideways min half-width 83 vs 78; sX*);
+  search script re-inferred for follow .2 (searchscript.py FOLLOW env; old script search-script-f35.txt).
 - 18 Oct, claude/bar-ends: owner point 5 DONE: GlassStyle.capFold (uFoldCorners > 1 encodes it; shader
   capLens = held map at corner arcs, outward sampling allowed; recordPad adds band*.3); Calm bar capFold 1
   (dark + light). PR #21 (b8f57d5) merged the other five points; sample installed on the Pixel 7.
