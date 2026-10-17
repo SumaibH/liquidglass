@@ -109,7 +109,14 @@ Two lessons from tuning this app that generalise:
 The shader runs once per pixel of a padded layer per panel per frame, so resolution is the one
 knob that changes the cost by a large factor rather than a small one. `renderScale` on
 `LiquidGlassScene` and `rememberLiquidGlassState` records the layers smaller, tells the shader
-smaller lengths, and scales the result back up. Geometry, position and colour are unaffected.
+smaller lengths, and scales the result back up. Geometry, position and colour are unaffected,
+the contact shadow inside the backdrop included (fixed 17 October: before, it shrank toward the
+panel's corner below full resolution; `GlassContactShadowScaleTest`).
+
+![A clear panel's contact shadow at renderScale 1, and at 0.5 before and after the fix](https://raw.githubusercontent.com/shayann07/liquidglass/main/review/atlas/contact-shadow-render-scale.png)
+
+*Desktop JVM test render (`GlassContactShadowScaleTest`): a clear 320 x 180 dp panel over a white
+page, contrast stretched 5x so the 35-level shadow shows. Branch `claude/parity-2` after c8c894d.*
 
 Measured on a Pixel 7, Android 17, scrolling the sample's Material screen — a list of glass
 cards over a backdrop that does not scroll, which is the expensive arrangement:

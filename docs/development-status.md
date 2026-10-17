@@ -106,6 +106,7 @@ tap optics by the change above.
 | Rendering cost, natural recording, retained selection failure | [Frame/input investigation](https://github.com/shayann07/liquidglass/blob/b46207d665725a0aa841102bfbdcbe74aaf4ac3c/review/atlas/frame-cost-2026-10-13/README.md) |
 | Portable production shaders and scene | [CanvasKit guide](https://github.com/shayann07/liquidglass/blob/b46207d665725a0aa841102bfbdcbe74aaf4ac3c/ports/skia/README.md) |
 | Native .NET material, motion and controls | [Painter](https://github.com/shayann07/liquidglass/blob/b46207d665725a0aa841102bfbdcbe74aaf4ac3c/review/atlas/dotnet-2026-10-10/README.md), [calm interaction](https://github.com/shayann07/liquidglass/blob/b46207d665725a0aa841102bfbdcbe74aaf4ac3c/review/atlas/dotnet-calm-2026-10-13/README.md), [native backdrops](https://github.com/shayann07/liquidglass/blob/b46207d665725a0aa841102bfbdcbe74aaf4ac3c/review/atlas/dotnet-controls-2026-10-13/README.md) |
+| Contact shadow inside the backdrop at `renderScale` below 1 (fixed 17 October) | [Performance guide](performance.md#rendering-at-reduced-resolution), `GlassContactShadowScaleTest` |
 
 These links are pinned to a published source checkpoint so the evidence remains reproducible.
 For later status, follow the repository's [progress](https://github.com/shayann07/liquidglass/blob/main/PROGRESS.md)

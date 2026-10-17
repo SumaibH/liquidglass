@@ -290,6 +290,16 @@ This file records user-visible development changes. Published artifacts are iden
 
 ### Fixed
 
+- Contact shadow under `renderScale` (17 October): the copy of a panel's contact shadow drawn
+  into its own backdrop (the one its rim bends) was scaled by `renderScale` twice, and was sized to
+  the padded recording rather than the panel. Below full resolution it shrank toward the panel's
+  top-left corner (a 320 x 180 dp card at 0.5: interior darkening 1.4 / 0 / 0 / 0 by quadrant against
+  35 at full resolution); at full resolution it reached 2 x pad past the panel's right and bottom
+  edges. It now matches at every scale (35 in all four quadrants at 0.5);
+  `GlassContactShadowScaleTest` checks it. The shadow cast on the page was already correct.
+  Evidence: `review/atlas/contact-shadow-render-scale.png` (desktop JVM test render, white page,
+  clear panel, contrast stretched 5x; branch `claude/parity-2` after c8c894d).
+
 - JVM clipping no longer discards the offscreen wide-tone input, removing a hard vertical selector
   seam in native replays while retaining the kernel and through-bar/substrate behavior.
 - Resting tint is limited to the actual bar substrate, avoiding rejected opaque protruding discs.

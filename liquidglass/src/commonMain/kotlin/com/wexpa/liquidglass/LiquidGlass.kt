@@ -705,13 +705,15 @@ internal fun Modifier.liquidGlassCore(
                     if (contactShadowAlpha > 0f) {
                         val shadowBlur = contactShadow.blurRadius.toPx()
                         val shadowOffset = contactShadow.offsetY.toPx()
+                        // The panel's size: inside record {} `size` is the padded layer's.
+                        val panelSize = size
                         shadowLayer.record(size = paddedSize) {
                             scale(rs, rs, pivot = Offset.Zero) {
                             translate(pad, pad + shadowOffset) {
                                 drawRoundRect(
                                     color = Color.Black.copy(alpha = contactShadowAlpha),
                                     cornerRadius = CornerRadius(radii.getOrElse(0) { 0f }),
-                                    size = size,
+                                    size = panelSize,
                                 )
                             }
                             }
@@ -757,7 +759,9 @@ internal fun Modifier.liquidGlassCore(
                         // else. Drawn before `through` for the same reason a real shadow is
                         // under what sits between: it belongs to the ground.
                         if (contactShadowAlpha > 0f) {
-                            drawLayer(shadowLayer)
+                            // Recorded at the padded size in device px, like rawLayer: undo this
+                            // layer's scale, or a renderScale below 1 shrinks it toward the corner.
+                            scale(1f / rs, 1f / rs, pivot = Offset.Zero) { drawLayer(shadowLayer) }
                         }
                         // Whatever sits between this panel and the backdrop goes on top of it,
                         // in this panel's frame, so the rim refracts that too.
