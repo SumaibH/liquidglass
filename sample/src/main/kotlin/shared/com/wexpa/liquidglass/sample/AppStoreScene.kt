@@ -70,10 +70,13 @@ fun AppStoreScene(
                 .background(Color(0xFF1C1C1E), RoundedCornerShape(18.dp)))
             BasicText("CARD HEADER", Modifier.offset(38.dp, 139.dp),
                 style = TextStyle(color = Color(0xFF969696), fontSize = 10.sp, fontWeight = FontWeight.SemiBold))
-            BasicText("Daily new games", Modifier.offset(38.dp, 165.dp),
-                style = TextStyle(color = Color.White, fontSize = 28.sp, fontWeight = FontWeight.Bold))
-            BasicText("for every mood", Modifier.offset(38.dp, 210.dp),
-                style = TextStyle(color = Color.White, fontSize = 28.sp, fontWeight = FontWeight.Bold))
+            // The headline: three lines on a 77 px pitch, cap tops at rows 515 / 592 / 669, from x 115,
+            // the first about 605 px wide and the visible third 370 px (about 41 px a character), as the recording
+            // shows them above, through and below the bar.
+            for ((i, line) in listOf("Top picks today", "worth your time", "this week").withIndex()) {
+                BasicText(line, Modifier.offset(38.dp, (159f + 25.67f * i).dp),
+                    style = TextStyle(color = Color.White, fontSize = 27.sp, fontWeight = FontWeight.Bold))
+            }
         }
         val barTop = PhoneGeometry.barCentreY - PhoneGeometry.barHeight / 2
         GlassTabBar(

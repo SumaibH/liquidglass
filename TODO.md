@@ -147,6 +147,10 @@ Progress:
   the `calm+lens=a,grey,raw` replay variant): no tint/raw-share pair meets both pages (raw share
   saturates at ~75 on docs2; a brighter tint lifts black pages equally). Kept the black-page fit (13 of
   16 held moments); the page gain is a structural residual for a later pass.
+- App Store bar is clearer glass (17 Oct): plain card 28 -> 57 (slope ~0.9) vs Phone bar same session
+  slope 0.58 (JGEY2190 8.25 s avatar 77 -> 87, black 42). Clear bar fits the card, not the text (page
+  under the bar unknown for 2 of 3 lines). Lens haze: wide tone in lens does not raise p10 (50-51 vs 62);
+  it is the held map's top band. Scene headline matched (27 sp Bold, 15/15/9 chars).
 - Calibration target (17 Oct): the C1a stills (Photos toolbar over the known target, screenshots =
   display colours) were never affected by the decode error. New opt-in
   `GlassCalibrationRenderTest.renderTheCalmBarOverTheDarkTarget` + `GlassRender(softDetail)`. Calm bar

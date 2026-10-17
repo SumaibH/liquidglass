@@ -73,20 +73,24 @@ private fun replay(args: Array<String>) {
         "calm-recorded" -> PhoneGeometry.style(GlassTabBarStyle.CalmRecordedSpace())
         else -> PhoneGeometry.style(GlassTabBarStyle.Calm())
     }.let { base ->
-        // "calm+lens=<alpha>,<grey 0-255>[,<rawShare>[,<lift in /255>]]": a lens candidate, for fitting by replay.
+        // "calm+lens=<alpha>,<grey 0-255>[,<rawShare>[,<lift /255>[,<fineShare>[,<wide dp>]]]]": a lens candidate, for fitting by replay.
         val lens = variant.substringAfter("+lens=", "").substringBefore('+').split(',').mapNotNull { it.toFloatOrNull() }
         if (lens.size < 2) base else base.copy(lens = base.lens.copy(
             tint = androidx.compose.ui.graphics.Color(lens[1] / 255f, lens[1] / 255f, lens[1] / 255f, lens[0]),
             rawShare = lens.getOrElse(2) { base.lens.rawShare },
             tintLift = lens.getOrNull(3)?.let { it / 255f } ?: base.lens.tintLift,
+            fineShare = lens.getOrElse(4) { base.lens.fineShare },
+            wideKernel = lens.getOrNull(5)?.let { androidx.compose.ui.unit.Dp(it) } ?: base.lens.wideKernel,
         ))
     }.let { base ->
-        // "+bar=<black alpha>,<lift in /255>[,<fineShare>[,<blur dp>]]": a bar candidate, for fitting by replay.
+        // "+bar=<black alpha>,<lift /255>[,<fineShare>[,<blur dp>[,<softDetail>[,<wide dp>]]]]": a bar candidate, for fitting by replay.
         val bar = variant.substringAfter("+bar=", "").substringBefore('+').split(',').mapNotNull { it.toFloatOrNull() }
         if (bar.size < 2) base else base.copy(bar = base.bar.copy(
             tint = androidx.compose.ui.graphics.Color(0f, 0f, 0f, bar[0]), tintLift = bar[1] / 255f,
             fineShare = bar.getOrElse(2) { base.bar.fineShare },
-            blurRadius = bar.getOrNull(3)?.let { androidx.compose.ui.unit.Dp(it) } ?: base.bar.blurRadius))
+            blurRadius = bar.getOrNull(3)?.let { androidx.compose.ui.unit.Dp(it) } ?: base.bar.blurRadius,
+            softDetail = bar.getOrElse(4) { base.bar.softDetail },
+            wideKernel = bar.getOrNull(5)?.let { androidx.compose.ui.unit.Dp(it) } ?: base.bar.wideKernel))
     }.let { base ->
         // "+pill=<black alpha>,<lift in /255>": a resting pill candidate, for fitting by replay.
         val pill = variant.substringAfter("+pill=", "").substringBefore('+').split(',').mapNotNull { it.toFloatOrNull() }

@@ -702,6 +702,23 @@ five-tab bar unchanged. Two findings for the material, not yet changed:
   do both, nor can a lower fine share (the excess is in the wide tone). Next: fit a compressive response
   on iOS against itself, before and after the card scrolls in (37.9 against 38.5 s).
 
+### The App Store bar is clearer glass (17 October)
+
+With the headline matched where it is visible (the third line 115-471 px against iOS's 121-491), the
+App Store bar over its plain card reads 57 against 32 over black: it passes about 0.9 of the page. The
+Phone bar from the same device and session (JGEY2190 at 8.25 s, over a 77-level avatar) reads 87
+against 42 over black at that moment: 0.58, the regular tinted glass dark Calm has and the Photos
+screenshots measured. So the App Store's tab bar is a clearer glass, a per-app difference, not a
+flaw in the law. Its exact response is not fitted: a clear bar gets the plain card (60) but carries
+the text under it too brightly (p50 / p75 73 / 115 against 68 / 79), wider blur or less detail does
+not close it (77-83 / 105-113), and the page under iOS's bar is not visible for its first two lines.
+Dark Calm keeps the Phone bar's glass.
+
+**The held lens's haze is not a wide tone.** Adding a wide kernel to the lens (fine share 0.6 / 0.4,
+10 / 16 dp) lowers its middle and top on docs/2 (p50 72 / 67, p75 120 / 101) and leaves the dark end
+(50-51 against iOS's 62). The haze sits in the lens's top band, which pulls the page from above the
+bar; it belongs to the held map, not to a parameter.
+
 ### Re-reading the landing evidence
 
 The removed impact model was calibrated to one frame, video 2 at 2.5567 s ("frame082": width
