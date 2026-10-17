@@ -154,6 +154,10 @@ This file records user-visible development changes. Published artifacts are iden
   (opt-in) renders dark Calm's bar over the calibration target for comparison with the Photos-toolbar
   screenshots. Calm's bar reads 102.2 / 20.8 (mean / standard deviation) against iOS's 102.6 / 20.6 at
   the default tint: the display-colour re-fit agrees with the screenshot-measured law.
+- Ports (17 October): the free button (`createFreeButton` in CanvasKit / the portable package, `FreeButton`
+  in .NET): the Phone search button's press, pull and landing, replayed frame by frame against a new
+  Kotlin-exported fixture (`ports/skia/fixtures/free-button.json`; worst 0.009 px). The bar's outline
+  link stays Compose-only.
 
 ### Added
 

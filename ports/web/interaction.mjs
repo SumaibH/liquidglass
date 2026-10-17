@@ -1,5 +1,5 @@
 /** Apache-2.0. Framework-independent, anchored Calm material feedback. No DOM or timer ownership. */
-import {stepSpring, calmPullTarget, calmDeformation, calmPressScale} from './core.mjs';
+import {stepSpring, calmPullTarget, calmDeformation, calmPressScale, springAt, fastOutSlowIn} from './core.mjs';
 
 const identity = () => [1, 0, 0, 1];
 const clamp = (value, low, high) => Math.max(low, Math.min(high, value));
@@ -133,5 +133,112 @@ export function createCalmInteraction({width, height, radius = Math.min(width, h
     /** Reconfigure after a layout change. Cancel the current gesture rather than keeping stale coordinates. */
     resize(options, time) {advance(time); configure(options); held = false; clear(); return snapshot();},
     setReducedMotion(value, time) {advance(time); reduced = !!value; held = false; clear(); return snapshot();},
+  };
+}
+
+// The free button: GlassInteraction.Pullable with GlassPullShape.Free, the Phone scene's search button
+// (measured on iOS 26's, IMG_6756). Each value restarts from where it is when its target changes, as
+// Compose's animateFloatAsState does; the laws are Modifier.liquidGlass's own (glassPressScale,
+// glassPullTargetScale, glassPullDeformation without anchoring, glassFreeLanding). Checked frame by
+// frame against the Kotlin-exported ports/skia/fixtures/free-button.json.
+const FREE_SPECS = {
+  glowIn: {tween: .09}, freeGlow: {tween: .35},
+  balloonDown: {damping: .62, stiffness: 644}, pressUp: {damping: .72, stiffness: 700},
+  pullFollow: {damping: 1, stiffness: 2500}, freeRelease: {damping: .45, stiffness: 264},
+};
+
+function animated(initial) {
+  const a = {start: 0, from: initial, velocity: 0, target: initial, spec: null};
+  const at = time => {
+    if (!a.spec) return {value: a.from, velocity: 0};
+    // Compose evaluates its animations on whole elapsed milliseconds (nanoseconds / 1e6, truncated).
+    // As (elapsed seconds * 1e9).toLong() / 1e6: truncated twice, as the Kotlin host and Compose do.
+    const tm = Math.floor(Math.trunc(Math.max(0, time - a.start) * 1e9) / 1e6) / 1000;
+    if (a.spec.tween !== undefined) {
+      // A tween reads its elapsed time to the nanosecond; a spring to the whole millisecond.
+      const u = Math.min(1, Math.trunc(Math.max(0, time - a.start) * 1e9) / 1e9 / a.spec.tween);
+      return {value: a.from + (a.target - a.from) * fastOutSlowIn(u), velocity: 0};
+    }
+    return springAt(a.from, a.velocity, a.target, tm, a.spec.damping, a.spec.stiffness);
+  };
+  return {
+    value: time => at(time).value,
+    to(time, target, spec) {
+      if (target === a.target && a.spec) return;
+      const now = at(time);
+      Object.assign(a, {start: time, from: now.value, velocity: now.velocity, target, spec});
+    },
+  };
+}
+
+/**
+ * A free-standing round glass button pulled off its place (px; time in seconds). down / move (total
+ * finger travel since down) / up drive it; sample returns the drawing transform: press scale, a
+ * stretch along and across `angle` (degrees), the offset, and the glow and its lift.
+ */
+export function createFreeButton({size, density = 1, pressScale = 1.26, pressGrowth = 8, pressLift = .2,
+  pullFollow = .35, pullElongation = .217, pullWidthRatio = 1, pullLimit = .5, pullLiftShare = .7} = {}) {
+  if (!(size > 0) || !(density > 0)) throw new RangeError('Positive size and density required');
+  const growth = pressGrowth * density, radius = size / 2;
+  const balloon = Math.min(1 + 2 * growth / size, pressScale);
+  const limit = size * balloon * pullLimit;
+  const press = animated(0), glow = animated(0), px = animated(0), py = animated(0);
+  let anchor = NaN, moved = false;
+  const extent = (sx, sy, x, y) => {
+    const len = Math.hypot(x, y);
+    if (len < 1e-5) return Math.min(size * sx, size * sy);
+    const nx = Math.abs(x) / len, ny = Math.abs(y) / len;
+    return 2 * radius * Math.hypot(sx * nx, sy * ny);
+  };
+  // glassFreeLanding: the edge away from the pull holds at rest; the overshoot lands as a squash.
+  function landing(d) {
+    if (!Number.isFinite(anchor)) return d;
+    const a = anchor * Math.PI / 180, nx = Math.cos(a), ny = Math.sin(a);
+    const restHalf = Math.hypot(radius * nx, radius * ny);
+    const c = d.tx * nx + d.ty * ny, perp = -d.tx * ny + d.ty * nx;
+    const dd = (d.angle - anchor) * Math.PI / 180, cd = Math.cos(dd), sd = Math.sin(dd);
+    const stretched = c >= 0;
+    const axis = stretched ? Math.sqrt(d.along ** 2 * cd * cd + d.across ** 2 * sd * sd) : 1;
+    const side = stretched ? Math.sqrt(d.along ** 2 * sd * sd + d.across ** 2 * cd * cd) : 1;
+    const half = restHalf * axis;
+    if (c - half >= -restHalf) return d;
+    const newHalf = Math.max((c + half + restHalf) / 2, restHalf * .5), centre = c + half - newHalf;
+    const k = newHalf / half;
+    return {along: axis * k, across: side * (1 + .2 * (1 - k)), angle: anchor,
+      tx: centre * nx - perp * ny, ty: centre * ny + perp * nx};
+  }
+  return {
+    down(time) {
+      moved = false;
+      glow.to(time, 1, FREE_SPECS.glowIn); press.to(time, 1, FREE_SPECS.balloonDown);
+      px.to(time, 0, FREE_SPECS.pullFollow); py.to(time, 0, FREE_SPECS.pullFollow);
+    },
+    move(time, dx, dy) {
+      const len = Math.hypot(dx, dy);
+      if (!moved && len > 4 * density) { moved = true; glow.to(time, pullLiftShare, FREE_SPECS.freeGlow); }
+      if (len > 4 * density) anchor = Math.atan2(dy, dx) * 180 / Math.PI;
+      const travel = len * pullFollow;
+      const k = !(len > 1e-5) || pullFollow <= 0 ? 1 : limit * Math.tanh(travel / limit) / travel;
+      px.to(time, dx * k, FREE_SPECS.pullFollow); py.to(time, dy * k, FREE_SPECS.pullFollow);
+    },
+    up(time) {
+      glow.to(time, 0, FREE_SPECS.freeGlow); press.to(time, 0, FREE_SPECS.pressUp);
+      px.to(time, 0, FREE_SPECS.freeRelease); py.to(time, 0, FREE_SPECS.freeRelease);
+    },
+    sample(time) {
+      const amount = press.value(time), scale = 1 + (balloon - 1) * amount;
+      const x = px.value(time), y = py.value(time), len = Math.hypot(x, y);
+      let d = {along: 1, across: 1, angle: 0, tx: 0, ty: 0};
+      if (len >= 1e-3) {
+        const e = extent(scale, scale, x, y), across = extent(scale, scale, -y, x);
+        const along = Math.min(1 + pullElongation * len / Math.max(e, 1), 1.6);
+        const extension = (along - 1) * Math.max(e, 1);
+        d = {along, across: Math.max(1 - pullWidthRatio * extension / Math.max(across, 1), .5),
+          angle: Math.atan2(y, x) * 180 / Math.PI, tx: pullFollow * x, ty: pullFollow * y};
+      }
+      d = landing(d);
+      const g = glow.value(time);
+      return {...d, pressScale: scale, glow: g, lift: g * pressLift, pullX: x};
+    },
   };
 }

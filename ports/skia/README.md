@@ -129,6 +129,16 @@ ground, device px, the bar's origin) and pass it with `layer.setSelectedInk(imag
 `painter.drawSelectorInk(...)`: it is drawn through the production content pass, so it shows only
 under the selector, refracted and folded with it. Labels and accessibility stay with the host. [Evidence](../../review/atlas/ports-selector-2026-10-14/README.md).
 
+## A free button (the Phone search button)
+
+`createFreeButton({size, density})` is Compose's `GlassInteraction.Pullable` with `GlassPullShape.Free`:
+pressed, the button grows 8 pt a side and lights up; pulled, it leaves its place with the finger,
+stretching along the pull; released, it springs back and lands squashed against its resting edge.
+Feed it `down(t)`, `move(t, dx, dy)` (total travel since down) and `up(t)` in seconds, and draw your
+button with `sample(t)`: scale by `pressScale`, stretch by `along` / `across` about `angle` (degrees),
+offset by `tx` / `ty`, and lift the material by `lift`. Its trajectories match Compose's frame by frame
+(`fixtures/free-button.json`, exported by the Kotlin tests). The bar's outline does not follow it here.
+
 ## Draw a lens without managing uniforms
 
 Initialize CanvasKit using its [official setup](https://skia.org/docs/user/modules/canvaskit/).

@@ -160,7 +160,8 @@ trace was produced and no permission changes were made. See [performance](perfor
    one soft copy. iOS's held lens still adds a milky haze over dark parts near content (docs/2 p10
    52 against 62).
    The search button presses, pulls and lands as iOS's does since pass 17 (centre 2-3 px rms); the
-   CanvasKit and .NET ports do not have the free pull yet. Owner visual acceptance is pending.
+   CanvasKit and .NET ports have its press, pull and landing (`createFreeButton` / `FreeButton`, checked frame
+   by frame against Kotlin) but not the bar's outline link. Owner visual acceptance is pending.
 2. Verify all directional extreme envelopes and Android composition on appropriate hardware.
 3. Resolve ordinary interaction/display performance and final wide/narrow Atlas visual acceptance.
 4. Additional host integrations, with executable evidence.

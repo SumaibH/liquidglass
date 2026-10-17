@@ -237,6 +237,14 @@ per pixel, before allocator/backend overhead. The CPU blur path is not a GPU per
 Use/dispose each instance on its owning rendering thread. Recreate it and its source after context
 loss if your host uses GPU-backed images.
 
+### A free button (the Phone search button)
+
+`FreeButton` is Compose's `GlassInteraction.Pullable` with `GlassPullShape.Free`: `Down(t)`,
+`Move(t, dx, dy)` (total travel since down) and `Up(t)` in seconds, then `Sample(t)` gives the press
+scale, the stretch along and across `Angle` (degrees), the offset and the lift to draw the button with.
+The checks replay the Kotlin-exported `free-button.json` frame by frame. The bar's outline does not
+follow it here.
+
 ## Lower-level passes and remaining gaps
 
 `GlassEffectPass("material" | "content" | "endpoint")` exposes the same evaluated SkSL as Kotlin

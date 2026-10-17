@@ -624,7 +624,8 @@ travel through the modifier's own resistance (`.local/sxs/searchscript.py`).
 | Brightness | 19.1 levels | 8.0 levels |
 
 The rise peaks 106-109 px against iOS's 110-114; sideways pulls squash 8 px less across than
-iOS's. The CanvasKit and .NET ports do not have the free pull yet.
+iOS's. Ported to CanvasKit (`createFreeButton`) and .NET (`FreeButton`) on 17 October, checked frame by
+frame against a Kotlin-exported trajectory (worst 0.009 px, 0.0018); the bar's outline link is not ported.
 
 ![The search button at rest, pressed, pulled, landing and pulled toward the bar, pass 17 (our renders only, desktop Direct3D replay, deterministic 60 fps, inferred input)](pass17-search.png)
 
@@ -736,7 +737,7 @@ the impact. The narrowing itself is real and is listed below.
 - Held lens over content (pass 18): iOS's adds a milky haze over dark parts near content (docs/2 p10
   52 against 62; the top band 13 below iOS's).
 - Search button (pass 17): the rise peaks 3-6 px short; sideways pulls squash 8 px less across;
-  brightness 8 levels rms. The ports do not have the free pull.
+  brightness 8 levels rms. The ports have the free pull, not the bar's outline link.
 - Pass 14's level residuals (58 against 67, 62 against 64) were read on the sRGB-decoded recordings
   and are superseded above.
 - Wall landings (pass 13): rms 6.0 px right / 5.4 px left (pass 10: 5.5 / 4.1); the 9.9 s landing passes its rest by

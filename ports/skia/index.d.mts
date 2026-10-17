@@ -44,6 +44,26 @@ export interface CalmInteraction {
 }
 export function createCalmInteraction(options: CalmOptions): CalmInteraction;
 
+/** Compose's GlassInteraction.Pullable with GlassPullShape.Free (the Phone scene's search button). Px. */
+export interface FreeButtonOptions {
+  size: number; density?: number; pressScale?: number; pressGrowth?: number; pressLift?: number;
+  pullFollow?: number; pullElongation?: number; pullWidthRatio?: number; pullLimit?: number; pullLiftShare?: number;
+}
+export interface FreeButtonTransform {
+  /** Press scale (both axes), then a stretch along and across `angle` (degrees), then the offset. */
+  pressScale: number; along: number; across: number; angle: number; tx: number; ty: number;
+  /** The press glow and the material lift it gives (fraction of white). */
+  glow: number; lift: number; pullX: number;
+}
+export interface FreeButton {
+  /** Monotonic seconds; `move` takes the total finger travel since `down`. */
+  down(time: number): void;
+  move(time: number, dx: number, dy: number): void;
+  up(time: number): void;
+  sample(time: number): FreeButtonTransform;
+}
+export function createFreeButton(options: FreeButtonOptions): FreeButton;
+
 export interface GlassPainter {
   /** Borrows an opaque source. Replace it before deleting the previous image. */
   setSource(image: Image): void;

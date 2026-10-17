@@ -147,6 +147,16 @@ Progress:
   the `calm+lens=a,grey,raw` replay variant): no tint/raw-share pair meets both pages (raw share
   saturates at ~75 on docs2; a brighter tint lifts black pages equally). Kept the black-page fit (13 of
   16 held moments); the page gain is a structural residual for a later pass.
+- WhatsApp bar (JGEY2190 50-74 s, 17 Oct, measured only): five tabs NOT evenly spaced (icon centres x
+  187/370/584/799/~977: gaps 183/214/215/178, slots follow label widths, "Communities" widest); selected
+  ink stays WHITE over the dark pill (the blue-ink tracker cannot follow it); the "You" tab is the owner's
+  profile photo (local only). A replay needs label-width slots in GlassTabBar (equal slots today) and a
+  pill/lens tracker. Not started.
+- Ports free button (17 Oct): `GlassFreePullPortFixtureTest` exports free-button.json (4 scenarios through
+  Compose's own laws/specs; animateFloatAsState retarget rule). CanvasKit/portable `createFreeButton`
+  (ports/web interaction.mjs + core springAt/fastOutSlowIn; bundle regenerated; types), .NET `FreeButton`
+  + FreeButtonChecks. Parity worst 0.0093 px / 1.8e-3 (Compose: spring time = whole ms truncated, tween
+  = ns; spring snaps at its 0.01 visibility threshold). web 14/14, skia 35/35, .NET 14/14.
 - App Store bar is clearer glass (17 Oct): plain card 28 -> 57 (slope ~0.9) vs Phone bar same session
   slope 0.58 (JGEY2190 8.25 s avatar 77 -> 87, black 42). Clear bar fits the card, not the text (page
   under the bar unknown for 2 of 3 lines). Lens haze: wide tone in lens does not raise p10 (50-51 vs 62);
