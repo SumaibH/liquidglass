@@ -147,6 +147,9 @@ Progress:
   the `calm+lens=a,grey,raw` replay variant): no tint/raw-share pair meets both pages (raw share
   saturates at ~75 on docs2; a brighter tint lifts black pages equally). Kept the black-page fit (13 of
   16 held moments); the page gain is a structural residual for a later pass.
+- 17 Oct: contact shadow under renderScale FIXED (LiquidGlass.kt): the in-backdrop copy was drawn inside
+  glassLayer's scale(rs) although recorded already scaled, and sized to `size` inside record {} (= padded
+  layer, not panel). GlassContactShadowScaleTest: rs .5 quadrants 1.4/0/0/0 -> 35 x4 (rs 1: 35 x4).
 - 17 Oct (owner: "do all of these"): (1) CalmClear DONE: GlassTabBarStyle.CalmClear() bar black .10 (Phone .41),
   same lift; WhatsApp card bar/pill 53/31 vs iOS 54/30 (Calm 46/24), bare page 41/19 vs chats page 43/19,
   App Store gaps 66/64/63/58 vs 67/65/64/59; ports `clear` (clearBarTint in fixture). Replay variants
