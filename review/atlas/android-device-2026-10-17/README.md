@@ -38,9 +38,23 @@ carry and land; no ghost disc, seam or stuck frame appears.
 
 *Frames from the device's screen recording (10 per second), the bar's right end and the button.*
 
+**Frame cost.** The "frame time" percentiles above run from the intended vsync to the GPU finishing,
+across stages that overlap from one frame to the next; they are latency, not the frame interval. Split
+by stage (`framestats`, two held drags across the bar, 120 frames), p50 / p90:
+
+| Stage | p50 | p90 |
+| :-- | --: | --: |
+| UI thread: input, animation, layout, recording | 6.9 ms | 7.4 ms |
+| RenderThread: issuing the draw | 1.9 ms | 2.6 ms |
+| GPU, after swap | 8.5 ms | 9.3 ms |
+| Vsync to GPU done (latency) | 18.1 ms | 18.9 ms |
+
+Every stage is under the 11.1 ms budget of the 90 Hz display, so the scene keeps the display rate; the
+janky share is 2-3%. Rendering the glass at reduced resolution barely changes it (same gestures, two
+runs each): frame p50 17-18 / 17 / 16-17 ms and GPU p50 9 / 9 / 8 ms at `renderScale` 1.0 / 0.7 / 0.5.
+On this device the glass is not GPU-bound at this size; the larger share is the UI thread's work.
+
 **Limits.** The input is `adb shell input`, not a finger: a stationary hold sends no movement, and
 swipes are straight lines at constant speed. This check shows the behaviour runs correctly on the
-device; parity is measured on the desktop replay against the iOS recordings. At 90 Hz the frame budget
-is 11 ms, so a p50 of 19-20 ms means the scene runs below the display rate on this device; performance
-remains an open item (see the performance guide). The recordings stay local
+device; parity is measured on the desktop replay against the iOS recordings. The recordings stay local
 (`.local/device/2026-10-17/`).

@@ -30,12 +30,14 @@ class PhoneActivity : ComponentActivity() {
         val natural = intent?.getBooleanExtra("natural", true) ?: true
         // "light": light Calm over the light palette (measured on the owner's light recording, 17 October).
         val light = intent?.getBooleanExtra("light", false) ?: false
+        // "renderScale": record the glass at a fraction of full resolution (performance comparisons).
+        val renderScale = intent?.getFloatExtra("renderScale", 1f) ?: 1f
         setContent {
             var selected by remember { mutableIntStateOf(0) }
             val palette = if (light) PhonePalette.Light else if (natural) PhonePalette.Natural else PhonePalette.Recorded
             Box(Modifier.fillMaxSize().background(palette.page), contentAlignment = Alignment.BottomCenter) {
                 PhoneScene(selected, { selected = it }, Modifier.navigationBarsPadding().testTag("phone-scene"), palette = palette,
-                    style = PhoneGeometry.style(GlassTabBarStyle.Calm(dark = !light)))
+                    style = PhoneGeometry.style(GlassTabBarStyle.Calm(dark = !light)), renderScale = renderScale)
             }
         }
     }

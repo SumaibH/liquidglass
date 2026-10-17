@@ -101,8 +101,10 @@ fun PhoneScene(
     // The search button presses and pulls off its place as iOS's does (GlassInteraction.Pullable is
     // fitted on this button's own episodes in IMG_6756); null keeps it passive, as before 15 October.
     search: GlassInteraction? = GlassInteraction.Pullable.copy(pullShape = GlassPullShape.Free, pullLiftShare = 0.6f),
+    // LiquidGlassState.renderScale: the glass layers recorded at this fraction of full resolution.
+    renderScale: Float = 1f,
 ) {
-    val state = rememberLiquidGlassState(palette.page)
+    val state = rememberLiquidGlassState(palette.page, renderScale = renderScale)
     Box(modifier.size(PhoneGeometry.width, PhoneGeometry.height).background(palette.page)) {
         Box(Modifier.fillMaxSize().liquidGlassSource(state)) {
             when (selected) {

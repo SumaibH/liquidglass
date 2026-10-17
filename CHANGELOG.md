@@ -199,8 +199,9 @@ This file records user-visible development changes. Published artifacts are iden
   the exported material.
 - Physical device (17 October): the Calm tab bar on a Pixel 7 (Android 17), dark and light, through
   tap, hold, drag, throw and the search button's pulls, recorded on the device
-  (`review/atlas/android-device-2026-10-17/`). Frame time p50 19-20 ms at 90 Hz. Sample: `PhoneActivity`
-  takes `--ez light true` for light Calm.
+  (`review/atlas/android-device-2026-10-17/`). It keeps the 90 Hz display rate (UI thread 6.9 ms, GPU 8.5 ms
+  p50 per frame; 2-3% janky). Sample: `PhoneActivity` takes `--ez light true` for light Calm and
+  `--ef renderScale <f>`; `PhoneScene` takes `renderScale`.
 - Phone search button (17 October): `pullLiftShare` 0.6 in the sample, the replay and both ports
   (was 0.7), the share the library's own note measured ("settles at 70 once dragged"). Scored on
   IMG_6756's search catalogue (`searchscore.py`): brightness 7.1 levels rms (was 8.0), half-width 2.7
