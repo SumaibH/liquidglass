@@ -25,6 +25,7 @@ import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Immutable
@@ -51,6 +52,7 @@ import androidx.compose.ui.input.pointer.AwaitPointerEventScope
 import androidx.compose.ui.input.pointer.PointerId
 import androidx.compose.ui.input.pointer.PointerInputChange
 import androidx.compose.ui.input.pointer.util.VelocityTracker
+import androidx.compose.ui.layout.Layout
 import androidx.compose.ui.layout.layout
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalDensity
@@ -61,6 +63,7 @@ import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.testTag
 import androidx.compose.ui.unit.Constraints
+import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.DpRect
 import androidx.compose.ui.unit.IntOffset
@@ -157,11 +160,7 @@ fun GlassTabBar(
         val barHeightDp: Dp = maxHeight
         val barWidthPx = with(density) { barWidthDp.toPx() }
         val barHeightPx = with(density) { barHeightDp.toPx() }
-        val geometry = GlassTabBarGeometry(
-            barWidth = barWidthPx,
-            inset = with(density) { style.contentPadding.toPx() },
-            count = itemCount,
-        )
+        val geometry = glassTabBarGeometry(density, barWidthPx, style, itemCount)
         val slotWidthDp = with(density) { geometry.slotWidth.toDp() }
         val flingVelocity = with(density) { style.flingVelocity.toPx() }
         val gelReference = with(density) { style.gelReference.toPx() }
@@ -884,6 +883,7 @@ fun GlassTabBar(
                     ItemRow(
                         count = itemCount,
                         inset = style.contentPadding,
+                        geometry = geometry,
                         selectedFor = { index -> !lensCarriesInk && index == activeIndex },
                         onClick = { index -> select(index) },
                         semanticSelected = selected,
@@ -1055,6 +1055,7 @@ fun GlassTabBar(
                             ItemRow(
                                 count = itemCount,
                                 inset = style.contentPadding,
+                                geometry = geometry,
                                 selectedFor = { index -> !usePose || style.lensInkAll || index == activeIndex },
                                 onClick = null,
                                 item = item,
@@ -1124,6 +1125,7 @@ fun GlassTabBar(
                                 ItemRow(
                                     count = itemCount,
                                     inset = style.contentPadding,
+                                    geometry = geometry,
                                     selectedFor = { index -> !usePose || style.lensInkAll || index == activeIndex },
                                     onClick = null,
                                     item = item,
@@ -1151,67 +1153,105 @@ private fun ItemRow(
     emphasis: Float = 1f,
     /**
      * Reports each item's measured icon-and-label width, so the V3 body can make room for the
-     * content it is over from layout rather than from a guess. Items are equal slots and their
-     * content is centred, so a width plus the slot's centre is the whole bound.
+     * content it is over from layout rather than from a guess. Each item's content is centred on
+     * its slot's centre, so a width plus that centre is the whole bound.
      */
     onMeasured: ((index: Int, width: Float) -> Unit)? = null,
     /** The tab the host has selected, for accessibility; only the interactive row reports it. */
     semanticSelected: Int = -1,
+    /** The bar's item layout, in px; with fixed slots the items sit at its centres. */
+    geometry: GlassTabBarGeometry? = null,
 ) {
+    // The interactive row is the one accessibility sees: a group of tabs. Every other copy
+    // (the lens's refracted row, the V3 selected ink) is decoration and is hidden, or a
+    // screen reader would read each label two or three times.
+    val group = Modifier
+        .fillMaxSize()
+        .then(if (onClick != null) Modifier.selectableGroup() else Modifier.clearAndSetSemantics {})
+    val fixed = geometry?.takeIf { it.fixed }
+    if (fixed != null) {
+        // Fixed slots (GlassTabBarStyle.slotWidth): each item centred on its slot centre, its
+        // target half the gap to the nearer neighbour, so a closed-up end never overlaps the next.
+        Layout(
+            modifier = group,
+            content = { repeat(count) { index -> ItemCell(index, Modifier, true, selectedFor, onClick, item, emphasisIndex, emphasis, onMeasured, semanticSelected) } },
+        ) { measurables, constraints ->
+            val h = constraints.maxHeight
+            val placeables = measurables.mapIndexed { index, m ->
+                val w = (fixed.itemHalfWidth(index) * 2f).roundToInt().coerceAtLeast(0)
+                m.measure(Constraints.fixed(w, h))
+            }
+            layout(constraints.maxWidth, h) {
+                placeables.forEachIndexed { index, p -> p.place((fixed.centreOf(index) - p.width / 2f).roundToInt(), 0) }
+            }
+        }
+        return
+    }
     Row(
-        modifier = Modifier
-            .fillMaxSize()
-            // The interactive row is the one accessibility sees: a group of tabs. Every other copy
-            // (the lens's refracted row, the V3 selected ink) is decoration and is hidden, or a
-            // screen reader would read each label two or three times.
-            .then(if (onClick != null) Modifier.selectableGroup() else Modifier.clearAndSetSemantics {})
-            .padding(horizontal = inset),
+        modifier = group.padding(horizontal = inset),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceEvenly,
     ) {
         repeat(count) { index ->
-            Box(
-                modifier = Modifier
-                    .weight(1f)
-                    .fillMaxHeight()
-                    .then(
-                        if (onClick != null) {
-                            Modifier.selectable(
-                                selected = index == semanticSelected,
-                                interactionSource = remember { MutableInteractionSource() },
-                                indication = null,
-                                role = Role.Tab,
-                            ) { onClick(index) }
-                        } else {
-                            Modifier
-                        },
-                    ),
-                contentAlignment = Alignment.Center,
-            ) {
-                // Sprung per item, so the growth walks from tab to tab under a drag instead of
-                // jumping; both copies of the row animate the same targets on the same clock.
-                val itemScale by animateFloatAsState(
-                    targetValue = if (index == emphasisIndex) emphasis else 1f,
-                    animationSpec = spring(dampingRatio = 0.85f, stiffness = 900f),
-                    label = "glass_tab_bar_item_scale",
-                )
-                val measured = if (onMeasured != null) {
-                    Modifier.onGloballyPositioned { onMeasured(index, it.size.width.toFloat()) }
+            ItemCell(index, Modifier.weight(1f), false, selectedFor, onClick, item, emphasisIndex, emphasis, onMeasured, semanticSelected)
+        }
+    }
+}
+
+@Composable
+private fun ItemCell(
+    index: Int,
+    sizing: Modifier,
+    unboundedWidth: Boolean,
+    selectedFor: (Int) -> Boolean,
+    onClick: ((Int) -> Unit)?,
+    item: @Composable (index: Int, selected: Boolean) -> Unit,
+    emphasisIndex: Int,
+    emphasis: Float,
+    onMeasured: ((index: Int, width: Float) -> Unit)?,
+    semanticSelected: Int,
+) {
+    Box(
+        modifier = sizing
+            .fillMaxHeight()
+            .then(
+                if (onClick != null) {
+                    Modifier.selectable(
+                        selected = index == semanticSelected,
+                        interactionSource = remember { MutableInteractionSource() },
+                        indication = null,
+                        role = Role.Tab,
+                    ) { onClick(index) }
                 } else {
                     Modifier
-                }
-                // One call site whatever the scale: a branch on it made two different call sites,
-                // so the item's whole subtree, with its remembered state and running animations,
-                // was discarded each time emphasis began and again when it settled to exactly 1.
-                Box(
-                    modifier = measured.graphicsLayer {
-                        scaleX = itemScale
-                        scaleY = itemScale
-                    },
-                ) {
-                    item(index, selectedFor(index))
-                }
-            }
+                },
+            ),
+        contentAlignment = Alignment.Center,
+    ) {
+        // Sprung per item, so the growth walks from tab to tab under a drag instead of
+        // jumping; both copies of the row animate the same targets on the same clock.
+        val itemScale by animateFloatAsState(
+            targetValue = if (index == emphasisIndex) emphasis else 1f,
+            animationSpec = spring(dampingRatio = 0.85f, stiffness = 900f),
+            label = "glass_tab_bar_item_scale",
+        )
+        val measured = if (onMeasured != null) {
+            Modifier.onGloballyPositioned { onMeasured(index, it.size.width.toFloat()) }
+        } else {
+            Modifier
+        }
+        // One call site whatever the scale: a branch on it made two different call sites,
+        // so the item's whole subtree, with its remembered state and running animations,
+        // was discarded each time emphasis began and again when it settled to exactly 1.
+        Box(
+            modifier = (if (unboundedWidth) Modifier.wrapContentWidth(unbounded = true) else Modifier)
+                .then(measured)
+                .graphicsLayer {
+                    scaleX = itemScale
+                    scaleY = itemScale
+                },
+        ) {
+            item(index, selectedFor(index))
         }
     }
 }
@@ -1222,16 +1262,44 @@ private fun ItemRow(
  * clamped to the first and last slot centres.
  */
 @Immutable
-internal data class GlassTabBarGeometry(val barWidth: Float, val inset: Float, val count: Int) {
+internal data class GlassTabBarGeometry(
+    val barWidth: Float,
+    val inset: Float,
+    val count: Int,
+    /** [GlassTabBarStyle.slotWidth] in px; NaN shares the bar out. */
+    val fixedSlot: Float = Float.NaN,
+    /** With [fixedSlot], the nearest an item's centre comes to a bar end: its pill's half plus inset. */
+    val endReach: Float = 0f,
+) {
+    val fixed: Boolean get() = fixedSlot.isFinite() && fixedSlot > 0f
+
     // Never negative: a bar narrower than its two insets (an expand-in, a zero-width first
     // frame) would otherwise put firstCentre past lastCentre, and every coerceIn between them throws.
-    val slotWidth: Float get() = ((barWidth - inset * 2f) / count).coerceAtLeast(0f)
+    val slotWidth: Float get() = if (fixed) fixedSlot else ((barWidth - inset * 2f) / count).coerceAtLeast(0f)
     val firstCentre: Float get() = centreOf(0)
     val lastCentre: Float get() = centreOf(count - 1)
 
-    fun centreOf(index: Int): Float = inset + (index + 0.5f) * slotWidth
+    fun centreOf(index: Int): Float = if (fixed) {
+        glassFixedSlotCentre(barWidth, count, fixedSlot, endReach, index)
+    } else inset + (index + 0.5f) * slotWidth
 
-    fun nearestIndex(x: Float): Int = ((x - inset) / slotWidth).toInt().coerceIn(0, count - 1)
+    fun nearestIndex(x: Float): Int = if (fixed) {
+        var i = 0
+        while (i < count - 1 && x > (centreOf(i) + centreOf(i + 1)) / 2f) i++
+        i
+    } else ((x - inset) / slotWidth).toInt().coerceIn(0, count - 1)
+
+    /**
+     * Each item's hit and layout half-width about its centre: half the gap to the nearer
+     * neighbour, so the clamped end items never overlap the next one's target.
+     */
+    fun itemHalfWidth(index: Int): Float {
+        if (!fixed) return slotWidth / 2f
+        val c = centreOf(index)
+        val left = if (index > 0) (c - centreOf(index - 1)) / 2f else Float.MAX_VALUE
+        val right = if (index < count - 1) (centreOf(index + 1) - c) / 2f else Float.MAX_VALUE
+        return min(min(left, right), slotWidth / 2f).coerceAtLeast(0f)
+    }
 
     /** A flick carries to the next item even if the finger never got it there. */
     fun projected(lastIndex: Int, releasedVelocity: Float, flingVelocity: Float): Int = when {
@@ -1239,6 +1307,29 @@ internal data class GlassTabBarGeometry(val barWidth: Float, val inset: Float, v
         releasedVelocity < -flingVelocity -> lastIndex - 1
         else -> lastIndex
     }.coerceIn(0, count - 1)
+}
+
+/** The item layout [style] asks for on a [barWidthPx] bar. */
+internal fun glassTabBarGeometry(density: Density, barWidthPx: Float, style: GlassTabBarStyle, count: Int): GlassTabBarGeometry =
+    with(density) {
+        if (!style.slotWidth.isSpecified) {
+            return GlassTabBarGeometry(barWidthPx, style.contentPadding.toPx(), count)
+        }
+        val slot = style.slotWidth.toPx()
+        val pill = if (style.pillWidth.isSpecified) max(style.pillWidth.toPx(), slot) else slot
+        GlassTabBarGeometry(barWidthPx, style.contentPadding.toPx(), count, slot, pill / 2f + style.pillInset.toPx())
+    }
+
+/**
+ * The centre of item [index] on equal [slot]-wide slots centred in a [barWidth] bar, held at least
+ * [endReach] from either end ([GlassTabBarStyle.slotWidth]). One function for the tab bar's
+ * geometry and the V3 selector's, so the two can never disagree about where a tab is.
+ */
+internal fun glassFixedSlotCentre(barWidth: Float, count: Int, slot: Float, endReach: Float, index: Int): Float {
+    val mid = barWidth / 2f
+    val free = mid + (index - (count - 1) / 2f) * slot
+    val lo = min(endReach, mid)
+    return free.coerceIn(lo, barWidth - lo)
 }
 
 /**
@@ -1444,6 +1535,17 @@ data class GlassTabBarStyle(
      * shows its selected colour. False keeps the r13 behaviour.
      */
     val lensInkAll: Boolean = false,
+    /**
+     * Equal item slots of this width, centred in the bar, in place of the bar's width shared out
+     * inside [contentPadding]. Where the slots are wider than the bar allows, the end items move
+     * in to where their resting indicator ([pillWidth]) sits [pillInset] inside the bar's end, so
+     * the inner spacing stays the slot and the ends close up. Measured on WhatsApp's iOS bar
+     * (JGEY2190 50-74 s, 17 October): a 348pt bar, tab centres 193/370/584.5/799/976 px at 3x, a
+     * 78pt pill 4pt inside the end; the inner spacing is 71.5pt (its widest item, 63.3pt, plus
+     * 8pt), wider than a fifth of the bar. This rule puts every centre within 2 px; slots sized
+     * per item miss by 13. Unspecified keeps the shared-out slots.
+     */
+    val slotWidth: Dp = Dp.Unspecified,
 ) {
     companion object {
         /** Recommended navigation preset. Material responds gently; the selector deforms
@@ -1470,10 +1572,12 @@ data class GlassTabBarStyle(
                 // less 22/255, as the inset was first measured ("0.857 of the bar minus 17/255", in
                 // the sRGB-decoded space): docs/2's Calls page under it p10/50/75 12/29/47 against
                 // iOS's 15/25/51 (14/21/29 at .58 black), black 10 against 10. The held lens shows
-                // the bar plus 0.30 of the raw page, less 3/255: docs/2 52/75/135 against 62/80/135
-                // (50/60/87 with the grey tint), IMG_6756's black page 48/49 against 48/49.
+                // the bar less 3/255: IMG_6756's black page 48/49 against 48/49. (Pass 18 added 0.30 of
+                // the raw page to reach docs/2's percentiles; scored by region on 17 October that drew the
+                // page's text under the lens sharp and white, p90 155 against iOS's 102, where iOS's lens
+                // veils it as the bar does: without it 91, black page unchanged.)
                 pill = recorded.pill.copy(tint = Color.Transparent, tintLift = -22f / 255f),
-                lens = recorded.lens.copy(tint = Color.Transparent, rawShare = 0.30f, tintLift = -3f / 255f,
+                lens = recorded.lens.copy(tint = Color.Transparent, rawShare = 0f, tintLift = -3f / 255f,
                     softDetail = 1f),
             )
         }

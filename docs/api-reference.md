@@ -195,6 +195,7 @@ data class GlassTabBarStyle(
     val deformItemsWithBar: Boolean = false,
     val tapTintFade: Float = 0f,
     val tapSelectedScale: Float = 1f,
+    val slotWidth: Dp = Dp.Unspecified,
 )
 ```
 
@@ -204,6 +205,14 @@ morphs between, exposed so a host can start from them.
 falling over 260 ms after the lift), as iOS's bar lifts on every touch; off by default, on in dark
 `Calm()`. `CalmRecordedSpace()` is dark Calm as calibrated before 15 October, against recordings
 decoded as if they were sRGB.
+
+`slotWidth` lays the tabs on equal slots of that width centred in the bar, instead of sharing the
+bar out inside `contentPadding`. Slots wider than the bar allows close up at the ends: an end tab
+moves in until its resting pill (`pillWidth`) sits `pillInset` inside the bar's end. The pill, the
+lens, hit targets, drag and the V3 body all follow these centres. Unspecified (the default) keeps
+the shared-out slots. Measured on iOS: WhatsApp's 348 pt bar uses 71.5 pt slots (its widest item
+plus 8 pt) with a 78 pt pill and 4 pt inset; the App Store's uses 64 pt
+([tab bar guide](tab-bar.md#tabs-on-set-slots)).
 
 #### `selector` — the deforming body
 

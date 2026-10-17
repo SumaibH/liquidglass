@@ -166,14 +166,15 @@ private fun buildGlassSelectorBar(
     spec: GlassSelectorSpec,
 ): GlassSelectorBar = with(density) {
     val insetPx = style.contentPadding.toPx()
-    val slot = (barWidthPx - insetPx * 2f) / itemCount
+    val geometry = glassTabBarGeometry(density, barWidthPx, style, itemCount)
+    val slot = if (geometry.fixed) geometry.slotWidth else (barWidthPx - insetPx * 2f) / itemCount
     val pillWidth: Dp = if (style.pillWidth.isSpecified) maxOf(style.pillWidth, slot.toDp()) else slot.toDp()
     // A requested rest width may exceed the room around an end anchor on a compact bar.
     // Bound the reference capsule before it is published: moving the contact-solver centre
     // later would misalign the settled selection and leave its spring pushing into the wall.
     // This is layout feasibility, not a cap on held deformation or navigation intent.
     val restHalfWidth = if (spec.poseMotion) {
-        min(pillWidth.toPx() / 2f, (insetPx + slot / 2f - density.density).coerceAtLeast(density.density))
+        min(pillWidth.toPx() / 2f, ((if (geometry.fixed) geometry.firstCentre else insetPx + slot / 2f) - density.density).coerceAtLeast(density.density))
     } else pillWidth.toPx() / 2f
     val requestedHalfHeight = barHeightPx / 2f - style.pillInset.toPx()
     val pillHalfHeight = if (spec.poseMotion) min(requestedHalfHeight, restHalfWidth) else requestedHalfHeight
@@ -200,6 +201,8 @@ private fun buildGlassSelectorBar(
             2f * min(pillWidth.toPx() + style.lensExtraWidth.toPx(),
                 max(spec.maxWidthSlots, 2.4f) * slot / 2f + slot) + spec.maxExtraLength * slot,
         ),
+        fixedSlot = geometry.fixedSlot,
+        endReach = geometry.endReach,
     )
 }
 

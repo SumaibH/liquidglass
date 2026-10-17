@@ -3,10 +3,16 @@ export interface CalmSelectorBar {
   readonly width: number; readonly height: number; readonly inset: number; readonly count: number;
   readonly cornerRadius: number; readonly baseHalfWidth: number; readonly baseHalfHeight: number;
   readonly allowedHalfHeight: number; readonly density: number; readonly slotWidth: number;
+  /** The set slot width (GlassTabBarStyle.slotWidth), NaN when the bar is shared out. */
+  readonly fixedSlot: number;
+  /** With a set slot, the nearest a tab's centre comes to a bar end. */
+  readonly endReach: number;
 }
 export interface CalmSelectorBarOptions {
   width: number; height: number; count: number; inset?: number; pillWidth?: number;
   pillInset?: number; density?: number;
+  /** Equal slots of this width centred in the bar, the ends closed up to fit the pill. */
+  slotWidth?: number;
 }
 /** Shader pose uniforms: A, A^-1, (cx, cy, bx, by) bar-local, (spine, radius, scaleX, band). */
 export interface CalmSelectorPose {
@@ -23,6 +29,10 @@ export interface CalmSelectorState {
 export type CalmSelectorSpec = Readonly<Record<string, number | boolean>>;
 export const CALM_SELECTOR_SPEC: CalmSelectorSpec;
 export function calmSelectorBar(options: CalmSelectorBarOptions): CalmSelectorBar;
+/** A tab's centre on the bar, in bar-local pixels. */
+export function centreOf(bar: CalmSelectorBar, index: number): number;
+/** The tab a bar-local x falls on. */
+export function nearestTab(bar: CalmSelectorBar, x: number): number;
 export class CalmSelectorController {
   constructor(spec?: Partial<CalmSelectorSpec>);
   motionEnabled: boolean;

@@ -2,7 +2,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFile} from 'node:fs/promises';
-import {CalmSelectorController, calmSelectorBar, createCalmNavigation} from './selector.mjs';
+import {CalmSelectorController, calmSelectorBar, centreOf, nearestTab, createCalmNavigation} from './selector.mjs';
 
 const fixture = JSON.parse(await readFile(new URL('./fixtures/selector-calm.json', import.meta.url), 'utf8'));
 const MODES = {Rest: 'rest', TapTransit: 'tap', PressPending: 'pending', Held: 'held', Released: 'released'};
@@ -194,4 +194,33 @@ test('ink: the selected ink shows only inside the selector', async () => {
     assert.ok(under[2] > 200 && under[2] > under[0] + 120, `selected ink missing inside the selector: ${under}`);
     assert.ok(beyond[2] < 120, `selected ink leaked outside the selector: ${beyond}`);
   } finally { painter.dispose(); inkImage.delete(); image.delete(); surface.delete(); }
+});
+
+test('set slots (GlassTabBarStyle.slotWidth): WhatsApp measured centres, taps and a drag to the end', () => {
+  // 348 x 62 pt at 3x, 71.5 pt slots, a 78 pt pill 4 pt inside: as GlassTabBarGeometryTest.
+  const b = calmSelectorBar({width: 1044, height: 186, count: 5, pillWidth: 234, pillInset: 12, density: 3, slotWidth: 214.5});
+  const ios = [130, 307, 521.5, 736.25, 913];
+  for (let i = 0; i < 5; i++) {
+    assert.ok(Math.abs(centreOf(b, i) - ios[i]) <= 2, `centre ${i}: ${centreOf(b, i)}`);
+    assert.equal(nearestTab(b, centreOf(b, i)), i);
+  }
+  assert.equal(centreOf(b, 0), 129); assert.equal(centreOf(b, 4), 915);
+  // Unset, the bar is shared out exactly as before.
+  const shared = calmSelectorBar({width: 1044, height: 186, count: 5, inset: 18, density: 3});
+  assert.ok(Number.isNaN(shared.fixedSlot));
+  assert.equal(centreOf(shared, 0), 18 + shared.slotWidth / 2);
+  const selected = [];
+  const nav = createCalmNavigation({bar: b, selected: 2, onSelect: i => selected.push(i)});
+  nav.down(140, 93, .1); nav.up(140, 93, .16);
+  assert.deepEqual(selected, [0]);
+  let t = .16;
+  while (nav.frame(t) && t < 3) t += 1 / 60;
+  assert.ok(Math.abs(nav.state().centreX - 129) < .5, `tap landed at ${nav.state().centreX}`);
+  nav.select(0);
+  nav.down(129, 93, 3); t = 3;
+  for (let k = 1; k <= 40; k++) { t = 3 + k / 60; nav.move(129 + k * (915 - 129) / 40, 93, t); nav.frame(t); }
+  nav.up(915, 93, t + 1 / 60);
+  while (nav.frame(t) && t < 7) t += 1 / 60;
+  assert.equal(selected[selected.length - 1], 4);
+  assert.ok(Math.abs(nav.state().centreX - 915) < .5, `drag landed at ${nav.state().centreX}`);
 });

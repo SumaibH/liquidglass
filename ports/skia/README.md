@@ -113,8 +113,12 @@ const nav = scene.addNavigation({x: 24, y: 520, width: 300, height: 62},
 canvas.addEventListener('pointerdown', e => nav.down(e.offsetX, e.offsetY, e.timeStamp / 1000));
 ```
 
+`calmSelectorBar({..., slotWidth})` lays the tabs on equal slots of that width centred in the bar,
+as Compose's `GlassTabBarStyle.slotWidth` does: the end tabs close up until their pill sits
+`pillInset` inside the bar's end. Draw your items at `centreOf(bar, i)`.
+
 The motion is a line-by-line port of the Compose pose controller (`selector.mjs`:
-`CalmSelectorController`, `calmSelectorBar`, `createCalmNavigation`), checked frame by frame against
+`CalmSelectorController`, `calmSelectorBar`, `centreOf`, `nearestTab`, `createCalmNavigation`), checked frame by frame against
 trajectories the Kotlin controller exports (`fixtures/selector-calm.json`: taps, a held throw into
 the wall, held reversals, a stationary hold; 0.05 px). The navigation layer draws its bar in the
 Compose Calm bar material (`painter.drawCalmBar`; it lifts for any touch as dark Calm's does, from

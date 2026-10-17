@@ -15,6 +15,8 @@ import androidx.compose.ui.unit.Density
 import com.wexpa.liquidglass.GlassTabBarStyle
 import com.wexpa.liquidglass.sample.AppStoreGeometry
 import com.wexpa.liquidglass.sample.AppStoreScene
+import com.wexpa.liquidglass.sample.WhatsAppGeometry
+import com.wexpa.liquidglass.sample.WhatsAppScene
 import com.wexpa.liquidglass.sample.LoupeScreen
 import com.wexpa.liquidglass.sample.PhoneGeometry
 import com.wexpa.liquidglass.sample.PhonePalette
@@ -73,7 +75,7 @@ private fun replay(args: Array<String>) {
         "calm-recorded" -> PhoneGeometry.style(GlassTabBarStyle.CalmRecordedSpace())
         else -> PhoneGeometry.style(GlassTabBarStyle.Calm())
     }.let { base ->
-        // "calm+lens=<alpha>,<grey 0-255>[,<rawShare>[,<lift /255>[,<fineShare>[,<wide dp>]]]]": a lens candidate, for fitting by replay.
+        // "calm+lens=<alpha>,<grey 0-255>[,<rawShare>[,<lift /255>[,<fineShare>[,<wide dp>[,<heldGlow>[,<glowFloor>[,<glowReach dp>[,<blur dp>]]]]]]]]": a lens candidate, for fitting by replay.
         val lens = variant.substringAfter("+lens=", "").substringBefore('+').split(',').mapNotNull { it.toFloatOrNull() }
         if (lens.size < 2) base else base.copy(lens = base.lens.copy(
             tint = androidx.compose.ui.graphics.Color(lens[1] / 255f, lens[1] / 255f, lens[1] / 255f, lens[0]),
@@ -81,6 +83,10 @@ private fun replay(args: Array<String>) {
             tintLift = lens.getOrNull(3)?.let { it / 255f } ?: base.lens.tintLift,
             fineShare = lens.getOrElse(4) { base.lens.fineShare },
             wideKernel = lens.getOrNull(5)?.let { androidx.compose.ui.unit.Dp(it) } ?: base.lens.wideKernel,
+            heldGlow = lens.getOrElse(6) { base.lens.heldGlow },
+            heldGlowFloor = lens.getOrElse(7) { base.lens.heldGlowFloor },
+            heldGlowReach = lens.getOrNull(8)?.let { androidx.compose.ui.unit.Dp(it) } ?: base.lens.heldGlowReach,
+            blurRadius = lens.getOrNull(9)?.let { androidx.compose.ui.unit.Dp(it) } ?: base.lens.blurRadius,
         ))
     }.let { base ->
         // "+bar=<black alpha>,<lift /255>[,<fineShare>[,<blur dp>[,<softDetail>[,<wide dp>]]]]": a bar candidate, for fitting by replay.
@@ -118,6 +124,9 @@ private fun replay(args: Array<String>) {
                 // "appstore": iOS 26's App Store five-tab bar over a dark card (AppStoreScene).
                 if (variant.startsWith("appstore")) AppStoreScene(selected, { selected = it },
                     style = AppStoreGeometry.style(style))
+                // "whatsapp": WhatsApp's five-tab bar on its measured slots (WhatsAppScene).
+                else if (variant.startsWith("whatsapp")) WhatsAppScene(selected, { selected = it },
+                    style = WhatsAppGeometry.style(style))
                 else PhoneScene(selected, { selected = it }, palette = palette, style = style,
                     search = if ("+passive" in variant) null else com.wexpa.liquidglass.GlassInteraction.Pullable.copy(
                         pullShape = com.wexpa.liquidglass.GlassPullShape.Free, pullLiftShare = 0.7f))

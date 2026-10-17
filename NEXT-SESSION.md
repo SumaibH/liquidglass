@@ -148,11 +148,20 @@ Progress:
   the `calm+lens=a,grey,raw` replay variant): no tint/raw-share pair meets both pages (raw share
   saturates at ~75 on docs2; a brighter tint lifts black pages equally). Kept the black-page fit (13 of
   16 held moments); the page gain is a structural residual for a later pass.
+- Lens haze (17 Oct, DONE): Calm dark lens rawShare 0 (was .30). hazescore (shipped, tag hzShip):
+  top 64/52, bottom 75/63, text p90 102/91 (was 155), p50 82/75, black 47/48, rms 9.7 (was 24.9).
+  Residual: rim bands 11-12 low over content only. Suite 395/0 fail/27 skip; ports regenerated.
 - WhatsApp bar (JGEY2190 50-74 s, 17 Oct, measured only): five tabs NOT evenly spaced (icon centres x
   187/370/584/799/~977: gaps 183/214/215/178, slots follow label widths, "Communities" widest); selected
   ink stays WHITE over the dark pill (the blue-ink tracker cannot follow it); the "You" tab is the owner's
   profile photo (local only). A replay needs label-width slots in GlassTabBar (equal slots today) and a
-  pill/lens tracker. Not started.
+  pill/lens tracker. DONE 17 Oct (slots): NOT label-width. Rule = equal slots of 71.5pt (inner spacing
+  214.6 px = widest item 63.3pt + 8pt) centred in the 348pt bar (x 63..1107), end tabs clamped so the
+  78pt pill sits 4pt inside the end; all 5 centres within 2 px (label-width rule: 13 px off). App Store
+  fits the same rule with 64pt slots. `GlassTabBarStyle.slotWidth` (opt-in), `WhatsAppScene`, replay
+  variant `whatsapp`, GlassTabBarGeometryTest; tap lands 129 (iOS 130), drag 915 (913). Bar over the
+  grey card 54 iOS / 46 ours, pill 30 / 25 (clearer glass, as App Store; not fitted). Ports: calmSelectorBar
+  ({slotWidth}) / CalmSelectorBar.Create(slotWidth:) + tests. Evidence review/.../whatsapp-slots.png. Local: .local/sxs/ref/whatsapp, waslots.py.
 - Ports free button (17 Oct): `GlassFreePullPortFixtureTest` exports free-button.json (4 scenarios through
   Compose's own laws/specs; animateFloatAsState retarget rule). CanvasKit/portable `createFreeButton`
   (ports/web interaction.mjs + core springAt/fastOutSlowIn; bundle regenerated; types), .NET `FreeButton`

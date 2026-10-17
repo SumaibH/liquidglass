@@ -157,8 +157,11 @@ trace was produced and no permission changes were made. See [performance](perfor
    frame of the inferred lift; the neck parts 100 ms late at one release (34.8 s). In display
    colours (since 15 October, five recordings) the rest, held and tap levels are within 0-4 grey
    levels; since pass 18 the pill and lens pass page content as iOS's do and text under the bar is
-   one soft copy. iOS's held lens still adds a milky haze over dark parts near content (docs/2 p10
-   52 against 62).
+   one soft copy. Since 17 October the held lens no longer passes the raw page, so text under it
+   is veiled as under iOS's (p90 91 against 102, was 155); its bands near the rims still read 11-12
+   below iOS's over content. `GlassTabBarStyle.slotWidth` lays tabs on set slots as WhatsApp's bar
+   does (all five centres within 2 px), in Compose and both ports. WhatsApp's and the App Store's
+   bars are clearer glass than the Phone bar (over a grey card 54 against our 46); not fitted.
    The search button presses, pulls and lands as iOS's does since pass 17 (centre 2-3 px rms); the
    CanvasKit and .NET ports have its press, pull and landing (`createFreeButton` / `FreeButton`, checked frame
    by frame against Kotlin) but not the bar's outline link. Owner visual acceptance is pending.

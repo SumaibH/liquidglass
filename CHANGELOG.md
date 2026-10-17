@@ -141,7 +141,8 @@ This file records user-visible development changes. Published artifacts are iden
     page they read as before; over content iOS's pass far more of the page. Pill: the bar less
     22/255 (the inset's originally measured law), docs/2 p10/50/75 12/29/47 against iOS's 15/25/51
     (14/21/29 at .58 black), black 10 against 10. Held lens: the bar plus 0.30 of the raw page less
-    3/255, docs/2 52/75/135 against 62/80/135 (50/60/87), black 48/49 against 48/49.
+    3/255, docs/2 52/75/135 against 62/80/135 (50/60/87), black 48/49 against 48/49 (the raw share
+    was removed the same day after a regional score; see below).
   - `GlassStyle.softDetail` (new, default 0; 1 on dark Calm's bar and lens): page text under the
     glass is one soft copy, as iOS's is, instead of the along-axis high-pass whose taps drew ghost
     copies of every glyph and whose rotated scatter turned the rest into grain (horizontal detail
@@ -158,6 +159,20 @@ This file records user-visible development changes. Published artifacts are iden
   in .NET): the Phone search button's press, pull and landing, replayed frame by frame against a new
   Kotlin-exported fixture (`ports/skia/fixtures/free-button.json`; worst 0.009 px). The bar's outline
   link stays Compose-only.
+- `GlassTabBarStyle.slotWidth` (new, 17 October; unspecified by default, so every preset is
+  unchanged): equal slots of a set width centred in the bar; where they are wider than the bar
+  allows, the end tabs close up to where their resting pill sits `pillInset` inside the bar's end.
+  Measured on WhatsApp's iOS bar (owner's recording, 348 pt bar): the inner tabs are 71.5 pt apart
+  (its widest item, 63.3 pt, plus 8 pt), wider than a fifth of the bar, and the end tabs are pulled
+  in; the rule puts all five centres within 2 px, where slots sized per item miss by 13. The App
+  Store bar fits the same rule with 64 pt slots. Pill, lens, hit targets, drag and the V3 body all
+  follow the slots. Sample `WhatsAppScene` / `WhatsAppGeometry` (neutral placeholders, a plain disc
+  for the profile tab); Atlas replay variant `whatsapp`. The CanvasKit and .NET ports have it too (`calmSelectorBar({slotWidth})`, `CalmSelectorBar.Create(slotWidth:)`).
+- Calm dark held lens (17 October): no raw page share (`rawShare` 0, was 0.30). Scored by region
+  against docs/2 and IMG_6756, the raw share drew the page's text under the lens sharp and white
+  (p90 155 against iOS's 102). Without it the lens veils text as the bar does: p90 91, p50 75
+  against 82, five regions 9.7 rms against 24.9. A black page is unchanged (48 against 47). The
+  lens's top and bottom bands still read 11-12 below iOS's over content.
 
 ### Added
 

@@ -69,23 +69,48 @@ public sealed record CalmSelectorSpec
     };
 }
 
-/// <summary>The bar as the selector sees it (buildGlassSelectorBar, pose path). Pixels.</summary>
+/// <summary>The bar as the selector sees it (buildGlassSelectorBar, pose path). Pixels. A finite
+/// <see cref="FixedSlot"/> (GlassTabBarStyle.slotWidth) lays equal slots of that width centred in the bar,
+/// each centre held at least <see cref="EndReach"/> from either end; NaN shares the bar out inside <see cref="Inset"/>.</summary>
 public sealed record CalmSelectorBar(double Width, double Height, double Inset, int Count, double CornerRadius,
-    double BaseHalfWidth, double BaseHalfHeight, double AllowedHalfHeight, double Density, double SlotWidth)
+    double BaseHalfWidth, double BaseHalfHeight, double AllowedHalfHeight, double Density, double SlotWidth,
+    double FixedSlot = double.NaN, double EndReach = 0)
 {
-    public double CentreOf(int index) => Inset + (index + .5) * SlotWidth;
+    private bool Fixed => double.IsFinite(FixedSlot) && FixedSlot > 0;
+
+    public double CentreOf(int index) => Fixed ? FixedCentre(Width, Count, FixedSlot, EndReach, index) : Inset + (index + .5) * SlotWidth;
+
+    /// <summary>The tab under a bar-local x: the nearest centre for set slots, the slot under it otherwise.</summary>
+    public int NearestTab(double x)
+    {
+        if (!Fixed) return Math.Clamp((int)Math.Floor((x - Inset) / SlotWidth), 0, Count - 1);
+        var i = 0;
+        while (i < Count - 1 && x > (CentreOf(i) + CentreOf(i + 1)) / 2) i++;
+        return i;
+    }
+
+    // glassFixedSlotCentre: equal slots centred in the bar, held endReach from either end.
+    private static double FixedCentre(double width, int count, double slot, double endReach, int i)
+    {
+        double mid = width / 2, lo = Math.Min(endReach, mid);
+        return Math.Clamp(mid + (i - (count - 1) / 2.0) * slot, lo, width - lo);
+    }
 
     public static CalmSelectorBar Create(double width, double height, int count, double inset = 6,
-        double? pillWidth = null, double pillInset = 4, double density = 1)
+        double? pillWidth = null, double pillInset = 4, double density = 1, double? slotWidth = null)
     {
         if (!double.IsFinite(width) || !double.IsFinite(height) || width <= 0 || height <= 0 || count < 1 ||
             !double.IsFinite(density) || density <= 0 || inset < 0 || pillInset < 0)
             throw new ArgumentOutOfRangeException(nameof(width), "Positive bar size, count and nonnegative insets required");
-        var slot = Math.Max((width - inset * 2) / count, 0);
+        var isFixed = slotWidth is double sw && double.IsFinite(sw) && sw > 0;
+        var slot = isFixed ? slotWidth!.Value : Math.Max((width - inset * 2) / count, 0);
         var pill = pillWidth is double p && double.IsFinite(p) ? Math.Max(p, slot) : slot;
-        var rest = Math.Min(pill / 2, Math.Max(inset + slot / 2 - density, density));
+        double fixedSlot = isFixed ? slot : double.NaN, endReach = isFixed ? pill / 2 + pillInset : 0;
+        var first = isFixed ? FixedCentre(width, count, slot, endReach, 0) : inset + slot / 2;
+        var rest = Math.Min(pill / 2, Math.Max(first - density, density));
         var half = Math.Min(height / 2 - pillInset, rest);
-        return new(width, height, inset, count, height / 2, rest, half, Math.Max(half, height / 2 - density), density, slot);
+        return new(width, height, inset, count, height / 2, rest, half, Math.Max(half, height / 2 - density), density, slot,
+            fixedSlot, endReach);
     }
 }
 
@@ -1031,7 +1056,7 @@ public sealed class CalmNavigation
 
     public CalmSelectorController Controller { get; }
     public int Selected { get; private set; }
-    private int Nearest(double x) => Math.Clamp((int)Math.Floor((x - bar.Inset) / bar.SlotWidth), 0, bar.Count - 1);
+    private int Nearest(double x) => bar.NearestTab(x);
 
     public void Select(int index) { Selected = Math.Clamp(index, 0, bar.Count - 1); if (gesture is null) Controller.Retarget(Selected); }
     public void SetMotion(bool enabled) => Controller.MotionEnabled = enabled;

@@ -103,22 +103,41 @@ function heldPressure(ratio, barHeight, referenceHeight) {
  * The bar as the selector sees it (buildGlassSelectorBar, pose path). Pixels. `inset` is the
  * item row's horizontal padding, `pillWidth` the resting selector width (default: one slot),
  * `pillInset` the bar showing above and below the resting selector, `density` px per dp.
+ * `slotWidth` (GlassTabBarStyle.slotWidth): equal slots of that width centred in the bar, the end
+ * tabs closed up until their pill sits `pillInset` inside the bar's end; omitted, the bar is
+ * shared out inside `inset`.
  */
-export function calmSelectorBar({width, height, count, inset = 6, pillWidth, pillInset = 4, density = 1}) {
+export function calmSelectorBar({width, height, count, inset = 6, pillWidth, pillInset = 4, density = 1, slotWidth}) {
   if (![width, height, inset, pillInset, density].every(Number.isFinite) || width <= 0 || height <= 0 ||
       !Number.isInteger(count) || count < 1 || density <= 0 || inset < 0 || pillInset < 0)
     throw new RangeError('Positive bar size, integer count and nonnegative insets required');
-  const slot = Math.max((width - inset * 2) / count, 0);
+  const fixed = Number.isFinite(slotWidth) && slotWidth > 0;
+  const slot = fixed ? slotWidth : Math.max((width - inset * 2) / count, 0);
   const pill = Number.isFinite(pillWidth) ? Math.max(pillWidth, slot) : slot;
-  const restHalfWidth = Math.min(pill / 2, Math.max(inset + slot / 2 - density, density));
+  const fixedSlot = fixed ? slot : NaN, endReach = fixed ? pill / 2 + pillInset : 0;
+  const first = fixed ? fixedCentre(width, count, slot, endReach, 0) : inset + slot / 2;
+  const restHalfWidth = Math.min(pill / 2, Math.max(first - density, density));
   const pillHalfHeight = Math.min(height / 2 - pillInset, restHalfWidth);
   return Object.freeze({
     width, height, inset, count, cornerRadius: height / 2, baseHalfWidth: restHalfWidth,
     baseHalfHeight: pillHalfHeight, allowedHalfHeight: Math.max(pillHalfHeight, height / 2 - density),
-    density, slotWidth: slot,
+    density, slotWidth: slot, fixedSlot, endReach,
   });
 }
-const centreOf = (bar, i) => bar.inset + (i + .5) * bar.slotWidth;
+// glassFixedSlotCentre: equal slots centred in the bar, held endReach from either end.
+function fixedCentre(width, count, slot, endReach, i) {
+  const mid = width / 2, lo = Math.min(endReach, mid);
+  return clamp(mid + (i - (count - 1) / 2) * slot, lo, width - lo);
+}
+export const centreOf = (bar, i) => bar.fixedSlot > 0
+  ? fixedCentre(bar.width, bar.count, bar.fixedSlot, bar.endReach, i) : bar.inset + (i + .5) * bar.slotWidth;
+/** The tab under `x`: the nearest centre for set slots, the slot under it otherwise. */
+export function nearestTab(bar, x) {
+  if (!(bar.fixedSlot > 0)) return clamp(Math.floor((x - bar.inset) / bar.slotWidth), 0, bar.count - 1);
+  let i = 0;
+  while (i < bar.count - 1 && x > (centreOf(bar, i) + centreOf(bar, i + 1)) / 2) i++;
+  return i;
+}
 
 class Reference {
   constructor(a, r) { this.a = a; this.r = r; this.spine = a > GEOMETRY_EPSILON; }
@@ -1005,7 +1024,7 @@ export function createCalmNavigation({bar, selected = 0, onSelect = () => {}, sp
     if (touch.to === to) return;
     touch = {from: touchAt(time), to, t0: time, duration: to > 0 ? .05 : .26};
   };
-  const nearest = x => clamp(Math.floor((x - bar.inset) / bar.slotWidth), 0, bar.count - 1);
+  const nearest = x => nearestTab(bar, x);
   const firstCentre = () => centreOf(bar, 0), lastCentre = () => centreOf(bar, bar.count - 1);
   function velocity(samples) {
     // Least-squares slope over the last 100 ms, as a stand-in for Compose's VelocityTracker.

@@ -146,6 +146,11 @@ painter.DrawSelector(canvas, barRect, c.Render(), (float)c.Formation, options,
     (float)c.TransitAppearance, (float)c.HeldTravel, through);
 ```
 
+`CalmSelectorBar.Create(..., slotWidth: px)` lays the tabs on equal slots of that width centred
+in the bar, as Compose's `GlassTabBarStyle.slotWidth` does: the end tabs close up until their pill
+sits `pillInset` inside the bar's end. Draw your items at `bar.CentreOf(i)`; `NearestTab` maps a
+bar-local x to a tab.
+
 `DrawCalmBar` and `DrawSelector` use the Compose Calm bar and selector material itself
 (`CalmSelectorMaterial`: the production styles exported by the Kotlin tests, blended by the same
 rules and checked against 96 Kotlin-computed uniform sets). Pass `through` so the lens looks through

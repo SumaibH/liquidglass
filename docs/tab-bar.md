@@ -78,6 +78,37 @@ tint, so the page shows through them as through iOS's (the pill darkens black to
 avatar under it), and page text under the bar is one soft copy (`GlassStyle.softDetail`) rather than
 a grainy, ghosted one.
 
+## Tabs on set slots
+
+By default the tabs share the bar equally inside `contentPadding`. iOS lays some bars out
+differently. WhatsApp's 348 pt bar puts its tabs 71.5 pt apart (its widest item, "Communities"
+at 63.3 pt, plus 8 pt), which is wider than a fifth of the bar, and pulls the two end tabs in to
+where their pill fits. `slotWidth` reproduces this:
+
+```kotlin
+GlassTabBar(
+    state = glass, itemCount = 5, selectedIndex = selected, onSelected = { selected = it },
+    style = GlassTabBarStyle.Calm().copy(slotWidth = 71.5.dp, pillWidth = 78.dp, pillInset = 4.dp),
+    modifier = Modifier.width(348.dp),
+) { index, isSelected -> Tab(index, isSelected) }
+```
+
+The slots are centred in the bar. If they are wider than the bar allows, an end tab moves in
+until its resting pill sits `pillInset` inside the bar's end. The pill, the held lens, hit
+targets, drag and the deforming body all use these centres. Measured on the owner's recording
+(17 October), this puts all five of WhatsApp's tab centres within 2 px of iOS's. Slots sized to
+each item miss by 13 px. The App Store bar fits the same rule with 64 pt slots and no closing up.
+A tap lands on the end tab at 129 px against iOS's 130, and a drag across the bar lands at 915
+against 913. The CanvasKit and .NET ports take the same option (`calmSelectorBar({slotWidth})`, `CalmSelectorBar.Create(slotWidth:)`).
+
+![Three resting selections of the WhatsApp scene with iOS's measured tab centres as ticks](https://raw.githubusercontent.com/shayann07/liquidglass/main/review/atlas/reference-replay-2026-10-13/whatsapp-slots.png)
+
+*Our renders only: the sample `WhatsAppScene` with neutral placeholders (a plain disc for the
+profile tab), desktop GPU replay at 3x, branch `claude/parity-2` after f94d518. Yellow ticks mark
+iOS's tab centres measured on the recording; blue ticks mark where equal shares would put them.
+Over the same grey card, iOS's bar reads 54 and ours 46, and its pill 30 against our 25. This is
+the clearer bar also seen in the App Store, recorded but not fitted.*
+
 ## A neighbouring control: the search button
 
 iOS 26 places a separate round search button beside the Phone tab bar. It is its own glass, but

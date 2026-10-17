@@ -720,6 +720,57 @@ Dark Calm keeps the Phone bar's glass.
 (50-51 against iOS's 62). The haze sits in the lens's top band, which pulls the page from above the
 bar; it belongs to the held map, not to a parameter.
 
+### The held lens without the raw page (17 October)
+
+Pass 18 gave dark Calm's held lens 0.30 of the raw page, to reach docs/2's percentiles over the
+whole lens. Scored by region (docs/2 at 5.75 s, tab 0, and IMG_6756's black keypad page at
+35.47 s), that share drew the page's text under the lens sharp and white: p90 155 against iOS's
+102. iOS's lens veils that text as its bar does. Five regions, iOS / ours:
+
+| | top band | bottom band | text p90 | text p50 | black interior | rms |
+| --- | --- | --- | --- | --- | --- | --- |
+| raw share 0.30 (pass 18) | 64 / 53 | 75 / 64 | 102 / 155 | 82 / 89 | 47 / 48 | 24.9 |
+| raw share 0 (now) | 64 / 52 | 75 / 63 | 102 / 91 | 82 / 75 | 47 / 48 | 9.7 |
+
+Dark Calm's lens now has no raw share (`rawShare` 0). A black page is unchanged. The bands near the
+rims still read 11-12 below iOS's over content. An additive wide glow would also light them over a
+black page, where they already match, and a blur does not change them. They stay a residual of the
+held map.
+
+### WhatsApp's slots (17 October)
+
+WhatsApp's dark five-tab bar (JGEY2190 50-74 s, the same device as the App Store bar, 3 px/pt) is
+348 x 62 pt on the Phone bar's row. Its tabs are not equal shares. The tab centres are 193 / 370 /
+584.5 / 799.25 / 976 px, symmetric about the bar's centre, 214.6 px apart inside and 177 px at the
+ends. The resting pill is 78 pt wide and sits 4 pt inside the bar's end when an end tab is selected.
+The labels are 119 / 69 / 190 / 81 / 51 px wide. Two rules were scored against the centres:
+
+- Equal slots of the inner spacing, 71.5 pt, centred in the bar, with an end tab moved in until its
+  pill fits 4 pt inside the bar: every centre within 2 px. The inner spacing is the widest item,
+  "Communities" at 63.3 pt, plus 8 pt. That is a reading of one bar, not a law.
+- Slots of each item's width plus an equal gap: up to 13 px off ("Chats" and "You").
+
+The App Store bar fits the first rule with 64 pt slots and nothing closed up: centres 201 / 393 /
+585 / 777 / 969 against the measured 200 / 393 / 585 / 777 / 969. `GlassTabBarStyle.slotWidth`
+implements the first rule. It is opt-in, and every preset keeps its shared-out slots. The new
+sample `WhatsAppScene` uses it with neutral placeholders (a plain disc for the profile tab, a
+settings list behind the bar).
+
+At rest, our label runs land within 1.5 px of iOS's, and their widths within 3 px. In the replay,
+a tap on the first tab lands at 129 px from the bar's left (iOS 130). A drag from the first tab to
+the last steps through every index and lands at 915 (iOS 913). Selected ink stays white over the
+dark pill, as on the recording.
+
+Over the same grey settings card (23), iOS's bar reads 54 and ours 46. Its pill reads 30 and ours
+25. This is the clearer bar the App Store showed. It is recorded and not fitted: dark Calm keeps
+the Phone bar's glass.
+
+![Three resting selections with iOS's tab centres](whatsapp-slots.png)
+
+*Our renders only: `WhatsAppScene`, desktop GPU replay at 3x, branch `claude/parity-2` after
+f94d518. Yellow ticks are iOS's measured tab centres, blue ticks where equal shares inside a 6 dp
+padding would put them.*
+
 ### Re-reading the landing evidence
 
 The removed impact model was calibrated to one frame, video 2 at 2.5567 s ("frame082": width
@@ -734,8 +785,8 @@ the impact. The narrowing itself is real and is listed below.
   88 against our 61 over the avatar); no tint or raw page share reproduces it (fits by replay). The
   resting pill reads 3 above iOS's on black pages. iOS's bar lights 33 ms before a tap's ink
   leaves; our inferred tap presses 16 ms before (finger timing).
-- Held lens over content (pass 18): iOS's adds a milky haze over dark parts near content (docs/2 p10
-  52 against 62; the top band 13 below iOS's).
+- Held lens over content (pass 18, raw share removed 17 October): its bands near the rims read 11-12
+  below iOS's over content (docs/2 top band 52 against 64), matching over a black page.
 - Search button (pass 17): the rise peaks 3-6 px short; sideways pulls squash 8 px less across;
   brightness 8 levels rms. The ports have the free pull, not the bar's outline link.
 - Pass 14's level residuals (58 against 67, 62 against 64) were read on the sRGB-decoded recordings
@@ -756,6 +807,9 @@ the impact. The narrowing itself is real and is listed below.
 - Android was verified on an API 37 emulator through the AGSL path ([record](../android-emulator-2026-10-14/README.md)); no physical device was available.
 
 ## Verification
+
+- 17 October (slots, lens raw share): full library suite 395 cases, 0 failures, 27 optional showcase
+  skips (11 m 44 s, fixtures re-exported); CanvasKit 36/36, portable web 14/14, .NET checks 14/14.
 
 - Pass 18: full library suite 391 cases, 364 passed, 27 optional showcase skips, 0 failures (14 m);
   `:desktop:desktopTest` and `:sample:assembleDebug` passed; CanvasKit port 35/35 and .NET checks 13/13

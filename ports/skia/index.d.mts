@@ -1,7 +1,7 @@
 import type {Canvas, CanvasKit, Image} from 'canvaskit-wasm';
 import type {CalmSelectorPose, CalmSelectorState} from './selector.mjs';
 export type {CalmSelectorPose, CalmSelectorState, CalmSelectorBar, CalmNavigation} from './selector.mjs';
-export {CalmSelectorController, calmSelectorBar, createCalmNavigation} from './selector.mjs';
+export {CalmSelectorController, calmSelectorBar, centreOf, nearestTab, createCalmNavigation} from './selector.mjs';
 /** The Compose Calm selector material as shader uniforms (lengths in dp) and its band blend. */
 export function calmSelectorMaterial(state?: {dark?: boolean; formation?: number; transit?: number; heldTravel?: number}):
   {values: Readonly<Record<string, number | readonly number[]>>; uFormation: number};
