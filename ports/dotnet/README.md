@@ -153,7 +153,8 @@ bar-local x to a tab.
 
 `DrawCalmBar(..., clear: true)` (and `CalmSelectorMaterial.Bar(..., clear: true)`) draws Compose's
 `GlassTabBarStyle.CalmClear()` bar: the clearer glass of WhatsApp's and the App Store's dark iOS
-bars (black at 0.10 instead of 0.41, same lift, legibility 2.5; light appearance unchanged).
+bars (black at 0.10 instead of 0.41, same lift, legibility 2.5; light appearance unchanged). The ports draw no contact shadows: light
+Calm's held lens casts one in Compose (`contactShadow` 0.5), which a host draws under the lens itself.
 
 A free button beside the bar (Compose's `GlassTabBarAccessory.link`) fuses with it:
 `AccessoryFuse.Compute(barWidth, barHeight, new RectD(x, y, w, h), button.Sample(t), smoothing, barPressX,

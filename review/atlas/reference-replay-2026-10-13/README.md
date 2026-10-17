@@ -623,8 +623,8 @@ travel through the modifier's own resistance (`.local/sxs/searchscript.py`).
 | Height / half-width | 6.4 / 4.4 px | 4.3 / 2.8 px |
 | Brightness | 19.1 levels | 8.0 levels |
 
-The rise peaks 106-109 px against iOS's 110-114; sideways pulls squash 8 px less across than
-iOS's. Ported to CanvasKit (`createFreeButton`) and .NET (`FreeButton`) on 17 October, checked frame by
+The rise peaks 106-109 px against iOS's 110-114; after a sideways pull iOS's body overshoots its rest
+by 6 px against our 2 for ~100 ms (the "8 px less squash" first recorded here). Ported to CanvasKit (`createFreeButton`) and .NET (`FreeButton`) on 17 October, checked frame by
 frame against a Kotlin-exported trajectory (worst 0.009 px, 0.0018); the bar's outline link is not ported.
 
 ![The search button at rest, pressed, pulled, landing and pulled toward the bar, pass 17 (our renders only, desktop Direct3D replay, deterministic 60 fps, inferred input)](pass17-search.png)
@@ -837,10 +837,12 @@ The owner recorded light mode (IMG_7048: Phone 4-60 s, App Store 64-100 s, Whats
 | Rim top / bottom / ends | 246 / 242-247 / 179-221 | 246 / 246 / 234 | 255 |
 | Shadow under the bar | 253 | 251-253 | 255 |
 | Resting pill, Phone keypad page / WhatsApp | 246 / 236 | 242 / 242 | 235 |
-| Held lens edge | soft band to ~244, shadow to 242 below | 2 px line at 243, no shadow | 175 |
+| Held lens edge | soft band to ~244, shadow to 242 below | 2 px line at 243; shadow 241-243 since 18 October | 175 |
 
 A light tap travels as refracting glass with growing ink, as in dark (6.8-6.9 s), so light Calm takes
-dark Calm's tap optics. The App Store's light pill is darker than the others (217-228). Under the bar,
+dark Calm's tap optics. The App Store's resting pill is invisible over white (255 at 95 and 98 s, Games
+selected); the 217-228 first read here was its cards seen through it (a light-blue card reads ~230 under it).
+Under the bar,
 in both appearances, iOS shows text as one soft copy, legible, without the ghost copies a toolbar's
 high-pass draws: the tab bar is the soft-copy role the Calm presets use. An edge-slope estimate puts
 iOS's text edges under the bar at 0.74 px (dark) / 0.61 px (light) against ours 0.62 / 0.61.
@@ -848,6 +850,30 @@ iOS's text edges under the bar at 0.74 px (dark) / 0.61 px (light) against ours 
 ![Light Calm in the Phone, WhatsApp and App Store scenes](light-calm.png)
 
 *Our renders only: desktop GPU replay at 3x, branch `claude/light-and-gaps`.*
+
+### The held lens's shadow (18 October)
+
+A lens casts its contact shadow from its own body now. A selector's node spans the whole bar, and the
+shadow was drawn as that node's rectangle, so a lens given a shadow shaded the bar far from itself
+(218 over white across the bar's right half); light Calm's lens had its shadow turned off for that
+reason. With the shadow cast by the lens's capsule (`glassShadowCaster`, the pose body through its
+matrix), light Calm's lens takes `contactShadow` 0.5, scored on IMG_7048 at 38.5 s and 42 s (a lens
+held on Keypad over the white keypad page):
+
+| Below the light held lens, every 3 px from its edge | levels |
+| :-- | :-- |
+| iOS | 245 242 242 242 242 242 244 246 247 249 252 254 255 |
+| ours, `contactShadow` 0.5 | 241 242 243 244 245 246 247 248 249 249 250 251 252 |
+| ours, 1.0 | 231 232 234 236 237 239 241 243 244 245 246 247 249 |
+
+rms 2.6 levels at 0.5; the interior over the bar is unchanged (253.3 / 254.8 against 253.4 / 255.0),
+because the bar's own image covers the shadow inside the lens, as on iOS. Where the lens overhangs the
+page above the bar it reads 248-251 (iOS 244-252).
+
+![Light Calm's held lens without and with its shadow](light-lens-shadow.png)
+
+*Our renders only: desktop GPU replay at 3x, `hold2` (1.2 s on Keypad), branch `claude/residuals`;
+top `contactShadow` 0, bottom 0.5.*
 
 ### WhatsApp's motion (17 October)
 
@@ -901,12 +927,14 @@ the impact. The narrowing itself is real and is listed below.
   them (p90 140 px); input is inferred and the fill cross-fade lags the tracker.
 - App Store bar: with `legibility` 2.5 on `CalmClear()` the text under it reads p50 / p75 67 / 98
   against iOS's 69 / 80 (a plain clear bar: 73 / 107); stronger legibility saturates.
-- Light appearance (IMG_7048, 17 October): the held lens's soft ~12 px edge band and the shadow under
-  it (to 242) are a thin line and no shadow in ours; the bar's ends read 234 against 179-221; one pill
-  offset cannot give iOS's Phone (246), WhatsApp (236) and App Store (217-228) pills at once (ours 242).
-- Search button (pass 17, lift share 0.6 since 17 October): the rise peaks 3-6 px short; sideways
-  pulls squash 8 px less across (min half-width 86 against 78; a width ratio of 1.3 over-thins the
-  upward pulls instead); brightness 7.1 levels rms (8.0 at 0.7). The ports have the free pull and, since 17 October, the bar's fusion with it
+- Light appearance (IMG_7048, 17 October): the held lens casts its shadow since 18 October (rms 2.6
+  levels; ours fades over a longer tail); the bar's ends read 234 against 179-221; one pill offset
+  cannot give iOS's Phone (246), WhatsApp (236) and App Store (255 over white) pills at once (ours 242).
+- Search button (pass 17, lift share 0.6 since 17 October): the rise peaks 3-6 px short; brightness
+  7.1 levels rms (8.0 at 0.7). The "min half-width 86 against 78" of sideways pulls is not the pull: it
+  falls in the ~100 ms after release, when iOS's body overshoots its rest by 6 px against our 2 and
+  squashes deeper against its held edge. Width ratio rescored on 18 October: 1.0 (shipped) half-width
+  rms 3.4 / height 3.9 px; 0.8 4.4 / 5.3; 0.6 6.6 / 6.8 (over-wide upward pulls). The ports have the free pull and, since 17 October, the bar's fusion with it
   (`accessoryFuse` / `AccessoryFuse`, checked against Kotlin).
 - Pass 14's level residuals (58 against 67, 62 against 64) were read on the sRGB-decoded recordings
   and are superseded above.

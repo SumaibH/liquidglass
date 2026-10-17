@@ -705,15 +705,18 @@ internal fun Modifier.liquidGlassCore(
                     if (contactShadowAlpha > 0f) {
                         val shadowBlur = contactShadow.blurRadius.toPx()
                         val shadowOffset = contactShadow.offsetY.toPx()
-                        // The panel's size: inside record {} `size` is the padded layer's.
-                        val panelSize = size
+                        // The shape that casts it: the panel, or the selector's body inside it. A
+                        // selector's node spans the whole bar, so the panel's rect would shade the
+                        // bar wherever the lens is not (inside record {} `size` is the padded layer's).
+                        val caster = glassShadowCaster(size, radii.getOrElse(0) { 0f }, body, poseBody)
                         shadowLayer.record(size = paddedSize) {
                             scale(rs, rs, pivot = Offset.Zero) {
                             translate(pad, pad + shadowOffset) {
                                 drawRoundRect(
                                     color = Color.Black.copy(alpha = contactShadowAlpha),
-                                    cornerRadius = CornerRadius(radii.getOrElse(0) { 0f }),
-                                    size = panelSize,
+                                    topLeft = caster.rect.topLeft,
+                                    cornerRadius = CornerRadius(caster.radius),
+                                    size = caster.rect.size,
                                 )
                             }
                             }
@@ -962,6 +965,32 @@ internal val EMPTY_POSE_D = floatArrayOf(1f, 1f, 1f, 0f)
  * tab-bar lens shows the raw content behind the bar over the bar's own output
  * ([GlassStyle.rawShare]).
  */
+/** The shape a panel's contact shadow is cast by, in the panel's own px frame. */
+internal class GlassShadowCaster(val rect: Rect, val radius: Float)
+
+/**
+ * The contact shadow's caster: the panel ([size], corner [radius]) or, for a selector, the body
+ * drawn inside its node: the two-disk [body], or the pose body's capsule mapped through its
+ * matrix (its bend left out; the shadow is blurred well past it).
+ */
+internal fun glassShadowCaster(size: Size, radius: Float, body: GlassBody?, pose: GlassPoseRender?): GlassShadowCaster {
+    val cx = size.width / 2f; val cy = size.height / 2f
+    if (pose != null) {
+        val a = pose.a; val spine = pose.d[0]; val r = pose.d[1]; val scaleX = pose.d[2]
+        val hx = spine + r * scaleX; val hy = r
+        val ex = abs(a[0]) * hx + abs(a[1]) * hy
+        val ey = abs(a[2]) * hx + abs(a[3]) * hy
+        val x = cx + pose.c[0]; val y = cy + pose.c[1]
+        return GlassShadowCaster(Rect(x - ex, y - ey, x + ex, y + ey), kotlin.math.min(ex, ey))
+    }
+    if (body != null) {
+        val half = kotlin.math.max(body.leftRadius, body.rightRadius)
+        return GlassShadowCaster(Rect(body.leftCentreX - body.leftRadius, body.cy - half,
+            body.rightCentreX + body.rightRadius, body.cy + half), half)
+    }
+    return GlassShadowCaster(Rect(Offset.Zero, size), radius)
+}
+
 private fun DrawScope.drawAdded(layer: GraphicsLayer, dx: Float, dy: Float, share: Float) {
     drawIntoCanvas { canvas ->
         val paint = Paint().apply {

@@ -80,4 +80,28 @@ class GlassContactShadowScaleTest {
         // And half scale draws the same shadow as full scale.
         for (q in 0..3) assertTrue(abs(half[q] - full[q]) < 1.5, "quadrant $q: renderScale 0.5 ${half[q]} against 1.0 ${full[q]}")
     }
+
+    /**
+     * A selector's node spans the whole bar while its body is the lens inside it: the shadow is
+     * cast by the body (18 October; before, a light lens with a shadow shaded the whole bar).
+     */
+    @Test fun aSelectorsShadowIsCastByItsBodyNotItsNode() {
+        val node = androidx.compose.ui.geometry.Size(1000f, 300f)
+        val panel = glassShadowCaster(node, 12f, null, null)
+        assertTrue(panel.rect.width == 1000f && panel.rect.height == 300f && panel.radius == 12f)
+        // Pose body: centre 200 px right of the node's centre, half spine 60, radius 90, identity matrix.
+        val pose = GlassPoseRender(floatArrayOf(1f, 0f, 0f, 1f), floatArrayOf(1f, 0f, 0f, 1f),
+            floatArrayOf(200f, 0f, 0f, 0f), floatArrayOf(60f, 90f, 1f, 0f))
+        val lens = glassShadowCaster(node, 12f, null, pose)
+        assertTrue(abs(lens.rect.left - 550f) < 1e-3f && abs(lens.rect.right - 850f) < 1e-3f, "${lens.rect}")
+        assertTrue(abs(lens.rect.top - 60f) < 1e-3f && abs(lens.rect.bottom - 240f) < 1e-3f && lens.radius == 90f, "${lens.rect}")
+        // A stretched pose: the matrix widens it.
+        val wide = glassShadowCaster(node, 12f, null, GlassPoseRender(floatArrayOf(1.2f, 0f, 0f, 0.9f),
+            floatArrayOf(1f / 1.2f, 0f, 0f, 1f / 0.9f), floatArrayOf(0f, 0f, 0f, 0f), floatArrayOf(60f, 90f, 1f, 0f)))
+        assertTrue(abs(wide.rect.width - 360f) < 1e-3f && abs(wide.rect.height - 162f) < 1e-3f, "${wide.rect}")
+        // Two-disk body, in the node's own px frame.
+        val disks = glassShadowCaster(node, 12f, GlassBody(cx = 300f, cy = 150f, length = 100f, radius = 80f, skew = 0f), null)
+        assertTrue(abs(disks.rect.left - 170f) < 1e-3f && abs(disks.rect.right - 430f) < 1e-3f &&
+            abs(disks.rect.top - 70f) < 1e-3f && disks.radius == 80f, "${disks.rect}")
+    }
 }

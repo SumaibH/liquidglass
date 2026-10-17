@@ -107,6 +107,10 @@ private fun replay(args: Array<String>) {
             wideKernel = bar.getOrNull(5)?.let { androidx.compose.ui.unit.Dp(it) } ?: base.bar.wideKernel,
             legibility = bar.getOrElse(6) { base.bar.legibility }))
     }.let { base ->
+        // "+lshadow=<contactShadow>[,<inside share>]": the held lens's contact shadow, for fitting by replay.
+        val ls = variant.substringAfter("+lshadow=", "").substringBefore('+').split(',').mapNotNull { it.toFloatOrNull() }
+        if (ls.isEmpty()) base else base.copy(lens = base.lens.copy(contactShadow = ls[0]))
+    }.let { base ->
         // "+pill=<black alpha>,<lift in /255>": a resting pill candidate, for fitting by replay.
         val pill = variant.substringAfter("+pill=", "").substringBefore('+').split(',').mapNotNull { it.toFloatOrNull() }
         if (pill.size < 2) base else base.copy(pill = base.pill.copy(

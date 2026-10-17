@@ -185,6 +185,12 @@ This file records user-visible development changes. Published artifacts are iden
   `drawCalmBar(..., {clear})` / scene material `clear` in CanvasKit, `CalmSelectorMaterial.Bar(...,
   clear:)` / `DrawCalmBar(..., clear:)` in .NET, from the clear bar's uniforms exported with the fixture.
   Residual: text under the App Store bar still reads brighter than iOS's (p75 107 against 80).
+- Contact shadow of a selector (18 October): cast by the lens's own body (two-disk or pose capsule)
+  instead of its node, which spans the whole bar; a lens given a shadow shaded the bar far from itself.
+  No shipped preset gave a lens a shadow until now, so their output is unchanged.
+- Light `Calm()` held lens (18 October): `contactShadow` 0.5, a soft shadow under the lens (iOS 242
+  for ~15 px below it; ours 241-243, profile rms 2.6 levels; IMG_7048 at 38.5 and 42 s). It also greys
+  the lens where it overhangs the page, as iOS's does. Compose only: the ports draw no contact shadows.
 - Light `Calm()` (17 October), measured on the owner's light-mode recording (Phone, App Store, WhatsApp,
   Threads; display colours). The bar passes 0.59 of the page plus 115 (iOS: 0.58 + 116 over seven page
   levels; the light toolbar it used passed 0.42 + 140), with a darker rim (246 top and bottom, as iOS's)
@@ -193,7 +199,8 @@ This file records user-visible development changes. Published artifacts are iden
   light outline (243/255) and no raw page; touch lift and dark Calm's tap optics. Before, light Calm
   carried dark-page measurements (a 0.55 grey veil and 0.22 raw page on the held lens, a half-black
   pill). The old light preset stays as `CalmRecordedSpace(false)`. Residuals: iOS's held lens has a soft
-  ~12 px edge band and a shadow under it; the App Store's pill is darker (217-228). Sample:
+  ~12 px edge band and a shadow under it (the shadow since 18 October); the App Store's pill is invisible
+  over white (255; the 217-228 first recorded was its cards seen through it). Sample:
   `PhonePalette.Light` and `light` on `WhatsAppScene` / `AppStoreScene` (iOS system colours); Atlas
   replay variants `calm-light`, `whatsapp-clear-light`, `appstore-clear-light`. Ports follow through
   the exported material.

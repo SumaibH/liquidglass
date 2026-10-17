@@ -147,6 +147,11 @@ Progress:
   the `calm+lens=a,grey,raw` replay variant): no tint/raw-share pair meets both pages (raw share
   saturates at ~75 on docs2; a brighter tint lifts black pages equally). Kept the black-page fit (13 of
   16 held moments); the page gain is a structural residual for a later pass.
+- 18 Oct, claude/residuals: selector contact shadow cast by the lens body (was the whole bar's node rect);
+  light Calm lens contactShadow .5 (below-lens rms 2.6 vs IMG_7048); search width ratio 1.0 confirmed
+  (0.8/0.6 worse); "sideways squash" is a release overshoot (iOS 6 px past rest vs 2); App Store light pill
+  is 255 over white (217-228 was cards). Open: dark lens top band, App Store text p75, light lens band
+  width, sideways release overshoot, landing input residuals, owner acceptance, real-finger device check.
 - 18 Oct (overnight, cont.): search button pullLiftShare .6 everywhere (level rms 7.1, was 8.0; widthRatio
   1.3 and limit .6 rejected); light lens innerShadow .08 (band 245 vs 244, ~4 px vs ~12); device: 8-direction
   search pulls + off-axis drags clean; perf by stage on Pixel 7: UI 6.9 / RT 1.9 / GPU 8.5 ms p50, keeps
