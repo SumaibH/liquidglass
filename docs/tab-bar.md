@@ -128,7 +128,7 @@ Calm's is a 65-level line. The bar lifts for any touch, and the tap optics and m
 `CalmRecordedSpace(dark = false)` keeps the light preset this replaced.
 
 Still different: iOS's held lens shows a soft ~12 px grey band at its edge and a soft shadow under it
-(to 242), which ours draws as a thin line without the shadow; the bar's ends read lighter than iOS's.
+(to 242); ours draws the band's level (245, an inner shadow of 0.08) over ~4 px and no shadow; the bar's ends read lighter than iOS's.
 
 In both appearances iOS draws page text under a tab bar as one soft, legible copy (the owner's
 Contacts recording, IMG_7049), which is what `softDetail` gives the Calm presets; the toolbar role's

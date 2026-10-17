@@ -71,6 +71,7 @@ class GlassPhoneMaterialReferenceTest {
         assertEquals(0f, light.lens.tint.alpha)
         assertEquals(0f, light.lens.rawShare)
         assertEquals(243f / 255f, light.lens.heldEdgeTone, 1e-6f)
+        assertEquals(0.08f, light.lens.innerShadow)
         // The light preset it replaced stays reachable.
         assertEquals(false, GlassTabBarStyle.CalmRecordedSpace(dark = false).touchLift)
     }

@@ -79,7 +79,7 @@ private fun replay(args: Array<String>) {
         else -> if ("-clear" in variant) PhoneGeometry.style(GlassTabBarStyle.CalmClear(dark = "light" !in variant))
             else PhoneGeometry.style(GlassTabBarStyle.Calm(dark = "light" !in variant))
     }.let { base ->
-        // "calm+lens=<alpha>,<grey 0-255>[,<rawShare>[,<lift /255>[,<fineShare>[,<wide dp>[,<heldGlow>[,<glowFloor>[,<glowReach dp>[,<blur dp>[,<rawBlur dp>[,<refraction depth dp>]]]]]]]]]]": a lens candidate, for fitting by replay.
+        // "calm+lens=<alpha>,<grey 0-255>[,<rawShare>[,<lift /255>[,<fineShare>[,<wide dp>[,<heldGlow>[,<glowFloor>[,<glowReach dp>[,<blur dp>[,<rawBlur dp>[,<refraction depth dp>[,<innerShadow>[,<edge tone /255>]]]]]]]]]]]]": a lens candidate, for fitting by replay.
         val lens = variant.substringAfter("+lens=", "").substringBefore('+').split(',').mapNotNull { it.toFloatOrNull() }
         if (lens.size < 2) base else base.copy(lens = base.lens.copy(
             tint = androidx.compose.ui.graphics.Color(lens[1] / 255f, lens[1] / 255f, lens[1] / 255f, lens[0]),
@@ -93,6 +93,8 @@ private fun replay(args: Array<String>) {
             blurRadius = lens.getOrNull(9)?.let { androidx.compose.ui.unit.Dp(it) } ?: base.lens.blurRadius,
             rawBlur = lens.getOrNull(10)?.let { androidx.compose.ui.unit.Dp(it) } ?: base.lens.rawBlur,
             refractionDepth = lens.getOrNull(11)?.let { androidx.compose.ui.unit.Dp(it) } ?: base.lens.refractionDepth,
+            innerShadow = lens.getOrElse(12) { base.lens.innerShadow },
+            heldEdgeTone = lens.getOrNull(13)?.let { it / 255f } ?: base.lens.heldEdgeTone,
         ))
     }.let { base ->
         // "+bar=<black alpha>,<lift /255>[,<fineShare>[,<blur dp>[,<softDetail>[,<wide dp>[,<legibility>]]]]]": a bar candidate, for fitting by replay.
