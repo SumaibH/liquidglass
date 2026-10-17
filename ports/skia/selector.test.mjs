@@ -78,13 +78,14 @@ test('navigation: any touch lifts the bar (touchLift), rising in 50 ms and gone 
   assert.ok(calmBarMaterial({dark: false, touch: 1}).uLift > calmBarMaterial({dark: false}).uLift, 'light Calm lifts too (authored)');
 });
 
-test('clear bar (GlassTabBarStyle.CalmClear): black at 0.10 over the same lift, legibility 2.5, light unchanged', () => {
+test('clear bar (GlassTabBarStyle.CalmClear): black at 0.10 over the same lift, legibility 2, blur 7 dp, light bar unchanged', () => {
   const calm = calmBarMaterial({dark: true}), clear = calmBarMaterial({dark: true, clear: true});
   assert.deepEqual([...clear.uTint].slice(0, 3), [0, 0, 0]);
   assert.ok(Math.abs(clear.uTint[3] - 26 / 255) < 1e-6, 'Compose stores the 0.10 alpha in 8 bits');
   assert.equal(clear.uLift, calm.uLift);
-  assert.equal(clear.uLegibility, 2.5, 'it darkens over text (GlassStyle.legibility)');
-  assert.deepEqual({...clear, uTint: calm.uTint, uLegibility: calm.uLegibility}, calm, 'only tint and legibility differ');
+  assert.equal(clear.uLegibility, 2, 'it darkens over text (GlassStyle.legibility)');
+  assert.equal(clear.uBlur, 7, 'it shows text as one soft copy');
+  assert.deepEqual({...clear, uTint: calm.uTint, uLegibility: calm.uLegibility, uBlur: calm.uBlur}, calm, 'only tint, legibility and blur differ');
   assert.deepEqual(calmBarMaterial({dark: false, clear: true}), calmBarMaterial({dark: false}));
 });
 

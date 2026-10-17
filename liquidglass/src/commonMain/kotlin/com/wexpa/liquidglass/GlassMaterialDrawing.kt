@@ -155,8 +155,15 @@ internal fun GlassMaterialDrawing.footprintMap(originInBar: Offset): Pair<FloatA
  * in a moving selector node, but must use the same BAR pivot as ordinary ink. */
 internal fun Modifier.glassMaterialForeground(
     state: GlassMaterialDrawingState?, origin: Offset = Offset.Zero,
+    /** How much of the drawing the content follows, 0 to 1, read at draw time; null follows all of it. */
+    share: (() -> Float)? = null,
 ): Modifier = if (state == null) this else drawWithContent {
     val frame = state.drawing
-    withGlassMaterialPull(frame.contentPull, frame.contentPressX, frame.pressY,
+    val k = share?.invoke()?.coerceIn(0f, 1f) ?: 1f
+    if (k <= 0f) { this@drawWithContent.drawContent(); return@drawWithContent }
+    val p = frame.contentPull
+    val pull = if (k >= 1f) p else GlassPullDeformation(1f + (p.along - 1f) * k, 1f + (p.across - 1f) * k,
+        p.angleDegrees, p.translationX * k, p.translationY * k)
+    withGlassMaterialPull(pull, 1f + (frame.contentPressX - 1f) * k, 1f + (frame.pressY - 1f) * k,
         pivot = frame.centre - origin) { this@drawWithContent.drawContent() }
 }

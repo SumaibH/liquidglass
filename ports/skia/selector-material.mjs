@@ -53,9 +53,11 @@ export function calmSelectorMaterial({dark = true, formation = 0, transit = 0, h
   if (style.tapOptics > 0) {
     const lift = clamp(Math.max(formation, transit * style.tapOptics), 0, 1);
     values = {...lerpStyle(style, lift), uTint: pigment.uTint, uLift: pigment.uLift};
-    if (style.tapOpticsFold > 0 && formation < .5) {
+    // A tapped selector's own fold (Compose's GlassTabBarStyle.tapTransitFold; tapOpticsFold before it).
+    const transitFold = style.tapTransitFold ?? style.tapOpticsFold;
+    if (transitFold > 0 && formation < .5) {
       const t = clamp(transit * style.tapOptics, 0, 1);
-      fold = t > formation ? t * clamp(style.tapOpticsFold, 0, 1) : 0;
+      fold = t > formation ? t * clamp(transitFold, 0, 1) : 0;
     }
     const mirror = {uFoldCorners: DATA.fold.foldCorners, uRimMirror: DATA.fold.rimMirror,
       uRimMirrorGain: DATA.fold.rimMirrorGain, uAberration: DATA.fold.dispersion, uInkSplit: DATA.fold.dispersion};

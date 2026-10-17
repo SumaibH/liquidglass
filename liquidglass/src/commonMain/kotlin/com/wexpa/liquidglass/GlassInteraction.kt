@@ -163,8 +163,10 @@ data class GlassInteraction(
             // Original S01: 186 -> 238 peak -> 234 settled; independent K01: 234 -> 286
             // peak -> 282 settled. Eight points per side is the equilibrium, not 8.7.
             pressScale = 1.26f, pressGrowth = 8.dp, pressLift = 0.2f, pull = true,
-            // Authored input compliance; 0.217 / 0.35 = 0.62 length change per body travel.
-            pullFollow = 0.35f, pullElongation = 0.217f, pullWidthRatio = 1f, pullLimit = 0.5f,
+            // Authored input compliance; 0.124 / 0.2 = 0.62 length change per body travel. 0.2 since
+            // 18 October (was 0.35): the owner's device check found the held search button far too
+            // eager to follow a swipe against iOS's; the recordings have no finger trace to fit it.
+            pullFollow = 0.2f, pullElongation = 0.124f, pullWidthRatio = 1f, pullLimit = 0.5f,
         )
         /**
          * What Apple's Reduce Motion asks for: "decreases the intensity of some effects and

@@ -78,6 +78,29 @@ tint, so the page shows through them as through iOS's (the pill darkens black to
 avatar under it), and page text under the bar is one soft copy (`GlassStyle.softDetail`) rather than
 a grainy, ghosted one.
 
+## The owner's device check (18 October)
+
+Six notes from a check on a phone, each compared with the iOS recordings and changed where they agreed:
+
+- **Icons on a tap.** iOS's tab icons do not move on a tap (an icon the lens does not cross holds within
+  0.1 px) and follow the bar's growth on a hold (14 px out, 4% larger). Calm now does both
+  (`itemsFollowBarPress = false`); before, every tap slid the icons 7 px and back.
+- **Tap travel.** A tapped selector travels with the held lens's optics (`tapTransitFold = 0`), so a tap
+  looks like a short throw: a clear lens that bends the ink only at its rim and lands clean.
+- **Two glasses.** The held lens no longer shows the bar's outline inside it as a second capsule: its rim
+  band is 0.3 of the body's own (`GlassStyle.bodyBandScale`), so the bar fills it nearly to the rim.
+- **The search button.** It follows a held swipe at 0.2 of the finger's travel (was 0.35).
+- **The lens at the search end.** A held lens there joins the button through a neck
+  (`GlassTabBarAccessory.lensFusion`), as iOS's does, instead of stopping short of it.
+- **Text under the bar's ends.** iOS bends what lies under the bar's rounded ends; Calm's bar has no
+  edge fold (it garbled text along the straight runs). Still open.
+
+![Tap travel before and after, the held lens's rim band, and the lens's neck to the search button](https://raw.githubusercontent.com/shayann07/liquidglass/main/review/atlas/reference-replay-2026-10-13/owner-check-2026-10-18.png)
+
+*Our renders only, desktop GPU replay at 3x, branch `claude/residuals-2`. Top: a tap from Keypad to
+Contacts, before (left) and after (right). Middle: the dark held lens at the search end, before (left)
+and with its 0.3 band and neck (right). Bottom: the light held lens at the search end without and with its neck.*
+
 ## A clearer bar
 
 `Calm()` is fitted to the Phone app's bar, which passes about 0.59 of the page under it. WhatsApp's
@@ -100,10 +123,10 @@ GlassTabBar(state = glass, itemCount = 5, selectedIndex = selected, onSelected =
 
 iOS's chats page has text under the bar, so its 43 sits over slightly more than the bare page our
 scene uses. iOS also compresses bright text under that bar: over the App Store's headline its band
-reads p50 / p75 69 / 80. `CalmClear()` raises its tint where the page under it has contrast
-(`legibility` 2.5), which leaves a plain card alone and gives 67 / 98 (a plain 0.9 gave 73 / 107;
-stronger values saturate, 6 gives 63 / 95). Light appearance
-has no recording; `CalmClear(dark = false)` is `Calm(dark = false)`. The CanvasKit and .NET ports
+reads p50 / p75 69 / 80, the text one faint, soft copy. `CalmClear()` raises its tint where the page
+under it has contrast (`legibility` 2) and blurs the text under it (7 dp), which leaves a plain card
+alone and gives 68 / 79 (18 October; `legibility` 2.5 at the Phone bar's 1.5 dp gave 67 / 98, with dark
+halos round the letters). In light appearance `CalmClear()` is `Calm()` with WhatsApp's resting pill. The CanvasKit and .NET ports
 take it as `clear` on the bar material (`calmBarMaterial({clear: true})`, `CalmSelectorMaterial.Bar(..., clear: true)`).
 
 ## Light appearance
@@ -117,16 +140,16 @@ Phone keypad page, App Store cards, WhatsApp, Threads):
 | Bar over white | 255 | 255 |
 | Bar rim, top / bottom / ends | 246 / 242-247 / 179-221 | 246 / 246 / 234 |
 | Shadow under the bar | 253 | 251-253 |
-| Resting pill: Phone keypad page / WhatsApp | 246 / 236 | 242 / 242 |
+| Resting pill over white: Phone / WhatsApp / App Store | 245 / 236 / 255 | 245 / 236 / 255 (`Calm`, `CalmClear`, App Store scene) |
 
 The bar has the dark Phone bar's slope (white at 0.41 plus 10/255), clearer than the light toolbar the
 Photos screenshots measured (0.42 plus 140). Its rim is a darker line and it casts a faint shadow. The
-resting pill is clear glass 13/255 below the bar: because the bar reads white over a white page, one
-offset cannot give iOS's Phone (246), WhatsApp (236) and App Store pills (invisible over white, 255;
-over its cards it reads the card's own level). The held lens is clear glass over the bar with a light
-outline (243/255), where dark Calm's is a 65-level line, and it casts a soft shadow under itself (iOS
-242 for ~15 px below the lens; ours 241-243, `contactShadow` 0.5), which also greys the lens where it
-overhangs the page. The bar lifts for any touch, and the tap optics and motion are dark Calm's.
+resting pill is clear glass below the bar, by an amount that differs per app: Phone 245 over white
+(`Calm`, 10/255), WhatsApp 236 (`CalmClear`, 19/255), the App Store's invisible over white (its scene
+sets 0; over its cards it reads the card's own level). The held lens is clear glass over the bar with a
+light outline (243/255), where dark Calm's is a 65-level line, and it casts a tight shadow offset down
+(`contactShadowBlur` 6 dp, `contactShadowOffset` 5 dp, `contactShadow` 0.45, half of it inside the lens):
+none above the lens, 242 for ~15 px below it, as iOS's. The bar lifts for any touch, and the tap optics and motion are dark Calm's.
 `CalmRecordedSpace(dark = false)` keeps the light preset this replaced.
 
 ![Light Calm's held lens before and after its shadow (18 October)](https://raw.githubusercontent.com/shayann07/liquidglass/main/review/atlas/reference-replay-2026-10-13/light-lens-shadow.png)
@@ -134,8 +157,7 @@ overhangs the page. The bar lifts for any touch, and the tap optics and motion a
 *Our renders only: desktop GPU replay at 3x, a 1.2 s hold on Keypad; top without the lens's shadow, bottom
 with it (branch `claude/residuals`).*
 
-Still different: iOS's shadow holds its darkest level longer and ends sooner (ours fades over a longer
-tail); the bar's ends read lighter than iOS's.
+Still different: the bar's ends read lighter than iOS's (234 against 179-221).
 
 In both appearances iOS draws page text under a tab bar as one soft, legible copy (the owner's
 Contacts recording, IMG_7049), which is what `softDetail` gives the Calm presets; the toolbar role's

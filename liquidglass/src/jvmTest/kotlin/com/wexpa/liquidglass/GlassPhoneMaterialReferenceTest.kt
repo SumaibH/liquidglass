@@ -42,8 +42,10 @@ class GlassPhoneMaterialReferenceTest {
         assertEquals(46.0, restingBar(GlassTabBarStyle.Calm(dark = true), 23), 1.5)
         // Only the bar's tint differs, and light appearance has no recording.
         val calm = GlassTabBarStyle.Calm(dark = true)
-        assertEquals(calm.copy(bar = calm.bar.copy(tint = clear.bar.tint, legibility = 2.5f)), clear)
-        assertEquals(GlassTabBarStyle.Calm(dark = false), GlassTabBarStyle.CalmClear(dark = false))
+        assertEquals(calm.copy(bar = calm.bar.copy(tint = clear.bar.tint, legibility = 2f, blurRadius = 7.dp)), clear)
+        // Light: the same bar, WhatsApp's pill (236 over white against the Phone's 245).
+        val lightCalm = GlassTabBarStyle.Calm(dark = false)
+        assertEquals(lightCalm.copy(pill = lightCalm.pill.copy(tintLift = -19f / 255f)), GlassTabBarStyle.CalmClear(dark = false))
     }
 
     @Test fun theCalmLensAddsTheRawPageBlurred() {
@@ -67,12 +69,15 @@ class GlassPhoneMaterialReferenceTest {
             assertEquals(ios, restingBar(light, page), 9.0, "light bar over page $page")
         assertEquals(255.0, restingBar(light, 255), 1.0)
         assertEquals(0f, light.pill.tint.alpha)
-        assertEquals(-13f / 255f, light.pill.tintLift, 1e-6f)
+        assertEquals(-10f / 255f, light.pill.tintLift, 1e-6f)
         assertEquals(0f, light.lens.tint.alpha)
         assertEquals(0f, light.lens.rawShare)
         assertEquals(243f / 255f, light.lens.heldEdgeTone, 1e-6f)
         assertEquals(0.08f, light.lens.innerShadow)
-        assertEquals(0.5f, light.lens.contactShadow)
+        assertEquals(0.45f, light.lens.contactShadow)
+        assertEquals(0.5f, light.lens.contactShadowInside)
+        assertEquals(6.dp, light.lens.contactShadowBlur)
+        assertEquals(5.dp, light.lens.contactShadowOffset)
         // The light preset it replaced stays reachable.
         assertEquals(false, GlassTabBarStyle.CalmRecordedSpace(dark = false).touchLift)
     }

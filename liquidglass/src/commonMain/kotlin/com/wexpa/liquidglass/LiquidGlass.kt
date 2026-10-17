@@ -528,8 +528,8 @@ internal fun Modifier.liquidGlassCore(
                 // pose body carries its own - the canonical band under the smallest local
                 // stretch - and falling through to the node's radii would give the band of a
                 // rounded rect several times the body's size.
-                val bandPx = poseBody?.d?.get(3)
-                    ?: body?.let { glassBodyBand(it) }
+                val bandPx = (poseBody?.d?.get(3) ?: body?.let { glassBodyBand(it) })
+                    ?.let { it * style.bodyBandScale.coerceIn(0.25f, 4f) }
                     ?: style.bandPx(radii, size, this)
                 // Coordinate contract: the recorded layer, the shader's pad uniform, the sampled
                 // field and the draw-back translate all use this one pad (see recordPad).
@@ -703,8 +703,10 @@ internal fun Modifier.liquidGlassCore(
                     // panel of this size should sit off its background, recorded into its own
                     // layer so a real blur can be applied before it goes into the backdrop.
                     if (contactShadowAlpha > 0f) {
-                        val shadowBlur = contactShadow.blurRadius.toPx()
-                        val shadowOffset = contactShadow.offsetY.toPx()
+                        val shadowBlur = style.contactShadowBlur.takeIf { it.isSpecified }?.toPx()
+                            ?: contactShadow.blurRadius.toPx()
+                        val shadowOffset = style.contactShadowOffset.takeIf { it.isSpecified }?.toPx()
+                            ?: contactShadow.offsetY.toPx()
                         // The shape that casts it: the panel, or the selector's body inside it. A
                         // selector's node spans the whole bar, so the panel's rect would shade the
                         // bar wherever the lens is not (inside record {} `size` is the padded layer's).
@@ -764,7 +766,10 @@ internal fun Modifier.liquidGlassCore(
                         if (contactShadowAlpha > 0f) {
                             // Recorded at the padded size in device px, like rawLayer: undo this
                             // layer's scale, or a renderScale below 1 shrinks it toward the corner.
-                            scale(1f / rs, 1f / rs, pivot = Offset.Zero) { drawLayer(shadowLayer) }
+                            val inside = style.contactShadowInside.coerceIn(0f, 1f)
+                            scale(1f / rs, 1f / rs, pivot = Offset.Zero) {
+                                if (inside >= 1f) drawLayer(shadowLayer) else drawShare(shadowLayer, inside)
+                            }
                         }
                         // Whatever sits between this panel and the backdrop goes on top of it,
                         // in this panel's frame, so the rim refracts that too.
@@ -989,6 +994,16 @@ internal fun glassShadowCaster(size: Size, radius: Float, body: GlassBody?, pose
             body.rightCentreX + body.rightRadius, body.cy + half), half)
     }
     return GlassShadowCaster(Rect(Offset.Zero, size), radius)
+}
+
+/** [layer] at [share] of its opacity, composited normally. */
+private fun DrawScope.drawShare(layer: GraphicsLayer, share: Float) {
+    if (share <= 0f) return
+    drawIntoCanvas { canvas ->
+        canvas.saveLayer(Rect(-1e4f, -1e4f, 1e4f, 1e4f), Paint().apply { alpha = share })
+        drawLayer(layer)
+        canvas.restore()
+    }
 }
 
 private fun DrawScope.drawAdded(layer: GraphicsLayer, dx: Float, dy: Float, share: Float) {

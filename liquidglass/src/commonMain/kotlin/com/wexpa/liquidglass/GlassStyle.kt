@@ -90,6 +90,12 @@ data class GlassStyle(
      */
     val refractionDepth: Dp = 14.dp,
     /**
+     * Scale on a selector body's own refraction band (0.6 of its radius), 1 by default. A wider band
+     * pulls more of the surroundings into the held lens's rim, so the bar's edge bends along the
+     * lens's contour instead of showing through as a second outline.
+     */
+    val bodyBandScale: Float = 1f,
+    /**
      * Sigma of the wide kernel, the second of the measured material's two blurs.
      *
      * Across a hard edge inside a navigation pill the tone follows a 10 dp kernel while 16 px
@@ -361,6 +367,20 @@ data class GlassStyle(
      * elevation shadow behind the panel, or the two will stack.
      */
     val contactShadow: Float = 1f,
+    /**
+     * Share of [contactShadow] in the copy drawn into the backdrop (what the glass refracts), 0 to 1;
+     * the copy on the page keeps the full strength. One, the default, draws both alike. Light
+     * `GlassTabBarStyle.Calm()`'s held lens uses 0.5: iOS's shadow reads 242 below the lens and
+     * 250-253 through the lens where it overhangs the page (IMG_7048, 18 October).
+     */
+    val contactShadowInside: Float = 1f,
+    /**
+     * The contact shadow's blur radius and downward offset; unspecified, the default, sizes both
+     * from the panel ([glassShadow]). Light `GlassTabBarStyle.Calm()`'s held lens sets them: iOS's
+     * shadow under it is tight and offset down (none above the lens, 242 for ~15 px below it).
+     */
+    val contactShadowBlur: Dp = Dp.Unspecified,
+    val contactShadowOffset: Dp = Dp.Unspecified,
     /** Strength of the dark inner line that reads as the thickness of the glass. */
     val innerShadow: Float = 0.07f,
     /**

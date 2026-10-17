@@ -79,7 +79,7 @@ class GlassSelectorPortMaterialTest {
             styles.append("\"${if (dark) "dark" else "light"}\":{\"pill\":${json(uniforms(style.pill))},\"lens\":${json(uniforms(style.lens))}," +
                 "\"bar\":${json(uniforms(style.bar))},\"clearBar\":${json(uniforms(GlassTabBarStyle.CalmClear(dark).bar))},\"heldLift\":${style.heldLift},\"touchLift\":${style.touchLift}," +
                 "\"pillInkFollows\":${style.pill.inkDispersion.isNaN()},\"lensInkFollows\":${style.lens.inkDispersion.isNaN()}," +
-                "\"tapOptics\":${style.tapOptics},\"tapOpticsFold\":${style.tapOpticsFold},\"tapTintFade\":${style.tapTintFade}}")
+                "\"tapOptics\":${style.tapOptics},\"tapOpticsFold\":${style.tapOpticsFold},\"tapTransitFold\":${if (style.tapTransitFold.isNaN()) style.tapOpticsFold else style.tapTransitFold},\"tapTintFade\":${style.tapTintFade}}")
             for (formation in listOf(0f, .2f, .49f, .5f, .7f, 1f)) for (transit in listOf(0f, .3f, .8f, 1f)) for (travel in listOf(0f, .6f)) {
                 val material = glassSelectorMaterial(style, formation, transit)
                 val lensFormation = glassSelectorFormation(style, formation, transit, travel)

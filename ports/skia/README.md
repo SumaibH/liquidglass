@@ -120,7 +120,7 @@ as Compose's `GlassTabBarStyle.slotWidth` does: the end tabs close up until thei
 `clear: true` on the bar material (`calmBarMaterial({clear})`, `painter.drawCalmBar(..., {clear})`,
 or `material: {clear: true}` on `addNavigation`) draws Compose's `GlassTabBarStyle.CalmClear()` bar:
 the clearer glass of WhatsApp's and the App Store's dark iOS bars (black at 0.10 instead of 0.41,
-same lift, legibility 2.5; light appearance unchanged). The ports draw no contact shadows: light
+same lift, legibility 2 and a 7 dp blur; light appearance unchanged). The ports draw no contact shadows: light
 Calm's held lens casts one in Compose (`contactShadow` 0.5), which a host draws under the lens itself. Pass the same bar as `through` so the lens follows it.
 
 A free button beside the bar (Compose's `GlassTabBarAccessory.link`, the Phone search button) fuses

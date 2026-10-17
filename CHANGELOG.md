@@ -5,6 +5,33 @@ This file records user-visible development changes. Published artifacts are iden
 
 ## Unreleased — Atlas stabilization
 
+### Changed (18 October, the owner's device check)
+
+- `GlassTabBarStyle.Calm()`: the tab icons stay where they are laid out on a tap and follow the bar's
+  growth only while the lens is held (`GlassTabBarStyle.itemsFollowBarPress`, new, false in `Calm()`).
+  iOS's icons hold within 0.1 px through a tap and move 14 px out (4% larger) on a hold (IMG_7048);
+  ours slid 7 px and back on every tap, which the owner saw as the icons jumping.
+- `GlassTabBarStyle.Calm()`: a tapped selector travels with the held lens's optics, as a hold or a throw
+  does (`GlassTabBarStyle.tapTransitFold`, new, 0 in `Calm()`). The fold it replaced smeared the icon it
+  carried and lingered after landing. `CalmRecordedSpace()` keeps the fold.
+- `GlassTabBarStyle.Calm()`: the held lens refracts its rim over 0.3 of its own band
+  (`GlassStyle.bodyBandScale`, new, default 1). With the full band the bar's straight edges and rounded
+  end showed through as a second capsule inside the lens ("two glasses"); iOS's lens fills with the bar
+  nearly to its rim (IMG_6756 35.47 s, docs/2 5.75 s). Region levels move by 2 at most.
+- `GlassInteraction.Pullable`: drag gain 0.2 (was 0.35) and elongation 0.124 (was 0.217), keeping the
+  measured 0.62 shape-to-travel ratio. The owner found the held search button far too eager to follow a
+  swipe; the recordings carry no finger trace to fit this gain. Ports follow.
+- `GlassTabBarAccessory.lensFusion` (new, default 0): a held lens at the accessory's end joins it through
+  a neck of its own, as iOS's Phone bar held at the search end shows (IMG_7048 38.5 / 42 s). The shader's
+  fuse now also joins selector bodies. The sample's Phone scene uses 12 dp.
+- Light `Calm()`: resting pill 10/255 below the bar (Phone 245 over white; was 13/255 = 242); light
+  `CalmClear()` carries WhatsApp's 19/255 (236); the App Store scene's pill is clear over white (255).
+- Light `Calm()` held lens shadow: tight and offset down (`GlassStyle.contactShadowBlur` 6 dp,
+  `contactShadowOffset` 5 dp, `contactShadowInside` 0.5, all new; `contactShadow` 0.45): no shadow above
+  the lens, 242 below it as iOS's; profile rms 2.6 against 3.7.
+- `CalmClear()` dark: text under the bar is one soft copy (`blurRadius` 7 dp, `legibility` 2): band p50 /
+  p75 68 / 79 against iOS's 69 / 80 (was 67 / 98, with dark halos). Ports follow.
+
 ### Changed (13 October, continuous iOS comparison)
 
 - `GlassTabBarStyle.Calm()`: a tapped selector travels as refracting glass (`tapOptics`); a

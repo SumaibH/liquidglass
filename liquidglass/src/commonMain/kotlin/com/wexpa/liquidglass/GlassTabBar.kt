@@ -193,6 +193,7 @@ fun GlassTabBar(
         val barDrawing = remember(style.deformItemsWithBar) {
             if (style.deformItemsWithBar) GlassMaterialDrawingState() else null
         }
+
         var barDown by remember { mutableStateOf(Offset.Zero) }
         var v2Held by remember { mutableStateOf(false) }
         var dragging by remember { mutableStateOf(false) }
@@ -349,6 +350,14 @@ fun GlassTabBar(
         // the protruding held lens: only an eligible press that outlives the hold threshold, or
         // a recognized drag, forms it.
         val lift = poseHandle?.formation ?: handle?.formation ?: v2Lift
+        // [GlassTabBarStyle.itemsFollowBarPress]: false, the ink follows the bar's pressed drawing
+        // only as far as the selector has formed (a hold), so a tap's press leaves it in place.
+        val itemShare: (() -> Float)? = if (style.itemsFollowBarPress) null
+            else ({
+                // A tap's transit forms the selector part way; only a hold's formation counts.
+                val f = (((poseHandle?.formation ?: handle?.formation ?: lift) - 0.5f) / 0.5f).coerceIn(0f, 1f)
+                f * f * (3f - 2f * f)
+            })
         // [GlassTabBarStyle.touchLift]: the bar's material lift for any touch, not only a hold.
         val touchAmount by animateFloatAsState(
             targetValue = if (gestureDown && style.touchLift && motionEnabled) 1f else 0f,
@@ -878,7 +887,7 @@ fun GlassTabBar(
                             scaleX = barScale
                             scaleY = barScale
                         }
-                        .glassMaterialForeground(barDrawing),
+                        .glassMaterialForeground(barDrawing, share = itemShare),
                 ) {
                     ItemRow(
                         count = itemCount,
@@ -964,7 +973,7 @@ fun GlassTabBar(
                 if (poseHandle != null) {
                     val barFrame = barDrawing
                     poseHandle.barShift = barFrame?.let { state ->
-                        { x: Float -> state.drawing.contentPoint(x, barHeightPx / 2f).x - x }
+                        { x: Float -> (state.drawing.contentPoint(x, barHeightPx / 2f).x - x) * (itemShare?.invoke() ?: 1f) }
                     }
                     LaunchedEffect(poseHandle, barFrame) {
                         if (barFrame != null) snapshotFlow { barFrame.drawing }.collect { poseHandle.publish() }
@@ -972,6 +981,27 @@ fun GlassTabBar(
                 }
                 val nodeLeftPx = handle?.nodeLeft() ?: poseHandle!!.nodeLeft()
                 val nodeTopPx = poseHandle?.nodeTop() ?: -overflowTopPx
+                // [GlassTabBarAccessory.lensFusion]: a held lens at the accessory's end takes the neck
+                // the bar gives up, in the lens node's own frame.
+                val lensAccessoryFuse = if (trailingAccessory != null && motionEnabled && poseHandle != null &&
+                    trailingAccessory.lensFusion > 0.dp) {
+                    // A formed (held) lens only: the neck bridges just the last few px, so it shows only
+                    // once the lens has reached the end; a tap's partial formation never draws it.
+                    val f = ((poseHandle.formation - 0.5f) / 0.5f).coerceIn(0f, 1f)
+                    val taken = f * f * (3f - 2f * f)
+                    if (taken <= 0.01f) null else with(density) {
+                        val sizePx = trailingAccessory.size.toPx()
+                        val gapPx = trailingAccessory.gap.toPx()
+                        val left = (if (rtl) -gapPx - sizePx else barWidthPx + gapPx) - nodeLeftPx
+                        val top = (barHeightPx - sizePx) / 2f - nodeTopPx
+                        GlassFuse(
+                            bounds = DpRect(left.toDp(), top.toDp(), (left + sizePx).toDp(), (top + sizePx).toDp()),
+                            cornerRadius = (sizePx / 2f).toDp(),
+                            smoothing = trailingAccessory.lensFusion * taken,
+                            anchored = true,
+                        ).apply { follow = trailingAccessory.link }
+                    }
+                } else null
                 Box(
                     modifier = Modifier
                         .align(Alignment.TopStart)
@@ -1002,7 +1032,7 @@ fun GlassTabBar(
                             through = barState,
                             // The bar keeps its own outline. The node's declared envelope
                             // accommodates held growth and Calm's rounded moving taps.
-                            fuse = null,
+                            fuse = lensAccessoryFuse,
                             lensFormation = glassSelectorFormation(style, lift, transitAppearance, poseHandle?.heldTravel ?: 0f),
                             body = handle?.body?.movedInto(nodeLeftPx.toFloat(), overflowTopPx.toFloat()),
                             poseBody = poseHandle?.render,
@@ -1050,7 +1080,7 @@ fun GlassTabBar(
                                 // everything after it at the bar's size), so the press pivots on
                                 // the bar centre: passing the node origin moved the held ink about
                                 // 17 px left and 10 up of the bar's own icons (video2, 1.8 s).
-                                .glassMaterialForeground(barDrawing),
+                                .glassMaterialForeground(barDrawing, share = itemShare),
                         ) {
                             ItemRow(
                                 count = itemCount,
@@ -1120,7 +1150,7 @@ fun GlassTabBar(
                                         scaleX = barScale
                                         scaleY = barScale
                                     }
-                                    .glassMaterialForeground(barDrawing),
+                                    .glassMaterialForeground(barDrawing, share = itemShare),
                             ) {
                                 ItemRow(
                                     count = itemCount,
@@ -1512,6 +1542,15 @@ data class GlassTabBarStyle(
     /** Let visible ordinary/selected ink share the bar's bounded drawing response.
      * Layout, hit targets and selector travel remain independent. Enabled by [Calm]. */
     val deformItemsWithBar: Boolean = false,
+    /**
+     * With [deformItemsWithBar], whether the tabs' ink and the selector's anchor follow the bar's
+     * press growth for any touch (true, the default) or only as far as the selector has formed, so
+     * a tap's press leaves them where they are laid out (false). [Calm] uses false since 18 October:
+     * on a tap iOS 26's tab icons do not move (IMG_7048 light taps: an icon the lens does not cross
+     * holds within 0.1 px; ours slid 7 px and back, and the owner's device check saw them jump),
+     * while on a hold they follow the bar (Calls moves 14 px out and grows 4%, 38.1-38.3 s).
+     */
+    val itemsFollowBarPress: Boolean = true,
     /** Fade the resting selector pigment during coupled tap travel; held optics stay separate. */
     val tapTintFade: Float = 0f,
     /** Transient selected-ink emphasis around its own anchor, fading as held zoom takes over. */
@@ -1529,6 +1568,12 @@ data class GlassTabBarStyle(
      * map. Calm dark uses 1, from the 2026-10-13 comparison with video1 and video2.
      */
     val tapOpticsFold: Float = 0f,
+    /**
+     * The fold of a tapped (unheld) selector while it travels; unspecified (NaN, the default)
+     * follows [tapOpticsFold]. Zero shows the held lens's own optics on the travelling selector,
+     * as a hold or a throw does, while a held lens's travel keeps [tapOpticsFold]'s rim.
+     */
+    val tapTransitFold: Float = Float.NaN,
     /**
      * The pose selector draws every item's selected ink inside its aperture, not only the
      * active item's. Video1/video2 (2026-10-13): every icon under a travelling or held iOS lens
@@ -1567,6 +1612,12 @@ data class GlassTabBarStyle(
                 // moments at 0, 14 black-page moments at +4).
                 heldLift = 13f / 255f,
                 touchLift = true,
+                // The icons stay put when the bar is touched; only the glass grows (18 October).
+                itemsFollowBarPress = false,
+                // A tapped selector travels with the held lens's optics, as a throw does: the fold
+                // smeared the icon it carried and lingered after landing (owner's device check and
+                // IMG_7048's light taps, 18 October).
+                tapTransitFold = 0f,
                 // Pass 18: both are clear glass with an offset, not a tint. Over a black page that
                 // reads the same as a tint; over content it does not. The resting pill shows the bar
                 // less 22/255, as the inset was first measured ("0.857 of the bar minus 17/255", in
@@ -1582,8 +1633,13 @@ data class GlassTabBarStyle(
                 // IMG_6756 35.47 s), iOS / ours: text p50 82/83, p90 102/99, bottom band 75/70, black
                 // interior 47/48, top band 64/53; five regions 5.6 rms (9.7 without the share).
                 pill = recorded.pill.copy(tint = Color.Transparent, tintLift = -22f / 255f),
+                // The held lens's rim band at 0.3 of the body's own (18 October): with the full band the
+                // bar's straight edges and rounded end showed through as a second capsule inside the
+                // lens ("two glasses", the owner's device check); iOS's lens fills with the bar nearly
+                // to its rim and bends what lies beyond into a thin crescent (IMG_6756 35.47 s, docs/2
+                // 5.75 s). Region levels move by 2 at most (top band 53 -> 51).
                 lens = recorded.lens.copy(tint = Color.Transparent, rawShare = 0.22f, rawBlur = 20.dp,
-                    tintLift = -3f / 255f, softDetail = 1f),
+                    tintLift = -3f / 255f, softDetail = 1f, bodyBandScale = 0.3f),
             )
         }
 
@@ -1594,15 +1650,17 @@ data class GlassTabBarStyle(
          * bar's slope: white at 0.41 plus 10/255. Over white it reads 255. Its rim is a darker line
          * (246 top and bottom, 179-221 at the ends; ours 246 / 234: [GlassStyle.edgeShadow] .12 with
          * the highlight off, which over white only clips) and it casts a faint shadow (253; ours 251-253
-         * at [GlassStyle.contactShadow] .2). The resting pill is clear glass 13/255 below the bar: iOS's
-         * reads 246 on the Phone's white keypad page and 236 on WhatsApp's (ours 242 on both; the bar
-         * clips at white, so one offset cannot give both); the App Store's is invisible over white (255).
+         * at [GlassStyle.contactShadow] .2). The resting pill is clear glass 10/255 below the bar: iOS's
+         * Phone pill reads 245 on the white keypad page (36-37 s, 58 s; 18 October, was 13/255 = 242 as a
+         * compromise with WhatsApp's 236, which [CalmClear] now carries; the App Store's is invisible over
+         * white, 255, and its scene sets that).
          * The held lens is clear glass over the bar; its edge is a soft grey band to ~243-246 where dark
          * Calm's is a 65-level line, so its outline tone is 243/255 and a faint inner band
          * ([GlassStyle.innerShadow] .08) reads 245 at the rim (iOS 244, but ~4 px wide where iOS's is
-         * ~12); it adds no raw page. It casts a shadow under itself (iOS: 242 for ~15 px below the lens,
-         * fading by ~36 px; ours 241-243 then a longer fade at [GlassStyle.contactShadow] .5, 18 October),
-         * which also greys the lens where it overhangs the page. The bar lifts for any touch, page text under
+         * ~12); it adds no raw page. It casts a tight shadow offset under itself (iOS: none above the
+         * lens, 242 for ~15 px below it, fading by ~36 px; [GlassStyle.contactShadow] .45 at 6 dp blur,
+         * 5 dp down, half of it inside the lens: profile rms 2.6 levels over the page above, the overhang
+         * and below, against 4.2 without a shadow; IMG_7048 38.5 / 42 s, 18 October). The bar lifts for any touch, page text under
          * bar and lens is one soft copy, and tap optics follow dark Calm (behaviour, not levels).
          * [CalmRecordedSpace] (false) keeps the light preset this replaced.
          */
@@ -1610,9 +1668,12 @@ data class GlassTabBarStyle(
             bar = recorded.bar.copy(tint = Color.White.copy(alpha = 0.41f), tintLift = 10f / 255f, softDetail = 1f,
                 edgeShadow = 0.12f, specular = 0f, bevelPeak = 0f, contactShadow = 0.2f),
             touchLift = true,
-            pill = recorded.pill.copy(tint = Color.Transparent, tintLift = -13f / 255f),
+            itemsFollowBarPress = false,
+            tapTransitFold = 0f,
+            pill = recorded.pill.copy(tint = Color.Transparent, tintLift = -10f / 255f),
             lens = recorded.lens.copy(tint = Color.Transparent, rawShare = 0f, rawBlur = 0.dp, tintLift = 0f,
-                softDetail = 1f, heldEdgeTone = 243f / 255f, innerShadow = 0.08f, contactShadow = 0.5f),
+                softDetail = 1f, heldEdgeTone = 243f / 255f, innerShadow = 0.08f, contactShadow = 0.45f, bodyBandScale = 0.3f,
+                contactShadowInside = 0.5f, contactShadowBlur = 6.dp, contactShadowOffset = 5.dp),
             tapTintFade = 1f, tapSelectedScale = 1.15f, tapOptics = 1f, tapOpticsFold = 1f,
         )
 
@@ -1625,14 +1686,18 @@ data class GlassTabBarStyle(
          * (28); its resting pill 19 and 30 over the same pages. The bar is black at
          * [clearBarOpacity] over the Phone bar's 32/255 lift; the pill and held lens look through
          * the bar as in [Calm], so they follow it. Over text iOS's App Store bar compresses
-         * (band p50 / p75 69 / 80 where a plain 0.9 gave 73 / 107): [GlassStyle.legibility] 2.5
-         * darkens the bar where the page under it has contrast and leaves a plain card alone,
-         * which gives 67 / 98 (stronger values saturate: 6 gives 63 / 95). Light appearance has
-         * no recording and returns [Calm] unchanged.
+         * (band p50 / p75 69 / 80 where a plain 0.9 gave 73 / 107) and shows the text as one faint,
+         * soft copy: [GlassStyle.legibility] 2 darkens the bar where the page under it has contrast
+         * and leaves a plain card alone, and a 7 dp blur softens the text, which gives 68 / 79
+         * (18 October; legibility 2.5 at the Phone bar's 1.5 dp blur gave 67 / 98 with dark halos). In light appearance the
+         * bar is [Calm]'s (fitted on the App Store's cards) and the resting pill is WhatsApp's, 19/255
+         * below the bar (iOS 236 over its white page, IMG_7048 108-140 s; 18 October). The App Store's
+         * light pill is invisible over white: give it a `tintLift` of 0.
          */
         fun CalmClear(dark: Boolean = true): GlassTabBarStyle = Calm(dark).let { calm ->
-            if (!dark) calm else calm.copy(bar = calm.bar.copy(tint = Color.Black.copy(alpha = clearBarOpacity),
-                legibility = 2.5f))
+            if (!dark) calm.copy(pill = calm.pill.copy(tintLift = -19f / 255f))
+            else calm.copy(bar = calm.bar.copy(tint = Color.Black.copy(alpha = clearBarOpacity),
+                legibility = 2f, blurRadius = 7.dp))
         }
 
         /** Black opacity of [CalmClear]'s bar, fitted over the four page levels its notes list. */
@@ -2070,6 +2135,13 @@ class GlassTabBarAccessory(
     val fusion: Dp = 6.dp,
     val yieldsToLens: Boolean = false,
     /**
+     * With [yieldsToLens], how far a held lens at the accessory's end reaches for it through a neck of
+     * its own, taking the place of the bar's: 0 (the default) leaves a gap. iOS 26's Phone bar held at
+     * its search-button end shows the lens pinched into the button top and bottom (IMG_7048 light,
+     * 38.5 and 42 s, 18 October). Authored strength.
+     */
+    val lensFusion: Dp = 0.dp,
+    /**
      * The accessory's own press and pull, published by its [liquidGlass] (same link): the bar's
      * outline reaches for where the accessory is drawn, so pressing it closes the gap through a
      * neck and pulling it away breaks the neck, as on iOS. Null keeps the accessory's laid-out circle.
@@ -2078,10 +2150,10 @@ class GlassTabBarAccessory(
 ) {
     override fun equals(other: Any?): Boolean =
         other is GlassTabBarAccessory && size == other.size && gap == other.gap && fusion == other.fusion &&
-            yieldsToLens == other.yieldsToLens && link === other.link
+            yieldsToLens == other.yieldsToLens && lensFusion == other.lensFusion && link === other.link
 
-    override fun hashCode(): Int = (((size.hashCode() * 31 + gap.hashCode()) * 31 + fusion.hashCode()) * 31 +
-        yieldsToLens.hashCode()) * 31 + (link?.hashCode() ?: 0)
+    override fun hashCode(): Int = ((((size.hashCode() * 31 + gap.hashCode()) * 31 + fusion.hashCode()) * 31 +
+        yieldsToLens.hashCode()) * 31 + lensFusion.hashCode()) * 31 + (link?.hashCode() ?: 0)
 }
 
 /**
@@ -2145,9 +2217,10 @@ internal fun glassSelectorFormation(style: GlassTabBarStyle, formation: Float, t
  * pulls the exterior in and was measured on stationary held stills.
  */
 internal fun glassSelectorFold(style: GlassTabBarStyle, formation: Float, transitAppearance: Float): Float {
-    if (style.tapOptics <= 0f || style.tapOpticsFold <= 0f || formation >= 0.5f) return 0f
+    val fold = if (style.tapTransitFold.isNaN()) style.tapOpticsFold else style.tapTransitFold
+    if (style.tapOptics <= 0f || fold <= 0f || formation >= 0.5f) return 0f
     val transit = (transitAppearance * style.tapOptics).coerceIn(0f, 1f)
-    return if (transit > formation) transit * style.tapOpticsFold.coerceIn(0f, 1f) else 0f
+    return if (transit > formation) transit * fold.coerceIn(0f, 1f) else 0f
 }
 
 /** The gesture's own pointer has lifted: a tap, as opposed to a pointer taken by another node. */

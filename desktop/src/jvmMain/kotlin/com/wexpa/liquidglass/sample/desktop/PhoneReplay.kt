@@ -107,9 +107,36 @@ private fun replay(args: Array<String>) {
             wideKernel = bar.getOrNull(5)?.let { androidx.compose.ui.unit.Dp(it) } ?: base.bar.wideKernel,
             legibility = bar.getOrElse(6) { base.bar.legibility }))
     }.let { base ->
-        // "+lshadow=<contactShadow>[,<inside share>]": the held lens's contact shadow, for fitting by replay.
+        // "+barfold=<edgeFold>,<foldAtCorners>[,<refraction depth dp>[,<bevel dp>]]": bar edge refraction candidates.
+        val bf = variant.substringAfter("+barfold=", "").substringBefore('+').split(',').mapNotNull { it.toFloatOrNull() }
+        if (bf.size < 2) base else base.copy(bar = base.bar.copy(edgeFold = bf[0], foldAtCorners = bf[1],
+            refractionDepth = bf.getOrNull(2)?.let { androidx.compose.ui.unit.Dp(it) } ?: base.bar.refractionDepth,
+            bevel = bf.getOrNull(3)?.let { androidx.compose.ui.unit.Dp(it) } ?: base.bar.bevel))
+    }.let { base ->
+        // "+lband=<body band scale>": the held lens's rim band.
+        val lbs = variant.substringAfter("+lband=", "").substringBefore('+').split(',').mapNotNull { it.toFloatOrNull() }
+        if (lbs.isEmpty()) base else base.copy(lens = base.lens.copy(bodyBandScale = lbs[0],
+            heldMagnification = lbs.getOrElse(1) { base.lens.heldMagnification }))
+    }.let { base ->
+        // "+lring=<innerShadow>,<heldGlow>,<heldEdgeTone /255>[,<heldGlowFloor>[,<specular>]]": the held lens's rim terms.
+        val lr = variant.substringAfter("+lring=", "").substringBefore('+').split(',').mapNotNull { it.toFloatOrNull() }
+        if (lr.size < 3) base else base.copy(lens = base.lens.copy(innerShadow = lr[0], heldGlow = lr[1], heldEdgeTone = lr[2] / 255f,
+            heldGlowFloor = lr.getOrElse(3) { base.lens.heldGlowFloor }, specular = lr.getOrElse(4) { base.lens.specular }))
+    }.let { base ->
+        // "+barrest": the bar on the measured resting-corner map (GlassRestMap.Measured).
+        if ("+barrest" !in variant) base else base.copy(bar = base.bar.copy(restMap = com.wexpa.liquidglass.GlassRestMap.Measured))
+    }.let { base ->
+        // "+tap=<tapOptics>,<tapTransitFold>[,<tapSelectedScale>]": tap transit candidates.
+        val tp = variant.substringAfter("+tap=", "").substringBefore('+').split(',').mapNotNull { it.toFloatOrNull() }
+        if (tp.size < 2) base else base.copy(tapOptics = tp[0], tapTransitFold = tp[1],
+            tapSelectedScale = tp.getOrElse(2) { base.tapSelectedScale })
+    }.let { base ->
+        // "+lshadow=<contactShadow>[,<inside share>[,<blur dp>[,<offset dp>]]]": the held lens's contact shadow, for fitting by replay.
         val ls = variant.substringAfter("+lshadow=", "").substringBefore('+').split(',').mapNotNull { it.toFloatOrNull() }
-        if (ls.isEmpty()) base else base.copy(lens = base.lens.copy(contactShadow = ls[0]))
+        if (ls.isEmpty()) base else base.copy(lens = base.lens.copy(contactShadow = ls[0],
+            contactShadowInside = ls.getOrElse(1) { base.lens.contactShadowInside },
+            contactShadowBlur = ls.getOrNull(2)?.let { androidx.compose.ui.unit.Dp(it) } ?: base.lens.contactShadowBlur,
+            contactShadowOffset = ls.getOrNull(3)?.let { androidx.compose.ui.unit.Dp(it) } ?: base.lens.contactShadowOffset))
     }.let { base ->
         // "+pill=<black alpha>,<lift in /255>": a resting pill candidate, for fitting by replay.
         val pill = variant.substringAfter("+pill=", "").substringBefore('+').split(',').mapNotNull { it.toFloatOrNull() }
@@ -137,12 +164,13 @@ private fun replay(args: Array<String>) {
                 // "+passive": the search button without press and pull, as rendered before 15 October.
                 // "appstore": iOS 26's App Store five-tab bar over a dark card (AppStoreScene).
                 if (variant.startsWith("appstore")) AppStoreScene(selected, { selected = it },
-                    style = AppStoreGeometry.style(style), light = "light" in variant)
+                    style = AppStoreGeometry.style(style, light = "light" in variant), light = "light" in variant)
                 // "whatsapp": WhatsApp's five-tab bar on its measured slots (WhatsAppScene);
                 // "+plain": over the bare page, without the settings card.
                 else if (variant.startsWith("whatsapp")) WhatsAppScene(selected, { selected = it },
                     style = WhatsAppGeometry.style(style), card = "+plain" !in variant, light = "light" in variant)
                 else PhoneScene(selected, { selected = it }, palette = palette, style = style,
+                    lensFusion = androidx.compose.ui.unit.Dp(variant.substringAfter("+lfuse=", "").substringBefore('+').toFloatOrNull() ?: 12f),
                     search = if ("+passive" in variant) null else com.wexpa.liquidglass.GlassInteraction.Pullable.copy(
                         pullShape = com.wexpa.liquidglass.GlassPullShape.Free, pullLiftShare = 0.6f).let { base ->
                         // "+search=<follow>,<elongation>,<widthRatio>,<limit>,<liftShare>": a search-button candidate.

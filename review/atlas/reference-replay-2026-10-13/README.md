@@ -851,14 +851,36 @@ iOS's text edges under the bar at 0.74 px (dark) / 0.61 px (light) against ours 
 
 *Our renders only: desktop GPU replay at 3x, branch `claude/light-and-gaps`.*
 
+### The owner's device check (18 October)
+
+The owner tried the build on a phone and listed six differences. Each was compared with the recordings:
+
+| Note | iOS (recording) | Before | Now |
+| :-- | :-- | :-- | :-- |
+| Icons jump on a tap | an icon the lens does not cross holds within 0.1 px through a tap (IMG_7048 6.3-7.6 s); on a hold Calls moves 14 px out, w 68 -> 71 (38.1-38.3 s) | the deselected icon slid 7 px and back on a 150 ms tap | holds still on a tap; a hold moves it 13 px, w 68 -> 71 |
+| Tap travel | a clear lens that bends ink at its rim and lands clean (IMG_7048 6.7-6.9 s) | the fold smeared the carried icon and lingered ~150 ms | the held lens's optics (`tapTransitFold` 0) |
+| Two glasses in the lens | the bar fills the held lens nearly to its rim; what lies beyond bends into a thin crescent (IMG_6756 35.47 s) | the bar's edges and rounded end showed as a second capsule | rim band 0.3 (`bodyBandScale`); region levels within 2 (top band 53 -> 51) |
+| Search button too sensitive | no finger trace in the recordings | gain 0.35 | 0.2 (authored, from the owner's check) |
+| Lens against the search button | the held lens pinches into the button (IMG_7048 38.5 / 42 s) | stopped short, a gap | joins it through a 12 dp neck (`lensFusion`) |
+| Text under the bar's ends | bent along the rounded ends (IMG_7049) | not bent | open: the bar's edge fold garbles text along the straight runs |
+
+![Tap travel before and after, the held lens's rim band, and the lens's neck to the search button](owner-check-2026-10-18.png)
+
+*Our renders only: desktop GPU replay at 3x, branch `claude/residuals-2`. Top: a tap from Keypad to
+Contacts, before (left) and after (right), every 4th frame. Middle: the dark held lens at the search end,
+before (left) and with its 0.3 band and 12 dp neck (right). Bottom: the light held lens at the search end without and with its neck.*
+
+The App Store bar (dark) now blurs the text under it (7 dp) with `legibility` 2: band p50 / p75 68 / 79
+against iOS's 69 / 80 (was 67 / 98); p90 133 against 207 (the brightest text pixels, softer than iOS's).
+
 ### The held lens's shadow (18 October)
 
 A lens casts its contact shadow from its own body now. A selector's node spans the whole bar, and the
 shadow was drawn as that node's rectangle, so a lens given a shadow shaded the bar far from itself
 (218 over white across the bar's right half); light Calm's lens had its shadow turned off for that
 reason. With the shadow cast by the lens's capsule (`glassShadowCaster`, the pose body through its
-matrix), light Calm's lens takes `contactShadow` 0.5, scored on IMG_7048 at 38.5 s and 42 s (a lens
-held on Keypad over the white keypad page):
+matrix), light Calm's lens takes a shadow, scored on IMG_7048 at 38.5 s and 42 s (a lens held on
+Keypad over the white keypad page). First at the panel's own shadow geometry, `contactShadow` 0.5:
 
 | Below the light held lens, every 3 px from its edge | levels |
 | :-- | :-- |
@@ -869,6 +891,17 @@ held on Keypad over the white keypad page):
 rms 2.6 levels at 0.5; the interior over the bar is unchanged (253.3 / 254.8 against 253.4 / 255.0),
 because the bar's own image covers the shadow inside the lens, as on iOS. Where the lens overhangs the
 page above the bar it reads 248-251 (iOS 244-252).
+
+Then with the shadow's own geometry (`contactShadowBlur`, `contactShadowOffset`, `contactShadowInside`,
+18 October), scored by profile (12 px above the lens, the overhang above the bar, 36 px below):
+
+| Shadow | above | overhang | below | all (rms) |
+| :-- | --: | --: | --: | --: |
+| none | 0.5 | 3.1 | 6.5 | 4.2 |
+| panel geometry, 0.5, inside 0.5 | 4.8 | 2.9 | 3.2 | 3.7 |
+| 0.45, inside 0.5, blur 6 dp, 5 dp down (shipped) | 0.6 | 3.1 | 3.2 | 2.6 |
+| 0.45, inside 1, blur 6 dp, 5 dp down | 0.6 | 2.9 | 4.1 | 2.9 |
+| 0.40, inside 0.5, blur 8 dp, 6 dp down | 1.0 | 3.1 | 3.1 | 2.6 |
 
 ![Light Calm's held lens without and with its shadow](light-lens-shadow.png)
 
@@ -925,11 +958,11 @@ the impact. The narrowing itself is real and is listed below.
   of iOS's vertically.
 - WhatsApp motion (17 October): throws' flights reach the far tab ~40 ms before iOS's tracker shows
   them (p90 140 px); input is inferred and the fill cross-fade lags the tracker.
-- App Store bar: with `legibility` 2.5 on `CalmClear()` the text under it reads p50 / p75 67 / 98
-  against iOS's 69 / 80 (a plain clear bar: 73 / 107); stronger legibility saturates.
-- Light appearance (IMG_7048, 17 October): the held lens casts its shadow since 18 October (rms 2.6
-  levels; ours fades over a longer tail); the bar's ends read 234 against 179-221; one pill offset
-  cannot give iOS's Phone (246), WhatsApp (236) and App Store (255 over white) pills at once (ours 242).
+- App Store bar: p50 / p75 68 / 79 against iOS's 69 / 80 since 18 October (7 dp blur, `legibility` 2);
+  p90 133 against 207.
+- Light appearance (IMG_7048, 17 October): the held lens casts its shadow since 18 October (profile rms
+  2.6); the bar's ends read 234 against 179-221. Resting pills per app since 18 October (245 / 236 / 255).
+- Text under the bar's rounded ends is not bent as iOS's is (owner's check, 18 October).
 - Search button (pass 17, lift share 0.6 since 17 October): the rise peaks 3-6 px short; brightness
   7.1 levels rms (8.0 at 0.7). The "min half-width 86 against 78" of sideways pulls is not the pull: it
   falls in the ~100 ms after release, when iOS's body overshoots its rest by 6 px against our 2 and

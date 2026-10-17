@@ -14,7 +14,7 @@ public sealed record CalmMaterial(IReadOnlyDictionary<string, float[]> Values, f
 public static class CalmSelectorMaterial
 {
     private sealed record Style(Dictionary<string, float[]> Pill, Dictionary<string, float[]> Lens, Dictionary<string, float[]> Bar,
-        Dictionary<string, float[]> ClearBar, float HeldLift, bool TouchLift, bool PillInkFollows, bool LensInkFollows, float TapOptics, float TapOpticsFold, float TapTintFade);
+        Dictionary<string, float[]> ClearBar, float HeldLift, bool TouchLift, bool PillInkFollows, bool LensInkFollows, float TapOptics, float TapOpticsFold, float TapTintFade, float TapTransitFold);
 
     private static readonly HashSet<string> Snap = ["uProfile", "uRestMap", "uHeldInk"];
     private static readonly Lazy<(HashSet<string> Dp, Dictionary<string, float> Fold, Style Dark, Style Light)> Data = new(Load);
@@ -38,7 +38,8 @@ public static class CalmSelectorMaterial
             return new(Map(s.GetProperty("pill")), Map(s.GetProperty("lens")), Map(s.GetProperty("bar")),
                 Map(s.GetProperty("clearBar")), s.GetProperty("heldLift").GetSingle(),
                 s.GetProperty("touchLift").GetBoolean(), s.GetProperty("pillInkFollows").GetBoolean(), s.GetProperty("lensInkFollows").GetBoolean(),
-                s.GetProperty("tapOptics").GetSingle(), s.GetProperty("tapOpticsFold").GetSingle(), s.GetProperty("tapTintFade").GetSingle());
+                s.GetProperty("tapOptics").GetSingle(), s.GetProperty("tapOpticsFold").GetSingle(), s.GetProperty("tapTintFade").GetSingle(),
+                s.TryGetProperty("tapTransitFold", out var transitFold) ? transitFold.GetSingle() : s.GetProperty("tapOpticsFold").GetSingle());
         }
         return (dp, fold, Read("dark"), Read("light"));
     }
@@ -99,10 +100,11 @@ public static class CalmSelectorMaterial
             var lift = Math.Clamp(Math.Max(f, a * style.TapOptics), 0, 1);
             values = LerpStyle(style, lift);
             values["uTint"] = pigment["uTint"]; values["uLift"] = pigment["uLift"];
-            if (style.TapOpticsFold > 0 && f < .5f)
+            // A tapped selector's own fold (Compose's GlassTabBarStyle.tapTransitFold).
+            if (style.TapTransitFold > 0 && f < .5f)
             {
                 var t = Math.Clamp(a * style.TapOptics, 0, 1);
-                folded = t > f ? t * Math.Clamp(style.TapOpticsFold, 0, 1) : 0;
+                folded = t > f ? t * Math.Clamp(style.TapTransitFold, 0, 1) : 0;
             }
             if (folded > 0 || (style.TapOpticsFold > 0 && f >= .5f))
             {

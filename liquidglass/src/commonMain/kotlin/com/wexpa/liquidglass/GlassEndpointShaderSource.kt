@@ -69,11 +69,12 @@ float smin(float a, float b, float k) {
 }
 
 float sdShape(float2 p, float2 halfSize) {
-    if (uBodyKind > 1.5) {
-        return poseQuery(p, uPoseA, uPoseAInv, uPoseC, uPoseD).x;
-    }
     if (uBodyKind > 0.5) {
-        return bodyQuery(p, uBody, uBodyY).x;
+        float b = (uBodyKind > 1.5) ? poseQuery(p, uPoseA, uPoseAInv, uPoseC, uPoseD).x : bodyQuery(p, uBody, uBodyY).x;
+        if (uFuseShape.y > 0.0) {
+            b = smin(b, sdRoundRect(p - uFuse.xy, uFuse.zw, float4(uFuseShape.x)), uFuseShape.y);
+        }
+        return b;
     }
     if (uShapeKind < 0.5) {
         float d = sdRoundRect(p, halfSize, uRadii);
