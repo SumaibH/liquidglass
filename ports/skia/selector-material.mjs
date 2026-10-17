@@ -59,7 +59,7 @@ export function calmSelectorMaterial({dark = true, formation = 0, transit = 0, h
     }
     const mirror = {uFoldCorners: DATA.fold.foldCorners, uRimMirror: DATA.fold.rimMirror,
       uRimMirrorGain: DATA.fold.rimMirrorGain, uAberration: DATA.fold.dispersion, uInkSplit: DATA.fold.dispersion};
-    if (fold > 0) values = {...values, ...mirror, uProfile: DATA.fold.measuredProfile};
+    if (fold > 0) values = {...values, ...mirror, uFoldCorners: DATA.fold.transitFoldCorners, uProfile: DATA.fold.measuredProfile};
     else if (style.tapOpticsFold > 0 && formation >= .5) values = {...values, ...mirror};
   }
   const uFormation = style.tapOpticsFold > 0 && formation >= .5
@@ -67,17 +67,24 @@ export function calmSelectorMaterial({dark = true, formation = 0, transit = 0, h
   return {values, uFormation: clamp(uFormation, 0, 1)};
 }
 
-/** The Calm bar's material (its held lift follows the selector's formation), lengths in dp. */
-export function calmBarMaterial({dark = true, formation = 0} = {}) {
+/**
+ * The Calm bar's material, lengths in dp. Its held lift follows the selector's formation, or, where
+ * the style lifts for any touch (GlassTabBarStyle.touchLift), the larger of that and `touch`
+ * (the navigation's touch amount). `clear` is GlassTabBarStyle.CalmClear's bar: the clearer glass
+ * of WhatsApp's and the App Store's dark bars (the same in light appearance).
+ */
+export function calmBarMaterial({dark = true, formation = 0, touch = 0, clear = false} = {}) {
   const style = DATA.styles[dark ? 'dark' : 'light'];
-  return {...style.bar, uLift: style.bar.uLift + style.heldLift * clamp(formation, 0, 1)};
+  const lift = style.touchLift ? Math.max(formation, touch) : formation;
+  return {...style.bar, uTint: clear ? style.clearBarTint : style.bar.uTint,
+    uLift: style.bar.uLift + style.heldLift * clamp(lift, 0, 1)};
 }
 
 /** Uniform values in device px for a density. */
 export function calmMaterialUniforms(values, density = 1) {
   const out = {};
   for (const [key, value] of Object.entries(values)) {
-    if (key === 'rawShare') continue;
+    if (key === 'rawShare' || key === 'rawBlur') continue;
     out[key] = DATA.dpFields.includes(key) ? value * density : value;
   }
   return out;

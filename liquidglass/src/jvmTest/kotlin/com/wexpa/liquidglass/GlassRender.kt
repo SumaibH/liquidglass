@@ -73,6 +73,8 @@ internal object GlassRender {
         restMap: Float = 0f,
         wide: Float = 0f,
         fineShare: Float = 1f,
+        /** [GlassStyle.softDetail]: 0 the along-axis high-pass with a dithered scatter, 1 a soft copy. */
+        softDetail: Float = 0f,
         lift: Float = 0f,
         liftAdapt: Float = 0f,
         bevel: Float = 2f,
@@ -198,6 +200,7 @@ internal object GlassRender {
         b.uniform("uWideStrip", if (stripH > 0) h.toFloat() else 0f)
         b.uniform("uWideScale", wideScale)
         b.uniform("uFineShare", fineShare)
+        b.uniform("uSoftDetail", softDetail)
         b.uniform("uWideKernel", wide)
         b.uniform("uLift", lift)
         b.uniform("uLiftAdapt", liftAdapt)

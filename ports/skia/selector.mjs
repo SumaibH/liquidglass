@@ -18,7 +18,7 @@ const DEFAULT_SPEC = Object.freeze({
   tapPressureOmega: 0, pressureFallOmega: 14, formRiseOmega: 60, heldFormRiseOmega: 0,
   formOmega: 18, formZeta: 1, holdThresholdSeconds: .12, referenceSpeed: 11.5,
   heldReferenceSpeed: 20, velocityTau: .035, referenceAcceleration: 26, elongationSlots: .5,
-  acrossElongation: 0, stretchGain: 0, maxStrain: .42, pullStrainPerDp: .0038,
+  acrossElongation: 0, stretchGain: 0, heldTravelStrain: 0, heldTravelStrainOmega: 10, maxStrain: .42, pullStrainPerDp: .0038,
   pullPressurePerDp: -.0007, pullOnsetDp: 12, pullMaxStrain: .12, pullFollow: .2,
   pullFollowCapRatio: .1, endTravelCapRatio: .08, pullTiltSeconds: .08, heldHeightRatio: 1.2,
   squeeze: .4, taperFromAcceleration: 0, taperFromVelocity: 0, maxTaper: 0,
@@ -43,14 +43,14 @@ export const CALM_SELECTOR_SPEC = Object.freeze({
   centreOmega: 24, spineOmega: 30, spineZeta: .78, tapSpineOmega: 26, tapSpineZeta: .45,
   tapElongationSlots: .36, tapReferenceSpeed: 10, spineReleaseOmega: 22, pressureOmega: 22,
   pressureFallOmega: 14, formRiseOmega: 30, tapPressureOmega: 45, heldHeightRatio: 1.2,
-  heldReferenceSpeed: 12, elongationSlots: .28, squeeze: .47, pullStrainPerDp: 0,
+  heldReferenceSpeed: 8, elongationSlots: .28, squeeze: .47, pullStrainPerDp: 0,
   pullPressurePerDp: 0, pullFollow: 0, endTravelCapRatio: .025, maxAccommodationSlots: .15,
   travelOnly: true, releaseTravel: true, tapRecoilArea: true, heldTravelPressureOmega: 60,
   tapSpineLimitSlots: .45, tapAreaGain: .51, tapShortTripRate: .75, tapAppearanceArea: .44,
   tapAppearanceSpine: .13, tapAppearanceFallOmega: 45, releaseFormationSpeed: 3,
   graspOmega: 120, heldFormRiseOmega: 50, releaseTrailingEdge: true, releaseRecoveryOmega: 13,
   releaseTrailingInOmega: 9, releaseTrailingInZeta: .3, releaseTrailingCarry: .1, releaseWallGive: .35,
-  releaseTrailingStiffening: .5, releaseStillHoldSeconds: .18,
+  releaseTrailingStiffening: .5, releaseStillHoldSeconds: .18, heldTravelStrain: .6, heldTravelStrainOmega: 10,
 });
 
 const MODE = Object.freeze({Rest: 'rest', TapTransit: 'tap', PressPending: 'pending', Held: 'held', Released: 'released'});
@@ -103,22 +103,41 @@ function heldPressure(ratio, barHeight, referenceHeight) {
  * The bar as the selector sees it (buildGlassSelectorBar, pose path). Pixels. `inset` is the
  * item row's horizontal padding, `pillWidth` the resting selector width (default: one slot),
  * `pillInset` the bar showing above and below the resting selector, `density` px per dp.
+ * `slotWidth` (GlassTabBarStyle.slotWidth): equal slots of that width centred in the bar, the end
+ * tabs closed up until their pill sits `pillInset` inside the bar's end; omitted, the bar is
+ * shared out inside `inset`.
  */
-export function calmSelectorBar({width, height, count, inset = 6, pillWidth, pillInset = 4, density = 1}) {
+export function calmSelectorBar({width, height, count, inset = 6, pillWidth, pillInset = 4, density = 1, slotWidth}) {
   if (![width, height, inset, pillInset, density].every(Number.isFinite) || width <= 0 || height <= 0 ||
       !Number.isInteger(count) || count < 1 || density <= 0 || inset < 0 || pillInset < 0)
     throw new RangeError('Positive bar size, integer count and nonnegative insets required');
-  const slot = Math.max((width - inset * 2) / count, 0);
+  const fixed = Number.isFinite(slotWidth) && slotWidth > 0;
+  const slot = fixed ? slotWidth : Math.max((width - inset * 2) / count, 0);
   const pill = Number.isFinite(pillWidth) ? Math.max(pillWidth, slot) : slot;
-  const restHalfWidth = Math.min(pill / 2, Math.max(inset + slot / 2 - density, density));
+  const fixedSlot = fixed ? slot : NaN, endReach = fixed ? pill / 2 + pillInset : 0;
+  const first = fixed ? fixedCentre(width, count, slot, endReach, 0) : inset + slot / 2;
+  const restHalfWidth = Math.min(pill / 2, Math.max(first - density, density));
   const pillHalfHeight = Math.min(height / 2 - pillInset, restHalfWidth);
   return Object.freeze({
     width, height, inset, count, cornerRadius: height / 2, baseHalfWidth: restHalfWidth,
     baseHalfHeight: pillHalfHeight, allowedHalfHeight: Math.max(pillHalfHeight, height / 2 - density),
-    density, slotWidth: slot,
+    density, slotWidth: slot, fixedSlot, endReach,
   });
 }
-const centreOf = (bar, i) => bar.inset + (i + .5) * bar.slotWidth;
+// glassFixedSlotCentre: equal slots centred in the bar, held endReach from either end.
+function fixedCentre(width, count, slot, endReach, i) {
+  const mid = width / 2, lo = Math.min(endReach, mid);
+  return clamp(mid + (i - (count - 1) / 2) * slot, lo, width - lo);
+}
+export const centreOf = (bar, i) => bar.fixedSlot > 0
+  ? fixedCentre(bar.width, bar.count, bar.fixedSlot, bar.endReach, i) : bar.inset + (i + .5) * bar.slotWidth;
+/** The tab under `x`: the nearest centre for set slots, the slot under it otherwise. */
+export function nearestTab(bar, x) {
+  if (!(bar.fixedSlot > 0)) return clamp(Math.floor((x - bar.inset) / bar.slotWidth), 0, bar.count - 1);
+  let i = 0;
+  while (i < bar.count - 1 && x > (centreOf(bar, i) + centreOf(bar, i + 1)) / 2) i++;
+  return i;
+}
 
 class Reference {
   constructor(a, r) { this.a = a; this.r = r; this.spine = a > GEOMETRY_EPSILON; }
@@ -264,6 +283,7 @@ export class CalmSelectorController {
     this.frame = new Frame(); this.reference = new Reference(1, 1); this.bar = null;
     this.mode = MODE.Rest; this.motionEnabled = true; this.started = false;
     this.form = new Spring(); this.transit = new Spring(); this.travel = new Spring(); this.tapArea = new Spring();
+    this.strainDrive = new Spring();
     this.tapAreaActive = false; this.tapDistance = 0; this.releaseImpactActive = false;
     this.releaseEdge = new Spring(); this.releaseTrail = new Spring(); this.releaseEdgeActive = false; this.trailImpact = false;
     this.releasedAt = 0; this.releasedStill = false;
@@ -294,7 +314,7 @@ export class CalmSelectorController {
   get centreVelocityX() { return this.velocity.cx; }
   get isIdle() {
     return this.mode !== MODE.PressPending && !this.tapAreaActive && this.transitAppearance < 1e-4 &&
-      this.heldTravel < 1e-4 && this.quietSteps >= QUIET_STEPS &&
+      this.heldTravel < 1e-4 && this.quietSteps >= QUIET_STEPS && this.strainDrive.value === 0 &&
       // A still release keeping its glass: nothing moves yet, but the formation still has to fall.
       !(this.mode === MODE.Released && this.releasedFromHold && this.releasedStill && this.form.value > .01 &&
         this.now - this.releasedAt < this.spec.releaseStillHoldSeconds + .05);
@@ -464,9 +484,13 @@ export class CalmSelectorController {
   anchoredCentre(x) {
     return anchoredTravel(x, centreOf(this.bar, 0), centreOf(this.bar, this.bar.count - 1), this.spec.endTravelCapRatio * this.bar.height);
   }
-  landingHalfWidth() { return this.reference.r * Math.exp(this.pose.p) + this.pose.dx + Math.max(this.pose.acc, 0); }
+  // The held travel strain (heldTravelStrain) widens the rendered body by e^u; zero leaves it 1.
+  strainScale() { return this.spec.heldTravelStrain > 0 ? Math.exp(this.pose.u) : 1; }
+  landingHalfWidth() { return (this.reference.r * Math.exp(this.pose.p) + this.pose.dx + Math.max(this.pose.acc, 0)) * this.strainScale(); }
   landingHalfWidthVelocity() {
-    return this.reference.r * Math.exp(this.pose.p) * this.velocity.p + this.velocity.dx + (this.pose.acc > 0 ? this.velocity.acc : 0);
+    const eu = this.strainScale(), base = this.reference.r * Math.exp(this.pose.p) + this.pose.dx + Math.max(this.pose.acc, 0);
+    return (this.reference.r * Math.exp(this.pose.p) * this.velocity.p + this.velocity.dx + (this.pose.acc > 0 ? this.velocity.acc : 0)) * eu +
+      (eu !== 1 ? base * eu * this.velocity.u : 0);
   }
 
   substep(dt) {
@@ -524,7 +548,8 @@ export class CalmSelectorController {
     const longTapDrive = 1 - Math.exp(-distanceExcess * distanceExcess / (distanceExcess + .5));
     const vRef = Math.max(this.mode === MODE.Held ? s.heldReferenceSpeed : tapMotion ? s.tapReferenceSpeed : s.referenceSpeed, 1e-3);
     const sv = speed2 / (vRef * vRef + speed2);
-    this.travel.target = this.mode === MODE.Held && this.motionEnabled ? sv : 0;
+    this.travel.target = this.motionEnabled && (this.mode === MODE.Held ||
+      (this.mode === MODE.Released && this.releasedFromHold)) ? sv : 0;
     this.travel.step(dt, 60, 1);
     if (Math.abs(this.travel.value) < 1e-4 && Math.abs(this.travel.velocity) < .002 && this.travel.target === 0) this.travel.snapTo(0);
     const pressResponse = heldNow ? 1 : (this.pointerDownActive && this.pressEligible ? s.pressFormation : 0);
@@ -559,7 +584,13 @@ export class CalmSelectorController {
       const psi = Math.atan2(pullY, tiltX) - Math.atan2(this.frame.sinTheta, this.frame.cosTheta);
       pullU = pullStrain * Math.cos(2 * psi); pullV = pullStrain * Math.sin(2 * psi);
     }
-    eq.u = gain * (nvx * nvx - .5 * speed2) / denom + pullU;
+    if (s.heldTravelStrain > 0) {
+      // Sustained held travel builds the strain; a short flick releases before it has.
+      this.strainDrive.target = this.mode === MODE.Held && this.motionEnabled ? sv * formation : 0;
+      this.strainDrive.step(dt, s.heldTravelStrainOmega, 1);
+      if (Math.abs(this.strainDrive.value) < 1e-4 && Math.abs(this.strainDrive.velocity) < .002 && this.strainDrive.target === 0) this.strainDrive.snapTo(0);
+    }
+    eq.u = gain * (nvx * nvx - .5 * speed2) / denom + pullU + s.heldTravelStrain * this.strainDrive.value;
     eq.v = gain * (nvx * nvy) / denom + pullV;
     const held = heldPressure(s.heldHeightRatio, bar.height, ref.height);
     const squeeze = this.mode === MODE.Held ? s.squeeze * sv : 0;
@@ -703,13 +734,15 @@ export class CalmSelectorController {
         } else this.releaseTrail.step(dt, s.releaseRecoveryOmega, s.releaseRecoveryZeta);
         const caps = ref.r * Math.exp(pose.p) + Math.max(pose.acc, 0);
         const capsVelocity = ref.r * Math.exp(pose.p) * vel.p + (pose.acc > 0 ? vel.acc : 0);
-        const minimum = caps + .002;
-        if (dir * (this.releaseEdge.value - this.releaseTrail.value) < 2 * minimum) {
-          this.releaseTrail.value = this.releaseEdge.value - dir * 2 * minimum;
-          this.releaseTrail.velocity = this.releaseEdge.velocity - dir * 2 * capsVelocity;
+        const minimum = caps + .002, eu = this.strainScale();
+        if (dir * (this.releaseEdge.value - this.releaseTrail.value) < 2 * minimum * eu) {
+          this.releaseTrail.value = this.releaseEdge.value - dir * 2 * minimum * eu;
+          this.releaseTrail.velocity = this.releaseEdge.velocity - dir * 2 * capsVelocity * eu;
         }
-        pose.dx = dir * (this.releaseEdge.value - this.releaseTrail.value) * .5 - caps;
-        vel.dx = dir * (this.releaseEdge.velocity - this.releaseTrail.velocity) * .5 - capsVelocity;
+        // The edges are rendered extents; the strain scales the body by e^u along the bar.
+        const half = dir * (this.releaseEdge.value - this.releaseTrail.value) * .5;
+        pose.dx = half / eu - caps;
+        vel.dx = (dir * (this.releaseEdge.velocity - this.releaseTrail.velocity) * .5 - (eu !== 1 ? half * vel.u : 0)) / eu - capsVelocity;
         pose.dy = 0; vel.dy = 0;
       }
       pose.cx = this.releaseEdge.value - dir * this.landingHalfWidth();
@@ -966,12 +999,32 @@ function sameBar(a, b) {
  * Coordinates are bar-local px, times monotonic seconds. Selection is reported, never owned:
  * `onSelect(index)` is called on a tap or committed drag; the host then calls `select`.
  */
+/** Compose's FastOutSlowInEasing, cubic-bezier(0.4, 0, 0.2, 1). */
+function fastOutSlowIn(u) {
+  if (u <= 0 || u >= 1) return clamp(u, 0, 1);
+  const bez = (t, p1, p2) => 3 * (1 - t) * (1 - t) * t * p1 + 3 * (1 - t) * t * t * p2 + t * t * t;
+  let lo = 0, hi = 1, t = u;
+  for (let i = 0; i < 30; i++) { t = (lo + hi) / 2; if (bez(t, .4, .2) < u) lo = t; else hi = t; }
+  return bez(t, 0, 1);
+}
+
 export function createCalmNavigation({bar, selected = 0, onSelect = () => {}, spec = CALM_SELECTOR_SPEC,
   touchSlop = 8 * bar.density, flingVelocity = 420 * bar.density, motion = true} = {}) {
   const controller = new CalmSelectorController(spec);
   controller.motionEnabled = motion; controller.attach(bar); controller.snapToRest(selected);
   let current = selected, gesture = null, clock = 0;
-  const nearest = x => clamp(Math.floor((x - bar.inset) / bar.slotWidth), 0, bar.count - 1);
+  // GlassTabBarStyle.touchLift: the bar lifts for any touch. As Compose's animateFloatAsState with
+  // tween(50) on the press and tween(260) on the lift: FastOutSlowIn, restarting from where it is.
+  let touch = {from: 0, to: 0, t0: 0, duration: 1};
+  const touchAt = time => {
+    const u = clamp((time - touch.t0) / touch.duration, 0, 1);
+    return touch.from + (touch.to - touch.from) * fastOutSlowIn(u);
+  };
+  const touchTo = (to, time) => {
+    if (touch.to === to) return;
+    touch = {from: touchAt(time), to, t0: time, duration: to > 0 ? .05 : .26};
+  };
+  const nearest = x => nearestTab(bar, x);
   const firstCentre = () => centreOf(bar, 0), lastCentre = () => centreOf(bar, bar.count - 1);
   function velocity(samples) {
     // Least-squares slope over the last 100 ms, as a stand-in for Compose's VelocityTracker.
@@ -991,6 +1044,7 @@ export function createCalmNavigation({bar, selected = 0, onSelect = () => {}, sp
     down(x, y, time) {
       const index = nearest(x);
       gesture = {x0: x, y0: y, t0: time, lastIndex: index, dragging: false, samples: [{t: time, x}]};
+      if (controller.motionEnabled) touchTo(1, time);
       controller.pointerDown(x, y, time, controller.motionEnabled);
       controller.retarget(index);
     },
@@ -1003,7 +1057,9 @@ export function createCalmNavigation({bar, selected = 0, onSelect = () => {}, sp
         if (!controller.motionEnabled) return;
         const dx = x - g.x0, dy = y - g.y0, held = time - g.t0 >= controller.spec.holdThresholdSeconds;
         const crossed = held ? Math.hypot(dx, dy) > touchSlop : Math.abs(dx) > touchSlop;
-        if (crossed) { g.dragging = true; controller.beginDrag(g.x0, g.y0); }
+        // As GlassTabBar: the drag begins from the down, then the crossing move is applied again,
+        // or beginDrag would leave the pointer at the down until the next move.
+        if (crossed) { g.dragging = true; controller.beginDrag(g.x0, g.y0); controller.pointerMove(x, y, time); }
         else if (!held && Math.abs(dy) > touchSlop) { this.cancel(time); return; }
         else return;
       }
@@ -1012,27 +1068,30 @@ export function createCalmNavigation({bar, selected = 0, onSelect = () => {}, sp
     up(x, y, time) {
       if (!gesture) return;
       const g = gesture; gesture = null;
+      touchTo(0, time);
       if (!g.dragging) {
         // A tap: the tab under the finger. The host's onSelect owns the selection.
         controller.cancel(g.lastIndex); current = g.lastIndex; onSelect(g.lastIndex); return;
       }
       g.samples.push({t: time, x});
+      // The lift is the gesture's last sample, as in GlassTabBar.
+      controller.pointerMove(x, y, time);
       const v = velocity(g.samples);
       const projected = clamp(v > flingVelocity ? g.lastIndex + 1 : v < -flingVelocity ? g.lastIndex - 1 : g.lastIndex, 0, bar.count - 1);
       controller.pointerUp(projected); current = projected; onSelect(projected);
     },
     /** Another owner took the pointer: settle back to the host's selection, commit nothing. */
-    cancel(time) { gesture = null; controller.cancel(current); },
+    cancel(time) { gesture = null; touchTo(0, time ?? clock); controller.cancel(current); },
     /** Advance to the display time. Returns true while another frame is needed. */
     frame(time) {
       clock = controller.resumedFrameTime(Math.max(clock, time));
       controller.advanceFrameTo(clock);
-      return !controller.isIdle || !!gesture;
+      return !controller.isIdle || !!gesture || clock < touch.t0 + touch.duration;
     },
     state(originX = 0, originY = 0) {
       const e = controller.extents();
       return {centreX: controller.centreX, centreY: controller.centreY, extents: e,
-        formation: controller.formation, transitAppearance: controller.transitAppearance,
+        formation: controller.formation, transitAppearance: controller.transitAppearance, touch: touchAt(clock),
         heldTravel: controller.heldTravel, held: controller.isHeld, protrusion: controller.protrusion(),
         pose: controller.render(originX, originY)};
     },

@@ -55,6 +55,15 @@ position by up to13.5px. One shared animated result drives the material and both
 there are no duplicate springs or widget translations. Set `deformItemsWithBar = false` to retain
 fixed item drawing. Older presets default to false. This does not change generic card text.
 
+`GlassPullShape.Free` is the exception for a free-standing button, such as iOS 26's Phone search
+button: the body leaves its place with the finger (`pullFollow`, resisted by `pullLimit`), stretches
+along the pull and thins across it, and its content travels with it. After the lift it returns
+through `GlassMotion.FreeRelease` and its edge away from the pull holds at its resting position, so
+the overshoot lands as a squash against that edge (the width bulges 0.2 as much), then rebounds.
+`pullLiftShare` dims the press glow once the finger moves. Layout, hit targets and pointer
+coordinates still stay fixed; the backdrop is read at the button's layout position. Measured on
+IMG_6756 in display colours (seven presses: centre 2-3 px rms, size 3-5 px, brightness 8 levels).
+
 Pull targets meet smooth resistance before entering their springs, so extreme pointer travel
 does not accumulate a hidden return delay. Stretch and squeeze use the support widths of both axes.
 A circle can stretch diagonally. As the aspect ratio approaches 2:1, shear fades to zero;

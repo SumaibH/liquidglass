@@ -24,5 +24,8 @@ still sweeping toward Calls (22.288 s): the iOS bar is back at rest by 22.40 s a
 darkens on a throw's timing. The
 generator splices the held-reversal episode (18.7–22.4 s) from `reversal-script.txt`, rebuilt from the episode's turning points because the ink centroid snaps
 between tabs mid-sweep. They hold only finger times and x positions; **the timing is inferred, not recorded**.
+On 15 October the rightward moves of the reversal's first second (18.7-19.6 s) were moved 20 ms
+earlier, so the replayed lens reaches each icon when iOS's does (scored on the times the selected
+ink first reaches each icon).
 Script format: `select <tab>`, then `<ms> down|move|up <x> <y>` in scene pixels at 3 px/pt, and
 `end <ms>`.

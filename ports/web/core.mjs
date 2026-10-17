@@ -77,3 +77,34 @@ export function calmDeformation(width, height, dx, dy, pressAmount, radius,
   const mean=(xx+yy)/2, eigenRadius=Math.hypot((xx-yy)/2,xy);
   return { pressX,pressY,along:mean+eigenRadius,across:mean-eigenRadius,angle:Math.atan2(2*xy,xx-yy)/2 };
 }
+
+/**
+ * Compose's animation specs evaluated in closed form, for the free button: a spring is the damped
+ * oscillator `spring(dampingRatio, stiffness)` defines (unit mass), a tween is
+ * `tween(durationMillis, FastOutSlowInEasing)`. Time in seconds from the animation's start.
+ */
+export function springAt(from, velocity, target, seconds, dampingRatio, stiffness) {
+  const x0 = from - target, w = Math.sqrt(stiffness), z = dampingRatio, t = Math.max(0, seconds);
+  if (z < 1) {
+    const wd = w * Math.sqrt(1 - z * z), e = Math.exp(-z * w * t), a = x0, b = (velocity + z * w * x0) / wd;
+    const c = Math.cos(wd * t), s = Math.sin(wd * t);
+    return {value: target + e * (a * c + b * s), velocity: e * ((b * wd - z * w * a) * c - (a * wd + z * w * b) * s)};
+  }
+  if (z === 1) {
+    const e = Math.exp(-w * t), b = velocity + w * x0;
+    return {value: target + (x0 + b * t) * e, velocity: (b - w * (x0 + b * t)) * e};
+  }
+  const q = w * Math.sqrt(z * z - 1), r1 = -z * w + q, r2 = -z * w - q;
+  const c2 = (velocity - r1 * x0) / (r2 - r1), c1 = x0 - c2;
+  return {value: target + c1 * Math.exp(r1 * t) + c2 * Math.exp(r2 * t),
+    velocity: c1 * r1 * Math.exp(r1 * t) + c2 * r2 * Math.exp(r2 * t)};
+}
+
+/** Compose's FastOutSlowInEasing, cubic-bezier(0.4, 0, 0.2, 1). */
+export function fastOutSlowIn(u) {
+  if (u <= 0 || u >= 1) return Math.max(0, Math.min(1, u));
+  const bez = (t, p1, p2) => 3 * (1 - t) * (1 - t) * t * p1 + 3 * (1 - t) * t * t * p2 + t * t * t;
+  let lo = 0, hi = 1, t = u;
+  for (let i = 0; i < 40; i++) { t = (lo + hi) / 2; if (bez(t, .4, .2) < u) lo = t; else hi = t; }
+  return bez(t, 0, 1);
+}

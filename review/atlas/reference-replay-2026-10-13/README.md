@@ -422,6 +422,436 @@ one endpoint pass; the ports draw the ink over the material.
 `.local/comparisons/2026-10-14-pass11/v1-bar.mp4` and `v2-bar.mp4`: iOS / before (32bf46c) /
 after, the bar region at full resolution, 60 fps.
 
+### Pass 12: held ink, outline, moving shape, tap fold, throw timing, scene (14 October)
+
+The owner compared the pass 11 videos with the recordings and listed six differences. Each was
+measured on the private recordings, changed, and re-measured on full replays of both videos.
+
+**Held ink.** iOS's selected icon under a still held lens sits where the bar's 1.05 press puts it:
+203.6 px at 1.8 s, 203.2 at 5.75 s (the unselected Keypad icon 755.7, ours 755.1). Ours sat at
+166.5. Two causes: the selected ink followed the bar's reach toward the finger
+(`GlassMaterialDrawing.contentPull`, now the press and pull without the reach), and it was scaled
+about the selector node's origin instead of the bar's centre, because the foreground modifier draws
+in the bar-sized child's frame (`GlassTabBar.kt`, the endpoint ink's `glassMaterialForeground`).
+Now 203.1 and 203.8 px.
+
+![Held still lens at 1.8 s, main and pass 12 (our renders only, desktop Direct3D replay, deterministic 60 fps, inferred input)](pass12-held.png)
+
+**Outline.** iOS's held lens outline is a grey line of about 65 levels over the bar (83) and over
+the black page alike. Ours was a white ring (top rim 102, bottom 136) from the additive bevel lobe
+and the inward glow. New opt-in `GlassStyle.heldEdgeTone` draws the outermost pixels as that grey;
+Calm's lens uses 65/255 with specular .08 (was .26) and `heldGlow` 0 (was 2). Column profile
+through the still lens: top rim 86 then 66 (iOS 85, 66). The bottom edge is still brighter (100
+against 83), and iOS's soft halo outside the lens over the black page (about 35-50 levels) is not
+reproduced.
+
+**Moving shape.** At the 19.0 s reversal (finger about 15 slots/s) iOS's lens is 458 x 145 px on a
+192 px bar, 0.755 of its height, with continuously curved ends; ours was a full-height capsule,
+375 x 182. New opt-in `GlassPoseSpec.heldTravelStrain`: a held lens travelling fast widens by e^u
+and flattens by e^-u (constant area), built at `heldTravelStrainOmega` so a sustained drag strains
+and a quick flick releases nearly unstrained. The two-edge landing reads the strained width, so it
+stays continuous. Calm: strain .5 at 10/s, held reference speed 8 slots/s (was 12), squeeze .52
+(was .47): 427 x 144 at 19.0 s (port probe, 186 px bar; iOS scaled to it 444 x 140). Costs: the
+wall-landing scores move from 5.3 / 4.3 to 5.7 / 5.1 px rms (right / left); the first two landing
+width series from 3.1 / 6.7 to 3.1 / 6.1. The travelling lens's bounding box is 0.80 of the still
+lens's against iOS's 0.91. The earlier spine-only attempt (elongation .46) widened it but doubled
+the landing error and was dropped. The previous Calm is `GlassPoseSpec.CalmWallLanding`.
+
+![The held reversal at 18.90-19.05 s, main and pass 12 (our renders only, same replay)](pass12-moving.png)
+
+**Tap fold.** On a tap iOS's lens bends what lies under its straight top and bottom too, not only
+its caps: the Keypad dots stretch up the top rim and the label bends along the bottom as it lands
+(video1 0.95-1.03 s). Ours folded the caps only (`foldAtCorners` 1), so icons near the rim stayed
+clean. The transit fold now runs at a quarter strength along the runs (`foldAtCorners` .75;
+.5 folded the label away, .85 left the runs nearly clean). Tap timing itself already matched (both
+arrive 1.00-1.03 s; the pill darkens over 1.10-1.25 s in both).
+
+![A tap from Calls to Keypad at 0.97-1.02 s, main and pass 12 (our renders only, same replay)](pass12-tap.png)
+
+**Throw timing.** Mid-throw the lens trailed iOS by about one frame (2.157 s: lens centre 265 px
+against iOS's 345). The controller was not the cause: the ported controller, driven by the same
+input, was on time. The Compose frame loop sleeps during a still hold; the move that woke it had
+already advanced the simulation to its own timestamp, but the first frame after waking added no
+time, so the whole throw ran 1.5 frames behind. A woken loop now presents its frame's own time
+(the gap from the waking input, used only when the two clocks are 0-50 ms apart; travel-only
+specs). Lens centre at 2.15 s 312 px (port controller 302), 2.167 s 418 (428). Taps move by under
+a fifth of a frame. A faster grasp (220/s) was tried first; it overshot and worsened landings.
+
+![The first throw at 2.15-2.20 s, main and pass 12 (our renders only, same replay)](pass12-throw.png)
+
+**Scene.** `PhoneScene`'s page uses neutral placeholder names and iOS-like call-log typography
+(17 sp names, 16 sp detail rows, handset and person glyphs).
+
+**For owner review (local only, contains the private recordings).**
+`.local/comparisons/2026-10-14-pass12/v1.mp4` and `v2.mp4`: iOS / main (8cb49ec) / pass 12.
+
+### Pass 13: the pass 12 residuals (15 October)
+
+**Where the held lens sits.** Brightened, iOS's held lens at Calls shows a dark band 23 px wide
+inside its left cap (outer edge 30, bar material from 52); ours showed bar material out to the
+lens edge, a lighter crescent beyond the lens's own outline. Hiding our lens showed why: our bar
+grew 37 px on the finger side (63 to 26) against 22-26 on the far side, which matches iOS's far side
+(+24-28). Inverting the held map at iOS's cap puts its bar end about 39, an even 1.05 press. iOS's
+lens is centred on the pressed tab (203 px, where its icon is), not on the finger (ours 219), so it
+is the lens, not the bar, that extends toward the finger. Now the drawn body follows the bar's
+pressed content (`GlassPoseHandle.barShift`, from the bar's own drawing transform; navigation,
+touch and selection stay in the controller's frame) and Calm's bar has no reach (`pressReach` 0,
+was .03). The cap reads 33 / dark to 48 / bar from 51-54 against iOS's 30 / 33-48 / 51-54. The
+neck to the search button is unchanged (medians within half a frame, 21 of 22 within 67 ms).
+
+**The band glow.** Between the lens edge and the bar iOS glows inward over the black page: 36, 22,
+20, 17, 15, 13, 12, 10, 9 at the top, the same at the bottom, but a travelling lens adds nothing
+over its bar. Pass 12 turned the glow off because, added over the bar, it drew bright lines on a
+moving lens. New opt-in `GlassStyle.heldGlowFloor` lays it as a floor instead: Calm glow 1.5 over
+5 dp gives 26, 25, 22, 19, 17, 15, 14, 12, 11, 10, and the 19.0 s lens has no inner lines. The edge
+line is two pixels wide (bottom 54 against iOS's 76; 38 before).
+
+**The page through the lens.** Text under the held lens read p95/p99 108/112 against iOS's
+84/109: the lens adds its raw page share on top of a bar that already shows the page. Re-scored,
+`rawShare` .05 (was .28) reads 82/105.
+
+**The travelling lens.** Measured at one bar size, our still held lens is 2-4 % larger than
+iOS's, so pass 12's shortfall at 19.0 s was width alone. Strain .6 with the squeeze back at its
+earlier .47 gives 444 x 145 (iOS about 444 x 141 at this bar), landing series 2.8 / 5.2 px rms
+(pass 12 3.1 / 6.1) and wall landings 6.0 / 5.4 (5.7 / 5.1).
+
+**Timing over the whole video.** The selected-ink centroid of every moving frame, ours against
+iOS's at its own timestamps (`.local/sxs/inklag.py`): pass 13 is best aligned 4 ms late (main
+8cb49ec: 20 ms late).
+
+![Held still lens at 1.8 s, pass 12 and pass 13, levels x2.4 (our renders only, desktop Direct3D replay, deterministic 60 fps, inferred input)](pass13-held.png)
+
+![The reversal at 18.90 and 19.00 s, pass 12 and pass 13 (our renders only, same replay)](pass13-moving.png)
+
+**For owner review (local only).** `.local/comparisons/2026-10-15-pass13/v1.mp4` and `v2.mp4`:
+iOS / main (8cb49ec) / pass 13.
+
+### Pass 14: the pass 13 residuals (15 October)
+
+**The page under the held lens.** iOS's held lens adds about the same to whatever it shows: the
+plain bar 45 to 64, the page avatar under the bar 62 to 81. Ours added 12 to the plain bar and 35
+to the avatar. Not the raw page share, the lens's magnification, its blur, its legibility or the
+bar's fingertip illumination (each tested: under 5 levels); the bar it looks through already shows
+the avatar at full strength, and a clear lens passes it on. iOS's lens pulls what it shows toward a
+mid grey. Calm's lens now carries a grey veil (tint .55 of 0x3A) with the raw page share at .22 so
+text keeps its edge: avatar 82.5 against 80, text p95/p99 80/105 against 84/109, plain interior
+62 against 64. Read at the lens pixel, the bar's tint mask also tinted the black band the lens
+pulls in beyond the bar (24 against 15); a held lens now reads the mask where its refracted view
+comes from (15.4 against 15.3-15.8). Other profiles keep the pixel's own mask.
+
+**The reversal.** Pass 13's "65 px ahead at 19.0 s" was read from a crop by eye. Measured as the
+times the lens's selected ink first reaches each icon (`.local/sxs/revevents.py`; the ink shows
+only inside the lens), the episode was within a frame going left (median 3 ms early) but going
+right in its first second 13-30 ms late. The finger there is inferred from turning points; its
+rightward moves in 18.7-19.6 s now start 20 ms earlier (`reversal-script.txt`). Over the whole
+episode the lens reaches each icon a mean 2 ms after iOS's going right (10 before) and 3 ms going
+left. Landings and the 19.0 s shape are unchanged (wall scores 6.0 / 5.4 px).
+
+![Held still lens at 1.8 s, pass 13 and pass 14, levels x2.4 (our renders only, desktop Direct3D replay, deterministic 60 fps, inferred input)](pass14-held.png)
+
+**For owner review (local only).** `.local/comparisons/2026-10-15-pass14/v1.mp4` and `v2.mp4`.
+
+### Passes 15 and 16: display colours and five recordings (15 October)
+
+**Every level above this section was read in the wrong colours.** The owner's recordings are HDR10
+(HEVC Main 10, PQ, BT.2020); passes 1-14 decoded them as if they were sRGB, which lifts every dark
+level (the bar read 45 where a display shows 33). The geometry and timing results do not depend on
+it and were re-scored on the correct decode (research/README.md II.4, within a level on the
+calibration target's grey ramp): wall landings 5.95 / 4.40 px rms, reversal icon crossings +2 /
++6 ms, whole-video ink timing +4 ms, neck median 0 ms. Levels were re-fitted in display colours over
+five Phone-bar recordings (docs/1, docs/2 and three in the private dataset), with the page palette
+of our comparison scene re-measured the same way.
+
+**Presses read from the bar.** The scripts for the three new recordings came first from the
+selected ink, which misses a hold on the middle tab and splits a long held drag into separate
+throws (one recording's last 12 s is a single touch dragged across all three tabs). iOS's whole bar
+lifts while touched, within two frames of the press, so the touches are read from it (rows above
+the icons; the lift from the bar's far end returning, the rule the docs/2 script used for holds).
+On docs/2 this reproduces the checked script's downs (21 of 23 within 20 ms) and lifts (16 of 23,
+median 0); on docs/1 its taps (32 of 37). A tap and a flick cannot be told apart by timing, so the
+owner's answer decides which short touches are taps.
+
+**Levels, ours against iOS (display grey levels, median over the moments):**
+
+| | iOS | pass 14 | pass 15 | pass 16 |
+| :-- | --: | --: | --: | --: |
+| Bar at rest (docs/1, docs/2) | 32-33 | 45-46 | 32-33 | 32-33 |
+| Resting pill, docs/1 (black) / docs/2 (Calls page) | 10 / 15 | 26 / 27 | 15 / 15 | 14 / 14 |
+| Bar held (docs/2, LOLL8185) | 45-47 | 54 (docs/2) | 42-43 | 46 |
+| Held lens over a black page (LOLL8185) | 48 | not scored | 55 | 48 |
+| Tap's travelling pill at +100 ms (docs/1, 37 taps) | 53 | 54 | 42 | 51 |
+
+Pass 15 is the display-colour re-fit (bar lift 32/255, pill black .55, held lift 10/255); pass 16
+adds the touch lift, held lift 13/255, lens tint 0x2B and pill black .58.
+
+The tap pill needed a behaviour, not a level: iOS's bar lifts for any touch, a tap included (+13
+at the tab a tap never visits, back by 350 ms), and the travelling pill shows the bar through it.
+`GlassTabBarStyle.touchLift` (off by default, on in dark `Calm()`) lifts ours the same way; its
+pass-15 plateau was 38-43. The earlier calibration is `GlassTabBarStyle.CalmRecordedSpace()`.
+
+**The comparison scene.** Measured on the decoded recordings, iOS's tab labels are 11% wider than
+ours at the same height and lighter, and its keypad grid 10% wider: labels are now Medium with
+0.7 sp spacing and the grid 72 x 69 px like iOS's. The held lens's ink magnification already matched
+(x1.17 against x1.18): the earlier "magnified less" was the glyph size.
+
+**Generalisation.** Holds and drags on the two new recordings that have them track iOS's selected
+ink at 11.0 and 9.2 px rms (best shift -8 ms), against the docs/2 baseline's 31.5 px with throws.
+
+![Rest, held and tapped selector, pass 14 and pass 16 (our renders only, desktop Direct3D replay, deterministic 60 fps, inferred input; pass 14 predates the label and keypad glyph change)](pass16-levels.png)
+
+### Pass 17: the search button (15 October)
+
+iOS's Phone search button is its own glass, and IMG_6756 presses and pulls it seven times. Measured
+per frame in display colours: pressed, it grows 1.27 times and lightens from 32 to 95, joining the bar
+through a neck; pulled, it leaves its place with the finger (up to 114 px), 297-303 px tall and
+158-166 wide, dimming to 70; released, it springs back, and its edge away from the pull stays at its
+resting position while the near edge overshoots 32 px, so it lands squashed (154 x 182 px against a
+186 px rest) and rebounds. Ours was passive.
+
+The pull law was already in the library (`GlassInteraction.Pullable`, fitted on this button in
+September) but anchored to the layout, as generic controls are. `GlassPullShape.Free` keeps the
+measured travel and carries the glyph with the body; the landing floor gives the squash; the release
+spring is re-fitted on the leading edge (the centroid fit reads more damped because the floor halves
+the centroid's overshoot); the glow settles to 0.7 once dragged. The bar follows the button through
+`GlassAccessoryLink`, read while drawing: read during composition, its fused copy of the button
+trailed by a frame and showed as a ghost at landing speed. The finger is inferred from the body's
+travel through the modifier's own resistance (`.local/sxs/searchscript.py`).
+
+| Seven presses, ours against iOS (rms) | passive (pass 16) | pass 17 |
+| :-- | --: | --: |
+| Centre x / y | 14.3 / 41.1 px | 1.9 / 3.0 px |
+| Height / half-width | 6.4 / 4.4 px | 4.3 / 2.8 px |
+| Brightness | 19.1 levels | 8.0 levels |
+
+The rise peaks 106-109 px against iOS's 110-114; sideways pulls squash 8 px less across than
+iOS's. Ported to CanvasKit (`createFreeButton`) and .NET (`FreeButton`) on 17 October, checked frame by
+frame against a Kotlin-exported trajectory (worst 0.009 px, 0.0018); the bar's outline link is not ported.
+
+![The search button at rest, pressed, pulled, landing and pulled toward the bar, pass 17 (our renders only, desktop Direct3D replay, deterministic 60 fps, inferred input)](pass17-search.png)
+
+### Pass 18: what the glass shows of the page (15 October)
+
+Over a black page a tint and a clear glass with an offset read the same; over content they do not.
+iOS's resting pill passes the page under it (its 75th percentile 51 over docs/2's Calls page, ours
+29), and its held lens follows held = 41-46 + 1.33-1.48 x the same pixel at rest (three docs/2 holds;
+`.local/sxs/lensgain.py`). Fitted by replay on a content page and a black page together
+(`pillfit.sh`): the resting pill is the bar less 22/255 with no tint, which is the inset's original
+measured law ("0.857 of the bar minus 17/255", read on the sRGB-decoded recordings); the held lens is
+the bar plus 0.30 of the raw page less 3/255.
+
+| docs/2 p10 / p50 / p75 (black page) | iOS | pass 17 | pass 18 |
+| :-- | --: | --: | --: |
+| Resting pill | 15 / 25 / 51 (10) | 14 / 21 / 29 (13) | 12 / 29 / 47 (10) |
+| Held lens | 62 / 80 / 135 (48 / 49) | 50 / 60 / 87 (48 / 48) | 52 / 75 / 135 (48 / 49) |
+
+**Text under the bar.** iOS's bar shows the page's text as one soft, legible copy. Ours drew ghost
+copies of every glyph about 16 and 34 px to either side (the fine term is a high-pass along the bar,
+its average taken from five taps along it) and turned the rest into grain (its scatter is rotated per
+pixel). `GlassStyle.softDetail` draws the detail as the wide kernel's tone plus a share of an unrotated
+fine blur: horizontal detail over the text 2.72 against iOS's 2.77 (4.94 before). On dark Calm's bar
+and lens. The along-bar high-pass was measured on screenshots of the Photos toolbar over the calibration
+target (display colours, so the decode error did not touch it) and remains the default; see the check
+below for what that comparison says about the tab bar.
+
+With both, over all five recordings: rest bar and pill 0, held bar +0.5, held lens over a black page
++1, a tap's travelling pill 47-50 against iOS's 48-53. Still open: iOS's held lens adds a milky haze
+over dark parts near content (docs/2's lens p10 52 against 62).
+
+![The text under the bar and the held lens over content, pass 17 and pass 18 (our renders only, desktop Direct3D replay, deterministic 60 fps, inferred input)](pass18-page.png)
+
+### Checked against the calibration target (17 October)
+
+The in-app dark law of the record (III.2-III.3) was measured on screenshots of the Photos toolbar
+over the calibration target, where every page pixel is known and the decode error never applied.
+`GlassCalibrationRenderTest.renderTheCalmBarOverTheDarkTarget` (opt-in, `-Pliquidglass.calibration=`)
+renders dark Calm's bar in the toolbar capsule's box over the same target, for the C1a stills:
+
+| Capsule interior over the dark target | iOS, Tint 50 (C1a) | Calm, pass 18 | `CalmRecordedSpace()` |
+| :-- | --: | --: | --: |
+| Mean / standard deviation | 102.6 / 20.6 | 102.2 / 20.8 | 112.6 / 20.6 |
+| p5 / p50 / p95 | 67 / 106 / 133 | 69 / 103 / 131 | 77 / 116 / 143 |
+
+The re-fit made on the videos in display colours lands on the screenshot law at the default tint,
+independently: iOS's in-app dark glass is linear in its page (no compression), and the earlier
+calibration was 10 levels too light. The App Store bar's gap over its card (pass 18 notes) is then
+most likely our page, not the material: the law reproduces iOS's 68 if the blurred page under its
+bar averages about 60, which iOS's large headline would give.
+
+The detail is the open part. Over the target's stripes the measured along-bar high-pass reproduces
+the toolbar row by row (3.0 levels rms), and the soft copy dark Calm now uses does not (7.9; 14 at the
+rows a boundary crosses). On the Phone bar's video the soft copy matches the text under the bar and
+the high-pass draws ghost copies. A smooth along-bar Gaussian (no discrete taps) fixes the text but
+not the stripes (7.0-8.2): the stripes need the high-pass's side lobes, and those lobes are what
+draw the copies. The toolbar is its own role in the record; whether the Phone tab bar shares its
+kernel cannot be settled from these two sources. Kept: the soft copy on dark Calm (the role
+measured), the high-pass as the default.
+
+### The App Store bar (17 October, in progress)
+
+A second bar from the same system: the App Store's five tabs in dark appearance (LOLL8185 36-44 s, a
+hold and slow drag from Today to Search and back over an editorial card). Replayed with the sample's
+`AppStoreScene`, from a touch-driven script (`.local/sxs/genas.py`): the lens's path follows iOS's at
+10.1 px rms with the same -8 ms best shift as the Phone recordings, so the pose dynamics carry to a
+five-tab bar unchanged. Two findings for the material, not yet changed:
+
+- The touch detector read a page scroll as a press: a card scrolled in under the untouched bar at
+  38.0 s and lifted its level. A touch now needs the bar's end to move out 6 px as well (the held bar
+  grows); the card's edge alone moves it 3.
+- Over the card, iOS's bar reads 68 at its median against our 54, and over a black page both read 32:
+  iOS's bar is close to clear glass plus 32/255 for dark content, as its pill and lens are (pass 18),
+  but it compresses bright content (blurred text 45-79 where a clear bar gives 64-110). A tint cannot
+  do both, nor can a lower fine share (the excess is in the wide tone). Next: fit a compressive response
+  on iOS against itself, before and after the card scrolls in (37.9 against 38.5 s).
+
+### The App Store bar is clearer glass (17 October)
+
+With the headline matched where it is visible (the third line 115-471 px against iOS's 121-491), the
+App Store bar over its plain card reads 57 against 32 over black: it passes about 0.9 of the page. The
+Phone bar from the same device and session (JGEY2190 at 8.25 s, over a 77-level avatar) reads 87
+against 42 over black at that moment: 0.58, the regular tinted glass dark Calm has and the Photos
+screenshots measured. So the App Store's tab bar is a clearer glass, a per-app difference, not a
+flaw in the law. Its exact response is not fitted: a clear bar gets the plain card (60) but carries
+the text under it too brightly (p50 / p75 73 / 115 against 68 / 79), wider blur or less detail does
+not close it (77-83 / 105-113), and the page under iOS's bar is not visible for its first two lines.
+Dark Calm keeps the Phone bar's glass.
+
+**The held lens's haze is not a wide tone.** Adding a wide kernel to the lens (fine share 0.6 / 0.4,
+10 / 16 dp) lowers its middle and top on docs/2 (p50 72 / 67, p75 120 / 101) and leaves the dark end
+(50-51 against iOS's 62). The haze sits in the lens's top band, which pulls the page from above the
+bar; it belongs to the held map, not to a parameter.
+
+### The held lens without the raw page (17 October)
+
+Pass 18 gave dark Calm's held lens 0.30 of the raw page, to reach docs/2's percentiles over the
+whole lens. Scored by region (docs/2 at 5.75 s, tab 0, and IMG_6756's black keypad page at
+35.47 s), that share drew the page's text under the lens sharp and white: p90 155 against iOS's
+102. iOS's lens veils that text as its bar does. Five regions, iOS / ours:
+
+| | top band | bottom band | text p90 | text p50 | black interior | rms |
+| --- | --- | --- | --- | --- | --- | --- |
+| raw share 0.30 (pass 18) | 64 / 53 | 75 / 64 | 102 / 155 | 82 / 89 | 47 / 48 | 24.9 |
+| raw share 0 (now) | 64 / 52 | 75 / 63 | 102 / 91 | 82 / 75 | 47 / 48 | 9.7 |
+
+Dark Calm's lens then had no raw share (`rawShare` 0). A black page is unchanged. The bands near the
+rims still read 11-12 below iOS's over content. An additive wide glow would also light them over a
+black page, where they already match, and a blur does not change them.
+
+### The raw page returns, blurred (17 October)
+
+What iOS's lens adds over ours is page-shaped: about 10 levels wherever the page has content (bands
++12, text +7 to +11) and nothing over black. That is a share of the raw page, blurred so that it
+carries no edges. `GlassStyle.rawBlur` blurs the share `rawShare` adds. Fitted by replay over five
+candidates (share / blur dp), same regions, iOS / ours:
+
+| | top band | bottom band | text p90 | text p50 | black interior | rms |
+| --- | --- | --- | --- | --- | --- | --- |
+| no share (earlier today) | 64 / 52 | 75 / 63 | 102 / 91 | 82 / 75 | 47 / 48 | 9.7 |
+| 0.12 / 6 | 64 / 52 | 75 / 65 | 102 / 101 | 82 / 85 | 47 / 48 | 7.1 |
+| 0.18 / 6 | 64 / 52 | 75 / 66 | 102 / 106 | 82 / 89 | 47 / 48 | 7.6 |
+| 0.18 / 12 | 64 / 52 | 75 / 68 | 102 / 100 | 82 / 85 | 47 / 48 | 6.5 |
+| 0.15 / 16 | 64 / 52 | 75 / 68 | 102 / 96 | 82 / 81 | 47 / 48 | 6.9 |
+| **0.22 / 20 (now)** | 64 / 53 | 75 / 70 | 102 / 99 | 82 / 83 | 47 / 48 | **5.6** |
+
+Dark Calm's held lens adds 0.22 of the raw page blurred 20 dp. The top band does not move with any
+candidate: our page under the bar's upper half is black, so the share adds nothing there, while
+iOS's band near its lens reads 9-11 above the bar it sits in and the bar farther away matches ours
+(47 / 47). That band is local to iOS's lens and stays a residual of the held map, with the lens
+standing ~8 px higher on iOS.
+
+![The held lens with and without the blurred raw share, over content and over black](lens-raw-blur.png)
+
+*Our renders only: the Phone comparison scene, desktop GPU replay at 3x, branch `claude/parity-2`
+after 722cb4d, inferred input (docs/2 at 5.75 s, IMG_6756's keypad hold at 35.47 s).*
+
+### WhatsApp's slots (17 October)
+
+WhatsApp's dark five-tab bar (JGEY2190 50-74 s, the same device as the App Store bar, 3 px/pt) is
+348 x 62 pt on the Phone bar's row. Its tabs are not equal shares. The tab centres are 193 / 370 /
+584.5 / 799.25 / 976 px, symmetric about the bar's centre, 214.6 px apart inside and 177 px at the
+ends. The resting pill is 78 pt wide and sits 4 pt inside the bar's end when an end tab is selected.
+The labels are 119 / 69 / 190 / 81 / 51 px wide. Two rules were scored against the centres:
+
+- Equal slots of the inner spacing, 71.5 pt, centred in the bar, with an end tab moved in until its
+  pill fits 4 pt inside the bar: every centre within 2 px. The inner spacing is the widest item,
+  "Communities" at 63.3 pt, plus 8 pt. That is a reading of one bar, not a law.
+- Slots of each item's width plus an equal gap: up to 13 px off ("Chats" and "You").
+
+The App Store bar fits the first rule with 64 pt slots and nothing closed up: centres 201 / 393 /
+585 / 777 / 969 against the measured 200 / 393 / 585 / 777 / 969. `GlassTabBarStyle.slotWidth`
+implements the first rule. It is opt-in, and every preset keeps its shared-out slots. The new
+sample `WhatsAppScene` uses it with neutral placeholders (a plain disc for the profile tab, a
+settings list behind the bar).
+
+At rest, our label runs land within 1.5 px of iOS's, and their widths within 3 px. In the replay,
+a tap on the first tab lands at 129 px from the bar's left (iOS 130). A drag from the first tab to
+the last steps through every index and lands at 915 (iOS 913). Selected ink stays white over the
+dark pill, as on the recording.
+
+Over the same grey settings card (23), iOS's bar reads 54 and ours 46. Its pill reads 30 and ours
+25. This is the clearer bar the App Store showed. It is recorded and not fitted: dark Calm keeps
+the Phone bar's glass.
+
+![Three resting selections with iOS's tab centres](whatsapp-slots.png)
+
+*Our renders only: `WhatsAppScene`, desktop GPU replay at 3x, branch `claude/parity-2` after
+f94d518. Yellow ticks are iOS's measured tab centres, blue ticks where equal shares inside a 6 dp
+padding would put them.*
+
+### The clearer bar, fitted (17 October)
+
+WhatsApp's bar over three pages, in display colours at rest (JGEY2190: the chats page, 10, at
+59.5 / 64 / 67 s; the settings card, 23, at 58 / 65.5 s) and the App Store's over black (LOLL8185
+74.5 s): iOS's bar reads 43 over the chats page, 54 over the card and 32 over black, and its resting
+pill 19 and 30. That is about 0.9 of the page plus the Phone bar's 32/255 lift; the Phone bar passes
+0.59. The pill is the bar less 22/255 here too, as on the Phone bar. `GlassTabBarStyle.CalmClear()`
+is dark Calm with the bar black at 0.10 instead of 0.41, fitted over the four page levels (0, 10, 23
+and the App Store card's 28 against 32 / 43 / 54 / 57). Scored by replay (rest frames, our scenes):
+
+| At rest | iOS | `CalmClear()` | `Calm()` |
+| :-- | --: | --: | --: |
+| WhatsApp bar / pill over the grey card | 54 / 30 | 53 / 31 | 46 / 24 |
+| WhatsApp bar / pill over the bare page (iOS: chats page, with text) | 43 / 19 | 41 / 19 | 38 / 16 |
+| App Store plain bar, four gaps between tabs (38.5 / 43.9 s) | 67 / 65 / 64 / 59 | 66 / 64 / 63 / 58 | 54 / 53 / 52 / 49 |
+
+Text under the App Store bar stays brighter in ours (band p75 107 against 80): iOS compresses bright
+content under that bar, which no tint reproduces (pass 18 notes). Dark `Calm()` is unchanged; the
+WhatsApp and App Store scenes default to `CalmClear()`.
+
+![Calm and CalmClear over the WhatsApp and App Store scenes](clear-bar.png)
+
+*Our renders only: `WhatsAppScene` and `AppStoreScene`, desktop GPU replay at 3x, branch
+`claude/parity-2` after 722cb4d. The iOS levels are measurements on the owner's recordings.*
+
+### WhatsApp's motion (17 October)
+
+WhatsApp's selected ink stays white, so the blue-ink tracker of the Phone and App Store bars does not
+apply. A selected glyph fills, though, and every glyph under the held lens fills (as `lensInkAll`
+draws): `.local/sxs/trackwa.py` reads the selection as the centroid of white fill in the icon band,
+each column weighted by how filled it is against that column's own selected fill, so the photo tab
+(a ring only) counts as much as a filled glyph. Each tab's resting centroid maps to its centre.
+Touches come from the bar: WhatsApp changes page with its tab, so a touch is the bar's level jumping
+(+4 within two frames) with its ends growing within ten frames (`genwa.py`). Fourteen touches in
+JGEY2190 49.8-67 s: two taps, three quick drags and nine throws.
+
+The finger is inferred, and throws needed one more rule. While iOS's lens rests on a tab its finger
+keeps going, so a finger led by the lens is nearly still at the lift and never flings. Where iOS
+settles past the lens's tab at the lift, the inferred finger leaves the tab before at 1.5 times the
+fling speed over the last 100 ms (Compose fits the lift velocity over 100 ms); otherwise it stands
+on its tab for those 100 ms. A touch under 0.2 s that settles on another tab is a tap there. The
+landing tabs of the throws therefore agree by construction. What is scored is the path and the
+timing, read by the same tracker on our replay (`cmpwa.py`; `CalmClear()` on `WhatsAppScene`):
+
+| | |
+| :-- | :-- |
+| Landing tabs | 14 / 14 (9 throws inferred from iOS's landing) |
+| Settling after the lift, ours − iOS | median −21 ms, p25 / p75 −31 / +75 ms |
+| Selection path | median 3 px, p75 59 px, p90 140 px; best shift −42 ms |
+
+The large errors are in throws' flights: ours reaches the far tab about 40 ms before iOS's tracker
+shows it, which is within what the inferred lift (one to three frames) and WhatsApp's glyph-fill
+cross-fade can account for. The motion model is unchanged: the pose dynamics fitted on the Phone
+bar carry to WhatsApp's five-tab bar on set slots.
+
 ### Re-reading the landing evidence
 
 The removed impact model was calibrated to one frame, video 2 at 2.5567 s ("frame082": width
@@ -432,7 +862,22 @@ the impact. The narrowing itself is real and is listed below.
 
 ## Remaining differences
 
-- Wall landings (pass 10): rms 5.5 px right / 4.1 px left; the 9.9 s landing passes its rest by
+- Pass 16 (display colours): a held lens over page content: iOS's brightens what it shows (docs/2:
+  88 against our 61 over the avatar); no tint or raw page share reproduces it (fits by replay). The
+  resting pill reads 3 above iOS's on black pages. iOS's bar lights 33 ms before a tap's ink
+  leaves; our inferred tap presses 16 ms before (finger timing).
+- Held lens over content (17 October, blurred raw share 0.22 / 20 dp): text and the bottom band
+  within 1-5 of iOS's, black unchanged; the top band near the rim reads 11 below iOS's (53 against
+  64), local to iOS's lens, which also stands ~8 px higher.
+- WhatsApp motion (17 October): throws' flights reach the far tab ~40 ms before iOS's tracker shows
+  them (p90 140 px); input is inferred and the fill cross-fade lags the tracker.
+- App Store bar: text under it reads brighter in ours (p75 107 against 80); iOS compresses bright
+  content under that bar.
+- Search button (pass 17): the rise peaks 3-6 px short; sideways pulls squash 8 px less across;
+  brightness 8 levels rms. The ports have the free pull, not the bar's outline link.
+- Pass 14's level residuals (58 against 67, 62 against 64) were read on the sRGB-decoded recordings
+  and are superseded above.
+- Wall landings (pass 13): rms 6.0 px right / 5.4 px left (pass 10: 5.5 / 4.1); the 9.9 s landing passes its rest by
   36.5 px against 41; the left width series' first frames narrow up to 11.2 px less; the 28.66 s
   landing is an input artefact (source frame gap).
 - Cap swirl (pass 9, fringes pass 11): comparable petals and fringes, judged by eye.
@@ -440,7 +885,6 @@ the impact. The narrowing itself is real and is listed below.
 - The rebuilt reversal input and the full video 2 script (`v2-script.txt`) are inferred; the
   per-episode lag numbers above are relative to that inference.
 - Hold onset is aligned by construction (pass 7); it cannot be tested from these recordings.
-- Selected ink inside a moving lens is magnified less than iOS.
 - Page text under the bar is slightly more smeared than iOS.
 - Calibration conflict, unresolved: an earlier early-transit patch (video1 frame 6) reads the
   inset at 0.38 of the bar, against 0.57–0.69 at rest. Its test keeps the previous pill law.
@@ -449,6 +893,33 @@ the impact. The narrowing itself is real and is listed below.
 - Android was verified on an API 37 emulator through the AGSL path ([record](../android-emulator-2026-10-14/README.md)); no physical device was available.
 
 ## Verification
+
+- 17 October (slots, lens raw share): full library suite 395 cases, 0 failures, 27 optional showcase
+  skips (11 m 44 s, fixtures re-exported); CanvasKit 36/36, portable web 14/14, .NET checks 14/14.
+
+- Pass 18: full library suite 391 cases, 364 passed, 27 optional showcase skips, 0 failures (14 m);
+  `:desktop:desktopTest` and `:sample:assembleDebug` passed; CanvasKit port 35/35 and .NET checks 13/13
+  with the material fixture and shaders re-exported (`uSoftDetail`). All five recordings replayed
+  (IMG_6756 with its search episodes); owner videos `.local/comparisons/2026-10-15-pass18/` (local).
+- Pass 17: full library suite 391 cases, 364 passed, 27 optional showcase skips, 0 failures
+  (12 m); `:desktop:desktopTest` and `:sample:assembleDebug` passed. New: `GlassFreePullTest` (free
+  travel against anchored Adaptive, the landing floor, the stadium inside a stretched accessory).
+  Default shapes and presets unchanged. IMG_6756's first 34.4 s replayed on the desktop Direct3D path
+  (`.local/sxs/searchscore.py`); owner video `.local/comparisons/2026-10-15-pass16/IMG_6756-search.mp4`.
+- Passes 15-16: full library suite 388 cases, 361 passed, 27 optional showcase skips, 0 failures
+  (`:liquidglass:jvmTest --rerun`, 26 m); `:desktop:desktopTest` and `:sample:assembleDebug`
+  passed; CanvasKit port 35/35 (a new touch-lift check), .NET checks 13/13, with the Kotlin
+  fixtures and shaders re-exported. The Calm held-bar reference now checks `Calm()` against iOS's
+  45 in display colours and `CalmRecordedSpace()` against the earlier 53; a new test pins
+  `touchLift` to dark `Calm()` only. All five recordings replayed on the desktop Direct3D path
+  (`.local/sxs/levels.py`, `trackscore.py`, `tapprofile.py`); owner videos with the references in
+  display colours: `.local/comparisons/2026-10-15-pass16/` (local only).
+- Pass 12: full library suite 387 cases, 360 passed, 27 optional showcase skips, 0 failures
+  (`:liquidglass:jvmTest --rerun`, 12 m 23 s). CanvasKit port 34/34, .NET checks 13/13, with the
+  Kotlin fixtures (`selector-calm.json`, `selector-material.json`) and shaders re-exported. Two
+  IMG6735 envelope tests now target the retained `CalmWallLanding`; a new test replays video2's
+  reversal (`calmHeldTravelWidensAndFlattensLikeVideo2`). Both videos replayed on the desktop
+  Direct3D path; main (8cb49ec) replayed from a separate worktree for the before images.
 
 - Full library suite before the bar-fold change: 374 cases, 347 passed, 27 optional showcase
   skips, 0 failures (`:liquidglass:jvmTest --rerun`, 12 m 46 s).
@@ -464,7 +935,9 @@ the impact. The narrowing itself is real and is listed below.
 ## Files
 
 - `before-after.png`, `lens-edge.png`, `moving-lens.png`, `landing.png`, `cap-swirl.png`,
-  `landing-99.png`, `landing-left.png`, `drag-bar.png`, `swirl-gain.png`, `neck-timing.png`, `atlas-studio.mp4` —
+  `landing-99.png`, `landing-left.png`, `drag-bar.png`, `swirl-gain.png`, `neck-timing.png`,
+  `pass12-held.png`, `pass12-moving.png`, `pass12-tap.png`, `pass12-throw.png`, `pass13-held.png`,
+  `pass13-moving.png`, `pass14-held.png`, `atlas-studio.mp4` —
   public, our renders only.
 - Pass 9 scoring (local, reads the private recording's row dumps): `.local/sxs/wallscore.py`
   (right landings), `wallscorel.py` (left landings), `neck.py` (neck timing), `liftonset.py` and

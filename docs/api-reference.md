@@ -137,7 +137,8 @@ fun GlassTabBar(
     item: @Composable (index: Int, selected: Boolean) -> Unit,
 )
 
-class GlassTabBarAccessory(size: Dp, gap: Dp = 8.dp, fusion: Dp = 6.dp, yieldsToLens: Boolean = false)
+class GlassTabBarAccessory(size: Dp, gap: Dp = 8.dp, fusion: Dp = 6.dp, yieldsToLens: Boolean = false,
+    link: GlassAccessoryLink? = null)
 ```
 
 `trailingAccessory` describes a separate glass control beside the bar's trailing end (iOS 26
@@ -186,18 +187,34 @@ data class GlassTabBarStyle(
     val flingVelocity: Dp = 420.dp,
     val gel: Float = 0.06f, val gelReference: Dp = 1200.dp, val gelSpring: AnimationSpec<Float>,
     val pillWidth: Dp = Dp.Unspecified,
-    val heldScale: Float = 1f, val heldLift: Float = 0f, val selectedScale: Float = 1f,
+    val heldScale: Float = 1f, val heldLift: Float = 0f, val touchLift: Boolean = false,
+    val selectedScale: Float = 1f,
     val lensFuse: Dp = 0.dp,
     val selector: GlassSelectorSpec? = null,
     val barInteraction: GlassInteraction? = null,
     val deformItemsWithBar: Boolean = false,
     val tapTintFade: Float = 0f,
     val tapSelectedScale: Float = 1f,
+    val slotWidth: Dp = Dp.Unspecified,
 )
 ```
 
 `Dark` is the measured preset. `RestingInset` and `HeldLens` are the two materials the indicator
 morphs between, exposed so a host can start from them.
+`touchLift` applies `heldLift` for any touch, a tap included (rising within 50 ms of the press,
+falling over 260 ms after the lift), as iOS's bar lifts on every touch; off by default, on in dark
+`Calm()`. `CalmRecordedSpace()` is dark Calm as calibrated before 15 October, against recordings
+decoded as if they were sRGB. `CalmClear()` is dark Calm with the clearer bar of WhatsApp's and the
+App Store's iOS bars (black at 0.10 instead of 0.41 over the same lift; light appearance unchanged;
+[tab bar guide](tab-bar.md#a-clearer-bar)).
+
+`slotWidth` lays the tabs on equal slots of that width centred in the bar, instead of sharing the
+bar out inside `contentPadding`. Slots wider than the bar allows close up at the ends: an end tab
+moves in until its resting pill (`pillWidth`) sits `pillInset` inside the bar's end. The pill, the
+lens, hit targets, drag and the V3 body all follow these centres. Unspecified (the default) keeps
+the shared-out slots. Measured on iOS: WhatsApp's 348 pt bar uses 71.5 pt slots (its widest item
+plus 8 pt) with a 78 pt pill and 4 pt inset; the App Store's uses 64 pt
+([tab bar guide](tab-bar.md#tabs-on-set-slots)).
 
 #### `selector` — the deforming body
 
@@ -391,7 +408,7 @@ The V3 preset uses `1.dp`, an authored shoulder and recovery curve constrained b
 original Phone frames. It changes material darkening, not source or ink sharpness, and
 interpolates with the style during formation. Other presets retain zero.
 
-### `GlassProfile.Held`, `heldLens`, `rawShare`
+### `GlassProfile.Held`, `heldLens`, `rawShare`, `rawBlur`
 
 The third optical family, for the lens a finger raises on a tab bar (measured model, section
 2c). `GlassProfile.Held` with `heldLens = 0` is identity — no rest lens at the arcs, no fold —
@@ -400,7 +417,10 @@ seam hiding the content between the band and the interior; the modifier records 
 margin the outward sampling needs. A resting indicator and the lens it swells into both sit in
 this family so the morph never crosses into the fold. `rawShare` adds that share of the raw
 backdrop on top of the glass the element looks `through` (the measured lens: 0.11); it is
-ignored without `through`. `tintLift` may be negative when `liftAdaptivity` is 0 (the resting
+ignored without `through`. `rawBlur: Dp = 0.dp` blurs that raw backdrop before it is added: the
+glass then lifts over content by what the content around it holds and adds nothing over black,
+without drawing the content's edges a second time. Zero adds it sharp, as before; dark `Calm()`'s
+held lens uses 0.22 blurred 20 dp (17 October). `tintLift` may be negative when `liftAdaptivity` is 0 (the resting
 indicator is the bar's output at 0.857 minus 17/255).
 
 ### `GlassMaterial`
@@ -581,6 +601,8 @@ data class GlassInteraction(
     val pressReach: Float = 0f,
     val releaseStiffness: Float = 0f,
     val releaseDamping: Float = 1f,
+    val dragPressShare: Float = 1f,
+    val pullLiftShare: Float = 1f,
 ) {
     companion object {
         val Default = GlassInteraction()
@@ -784,6 +806,10 @@ advanced tab-bar/container integration. `glass` does not make a button clickable
 | `GlassResponse` | `Expressive` preserves historical timing; `Calm` selects slower critical press/pull springs. |
 | `GlassInteraction.response` | Timing parameter, default `Expressive`; existing positional source calls retain their meaning. |
 | `GlassInteraction.pullShape` | Appended parameter, default `GlassPullShape.Adaptive`. `AreaPreserving` couples bounded stretch/narrowing and a material-only directional bias for navigation, without the card size policy; press and layout stay separate. See [generic interaction](generic-interaction.md). |
+| `GlassStyle.softDetail` | Appended parameter, default 0 (the measured along-axis high-pass with a dithered scatter). 1 draws the detail seen through the glass as one soft copy: the wide kernel's tone plus `fineShare` of an unrotated fine blur. Dark `Calm()` uses 1 on its bar and lens. |
+| `GlassPullShape.Free` | Appended enum value. A free-standing button pulled off its place: the body follows the finger by `pullFollow` (resisted by `pullLimit`), stretches along the pull and thins across it, its content moves with it, and on release it squashes against its own resting edge away from the pull before settling (`GlassMotion.FreeRelease`). Drawing only; layout and hit targets stay put. Measured on iOS 26's Phone search button. |
+| `GlassInteraction.pullLiftShare` | Appended parameter, default 1. Share of the press glow that remains once the finger has moved more than 4 dp (iOS's search button: 0.7). |
+| `Modifier.liquidGlass(..., link: GlassAccessoryLink? = null)`, `rememberGlassAccessoryLink()`, `GlassTabBarAccessory(..., link)` | Opt-in. The accessory's glass publishes its animated press and pull; a tab bar given the same link reaches for where the accessory is drawn, so pressing it joins the two through a neck and pulling it away breaks it. Null keeps the laid-out circle. |
 | `GlassTabBarStyle.Calm(dark: Boolean = true)` | V3 optical roles with calm selector travel, no off-axis selector squeeze, and bounded bar drawing feedback shared with ordinary/selected ink. Its reference-backed 5% press is separate from the restrained drag response. |
 | `GlassSelectorSpec.response` | Chooses the pose response family; default `Expressive` preserves V3. Other legacy fields still belong to the old horizontal controller. |
 | `GlassTabBarStyle.barInteraction` | Optional whole-bar feedback, default null; `Calm()` enables it and keeps label layout fixed. |

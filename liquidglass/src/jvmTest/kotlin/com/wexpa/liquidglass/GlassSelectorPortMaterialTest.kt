@@ -27,6 +27,9 @@ class GlassSelectorPortMaterialTest {
         "uRimMirror" to listOf(s.rimMirror.coerceIn(0f, 1f)),
         "uRimMirrorGain" to listOf(s.rimMirrorGain.coerceIn(.05f, 1f)),
         "uHeldEdgeRecovery" to listOf(s.heldEdgeRecovery.value.coerceAtLeast(0f)),
+        "uHeldEdgeTone" to listOf(s.heldEdgeTone.coerceIn(0f, 1f)),
+        "uHeldGlowFloor" to listOf(s.heldGlowFloor.coerceIn(0f, 1f)),
+        "uSoftDetail" to listOf(s.softDetail.coerceIn(0f, 1f)),
         "uRestMap" to listOf(s.restMap.uniform),
         "uEdgeFold" to listOf(s.edgeFold.coerceIn(0f, 2f)),
         "uInkSplit" to listOf(if (s.inkDispersion.isNaN()) s.dispersion else s.inkDispersion),
@@ -57,6 +60,8 @@ class GlassSelectorPortMaterialTest {
         "uBevelPeak" to listOf(s.bevelPeak),
         // Host terms: the raw backdrop added over the bar it looks through.
         "rawShare" to listOf(s.rawShare),
+        // The raw backdrop's blur (GlassStyle.rawBlur), in dp; a host term like rawShare.
+        "rawBlur" to listOf(s.rawBlur.value),
     )
 
     private val dpFields = listOf("uRefractDepth", "uHeldGlowReach", "uHeldEdgeRecovery", "uWideKernel", "uBevel", "uBlur", "uRimSoft")
@@ -72,7 +77,7 @@ class GlassSelectorPortMaterialTest {
             val style = GlassTabBarStyle.Calm(dark)
             if (styles.isNotEmpty()) styles.append(",\n")
             styles.append("\"${if (dark) "dark" else "light"}\":{\"pill\":${json(uniforms(style.pill))},\"lens\":${json(uniforms(style.lens))}," +
-                "\"bar\":${json(uniforms(style.bar))},\"heldLift\":${style.heldLift}," +
+                "\"bar\":${json(uniforms(style.bar))},\"clearBarTint\":${uniforms(GlassTabBarStyle.CalmClear(dark).bar).getValue("uTint").joinToString(",", "[", "]")},\"heldLift\":${style.heldLift},\"touchLift\":${style.touchLift}," +
                 "\"pillInkFollows\":${style.pill.inkDispersion.isNaN()},\"lensInkFollows\":${style.lens.inkDispersion.isNaN()}," +
                 "\"tapOptics\":${style.tapOptics},\"tapOpticsFold\":${style.tapOpticsFold},\"tapTintFade\":${style.tapTintFade}}")
             for (formation in listOf(0f, .2f, .49f, .5f, .7f, 1f)) for (transit in listOf(0f, .3f, .8f, 1f)) for (travel in listOf(0f, .6f)) {
@@ -84,7 +89,7 @@ class GlassSelectorPortMaterialTest {
         }
         val fold = GlassStyle().copy(profile = GlassProfile.Measured)
         val text = "{\"dpFields\":${dpFields.joinToString(",", "[", "]") { "\"$it\"" }},\n" +
-            "\"fold\":{\"measuredProfile\":${fold.profile.uniform},\"foldCorners\":1.0,\"rimMirror\":$GlassSelectorRimMirror," +
+            "\"fold\":{\"measuredProfile\":${fold.profile.uniform},\"foldCorners\":1.0,\"transitFoldCorners\":$GlassSelectorTransitFoldCorners,\"rimMirror\":$GlassSelectorRimMirror," +
             "\"rimMirrorGain\":$GlassSelectorRimGain,\"dispersion\":$GlassSelectorRimDispersion},\n" +
             "\"styles\":{\n$styles},\n\"samples\":[\n${samples.joinToString(",\n")}]}\n"
         val file = File("../ports/skia/fixtures/selector-material.json")

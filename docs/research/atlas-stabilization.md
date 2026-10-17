@@ -122,6 +122,25 @@ interior plateau. Keeping the bar's held lift and setting its extra `pressLift` 
 ordinary-held reference is uniformly 43/255, within that tolerance. Touch illumination remains
 separate; this plateau test does not score the fingertip glow or HDR display appearance.
 
+## Display colours and the wider dataset (15 October)
+
+The owner's Phone-bar recordings are HDR10 (PQ, BT.2020). Until 15 October the continuous comparison
+read them as if they were sRGB, which lifts every dark level: the bar read 45 where a display shows
+33. Every comparison now decodes them to display sRGB first (the record's decode, checked against
+the calibration target's grey ramp within one level), and covers five recordings instead of two.
+Presses are read from the bar itself, which lifts on every touch, rather than from the selected
+ink alone, which missed holds on the middle tab and split long drags into separate throws.
+
+In display colours the dark Calm bar now rests at iOS's 33 and holds at its 45, its resting
+selector reads 10-15, its held lens over a black page matches, and a tap's travelling pill reaches
+47-51 against iOS's 48-53. The last needed a behaviour, not a level: iOS lifts the whole bar for
+any touch, a tap included (`GlassTabBarStyle.touchLift`). Two differences remain open. iOS's held
+lens brightens page content under it (an avatar reads brighter through it than without it), which
+neither tint nor raw page share reproduces. iOS's search button presses, stretches toward the
+finger and lands squashed against its resting edge; since pass 17 ours does too
+(`GlassPullShape.Free`, `GlassAccessoryLink`), within 2-3 px of iOS's centre over seven presses. The calibration made against the sRGB reading is
+kept as `GlassTabBarStyle.CalmRecordedSpace()`.
+
 ## Why the magnifier is continuous
 
 For normalized squared radius `r²`, the source offset is `-p*m*(1-r²)²`, with `m=1-1/zoom`.

@@ -277,12 +277,16 @@ internal suspend fun captureAtlasMotion(window: Container, probe: AtlasMotionPro
             "bottom-right" to Offset(windowWidth - 1f, windowHeight - 1f),
         )
         for ((label, target) in edgeTargets) {
-            prepare(0)
-            send(MouseEvent.MOUSE_PRESSED, left, true)
+            // Start at the end opposite the expected selection, so a pull that is lost or
+            // cancelled cannot pass by leaving the selection where it began (2026-10-15 review).
+            val toRight = target.x > bounds.center.x
+            val start = if (toRight) left else right
+            prepare(if (toRight) 0 else 2)
+            send(MouseEvent.MOUSE_PRESSED, start, true)
             delay(650)
             for (step in 1..20) {
                 delay(16)
-                send(MouseEvent.MOUSE_DRAGGED, left + (target - left) * (step / 20f), true)
+                send(MouseEvent.MOUSE_DRAGGED, start + (target - start) * (step / 20f), true)
             }
             delay(250)
             capture("10-window-$label")

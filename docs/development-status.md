@@ -64,7 +64,15 @@ the bar's end as iOS's does, the moving lens's caps draw content out radially (a
 halved the rim mirror was fixed), and the search button's neck gives way to an arriving lens. A tenth
 pass scored the left-wall landings too (rms 4.1 px); an eleventh made the bar relax while its lens is
 dragged, as iOS's does, which brought the search-button neck to a median 0 ms of iOS's (67 before),
-and the ports now draw the selected ink inside the selector. The Calm selector's motion, gestures and material are ported to the
+and the ports now draw the selected ink inside the selector. A twelfth pass fixed the held lens's
+selected ink (scaled about the wrong point, 17 px off) and a frame-loop wake that left throws from a
+still hold 1.5 frames behind the finger, made the moving lens widen and flatten as iOS's does
+(458 x 145 px at its fastest reversal, ours 427 x 144), gave the held lens a thin grey outline
+instead of a white ring, and let a tapped selector bend icons along its top and bottom edges. A
+thirteenth placed the held lens on the bar's pressed tab with the bar no longer reaching past it,
+restored its inward glow as a floor, and matched the page text seen through it. A fourteenth
+matched what the held lens shows of the page beneath it and corrected the inferred reversal
+input from the recording's own icon-crossing times. The Calm selector's motion, gestures and material are ported to the
 CanvasKit and .NET packages, checked against the Kotlin controller and material factory. On Android, the
 selector and Atlas Studio were verified on an API 37 emulator through the AGSL path
 ([emulator record](https://github.com/shayann07/liquidglass/blob/main/review/atlas/android-emulator-2026-10-14/README.md));
@@ -146,8 +154,21 @@ trace was produced and no permission changes were made. See [performance](perfor
 
 1. Remaining differences from the continuous comparison: the 9.9 s landing peaks 6 px short of
    iOS's and the left width series' first frames narrow up to 11.2 px less, both of the size of one
-   frame of the inferred lift; the neck parts 100 ms late at one release (34.8 s). Owner visual
-   acceptance is pending.
+   frame of the inferred lift; the neck parts 100 ms late at one release (34.8 s). In display
+   colours (since 15 October, five recordings) the rest, held and tap levels are within 0-4 grey
+   levels; since pass 18 the pill and lens pass page content as iOS's do and text under the bar is
+   one soft copy. Since 17 October the held lens no longer passes the raw page, so text under it
+   is veiled as under iOS's; it adds the raw page blurred (`GlassStyle.rawBlur`, 0.22 / 20 dp), so
+   it lifts over content as iOS's does (text p50 83 against 82, black unchanged); its top band near
+   the rim still reads 11 below iOS's. `GlassTabBarStyle.slotWidth` lays tabs on set slots as
+   WhatsApp's bar does (all five centres within 2 px), in Compose and both ports.
+   `GlassTabBarStyle.CalmClear()` is the clearer bar of WhatsApp and the App Store (bar 53 against
+   iOS's 54 over a grey card, Calm 46), in Compose and both ports; text under the App Store bar still
+   reads brighter than iOS's. WhatsApp's motion lands 14/14 and settles a median 21 ms early, read by
+   one tracker on both sides with inferred input.
+   The search button presses, pulls and lands as iOS's does since pass 17 (centre 2-3 px rms); the
+   CanvasKit and .NET ports have its press, pull and landing (`createFreeButton` / `FreeButton`, checked frame
+   by frame against Kotlin) but not the bar's outline link. Owner visual acceptance is pending.
 2. Verify all directional extreme envelopes and Android composition on appropriate hardware.
 3. Resolve ordinary interaction/display performance and final wide/narrow Atlas visual acceptance.
 4. Additional host integrations, with executable evidence.

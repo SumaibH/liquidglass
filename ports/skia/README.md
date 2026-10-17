@@ -113,11 +113,21 @@ const nav = scene.addNavigation({x: 24, y: 520, width: 300, height: 62},
 canvas.addEventListener('pointerdown', e => nav.down(e.offsetX, e.offsetY, e.timeStamp / 1000));
 ```
 
+`calmSelectorBar({..., slotWidth})` lays the tabs on equal slots of that width centred in the bar,
+as Compose's `GlassTabBarStyle.slotWidth` does: the end tabs close up until their pill sits
+`pillInset` inside the bar's end. Draw your items at `centreOf(bar, i)`.
+
+`clear: true` on the bar material (`calmBarMaterial({clear})`, `painter.drawCalmBar(..., {clear})`,
+or `material: {clear: true}` on `addNavigation`) draws Compose's `GlassTabBarStyle.CalmClear()` bar:
+the clearer glass of WhatsApp's and the App Store's dark iOS bars (black at 0.10 instead of 0.41,
+same lift; light appearance unchanged). Pass the same bar as `through` so the lens follows it.
+
 The motion is a line-by-line port of the Compose pose controller (`selector.mjs`:
-`CalmSelectorController`, `calmSelectorBar`, `createCalmNavigation`), checked frame by frame against
+`CalmSelectorController`, `calmSelectorBar`, `centreOf`, `nearestTab`, `createCalmNavigation`), checked frame by frame against
 trajectories the Kotlin controller exports (`fixtures/selector-calm.json`: taps, a held throw into
 the wall, held reversals, a stationary hold; 0.05 px). The navigation layer draws its bar in the
-Compose Calm bar material (`painter.drawCalmBar`) and the selector through the production shader's
+Compose Calm bar material (`painter.drawCalmBar`; it lifts for any touch as dark Calm's does, from
+the navigation state's `touch`) and the selector through the production shader's
 pose body in the Compose Calm selector material (`painter.drawSelector`, `calmSelectorMaterial`:
 the production pill, lens and bar styles exported by the Kotlin tests and blended by the same rules,
 checked against 96 Kotlin-computed uniform sets). Like Compose, the lens looks through the bar:
@@ -127,6 +137,16 @@ For the selected ink, render your items in their selected appearance into an ima
 ground, device px, the bar's origin) and pass it with `layer.setSelectedInk(image)` or
 `painter.drawSelectorInk(...)`: it is drawn through the production content pass, so it shows only
 under the selector, refracted and folded with it. Labels and accessibility stay with the host. [Evidence](../../review/atlas/ports-selector-2026-10-14/README.md).
+
+## A free button (the Phone search button)
+
+`createFreeButton({size, density})` is Compose's `GlassInteraction.Pullable` with `GlassPullShape.Free`:
+pressed, the button grows 8 pt a side and lights up; pulled, it leaves its place with the finger,
+stretching along the pull; released, it springs back and lands squashed against its resting edge.
+Feed it `down(t)`, `move(t, dx, dy)` (total travel since down) and `up(t)` in seconds, and draw your
+button with `sample(t)`: scale by `pressScale`, stretch by `along` / `across` about `angle` (degrees),
+offset by `tx` / `ty`, and lift the material by `lift`. Its trajectories match Compose's frame by frame
+(`fixtures/free-button.json`, exported by the Kotlin tests). The bar's outline does not follow it here.
 
 ## Draw a lens without managing uniforms
 

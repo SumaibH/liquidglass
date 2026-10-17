@@ -61,6 +61,144 @@ This file records user-visible development changes. Published artifacts are iden
 - CanvasKit and .NET selectors use the Compose Calm bar and selector material itself
   (`calmSelectorMaterial`, `drawCalmBar`, `through`), checked value by value against the Kotlin
   factory; the resting inset reads 33 over a dark page (12 with the earlier approximation).
+- Pass 12 (14 October), dark Calm against both recordings:
+  - Fixed: the selected ink inside a held lens was scaled about the wrong point (the node's origin
+    instead of the bar's centre), so it sat about 17 px left and 10 px up of where the bar's own
+    press puts it. It now lands on iOS's position (203 px against 204 at 1.8 s and 5.75 s).
+    The selected ink also no longer follows the bar's reach toward the finger.
+  - Fixed: after a still hold, the pose frame loop woke behind the frame it presents, so a throw
+    from rest ran about 1.5 frames behind the finger throughout. A woken loop now presents its
+    frame's own time, catching up from the waking input's timestamp (only when the two clocks are
+    0-50 ms apart; travel-only specs).
+  - The held lens's outline is a ~65-level grey line over any ground (`GlassStyle.heldEdgeTone`)
+    with its inward glow off (`heldGlow` 0, was 2), instead of a bright white ring.
+  - A held lens travelling fast widens and flattens at constant area (`GlassPoseSpec.heldTravelStrain`
+    .5 at 10/s; held reference speed 8, squeeze .52): 427 x 144 px at the 19.0 s reversal against
+    iOS's 458 x 145 (375 x 182 before). Wall-landing scores move from 5.3 / 4.3 to 5.7 / 5.1 px rms.
+    The previous Calm is kept as `GlassPoseSpec.CalmWallLanding`.
+  - A tapped selector's fold also runs, at a quarter strength, along its straight top and bottom
+    (`foldAtCorners` .75 in transit), bending icons and labels at those edges as iOS's does.
+  - Comparison scene: neutral placeholder page with iOS-like call-log typography and glyphs.
+- Pass 13 (15 October), the pass 12 residuals:
+  - The held lens sits where the bar's press puts its tab (203 px at Calls, was the finger's 219),
+    and the bar no longer reaches toward the finger (`pressReach` 0, was .03): its cap now shows
+    iOS's dark band between the lens edge and the bar's end instead of the bar poking past it.
+  - The held lens's inward glow is back as a floor (`GlassStyle.heldGlowFloor`; glow 1.5, 5 dp):
+    the measured band over the black page (ours 26, 25, 22 ... 10 against iOS's 36, 22, 20 ... 9)
+    without bright lines over the bar. The outline is two pixels wide.
+  - The lens shows less of the raw page (`rawShare` .05, was .28): text under it reads p95/p99
+    82/105 against iOS's 84/109 (108/112 before).
+  - Held travel strain .6 with squeeze back at .47: 444 x 145 at the 19.0 s reversal (iOS about
+    444 x 141 at this bar size). Wall landings 6.0 / 5.4 px rms; landing series 2.8 / 5.2.
+- Pass 14 (15 October), the pass 13 residuals:
+  - The held lens lays a grey veil over what it shows (tint .55 of 0x3A, raw page share .22):
+    the page avatar under it reads 82.5 against iOS's 80 (98 before), text p95/p99 80/105
+    against 84/109, plain interior 62 against 64.
+  - A held lens's tint mask is read where its refracted view comes from, so the band of black
+    page it pulls in beyond the bar is not tinted (15.4 against iOS's 15.3-15.8).
+  - The inferred finger for the first second of video 2's held reversals moves rightward 20 ms
+    earlier (`tools/reference-replay/reversal-script.txt`): the lens reaches each icon a mean
+    2 ms after iOS's going right (10 ms before) and 3 ms going left, over the whole episode.
+- Pass 15 (15 October): the owner's recordings are HDR10 and had been compared decoded as if
+  they were sRGB, which raised every dark level. Every comparison is now made in display colours
+  over five recordings (docs/1, docs/2 and three more Phone-bar recordings in the private
+  dataset), and the dark Calm material is re-fitted there:
+  - Bar at rest 32/255 lift (was 45), resting pill black .55 (was .42), held lift 10/255 (was 8):
+    the bar reads 33 against iOS's 33 over 44 rest moments (was 46), the pill 15 against 10 on a
+    black page and 15 against 15 on a Calls page (26-27 before).
+  - The previous calibration stays available as `GlassTabBarStyle.CalmRecordedSpace()`; the
+    Atlas replay's `calm-recorded` variant renders it with the old scene palette.
+  - Review fixes: the lift's own position reaches the pose controller before the release (Compose,
+    CanvasKit, .NET); a lens thrown from a hold keeps its travelling cap mirror while it flies; the
+    pose body's cap weight is full from where the cap begins; the fold's colour split stays at the
+    caps and a held lens's fringe order follows its rim mirror; both ports keep the move that crosses
+    the touch slop; CanvasKit no longer blurs an unused copy of the page each frame; the press reach
+    no longer squares its drag share.
+- Pass 16 (15 October):
+  - `GlassTabBarStyle.touchLift` (new, off by default; on in dark `Calm()`): the bar's held lift
+    also applies for any touch, a tap included, as iOS's whole bar lifts on every touch. A tap's
+    travelling pill now reads 47-51 against iOS's 48-53 (38-43 without it); the bar at the tab a
+    tap never visits follows iOS's from 50 ms on.
+  - Calm held lift 13/255 (was 10), held lens tint 0x2B at .55 (was 0x3A) and resting pill black
+    .58 (was .55): held bar 46 against iOS's 45-47, held lens over a black page 48 against 48 (was
+    55), resting pill 14 on both pages (iOS 10 and 15).
+  - Sample `PhoneScene`: tab labels Medium with 0.7 sp spacing and a wider keypad grid, measured
+    against iOS (labels 11% wider at the same height; grid 72 x 69 px).
+- Pass 17 (15 October): iOS 26's Phone search button presses, pulls and lands.
+  - `GlassPullShape.Free` (new, opt-in): the body follows the finger, stretches and thins along
+    the pull, carries its content, and on release lands squashed against its resting edge away from
+    the pull before rebounding (`GlassMotion.FreeRelease`: 0.45 damping, 264 stiffness, fitted on the
+    leading edge of four releases, 4.8 px rms).
+  - `GlassInteraction.pullLiftShare` (new, default 1): the press glow settles to this share once the
+    finger moves (the search button: 0.7, from 95 to 70 grey levels).
+  - `GlassAccessoryLink`, `rememberGlassAccessoryLink()`, `liquidGlass(link = ...)`,
+    `GlassTabBarAccessory(link = ...)` (new, opt-in): the bar's outline follows the accessory as it
+    is pressed (a neck) and pulled away (the neck breaks), read while drawing so it never trails.
+  - Sample `PhoneScene`: the search button uses them. Against iOS over seven presses: centre 1.9 /
+    3.0 px rms (14.3 / 41.1 passive), height 4.3, width 2.8, brightness 8.0 levels (19.1).
+- Pass 18 (15 October): what the glass shows of the page.
+  - Calm dark resting pill and held lens are clear glass with an offset, not a tint. Over a black
+    page they read as before; over content iOS's pass far more of the page. Pill: the bar less
+    22/255 (the inset's originally measured law), docs/2 p10/50/75 12/29/47 against iOS's 15/25/51
+    (14/21/29 at .58 black), black 10 against 10. Held lens: the bar plus 0.30 of the raw page less
+    3/255, docs/2 52/75/135 against 62/80/135 (50/60/87), black 48/49 against 48/49 (the raw share
+    was removed the same day after a regional score; see below).
+  - `GlassStyle.softDetail` (new, default 0; 1 on dark Calm's bar and lens): page text under the
+    glass is one soft copy, as iOS's is, instead of the along-axis high-pass whose taps drew ghost
+    copies of every glyph and whose rotated scatter turned the rest into grain (horizontal detail
+    2.72 against iOS's 2.77; 4.94 before).
+- App Store comparison (17 October): sample `AppStoreScene` / `AppStoreGeometry`, iOS 26's App Store
+  five-tab bar (348 x 62 pt, 64 pt slots, an 83.7 pt resting pill) over a dark card, measured on the
+  owner's recording; the Atlas replay renders it (`appstore` variant). Its one-touch drag across all
+  five tabs tracks iOS's at 10.1 px rms, best shift -8 ms, as the Phone bar does. No library change.
+- Calibration-target check (17 October): `GlassCalibrationRenderTest.renderTheCalmBarOverTheDarkTarget`
+  (opt-in) renders dark Calm's bar over the calibration target for comparison with the Photos-toolbar
+  screenshots. Calm's bar reads 102.2 / 20.8 (mean / standard deviation) against iOS's 102.6 / 20.6 at
+  the default tint: the display-colour re-fit agrees with the screenshot-measured law.
+- Ports (17 October): the free button (`createFreeButton` in CanvasKit / the portable package, `FreeButton`
+  in .NET): the Phone search button's press, pull and landing, replayed frame by frame against a new
+  Kotlin-exported fixture (`ports/skia/fixtures/free-button.json`; worst 0.009 px). The bar's outline
+  link stays Compose-only.
+- `GlassTabBarStyle.slotWidth` (new, 17 October; unspecified by default, so every preset is
+  unchanged): equal slots of a set width centred in the bar; where they are wider than the bar
+  allows, the end tabs close up to where their resting pill sits `pillInset` inside the bar's end.
+  Measured on WhatsApp's iOS bar (owner's recording, 348 pt bar): the inner tabs are 71.5 pt apart
+  (its widest item, 63.3 pt, plus 8 pt), wider than a fifth of the bar, and the end tabs are pulled
+  in; the rule puts all five centres within 2 px, where slots sized per item miss by 13. The App
+  Store bar fits the same rule with 64 pt slots. Pill, lens, hit targets, drag and the V3 body all
+  follow the slots. Sample `WhatsAppScene` / `WhatsAppGeometry` (neutral placeholders, a plain disc
+  for the profile tab); Atlas replay variant `whatsapp`. The CanvasKit and .NET ports have it too (`calmSelectorBar({slotWidth})`, `CalmSelectorBar.Create(slotWidth:)`).
+- Calm dark held lens (17 October): no raw page share (`rawShare` 0, was 0.30). Scored by region
+  against docs/2 and IMG_6756, the raw share drew the page's text under the lens sharp and white
+  (p90 155 against iOS's 102). Without it the lens veils text as the bar does: p90 91, p50 75
+  against 82, five regions 9.7 rms against 24.9. A black page is unchanged (48 against 47). The
+  lens's top and bottom bands still read 11-12 below iOS's over content.
+- `GlassTabBarStyle.CalmClear()` (new preset, 17 October; `Calm()` unchanged): dark Calm with the
+  clearer bar of WhatsApp's and the App Store's iOS bars, black at 0.10 (the Phone bar's 0.41) over
+  the same 32/255 lift. Measured in display colours on the owner's recordings, iOS against
+  CalmClear (Calm): WhatsApp over its grey card bar 54 against 53 (46), pill 30 against 31 (24);
+  over its chats page bar 43 against 41 (38), pill 19 against 19 (16); the App Store's plain bar
+  67/65/64/59 against 66/64/63/58 (54/53/52/49); over black both 32. The pill and held lens look
+  through the bar and follow it. Light appearance returns `Calm(false)`. The sample's
+  `WhatsAppScene` and `AppStoreScene` default to it; Atlas replay variants `whatsapp-clear`,
+  `appstore-clear`, and `whatsapp+plain` (the bare page). Ports: `calmBarMaterial({clear})` /
+  `drawCalmBar(..., {clear})` / scene material `clear` in CanvasKit, `CalmSelectorMaterial.Bar(...,
+  clear:)` / `DrawCalmBar(..., clear:)` in .NET, from a `clearBarTint` exported with the fixture.
+  Residual: text under the App Store bar still reads brighter than iOS's (p75 107 against 80).
+- `GlassStyle.rawBlur` (new, 17 October; 0 dp by default, so `rawShare` stays sharp everywhere it
+  was): the raw backdrop that `rawShare` adds is blurred first. Dark `Calm()`'s held lens now adds
+  0.22 of the raw page blurred 20 dp (was no share since earlier on 17 October). iOS's lens reads about
+  10 above ours wherever the page has content and the same over black; a blurred page term does
+  both, where a tint or glow lifts black too and a sharp share redraws the text. Scored by region
+  (docs/2 5.75 s, IMG_6756 35.47 s), iOS / ours: text p50 82 / 83 (was 75), p90 102 / 99 (91),
+  bottom band 75 / 70 (63), black interior 47 / 48 (48), top band 64 / 53 (52); five regions 5.6 rms
+  (9.7). The top band near the rim stays 11 low. Both ports blur the share the same way (`rawBlur`
+  exported with the material fixture). Atlas replay `+lens=` takes it as the eleventh value.
+- WhatsApp motion checked (17 October; no motion change): a white-fill tracker for WhatsApp's bar
+  and finger scripts inferred from its touches (14 in JGEY2190 49.8-67 s). Read by the same tracker
+  on both sides, `CalmClear()` on `WhatsAppScene` lands on the same tab 14/14 (nine throws' lifts are
+  inferred from iOS's landing) and settles a median 21 ms before iOS (p25 / p75 -31 / +75 ms); the
+  selection path is within 3 px at the median, p90 140 px in throws' flights.
 
 ### Added
 
@@ -75,6 +213,12 @@ This file records user-visible development changes. Published artifacts are iden
   `releaseTrailingStiffening`, `releaseWallGive`, `releaseStillHoldSeconds` and the
   `CalmCriticalLanding` preset; all off by default.
 - `GlassInteraction.dragPressShare`: the share of a press that remains while it drags something; 1 by default.
+- `GlassStyle.heldEdgeTone` (`uHeldEdgeTone`): the held lens's outermost pixels as a grey line of
+  this level; 0 (default) keeps the additive rim.
+- `GlassStyle.heldGlowFloor` (`uHeldGlowFloor`): 0 (default) adds the held glow, 1 lays it as a
+  floor that lifts only darker glass.
+- `GlassPoseSpec.heldTravelStrain` / `heldTravelStrainOmega` and the `CalmWallLanding` preset; the
+  strain is off by default. CanvasKit and .NET selector specs carry the same fields.
 - `GlassTabBarAccessory(yieldsToLens = true)`: a formed pose selector takes the neck's place; off by default.
 - CanvasKit `calmSelectorMaterial`, `calmBarMaterial`, `painter.drawCalmBar`; .NET
   `CalmSelectorMaterial`, `GlassPainter.DrawCalmBar`; `drawSelector` / `DrawSelector` take transit,

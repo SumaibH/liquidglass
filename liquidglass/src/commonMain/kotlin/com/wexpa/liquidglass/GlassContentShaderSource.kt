@@ -238,15 +238,18 @@ half4 main(float2 coord) {
         float src = mix(measuredSource(u, uFormation * mix(1.0, corner, clamp(uFoldCorners, 0.0, 1.0)), corner), mix(u, heldMirror(u, heldMap, corner), held), heldFamily);
         float shift = (depth < W) ? (src * W - depth) : 0.0;
         shift = mix(max(shift, 0.0), shift, heldFamily) * mat * axisFade * smoothstep(0.0, 1.5, depth);
-        float mirrorZone = mix(rimZone(u) * clamp(uFormation, 0.0, 1.0),
+        // The colour split lives where the fold does: at the caps when uFoldCorners confines it.
+        float foldMask = mix(1.0, corner, clamp(uFoldCorners, 0.0, 1.0));
+        float mirrorZone = mix(rimZone(u) * clamp(uFormation, 0.0, 1.0) * foldMask,
             (1.0 - smoothstep(0.45, 0.55, u)) * held, heldFamily);
         float delta = uInkSplit * W * 0.5 * mirrorZone * mat;
         push = -n * shift;
         // The fold shows red the deeper content; the held lens shows blue the deeper content,
         // so blue's copy of the pulled-in edge lands outermost (FINDINGS 19).
-        float dR = mix(delta, -delta, heldFamily);
+        float heldOrder = heldFamily * (1.0 - ((uRimMirror > 0.0) ? clamp(uFormation, 0.0, 1.0) * foldMask : 0.0));
+        float dR = mix(delta, -delta, heldOrder);
         pushR = -n * (shift + dR);
-        pushB = -n * mix(max(shift - delta, 0.0), shift + delta, heldFamily);
+        pushB = -n * mix(max(shift - delta, 0.0), shift + delta, heldOrder);
     }
 
     if (uProfile >= 2.5) {

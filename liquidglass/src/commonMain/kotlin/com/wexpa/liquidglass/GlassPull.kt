@@ -45,6 +45,8 @@ internal fun glassMaterialPull(
     val across = glassPullExtent(width, height, radius, pressX, pressY, -pullY, pullX)
     val raw = glassPullDeformation(pullX, pullY, extent, interaction.pullElongation,
         interaction.pullWidthRatio, interaction.pullFollow, acrossExtentPx = across)
+    // A free button keeps the measured travel: the body leaves its place with the finger.
+    if (interaction.pullShape == GlassPullShape.Free) return raw
     return glassAnchoredMaterialPull(glassSurfacePull(raw, width, height, density, extent), width, height)
 }
 
@@ -105,6 +107,45 @@ internal fun glassPullDeformation(
         angleDegrees = angle,
         translationX = follow * pullX,
         translationY = follow * pullY,
+    )
+}
+
+/**
+ * [GlassPullShape.Free]'s landing: the body's edge on the side away from the pull ([anchorDegrees],
+ * the direction it was pulled in) does not pass its resting position, so when the release carries
+ * the body back past rest it squashes against that edge instead, bulging [bulge] as much across.
+ * The press growth is outside the rule: a pressed, still button grows past its resting edge on
+ * every side. IMG_6756, four upward releases and one leftward (display colours, 2026-10-15): the
+ * far edge holds within 2 px while the near edge overshoots 32 px, and the width bulges 0.2 of the
+ * squash (154 x 182 px against a 186 px rest).
+ */
+internal fun glassFreeLanding(
+    pull: GlassPullDeformation, anchorDegrees: Float, restHalf: Float, bulge: Float = 0.2f,
+): GlassPullDeformation {
+    if (!anchorDegrees.isFinite() || restHalf <= 0f) return pull
+    val a = anchorDegrees * (kotlin.math.PI.toFloat() / 180f)
+    val nx = cos(a); val ny = sin(a)
+    val c = pull.translationX * nx + pull.translationY * ny
+    val perp = -pull.translationX * ny + pull.translationY * nx
+    val d = (pull.angleDegrees - anchorDegrees) * (kotlin.math.PI.toFloat() / 180f)
+    val cd = cos(d); val sd = sin(d)
+    // The stretched unit body's extent along the anchor axis and across it. Back past rest the
+    // stretch is dropped: the pull's law stretches by its length either way, but a body carried
+    // back past its place is compressed against its edge, not drawn out toward the finger again.
+    val stretched = c >= 0f
+    val axis = if (stretched) sqrt(pull.along * pull.along * cd * cd + pull.across * pull.across * sd * sd) else 1f
+    val side = if (stretched) sqrt(pull.along * pull.along * sd * sd + pull.across * pull.across * cd * cd) else 1f
+    val half = restHalf * axis
+    if (c - half >= -restHalf) return pull
+    val newHalf = ((c + half + restHalf) / 2f).coerceAtLeast(restHalf * .5f)
+    val newCentre = c + half - newHalf
+    val k = newHalf / half
+    return GlassPullDeformation(
+        along = axis * k,
+        across = side * (1f + bulge * (1f - k)),
+        angleDegrees = anchorDegrees,
+        translationX = newCentre * nx - perp * ny,
+        translationY = newCentre * ny + perp * nx,
     )
 }
 

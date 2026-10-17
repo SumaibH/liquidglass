@@ -100,10 +100,16 @@ internal class GlassSelectorBar(
     val density: Float,
     /** The widest the body may ever be, so the host can size a stable node around it. */
     val maxBodyWidth: Float,
+    /** [GlassTabBarStyle.slotWidth] in px, NaN for shared-out slots; see [GlassTabBarGeometry.fixedSlot]. */
+    val fixedSlot: Float = Float.NaN,
+    val endReach: Float = 0f,
 ) {
+    private val fixed: Boolean get() = fixedSlot.isFinite() && fixedSlot > 0f
     // Never negative, as GlassTabBarGeometry.slotWidth: firstCentre must not pass lastCentre.
-    val slotWidth: Float get() = ((width - inset * 2f) / count).coerceAtLeast(0f)
-    fun centreOf(index: Int): Float = inset + (index + 0.5f) * slotWidth
+    val slotWidth: Float get() = if (fixed) fixedSlot else ((width - inset * 2f) / count).coerceAtLeast(0f)
+    fun centreOf(index: Int): Float = if (fixed) {
+        glassFixedSlotCentre(width, count, fixedSlot, endReach, index)
+    } else inset + (index + 0.5f) * slotWidth
     val firstCentre: Float get() = centreOf(0)
     val lastCentre: Float get() = centreOf(count - 1)
     val centreY: Float get() = height / 2f
@@ -123,7 +129,8 @@ internal class GlassSelectorBar(
             baseHalfWidth == other.baseHalfWidth && baseHalfHeight == other.baseHalfHeight &&
             allowedHalfHeight == other.allowedHalfHeight && heldHalfHeight == other.heldHalfHeight &&
             heldHalfWidth == other.heldHalfWidth && density == other.density &&
-            maxBodyWidth == other.maxBodyWidth
+            maxBodyWidth == other.maxBodyWidth &&
+            fixedSlot.toRawBits() == other.fixedSlot.toRawBits() && endReach == other.endReach
 }
 
 /**

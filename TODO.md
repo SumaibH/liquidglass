@@ -3,6 +3,238 @@
 Updated 2026-10-14. Start with [NEXT-SESSION.md](NEXT-SESSION.md). Checked entries describe
 bounded completed work, **not completion of full iOS parity**. All open rows remain in scope.
 
+## CURRENT PLAN (15 Oct 2026, owner-approved) — read this first
+
+Two mistakes found by the owner, both affecting every pass 1-14 level measurement:
+
+1. **Only docs/1.MP4 and docs/2.MP4 were used.** `research/datasets/` holds ~1000 s more iOS 26
+   footage at the same resolution. Phone bar: `ios27-phone/bubble/IMG_6756.MP4` (101 s, Keypad bar,
+   taps/holds/drags/throws, keypad keys), `bubble/JGEY2190.MP4` (102 s, Calls/Keypad bar plus
+   WhatsApp, Messages and App Store bars), `LOLL8185.MP4` (3 min, Phone keypad and App Store bars).
+   Material over calibration targets: `COSG3073`, `LQCO6923`, `PUSM9766`; stills and
+   `iphone's-ref-bubble/`; `mac-rig/captures/`. All private: nothing from them goes to GitHub.
+2. **Wrong decode.** Every recording is HDR10 (HEVC Main 10, PQ/smpte2084, BT.2020, TV range). A
+   plain decode shows the PQ signal as sRGB (white ~130, everything washed out). The comparison
+   scene's `PhonePalette.Recorded` was dimmed to match that, and the Calm dark material's levels
+   were calibrated in it. Correct decode (research/README.md II.4): `.local/sxs/hdr.py`
+   (`frame(path, t)`, `frames(path, t0, dur)`), the zscale chain to display sRGB. Geometry and
+   timing measurements are unaffected; every brightness level is not.
+   Correctly decoded docs/2: white labels 255 (was 131-141), resting pill 15 (was 29), bar rest 22
+   (29), bar held 42 (49), held lens interior 66 (64).
+
+The plan, in order:
+
+1. **Fix the measuring instrument.** One decode path for every reference frame (`hdr.py`), checked
+   against the grey ramp in the calibration recordings (target: within 1 level). Rebuild the row
+   dumps and caches the scorers read (`v2-row568.gray`, `v2-row495.gray`, `ios2-ink.npy`;
+   `wallscore.py`, `wallscorel.py`, `neck.py`, `baredge.py`, `inklag.py`, `revevents.py`, `v2script.py`
+   bar release) from correctly decoded frames; re-check their thresholds in display space.
+2. **Make our side comparable.** Replay the scene in real display colours (`calm-natural` variant)
+   and set its page colours from the correctly decoded iOS page (text, avatars, dividers), not by
+   eye, so the page under the glass matches before judging the glass.
+3. **Catalogue every Phone-bar episode in the dataset**: IMG_6756, JGEY2190 and LOLL8185 as well as
+   docs/1 and 2: every tap, hold, drag, throw and landing with its time, plus an inferred finger
+   script for each, built by the same generator.
+4. **Re-fit the Calm brightness levels** against all those episodes in display space: resting pill
+   and bar (rest and held); lens interior, outline, inner glow and the veil; page text through the
+   lens and the tap-transit pill. Each level fitted across all episodes with its spread reported.
+   The current values stay available as a named preset for comparison; every change states what
+   it was scored against.
+5. **Check geometry and timing generalise.** Re-run the size/squeeze, landing, neck and timing
+   scorers on the new recordings and report per recording (were passes 9-14 over-fitted to video 2?).
+6. **Republish:** review images and owner videos in correct colours; docs and the record; full test
+   suite and both ports; then update PR #14 (`claude/parity-2`).
+
+After that: the light-mode App Store and WhatsApp bars from JGEY2190 and LOLL8185.
+
+Progress:
+- Step 1 DONE: `.local/sxs/hdr.py` (grey ramp within 1 level). Rebuilt `v2-row568.sdr.gray`,
+  `v2-row495.sdr.gray`, `ios2-ink.sdr.npy` (1993 frames, same timestamps); scorers switched (old
+  copies `*.py.pq`), pill/bar threshold 36->21. Conclusions hold: walls R 5.95 / L 4.40 px rms
+  (old 6.04 / 5.41), reversal crossings +2 / +6 ms, ink timing +4 ms, neck median 0 ms (20/22).
+- Step 2: decoded docs/2 page colours measured at 0.2 s: names 255, secondary text 145, dividers
+  42, call-button backgrounds 15, red names (247,78,83), accent blue ~(25,144,248), avatar a
+  vertical gradient (81,76,97) top to (52,44,74) bottom. Step 2 DONE: `PhonePalette.Natural` set to these
+  (plus keys 32, call green (23,127,47), missed red, accent (54,156,254)); replays default to it,
+  `calm-recorded` reproduces the old palette.
+- Episodes to catalogue (owner notes): IMG_6756 around 3.0 s, the search button pressed AND pulled
+  upward (press-and-pull of the accessory, stretched toward the finger), not just pressed. Score the
+  search button's pull against it (never scored in passes 1-14).
+- Step 3 (in progress): `.local/sxs/track2.py <video> <name>` writes `.local/sxs/ref/<name>/` (track.csv with a
+  Phone-bar signature, pts.txt, row568/495 .sdr.gray); `gen.py <ref-dir> [--rev ...]` = v2script for any
+  recording (reproduces v2-script: same 46 presses/lifts); `taps.py <ref-dir> t0 t1` = v1 tap inference
+  (reproduces v1-script: 37 taps within 17 ms). Catalogued: docs1 (37 taps), docs2, IMG_6756 (0-34 s
+  search-button press/pull in all directions, not tab episodes; 34.8-53 s holds and throws; 60-100 s
+  keypad keys), JGEY2190 (0-3.1 s throw; 4.6-47 s 47 TAPS, owner-confirmed; later segments other apps),
+  LOLL8185 (19.8-44 s throws and holds).
+- External code review (owner-supplied, 15 Oct), each claim checked against the code:
+  1 lift sample dropped before pointerUp: REAL; Compose, CanvasKit and .NET now feed the lift to the
+    controller first. ("1-sample integration lag" is the intended sample-and-hold; not changed.)
+  2 dragPressShare squared in reach + release step: REAL (LiquidGlass.kt reach); fixed. No Calm effect
+    (Calm reach is 0 since pass 13).
+  3 poseCorner straddles the cap start: REAL (quoted code was not the real code); now ramps in along the
+    run like cornerWeight/bodyCorner. Changes cap fold/mirror strength on pose lenses: judge vs iOS.
+  4 fold colour split unmasked on straight runs; held fringe order under rim mirror: REAL; masked by
+    the fold weight, and the order follows the mirror where it takes over.
+  5 thrown lens loses heldTravel (cap mirror) at lift: REAL; kept while a lens thrown from a hold flies
+    (Kotlin and both ports). transit==formation step: crossing measured at ~0.01, not visible; not changed.
+  6 frame-loop freeze after release: NOT reproduced (0 of 162 post-lift frame pairs repeat); the pass 12
+    wake fix covers the mechanism.
+  7 ports clobber the slop-crossing move with beginDrag(x0): REAL (CanvasKit and .NET); fixed as Compose
+    does (re-apply the move). This was the "port ignores the first move" seen in pass 12.
+  8 per-frame wide blur: REAL in CanvasKit only (backdrop.mjs builds a tone buffer for any sigma);
+    now skipped below 1 px. .NET already passes the real kernel.
+  9 Android shared RuntimeShader race: NOT a bug (each RenderEffect snapshots uniforms at creation; the
+    emulator showed many distinct panels). Harness: AtlasMotionCapture's left-side edge pulls started
+    on their expected tab (could not fail); now start at the opposite end.
+- Second external review (owner-supplied, 15 Oct, "parity blueprint"), checked against the code:
+  most of its diagnoses quote code this tree does not have (a `sampleAlongBar` with 5 jittered taps,
+  `pose.vx = 0f` under a Held wall clamp, `wallGive` gated on Released, `heldMagnification` 0 on Calm and
+  centred on uSize/2). In fact: Calm's lens has heldMagnification .12, centred on uPoseC (pose) or the
+  body; the fine blur under 4 px is a 5-tap rotated square, the wide blur is already an ImageFilter on
+  JVM; the held wall is handled by the two-edge release (pass 10+). Its items 1.2(1-2), 4.3 were the
+  first review's (done). Kept as measurements to make in steps 4-5 before any optic change:
+  a) ink scale inside a MOVING lens, iOS vs ours (residual "magnified less", pass 11 record);
+  b) text detail under the bar (high-frequency energy, display colours) for "slightly more smeared";
+  c) the bar outline next to a held lens: does iOS's bow out (lensFuse is off on V3)?;
+  d) the colour split where the held map and rim mirror blend (displacement-driven split can vanish
+     there): judge on frames. Android packed endpoint inputs (false) stays a known platform gap.
+- Step 3 correction (15 Oct): gen.py's catalogues were wrong for the new recordings. It reads presses from
+  the selected ink alone, so holds on the middle tab were invisible and long held drags read as separate
+  throws with lifts between. The bar shows the touch directly: while touched iOS's whole bar lifts ~10
+  levels (rows 460-472) within two frames of the press. `.local/sxs/form.py` (per-tab level, search
+  level, bar ends) -> `touches.py` (touch intervals) -> `gen3.py` (scripts: `ref/<name>/script3.txt`,
+  `catalogue3.txt`). Lifts from the bar end away from the lens returning (gen.py's bar_release, both
+  ends), calibrated +27 ms to v2-script. Checks: docs2 downs 21/23 and lifts 16/23 within 20 ms of the
+  checked v2-script (median 0; two flicks 103 ms early); docs1 taps 32/37 within 20 ms of v1-script.
+  Found: IMG_6756 41.25-53.0 one touch (drags 2-1-0-1-0-1-2 with holds); 34.7-40.9 three holds at Keypad
+  (lens pulled ~25 px); LOLL8185 21.1-33.2 one touch (drags across all tabs); its 36-44 s is the App
+  Store's dark five-tab bar (excluded; useful for the App Store work); JGEY2190 15.3-24.4 a held scrub
+  (lens formed and still at 16.4 s, bar stretched, neck out) and 11.0-13.0 a hold, inside the owner's
+  "taps" window, whose short touches stay taps (`--taps 4.5 15.2 25.5 48`; a tap and a flick cannot be
+  told apart by timing). Scene glyphs re-measured: labels Medium + 0.7 sp spacing (iOS 11% wider, same
+  height), keypad grid 72x69 px like iOS; magnification inside the held lens already matches (iOS x1.17,
+  ours x1.18), so the "ink magnified less" residual was glyph size. Search-button episodes (IMG_6756
+  0-34 s) are not scripted yet.
+- Search button (IMG_6756 0-34 s, `.local/sxs/ref/IMG_6756/search-catalogue.txt`): 7 presses, 4 pulled up
+  (top up to 110-174 px), 3 held. Pressed: grows ~1.25x (right edge +24..26 px), lightens 33 -> ~95, fuses
+  to the bar with a neck. Pulled: a tall ellipse following the finger, detached from the bar, glyph
+  stretched with it, dimming with distance. Released: lands squashed wide (overshoot 23-32 px below rest)
+  and rebounds. Our accessory is passive (GlassTabBarAccessory has no press or pull): model it with the
+  pose controller on a circular body, opt-in, then score extent/level per frame against search.npy.
+- Pass 15 scored (re-fit + review fixes + scene glyphs; docs1/docs2 from v1/v2-script, the others from
+  script3): rest bar +0 on all five (44 moments; was +13); rest pill +4 on black pages, 0 on Calls pages
+  (was +12..+16); held bar -3 (16); held lens +6/+7 on black pages (IMG_6756, LOLL8185), -9 on docs2,
+  whose lens shows a milky veil of the page above the bar; tap pill -11 on docs1 and JGEY2190 (was +1).
+  The tap pill's plateau is short of iOS's (iOS 51-53, ours 38-43), its start and tail now right
+  (`tapprofile.py`). Cause: iOS lights the whole bar on every touch, a tap included (+13 at the tab a tap
+  never visits, from before the ink leaves, back by ~350 ms; `tapprofile.py --bar`); ours only while held
+  (+3). Pass 16: `GlassTabBarStyle.touchLift` (opt-in, Calm on), heldLift 13/255, lens grey 0x2B, pill
+  black .58 (`.local/sxs/fit16.py`). Rendering p16.
+- Step 5 (tracking, `trackscore.py`, holds and drags; taps excluded because iOS recolours the destination
+  early and the ink centroid jumps): docs2 31.5 px rms (throws included, the validated baseline), IMG_6756
+  11.0, LOLL8185 9.2, best shift -8 ms on both: the pose dynamics generalise to the new recordings.
+  JGEY2190 needs p16 (its scrub script was cut 0.1 s in by the wall-lift rule; fixed: final approach only;
+  its start selection came from a non-Phone frame; fixed).
+- Pass 16 scored (docs1, docs2, LOLL8185 full; touchLift on, heldLift 13/255, lens 0x2B .55, pill .58):
+  rest bar +0 (20), rest pill +3 black pages / -1 Calls page, held bar +0.5 (8), held lens +0 on black
+  pages (LOLL8185 5 moments; IMG_6756 slice 48/48), tap pill plateau 47-51 against iOS 48-53 (was
+  38-43) and the bar's tap profile matches from +50 ms (`tapprofile.py`). Residuals: (1) iOS's bar lights
+  33 ms before the ink leaves, our inferred tap presses 16 ms before (finger timing, unresolved; moving
+  it would undo the ink alignment v1-script was fitted to); (2) docs2's held lens: iOS 63 / 88 (top band /
+  lower interior) against ours 49 / 61. iOS's held lens brightens the page under it (the avatar reads
+  91-111 through it, brighter than the avatar); ours adds a constant. Lens fits by replay (`lensfit.sh`,
+  the `calm+lens=a,grey,raw` replay variant): no tint/raw-share pair meets both pages (raw share
+  saturates at ~75 on docs2; a brighter tint lifts black pages equally). Kept the black-page fit (13 of
+  16 held moments); the page gain is a structural residual for a later pass.
+- 17 Oct (owner: "do all of these"): (1) CalmClear DONE: GlassTabBarStyle.CalmClear() bar black .10 (Phone .41),
+  same lift; WhatsApp card bar/pill 53/31 vs iOS 54/30 (Calm 46/24), bare page 41/19 vs chats page 43/19,
+  App Store gaps 66/64/63/58 vs 67/65/64/59; ports `clear` (clearBarTint in fixture). Replay variants
+  whatsapp-clear / appstore-clear / whatsapp+plain. (2) WhatsApp motion DONE (scored, no motion change):
+  .local/sxs/trackwa.py (white-fill tracker, per-column activation; also runs on a replay dir),
+  genwa.py (touch = level jump + ends grow; lift inferred from iOS's landing, 100 ms Lsq2 tail; taps),
+  cmpwa.py (same tracker both sides): landings 14/14, settle median -21 ms, path p50 3 px / p90 140.
+  Renders .local/sxs/ref/whatsapp/m5. (3) Lens bands: GlassStyle.rawBlur (new, opt-in 0); Calm dark lens
+  rawShare .22 rawBlur 20dp (tag rbE): hazescore rms 5.6 (was 9.7); top band 53 vs 64 remains (local to
+  iOS's lens; iOS lens ~8 px higher). Ports blur the share (rawBlur in material fixture).
+  (4) Needs owner: iOS tab bar over text screenshot; physical device (adb lists none); admin merge PR #14.
+- Lens haze (17 Oct, DONE): Calm dark lens rawShare 0 (was .30). hazescore (shipped, tag hzShip):
+  top 64/52, bottom 75/63, text p90 102/91 (was 155), p50 82/75, black 47/48, rms 9.7 (was 24.9).
+  Residual: rim bands 11-12 low over content only. Suite 395/0 fail/27 skip; ports regenerated.
+- WhatsApp bar (JGEY2190 50-74 s, 17 Oct, measured only): five tabs NOT evenly spaced (icon centres x
+  187/370/584/799/~977: gaps 183/214/215/178, slots follow label widths, "Communities" widest); selected
+  ink stays WHITE over the dark pill (the blue-ink tracker cannot follow it); the "You" tab is the owner's
+  profile photo (local only). A replay needs label-width slots in GlassTabBar (equal slots today) and a
+  pill/lens tracker. DONE 17 Oct (slots): NOT label-width. Rule = equal slots of 71.5pt (inner spacing
+  214.6 px = widest item 63.3pt + 8pt) centred in the 348pt bar (x 63..1107), end tabs clamped so the
+  78pt pill sits 4pt inside the end; all 5 centres within 2 px (label-width rule: 13 px off). App Store
+  fits the same rule with 64pt slots. `GlassTabBarStyle.slotWidth` (opt-in), `WhatsAppScene`, replay
+  variant `whatsapp`, GlassTabBarGeometryTest; tap lands 129 (iOS 130), drag 915 (913). Bar over the
+  grey card 54 iOS / 46 ours, pill 30 / 25 (clearer glass, as App Store; not fitted). Ports: calmSelectorBar
+  ({slotWidth}) / CalmSelectorBar.Create(slotWidth:) + tests. Evidence review/.../whatsapp-slots.png. Local: .local/sxs/ref/whatsapp, waslots.py.
+- Ports free button (17 Oct): `GlassFreePullPortFixtureTest` exports free-button.json (4 scenarios through
+  Compose's own laws/specs; animateFloatAsState retarget rule). CanvasKit/portable `createFreeButton`
+  (ports/web interaction.mjs + core springAt/fastOutSlowIn; bundle regenerated; types), .NET `FreeButton`
+  + FreeButtonChecks. Parity worst 0.0093 px / 1.8e-3 (Compose: spring time = whole ms truncated, tween
+  = ns; spring snaps at its 0.01 visibility threshold). web 14/14, skia 35/35, .NET 14/14.
+- App Store bar is clearer glass (17 Oct): plain card 28 -> 57 (slope ~0.9) vs Phone bar same session
+  slope 0.58 (JGEY2190 8.25 s avatar 77 -> 87, black 42). Clear bar fits the card, not the text (page
+  under the bar unknown for 2 of 3 lines). Lens haze: wide tone in lens does not raise p10 (50-51 vs 62);
+  it is the held map's top band. Scene headline matched (27 sp Bold, 15/15/9 chars).
+- Calibration target (17 Oct): the C1a stills (Photos toolbar over the known target, screenshots =
+  display colours) were never affected by the decode error. New opt-in
+  `GlassCalibrationRenderTest.renderTheCalmBarOverTheDarkTarget` + `GlassRender(softDetail)`. Calm bar
+  (pass 18) over the target: mean/std 102.2/20.8 vs iOS Tint 50 102.6/20.6; CalmRecordedSpace 112.6.
+  Linear law confirmed, no compression -> App Store gap is our page, not the material. Detail: the
+  high-pass matches the toolbar's stripes (3.0 rms), softDetail 7.9; smooth along-bar Gaussian 7.0-8.2
+  (fixes text, not stripes). Toolbar vs tab-bar role unresolved; softDetail kept for Calm. NEXT: make the
+  App Store scene's page match (headline size/weight/position under the bar), then re-score.
+- App Store bar (17 Oct, in progress): sample AppStoreScene + replay variant `appstore` (also `+bar=a,lift,
+  fineShare,blurDp` for fitting); `.local/sxs/trackas.py` (as-track.csv), `genas.py` (as-script.txt; touch =
+  bar lit vs local baseline AND left end out >= 6 px: the 38.0 s card scroll is not a touch), `scoreas.py`.
+  LOLL8185 36.5-44: path 10.1 px rms, -8 ms. Bar over the card: iOS p10/50/75 58/68/79, ours 49/54/72;
+  clear bar (+bar=0,32) 60/69/101; docs2 p75 rises 48 -> 59-66 with it. iOS: ~page+32 dark, compressive
+  bright. NEXT: regress iOS 37.9 (black) vs 38.5 (card) per pixel for the bar's response curve, then a
+  compressive opt-in (e.g. a highlight knee) on the bar; then JGEY2190 76-102 taps (bright cards).
+- Next target found (15 Oct): the "light App Store / WhatsApp" bars in these recordings are DARK five-tab
+  bars: JGEY2190 50-74 s WhatsApp (Updates/Calls/Communities/Chats/You), 78-101 s App Store (Today/
+  Games/Apps/Arcade/Search), LOLL8185 36-44 s App Store. LOLL8185's other segments: home screen over the
+  calibration target (dock, widgets, Control Centre). Personal content in all: local only.
+  App Store dark bar (LOLL8185 37.5 s, display colours): x 63-1106 (348 pt), rows 453-638 (62 pt), five
+  tabs at x 200/393/585/777/969 (192 px), resting pill ~x 78-328 (~83 pt). Needs its own replay scene.
+- Pass 18 (done, 15 Oct): clear pill and lens, softDetail on bar and lens. All five at p18: rest bar/pill 0,
+  held bar 0, held lens +0.1 (docs2 haze -13), tap pill -8 at +170 ms (plateau ok); suite 391/0 failed;
+  ports 35/35, 13/13; videos .local/comparisons/2026-10-15-pass18/. Earlier notes: iOS's held lens follows held = 41-46 + 1.33-1.48 x
+  (the same pixel at rest) on docs2 (`.local/sxs/lensgain.py`); its resting pill passes the page (p75 51
+  vs our 29). Both are clear glass plus an offset: pill = bar - 22/255 (the originally measured inset
+  law, "0.857 of the bar minus 17/255"), lens = bar + 0.30 raw page - 3/255. Slices (`pillfit.sh`): pill
+  black 10/10, content 12/29/47 vs 15/25/51; lens black 48/49 vs 48/49, content 52/75/135 vs 62/80/135
+  (p10 gap = iOS's milky haze). Applied to dark Calm; p18 renders running. Next found: text under the
+  bar is grainy in ours (per-pixel rotated scatter taps + jittered axis mean), smooth in iOS: test an
+  unjittered/smooth fine term once the renders free the shaders.
+- Pass 17 (15 Oct): the search button. `GlassPullShape.Free` (body + glyph follow the finger, landing
+  floor squash), `GlassMotion.FreeRelease` (.45 / 264, near-edge fit), `GlassInteraction.pullLiftShare`
+  (.7), `GlassAccessoryLink` (bar outline follows the button, read at draw time; composition read
+  trailed a frame). Script: `.local/sxs/searchscript.py` (finger inverted through the modifier's
+  resistance) -> `ref/IMG_6756/search-script.txt`; score `searchscore.py IMG_6756 s4`: centre 1.9/3.0,
+  height 4.3, half-width 2.8 px, level 8.0 (passive 14.3/41.1/6.4/4.4/19.1). Tests GlassFreePullTest.
+  Ports: not ported (their interaction is the Calm preset). Owner video
+  `.local/comparisons/2026-10-15-pass16/IMG_6756-search.mp4`. NEXT: held-lens page gain; light App
+  Store / WhatsApp bars (LOLL8185 36-44 s has the App Store's dark bar too).
+- Pass 16 closed (15 Oct): all five replayed. Levels (ours - iOS): rest bar +0 (44), rest pill +3,
+  held bar +0 (16), held lens -0.9 (black pages 0; docs2 -16, the page veil), tap pill at +170 ms -8
+  (plateau matches; ours falls ~50 ms sooner). Tracking (holds/drags): IMG_6756 11.0, LOLL8185 9.2,
+  JGEY2190 26.9 px rms, best shift -8 ms on all three. Suite 388/361/27 skipped/0 failed; desktopTest,
+  assembleDebug, CanvasKit 35/35 (touchLift ported: `calmBarMaterial({touch})`, navigation
+  `state().touch`), .NET 13/13 (`CalmNavigation.Touch`, `DrawCalmBar(..., touch)`). Owner videos:
+  `.local/comparisons/2026-10-15-pass16/`. NEXT: the search-button model (opt-in, see the measured
+  search catalogue above), then the held lens's page gain, then the light App Store / WhatsApp bars.
+- Step 4 (first fit): `.local/sxs/levels.py` (bar/pill at rest, held bar/lens, tap pill; iOS vs ours per
+  catalogue moment). Pass-14 Calm in display colours, five recordings: rest bar iOS 33 / ours 46,
+  rest pill 15 / 27, held bar 43.5 / 53, held lens 48 / 60, tap pill 54 / 52. Re-fit: bar lift 45->32/255,
+  pill black .42->.55, held lift 8->10/255; old values kept as `GlassTabBarStyle.CalmRecordedSpace()`
+  (replay variant `calm-recorded`). Re-rendering all five as `ref/<name>/p15` to re-score.
+
 ## Now — continuous comparison against the recordings (13 October)
 
 - [x] Deterministic 60 fps GPU replay of both recordings' gestures (`:desktop:phoneReplay`,
@@ -44,6 +276,15 @@ bounded completed work, **not completion of full iOS parity**. All open rows rem
 - [x] Pass 10: left-wall landings scored (rows 495–498); stretch-stiffened trailing edge (rms 4.1 px
   left, 5.5 right); reversal end lifts moving; release spring one frame in; neck median 17 ms;
   still release keeps its glass .18 s (stationary hold darkens on time again).
+- [x] Pass 12: held selected ink on iOS's position (pivot and reach fixed; 203 vs 204 px); grey
+  held outline (`heldEdgeTone`, glow off); moving lens widens and flattens (`heldTravelStrain`,
+  427 x 144 vs iOS 458 x 145); tap fold along the runs (.75); frame-loop wake lag fixed (throws on
+  time); neutral scene page. Landings 5.7 / 5.1 px rms. Evidence: `review/atlas/reference-replay-2026-10-13`.
+- [x] Pass 13: held lens on the pressed tab, bar reach removed (cap band as iOS); glow as a floor
+  (band 26..10 vs 36..9); rawShare .05 (text p95 82 vs 84); strain .6 (444 x 145 vs ~444 x 141).
+- [x] Pass 14: grey veil on the held lens (avatar 82.5 vs 80, text 80/105 vs 84/109); refracted
+  tint mask (band 15.4 vs 15.3); reversal input refit on icon crossings (right +2 ms, left +3 ms).
+- [ ] Tap transit pill strip reads 58 against iOS's 67 at 1.0 s (pre-existing, seen in pass 14).
 - [ ] Owner visual acceptance of the navigation selector.
 
 ## P0 — current visible failures

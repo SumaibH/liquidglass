@@ -21,6 +21,7 @@ public sealed record CalmSelectorSpec
     public double ReferenceSpeed { get; init; } = 11.5; public double HeldReferenceSpeed { get; init; } = 20;
     public double VelocityTau { get; init; } = .035; public double ReferenceAcceleration { get; init; } = 26;
     public double ElongationSlots { get; init; } = .5; public double StretchGain { get; init; } = 0;
+    public double HeldTravelStrain { get; init; } = 0; public double HeldTravelStrainOmega { get; init; } = 10;
     public double MaxStrain { get; init; } = .42; public double PullStrainPerDp { get; init; } = .0038;
     public double PullPressurePerDp { get; init; } = -.0007; public double PullOnsetDp { get; init; } = 12;
     public double PullMaxStrain { get; init; } = .12; public double PullFollow { get; init; } = .2;
@@ -57,34 +58,59 @@ public sealed record CalmSelectorSpec
         CentreOmega = 24, SpineOmega = 30, SpineZeta = .78, TapSpineOmega = 26, TapSpineZeta = .45,
         TapElongationSlots = .36, TapReferenceSpeed = 10, SpineReleaseOmega = 22, PressureOmega = 22,
         PressureFallOmega = 14, FormRiseOmega = 30, TapPressureOmega = 45, HeldHeightRatio = 1.2,
-        HeldReferenceSpeed = 12, ElongationSlots = .28, Squeeze = .47, PullStrainPerDp = 0,
+        HeldReferenceSpeed = 8, ElongationSlots = .28, Squeeze = .47, PullStrainPerDp = 0,
         PullPressurePerDp = 0, PullFollow = 0, EndTravelCapRatio = .025, MaxAccommodationSlots = .15,
         TravelOnly = true, ReleaseTravel = true, TapRecoilArea = true, HeldTravelPressureOmega = 60,
         TapSpineLimitSlots = .45, TapAreaGain = .51, TapShortTripRate = .75, TapAppearanceArea = .44,
         TapAppearanceSpine = .13, TapAppearanceFallOmega = 45, ReleaseFormationSpeed = 3,
         GraspOmega = 120, HeldFormRiseOmega = 50, ReleaseTrailingEdge = true, ReleaseRecoveryOmega = 13,
         ReleaseTrailingInOmega = 9, ReleaseTrailingInZeta = .3, ReleaseTrailingCarry = .1, ReleaseWallGive = .35,
-        ReleaseTrailingStiffening = .5, ReleaseStillHoldSeconds = .18,
+        ReleaseTrailingStiffening = .5, ReleaseStillHoldSeconds = .18, HeldTravelStrain = .6, HeldTravelStrainOmega = 10,
     };
 }
 
-/// <summary>The bar as the selector sees it (buildGlassSelectorBar, pose path). Pixels.</summary>
+/// <summary>The bar as the selector sees it (buildGlassSelectorBar, pose path). Pixels. A finite
+/// <see cref="FixedSlot"/> (GlassTabBarStyle.slotWidth) lays equal slots of that width centred in the bar,
+/// each centre held at least <see cref="EndReach"/> from either end; NaN shares the bar out inside <see cref="Inset"/>.</summary>
 public sealed record CalmSelectorBar(double Width, double Height, double Inset, int Count, double CornerRadius,
-    double BaseHalfWidth, double BaseHalfHeight, double AllowedHalfHeight, double Density, double SlotWidth)
+    double BaseHalfWidth, double BaseHalfHeight, double AllowedHalfHeight, double Density, double SlotWidth,
+    double FixedSlot = double.NaN, double EndReach = 0)
 {
-    public double CentreOf(int index) => Inset + (index + .5) * SlotWidth;
+    private bool Fixed => double.IsFinite(FixedSlot) && FixedSlot > 0;
+
+    public double CentreOf(int index) => Fixed ? FixedCentre(Width, Count, FixedSlot, EndReach, index) : Inset + (index + .5) * SlotWidth;
+
+    /// <summary>The tab under a bar-local x: the nearest centre for set slots, the slot under it otherwise.</summary>
+    public int NearestTab(double x)
+    {
+        if (!Fixed) return Math.Clamp((int)Math.Floor((x - Inset) / SlotWidth), 0, Count - 1);
+        var i = 0;
+        while (i < Count - 1 && x > (CentreOf(i) + CentreOf(i + 1)) / 2) i++;
+        return i;
+    }
+
+    // glassFixedSlotCentre: equal slots centred in the bar, held endReach from either end.
+    private static double FixedCentre(double width, int count, double slot, double endReach, int i)
+    {
+        double mid = width / 2, lo = Math.Min(endReach, mid);
+        return Math.Clamp(mid + (i - (count - 1) / 2.0) * slot, lo, width - lo);
+    }
 
     public static CalmSelectorBar Create(double width, double height, int count, double inset = 6,
-        double? pillWidth = null, double pillInset = 4, double density = 1)
+        double? pillWidth = null, double pillInset = 4, double density = 1, double? slotWidth = null)
     {
         if (!double.IsFinite(width) || !double.IsFinite(height) || width <= 0 || height <= 0 || count < 1 ||
             !double.IsFinite(density) || density <= 0 || inset < 0 || pillInset < 0)
             throw new ArgumentOutOfRangeException(nameof(width), "Positive bar size, count and nonnegative insets required");
-        var slot = Math.Max((width - inset * 2) / count, 0);
+        var isFixed = slotWidth is double sw && double.IsFinite(sw) && sw > 0;
+        var slot = isFixed ? slotWidth!.Value : Math.Max((width - inset * 2) / count, 0);
         var pill = pillWidth is double p && double.IsFinite(p) ? Math.Max(p, slot) : slot;
-        var rest = Math.Min(pill / 2, Math.Max(inset + slot / 2 - density, density));
+        double fixedSlot = isFixed ? slot : double.NaN, endReach = isFixed ? pill / 2 + pillInset : 0;
+        var first = isFixed ? FixedCentre(width, count, slot, endReach, 0) : inset + slot / 2;
+        var rest = Math.Min(pill / 2, Math.Max(first - density, density));
         var half = Math.Min(height / 2 - pillInset, rest);
-        return new(width, height, inset, count, height / 2, rest, half, Math.Max(half, height / 2 - density), density, slot);
+        return new(width, height, inset, count, height / 2, rest, half, Math.Max(half, height / 2 - density), density, slot,
+            fixedSlot, endReach);
     }
 }
 
@@ -271,6 +297,7 @@ public sealed class CalmSelectorController
     private readonly SelectorPose pose = new(), velocity = new(), equilibrium = new(), lastGood = new(), lastGoodVelocity = new(),
         lastPublished = new(), probePose = new(), scratchPose = new();
     private readonly SelectorFrame frame = new(), probeFrame = new(), derivFrame = new();
+    private readonly SelectorSpring strainDrive = new();
     private readonly SelectorSpring form = new(), transit = new(), travel = new(), tapArea = new(), releaseEdge = new(),
         releaseTrail = new(), graspX = new(), graspY = new(), scratch = new();
     private readonly double[] contour = new double[ContourSamples * 2];
@@ -300,7 +327,7 @@ public sealed class CalmSelectorController
     public double CentreY => pose.Cy;
     public CalmSelectorBar Bar => bar ?? throw new InvalidOperationException("Attach a bar first");
     public bool IsIdle => Mode != CalmSelectorMode.PressPending && !tapAreaActive && TransitAppearance < 1e-4 &&
-        HeldTravel < 1e-4 && quietSteps >= QuietSteps &&
+        HeldTravel < 1e-4 && quietSteps >= QuietSteps && strainDrive.Value == 0 &&
         // A still release keeping its glass: nothing moves yet, but the formation still has to fall.
         !(Mode == CalmSelectorMode.Released && releasedFromHold && releasedStill && form.Value > .01 &&
           now - releasedAt < Spec.ReleaseStillHoldSeconds + .05);
@@ -465,8 +492,16 @@ public sealed class CalmSelectorController
     }
     private static double HeldPressure(double ratio, double barHeight, double referenceHeight) =>
         referenceHeight <= 1e-4 || barHeight <= 1e-4 ? 0 : Math.Log(ratio * barHeight / referenceHeight);
-    private double LandingHalfWidth() => reference.R * Math.Exp(pose.P) + pose.Dx + Math.Max(pose.Acc, 0);
-    private double LandingHalfWidthVelocity() => reference.R * Math.Exp(pose.P) * velocity.P + velocity.Dx + (pose.Acc > 0 ? velocity.Acc : 0);
+    // The held travel strain (HeldTravelStrain) widens the rendered body by e^u; zero leaves it 1.
+    private double StrainScale() => Spec.HeldTravelStrain > 0 ? Math.Exp(pose.U) : 1;
+    private double LandingHalfWidth() => (reference.R * Math.Exp(pose.P) + pose.Dx + Math.Max(pose.Acc, 0)) * StrainScale();
+    private double LandingHalfWidthVelocity()
+    {
+        var eu = StrainScale();
+        var b = reference.R * Math.Exp(pose.P) + pose.Dx + Math.Max(pose.Acc, 0);
+        return (reference.R * Math.Exp(pose.P) * velocity.P + velocity.Dx + (pose.Acc > 0 ? velocity.Acc : 0)) * eu +
+            (eu != 1 ? b * eu * velocity.U : 0);
+    }
 
     private void Substep(double dt)
     {
@@ -520,7 +555,8 @@ public sealed class CalmSelectorController
         var longTapDrive = 1 - Math.Exp(-distanceExcess * distanceExcess / (distanceExcess + .5));
         var vRef = Math.Max(Mode == CalmSelectorMode.Held ? s.HeldReferenceSpeed : tapMotion ? s.TapReferenceSpeed : s.ReferenceSpeed, 1e-3);
         var sv = speed2 / (vRef * vRef + speed2);
-        travel.Target = Mode == CalmSelectorMode.Held && MotionEnabled ? sv : 0;
+        travel.Target = MotionEnabled && (Mode == CalmSelectorMode.Held ||
+            (Mode == CalmSelectorMode.Released && releasedFromHold)) ? sv : 0;
         travel.Step(dt, 60, 1);
         if (Math.Abs(travel.Value) < 1e-4 && Math.Abs(travel.Velocity) < .002 && travel.Target == 0) travel.SnapTo(0);
         var pressResponse = heldNow ? 1 : pointerDownActive && pressEligible ? s.PressFormation : 0;
@@ -556,7 +592,14 @@ public sealed class CalmSelectorController
             var psi = Math.Atan2(pullY, vx * s.PullTiltSeconds) - Math.Atan2(frame.SinTheta, frame.CosTheta);
             pullU = pullStrain * Math.Cos(2 * psi); pullV = pullStrain * Math.Sin(2 * psi);
         }
-        equilibrium.U = gain * (nvx * nvx - .5 * speed2) / denom + pullU;
+        if (s.HeldTravelStrain > 0)
+        {
+            // Sustained held travel builds the strain; a short flick releases before it has.
+            strainDrive.Target = Mode == CalmSelectorMode.Held && MotionEnabled ? sv * formation : 0;
+            strainDrive.Step(dt, s.HeldTravelStrainOmega, 1);
+            if (Math.Abs(strainDrive.Value) < 1e-4 && Math.Abs(strainDrive.Velocity) < .002 && strainDrive.Target == 0) strainDrive.SnapTo(0);
+        }
+        equilibrium.U = gain * (nvx * nvx - .5 * speed2) / denom + pullU + s.HeldTravelStrain * strainDrive.Value;
         equilibrium.V = gain * (nvx * nvy) / denom + pullV;
         var held = HeldPressure(s.HeldHeightRatio, b.Height, refr.Height);
         var squeeze = Mode == CalmSelectorMode.Held ? s.Squeeze * sv : 0;
@@ -715,10 +758,13 @@ public sealed class CalmSelectorController
                 var caps = refr.R * Math.Exp(pose.P) + Math.Max(pose.Acc, 0);
                 var capsVelocity = refr.R * Math.Exp(pose.P) * velocity.P + (pose.Acc > 0 ? velocity.Acc : 0);
                 var minimum = caps + .002;
-                if (dir * (releaseEdge.Value - releaseTrail.Value) < 2 * minimum)
-                { releaseTrail.Value = releaseEdge.Value - dir * 2 * minimum; releaseTrail.Velocity = releaseEdge.Velocity - dir * 2 * capsVelocity; }
-                pose.Dx = dir * (releaseEdge.Value - releaseTrail.Value) * .5 - caps;
-                velocity.Dx = dir * (releaseEdge.Velocity - releaseTrail.Velocity) * .5 - capsVelocity;
+                var eu = StrainScale();
+                if (dir * (releaseEdge.Value - releaseTrail.Value) < 2 * minimum * eu)
+                { releaseTrail.Value = releaseEdge.Value - dir * 2 * minimum * eu; releaseTrail.Velocity = releaseEdge.Velocity - dir * 2 * capsVelocity * eu; }
+                // The edges are rendered extents; the held travel strain scales the body by e^u.
+                var half = dir * (releaseEdge.Value - releaseTrail.Value) * .5;
+                pose.Dx = half / eu - caps;
+                velocity.Dx = (dir * (releaseEdge.Velocity - releaseTrail.Velocity) * .5 - (eu != 1 ? half * velocity.U : 0)) / eu - capsVelocity;
                 pose.Dy = 0; velocity.Dy = 0;
             }
             pose.Cx = releaseEdge.Value - dir * LandingHalfWidth(); velocity.Cx = releaseEdge.Velocity - dir * LandingHalfWidthVelocity();
@@ -990,6 +1036,9 @@ public sealed class CalmNavigation
     private readonly double touchSlop, flingVelocity;
     private Gesture? gesture;
     private double clock;
+    // GlassTabBarStyle.touchLift: the bar lifts for any touch. As Compose's animateFloatAsState with
+    // tween(50) on the press and tween(260) on the lift: FastOutSlowIn, restarting from where it is.
+    private (double From, double To, double T0, double Duration) touch = (0, 0, 0, 1);
     private sealed class Gesture
     {
         public double X0, Y0, T0; public int LastIndex; public bool Dragging; public readonly List<(double T, double X)> Samples = [];
@@ -1007,7 +1056,7 @@ public sealed class CalmNavigation
 
     public CalmSelectorController Controller { get; }
     public int Selected { get; private set; }
-    private int Nearest(double x) => Math.Clamp((int)Math.Floor((x - bar.Inset) / bar.SlotWidth), 0, bar.Count - 1);
+    private int Nearest(double x) => bar.NearestTab(x);
 
     public void Select(int index) { Selected = Math.Clamp(index, 0, bar.Count - 1); if (gesture is null) Controller.Retarget(Selected); }
     public void SetMotion(bool enabled) => Controller.MotionEnabled = enabled;
@@ -1017,6 +1066,7 @@ public sealed class CalmNavigation
         var index = Nearest(x);
         gesture = new Gesture { X0 = x, Y0 = y, T0 = seconds, LastIndex = index };
         gesture.Samples.Add((seconds, x));
+        if (Controller.MotionEnabled) TouchTo(1, seconds);
         Controller.PointerDown(x, y, seconds, Controller.MotionEnabled); Controller.Retarget(index);
     }
 
@@ -1029,7 +1079,9 @@ public sealed class CalmNavigation
             if (!Controller.MotionEnabled) return;
             double dx = x - g.X0, dy = y - g.Y0; var held = seconds - g.T0 >= Controller.Spec.HoldThresholdSeconds;
             var crossed = held ? Math.Sqrt(dx * dx + dy * dy) > touchSlop : Math.Abs(dx) > touchSlop;
-            if (crossed) { g.Dragging = true; Controller.BeginDrag(g.X0, g.Y0); }
+            // As GlassTabBar: the drag begins from the down, then the crossing move is applied again,
+            // or BeginDrag would leave the pointer at the down until the next move.
+            if (crossed) { g.Dragging = true; Controller.BeginDrag(g.X0, g.Y0); Controller.PointerMove(x, y, seconds); }
             else if (!held && Math.Abs(dy) > touchSlop) { Cancel(seconds); return; }
             else return;
         }
@@ -1040,20 +1092,48 @@ public sealed class CalmNavigation
     {
         if (gesture is not { } g) return;
         gesture = null;
+        TouchTo(0, seconds);
         if (!g.Dragging) { Controller.Cancel(g.LastIndex); Selected = g.LastIndex; onSelect(g.LastIndex); return; }
         g.Samples.Add((seconds, x));
+        // The lift is the gesture's last sample, as in GlassTabBar.
+        Controller.PointerMove(x, y, seconds);
         var v = Velocity(g.Samples);
         var projected = Math.Clamp(v > flingVelocity ? g.LastIndex + 1 : v < -flingVelocity ? g.LastIndex - 1 : g.LastIndex, 0, bar.Count - 1);
         Controller.PointerUp(projected); Selected = projected; onSelect(projected);
     }
 
-    public void Cancel(double seconds) { gesture = null; Controller.Cancel(Selected); }
+    public void Cancel(double seconds) { gesture = null; TouchTo(0, seconds); Controller.Cancel(Selected); }
+
+    /// <summary>The bar's touch lift amount at the last frame, 0 to 1 (GlassTabBarStyle.touchLift).</summary>
+    public double Touch => TouchAt(clock);
+
+    private double TouchAt(double seconds)
+    {
+        var u = Math.Clamp((seconds - touch.T0) / touch.Duration, 0, 1);
+        return touch.From + (touch.To - touch.From) * FastOutSlowIn(u);
+    }
+
+    private void TouchTo(double to, double seconds)
+    {
+        if (touch.To == to) return;
+        touch = (TouchAt(seconds), to, seconds, to > 0 ? .05 : .26);
+    }
+
+    /// <summary>Compose's FastOutSlowInEasing, cubic-bezier(0.4, 0, 0.2, 1).</summary>
+    private static double FastOutSlowIn(double u)
+    {
+        if (u <= 0 || u >= 1) return Math.Clamp(u, 0, 1);
+        static double Bez(double t, double p1, double p2) => 3 * (1 - t) * (1 - t) * t * p1 + 3 * (1 - t) * t * t * p2 + t * t * t;
+        double lo = 0, hi = 1, t = u;
+        for (var i = 0; i < 30; i++) { t = (lo + hi) / 2; if (Bez(t, .4, .2) < u) lo = t; else hi = t; }
+        return Bez(t, 0, 1);
+    }
 
     /// <summary>Advance to the display time. True while another frame is needed.</summary>
     public bool Frame(double seconds)
     {
         clock = Controller.ResumedFrameTime(Math.Max(clock, seconds)); Controller.AdvanceFrameTo(clock);
-        return !Controller.IsIdle || gesture is not null;
+        return !Controller.IsIdle || gesture is not null || clock < touch.T0 + touch.Duration;
     }
 
     /// <summary>Least-squares slope over the last 100 ms, as a stand-in for Compose's VelocityTracker.</summary>

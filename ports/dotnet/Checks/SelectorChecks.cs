@@ -10,6 +10,12 @@ internal static class SelectorChecks
 
     public static object Run()
     {
+        // GlassTabBarStyle.CalmClear: only the dark bar's tint differs (black at 0.10, 8-bit), light unchanged.
+        var calmBar = CalmSelectorMaterial.Bar(true, 0).Values; var clearBar = CalmSelectorMaterial.Bar(true, 0, clear: true).Values;
+        Check(clearBar["uTint"].SequenceEqual(new[] { 0f, 0f, 0f, 26f / 255 }), $"clear bar tint {string.Join(",", clearBar["uTint"])}");
+        Check(calmBar.All(p => p.Key == "uTint" || p.Value.SequenceEqual(clearBar[p.Key])), "clear bar differs beyond its tint");
+        Check(CalmSelectorMaterial.Bar(false, 0, clear: true).Values.All(p => p.Value.SequenceEqual(CalmSelectorMaterial.Bar(false, 0).Values[p.Key])),
+            "light clear bar must equal Calm");
         using var json = JsonDocument.Parse(File.ReadAllText(Path.Combine(AppContext.BaseDirectory, "fixtures", "selector-calm.json")));
         var root = json.RootElement; var b = root.GetProperty("bar");
         var bar = CalmSelectorBar.Create(b.GetProperty("width").GetDouble(), b.GetProperty("height").GetDouble(), b.GetProperty("count").GetInt32(),
@@ -77,6 +83,19 @@ internal static class SelectorChecks
         Check(picks.SequenceEqual([2]) && time < 2 && Math.Abs(nav.Controller.CentreX - bar.CentreOf(2)) < .5, "Native navigation tap did not settle on its tab");
         nav.Down(417, 93, 3); nav.Move(417, 140, 3.05); nav.Up(417, 140, 3.08);
         Check(picks.Count == 1 && nav.Selected == 2, "Vertical scroll selected a tab");
+
+        // Set slots (GlassTabBarStyle.slotWidth): WhatsApp's measured bar, as GlassTabBarGeometryTest.
+        var wa = CalmSelectorBar.Create(1044, 186, 5, pillWidth: 234, pillInset: 12, density: 3, slotWidth: 214.5);
+        double[] ios = [130, 307, 521.5, 736.25, 913];
+        for (var i = 0; i < 5; i++)
+            Check(Math.Abs(wa.CentreOf(i) - ios[i]) <= 2 && wa.NearestTab(wa.CentreOf(i)) == i, $"Set-slot centre {i}: {wa.CentreOf(i)}");
+        Check(double.IsNaN(bar.FixedSlot) && Math.Abs(bar.CentreOf(0) - (bar.Inset + bar.SlotWidth / 2)) < 1e-9, "Shared-out slots changed");
+        var waPicks = new List<int>();
+        var waNav = new CalmNavigation(wa, 2, waPicks.Add);
+        waNav.Down(140, 93, .1); waNav.Up(140, 93, .16);
+        time = .16;
+        while (waNav.Frame(time) && time < 3) time += 1.0 / 60;
+        Check(waPicks.SequenceEqual([0]) && Math.Abs(waNav.Controller.CentreX - 129) < .5, $"Set-slot tap landed at {waNav.Controller.CentreX}");
 
         // Material: every selector material the Kotlin factory computed is reproduced.
         using var materialJson = JsonDocument.Parse(File.ReadAllText(Path.Combine(AppContext.BaseDirectory, "fixtures", "selector-material.json")));

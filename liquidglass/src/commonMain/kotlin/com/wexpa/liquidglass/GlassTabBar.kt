@@ -5,6 +5,7 @@ import androidx.compose.animation.core.animate
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.snap
 import androidx.compose.animation.core.spring
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.selection.selectableGroup
 import androidx.compose.foundation.gestures.awaitEachGesture
@@ -24,10 +25,12 @@ import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableIntStateOf
@@ -49,6 +52,7 @@ import androidx.compose.ui.input.pointer.AwaitPointerEventScope
 import androidx.compose.ui.input.pointer.PointerId
 import androidx.compose.ui.input.pointer.PointerInputChange
 import androidx.compose.ui.input.pointer.util.VelocityTracker
+import androidx.compose.ui.layout.Layout
 import androidx.compose.ui.layout.layout
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalDensity
@@ -59,6 +63,7 @@ import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.testTag
 import androidx.compose.ui.unit.Constraints
+import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.DpRect
 import androidx.compose.ui.unit.IntOffset
@@ -155,11 +160,7 @@ fun GlassTabBar(
         val barHeightDp: Dp = maxHeight
         val barWidthPx = with(density) { barWidthDp.toPx() }
         val barHeightPx = with(density) { barHeightDp.toPx() }
-        val geometry = GlassTabBarGeometry(
-            barWidth = barWidthPx,
-            inset = with(density) { style.contentPadding.toPx() },
-            count = itemCount,
-        )
+        val geometry = glassTabBarGeometry(density, barWidthPx, style, itemCount)
         val slotWidthDp = with(density) { geometry.slotWidth.toDp() }
         val flingVelocity = with(density) { style.flingVelocity.toPx() }
         val gelReference = with(density) { style.gelReference.toPx() }
@@ -348,6 +349,12 @@ fun GlassTabBar(
         // the protruding held lens: only an eligible press that outlives the hold threshold, or
         // a recognized drag, forms it.
         val lift = poseHandle?.formation ?: handle?.formation ?: v2Lift
+        // [GlassTabBarStyle.touchLift]: the bar's material lift for any touch, not only a hold.
+        val touchAmount by animateFloatAsState(
+            targetValue = if (gestureDown && style.touchLift && motionEnabled) 1f else 0f,
+            animationSpec = if (gestureDown) tween(50) else tween(260),
+            label = "glass_tab_bar_touch",
+        )
         val pillHeight: Dp = barHeightDp - style.pillInset * 2
         val lensHeight: Dp = barHeightDp + style.lensOverflow * 2
         val pillWidthDp: Dp = if (style.pillWidth.isSpecified) maxOf(style.pillWidth, slotWidthDp) else slotWidthDp
@@ -720,6 +727,11 @@ fun GlassTabBar(
                                 ?: return@awaitEachGesture   // cancelled: no selection, releaseToSelection below
                             committed = true
                             if (poseHandle != null) {
+                                // The lift is the gesture's last sample: integrate up to it and
+                                // install its position, or the travel between the last move and
+                                // the lift is lost to the release (2026-10-15 review).
+                                if (terminalUp) poseHandle.controller.pointerMove(
+                                    terminal!!.position.x, terminal.position.y, terminal.uptimeMillis / 1000.0)
                                 // Every pose coordinate and velocity is preserved; only the
                                 // equilibria move to the resting body, so translation and shape
                                 // recover together from the shape the body actually has.
@@ -800,14 +812,18 @@ fun GlassTabBar(
                             trailingAccessory.fusion * (1f - glassAccessoryYield(poseHandle.formation, endEdge, barWidthPx, barHeightPx))
                         } else trailingAccessory.fusion,
                         anchored = true,
-                    )
+                    ).apply {
+                        // Where the accessory is drawn ([GlassTabBarAccessory.link]): its press growth
+                        // and pull move and reshape the rect the outline reaches for.
+                        follow = trailingAccessory.link
+                    }
                 }
             } else {
                 null
             }
             val margin = (style.heldScale - 1f).coerceAtLeast(0f)
             val barStyle = if (style.heldLift != 0f) {
-                style.bar.copy(tintLift = style.bar.tintLift + style.heldLift * lift)
+                style.bar.copy(tintLift = style.bar.tintLift + style.heldLift * max(lift, touchAmount))
             } else {
                 style.bar
             }
@@ -867,6 +883,7 @@ fun GlassTabBar(
                     ItemRow(
                         count = itemCount,
                         inset = style.contentPadding,
+                        geometry = geometry,
                         selectedFor = { index -> !lensCarriesInk && index == activeIndex },
                         onClick = { index -> select(index) },
                         semanticSelected = selected,
@@ -942,6 +959,17 @@ fun GlassTabBar(
                 // big its node is, so that first snapshot carries a translation built from zeros.
                 // Republish now that the frame is known, or one frame renders from it.
                 if (poseHandle != null && (poseFrameChanged || poseHandle.render == null)) poseHandle.publish()
+                // The drawn body follows the bar's pressed content, as its tab does (barShift);
+                // republish when the bar's press moves while the pose loop may be asleep.
+                if (poseHandle != null) {
+                    val barFrame = barDrawing
+                    poseHandle.barShift = barFrame?.let { state ->
+                        { x: Float -> state.drawing.contentPoint(x, barHeightPx / 2f).x - x }
+                    }
+                    LaunchedEffect(poseHandle, barFrame) {
+                        if (barFrame != null) snapshotFlow { barFrame.drawing }.collect { poseHandle.publish() }
+                    }
+                }
                 val nodeLeftPx = handle?.nodeLeft() ?: poseHandle!!.nodeLeft()
                 val nodeTopPx = poseHandle?.nodeTop() ?: -overflowTopPx
                 Box(
@@ -1018,12 +1046,16 @@ fun GlassTabBar(
                                     scaleX = barScale
                                     scaleY = barScale
                                 }
-                                .glassMaterialForeground(barDrawing,
-                                    Offset(nodeLeftPx.toFloat(), nodeTopPx.toFloat())),
+                                // In the bar-sized child's own frame (the layout above measures
+                                // everything after it at the bar's size), so the press pivots on
+                                // the bar centre: passing the node origin moved the held ink about
+                                // 17 px left and 10 up of the bar's own icons (video2, 1.8 s).
+                                .glassMaterialForeground(barDrawing),
                         ) {
                             ItemRow(
                                 count = itemCount,
                                 inset = style.contentPadding,
+                                geometry = geometry,
                                 selectedFor = { index -> !usePose || style.lensInkAll || index == activeIndex },
                                 onClick = null,
                                 item = item,
@@ -1093,6 +1125,7 @@ fun GlassTabBar(
                                 ItemRow(
                                     count = itemCount,
                                     inset = style.contentPadding,
+                                    geometry = geometry,
                                     selectedFor = { index -> !usePose || style.lensInkAll || index == activeIndex },
                                     onClick = null,
                                     item = item,
@@ -1120,67 +1153,105 @@ private fun ItemRow(
     emphasis: Float = 1f,
     /**
      * Reports each item's measured icon-and-label width, so the V3 body can make room for the
-     * content it is over from layout rather than from a guess. Items are equal slots and their
-     * content is centred, so a width plus the slot's centre is the whole bound.
+     * content it is over from layout rather than from a guess. Each item's content is centred on
+     * its slot's centre, so a width plus that centre is the whole bound.
      */
     onMeasured: ((index: Int, width: Float) -> Unit)? = null,
     /** The tab the host has selected, for accessibility; only the interactive row reports it. */
     semanticSelected: Int = -1,
+    /** The bar's item layout, in px; with fixed slots the items sit at its centres. */
+    geometry: GlassTabBarGeometry? = null,
 ) {
+    // The interactive row is the one accessibility sees: a group of tabs. Every other copy
+    // (the lens's refracted row, the V3 selected ink) is decoration and is hidden, or a
+    // screen reader would read each label two or three times.
+    val group = Modifier
+        .fillMaxSize()
+        .then(if (onClick != null) Modifier.selectableGroup() else Modifier.clearAndSetSemantics {})
+    val fixed = geometry?.takeIf { it.fixed }
+    if (fixed != null) {
+        // Fixed slots (GlassTabBarStyle.slotWidth): each item centred on its slot centre, its
+        // target half the gap to the nearer neighbour, so a closed-up end never overlaps the next.
+        Layout(
+            modifier = group,
+            content = { repeat(count) { index -> ItemCell(index, Modifier, true, selectedFor, onClick, item, emphasisIndex, emphasis, onMeasured, semanticSelected) } },
+        ) { measurables, constraints ->
+            val h = constraints.maxHeight
+            val placeables = measurables.mapIndexed { index, m ->
+                val w = (fixed.itemHalfWidth(index) * 2f).roundToInt().coerceAtLeast(0)
+                m.measure(Constraints.fixed(w, h))
+            }
+            layout(constraints.maxWidth, h) {
+                placeables.forEachIndexed { index, p -> p.place((fixed.centreOf(index) - p.width / 2f).roundToInt(), 0) }
+            }
+        }
+        return
+    }
     Row(
-        modifier = Modifier
-            .fillMaxSize()
-            // The interactive row is the one accessibility sees: a group of tabs. Every other copy
-            // (the lens's refracted row, the V3 selected ink) is decoration and is hidden, or a
-            // screen reader would read each label two or three times.
-            .then(if (onClick != null) Modifier.selectableGroup() else Modifier.clearAndSetSemantics {})
-            .padding(horizontal = inset),
+        modifier = group.padding(horizontal = inset),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceEvenly,
     ) {
         repeat(count) { index ->
-            Box(
-                modifier = Modifier
-                    .weight(1f)
-                    .fillMaxHeight()
-                    .then(
-                        if (onClick != null) {
-                            Modifier.selectable(
-                                selected = index == semanticSelected,
-                                interactionSource = remember { MutableInteractionSource() },
-                                indication = null,
-                                role = Role.Tab,
-                            ) { onClick(index) }
-                        } else {
-                            Modifier
-                        },
-                    ),
-                contentAlignment = Alignment.Center,
-            ) {
-                // Sprung per item, so the growth walks from tab to tab under a drag instead of
-                // jumping; both copies of the row animate the same targets on the same clock.
-                val itemScale by animateFloatAsState(
-                    targetValue = if (index == emphasisIndex) emphasis else 1f,
-                    animationSpec = spring(dampingRatio = 0.85f, stiffness = 900f),
-                    label = "glass_tab_bar_item_scale",
-                )
-                val measured = if (onMeasured != null) {
-                    Modifier.onGloballyPositioned { onMeasured(index, it.size.width.toFloat()) }
+            ItemCell(index, Modifier.weight(1f), false, selectedFor, onClick, item, emphasisIndex, emphasis, onMeasured, semanticSelected)
+        }
+    }
+}
+
+@Composable
+private fun ItemCell(
+    index: Int,
+    sizing: Modifier,
+    unboundedWidth: Boolean,
+    selectedFor: (Int) -> Boolean,
+    onClick: ((Int) -> Unit)?,
+    item: @Composable (index: Int, selected: Boolean) -> Unit,
+    emphasisIndex: Int,
+    emphasis: Float,
+    onMeasured: ((index: Int, width: Float) -> Unit)?,
+    semanticSelected: Int,
+) {
+    Box(
+        modifier = sizing
+            .fillMaxHeight()
+            .then(
+                if (onClick != null) {
+                    Modifier.selectable(
+                        selected = index == semanticSelected,
+                        interactionSource = remember { MutableInteractionSource() },
+                        indication = null,
+                        role = Role.Tab,
+                    ) { onClick(index) }
                 } else {
                     Modifier
-                }
-                // One call site whatever the scale: a branch on it made two different call sites,
-                // so the item's whole subtree, with its remembered state and running animations,
-                // was discarded each time emphasis began and again when it settled to exactly 1.
-                Box(
-                    modifier = measured.graphicsLayer {
-                        scaleX = itemScale
-                        scaleY = itemScale
-                    },
-                ) {
-                    item(index, selectedFor(index))
-                }
-            }
+                },
+            ),
+        contentAlignment = Alignment.Center,
+    ) {
+        // Sprung per item, so the growth walks from tab to tab under a drag instead of
+        // jumping; both copies of the row animate the same targets on the same clock.
+        val itemScale by animateFloatAsState(
+            targetValue = if (index == emphasisIndex) emphasis else 1f,
+            animationSpec = spring(dampingRatio = 0.85f, stiffness = 900f),
+            label = "glass_tab_bar_item_scale",
+        )
+        val measured = if (onMeasured != null) {
+            Modifier.onGloballyPositioned { onMeasured(index, it.size.width.toFloat()) }
+        } else {
+            Modifier
+        }
+        // One call site whatever the scale: a branch on it made two different call sites,
+        // so the item's whole subtree, with its remembered state and running animations,
+        // was discarded each time emphasis began and again when it settled to exactly 1.
+        Box(
+            modifier = (if (unboundedWidth) Modifier.wrapContentWidth(unbounded = true) else Modifier)
+                .then(measured)
+                .graphicsLayer {
+                    scaleX = itemScale
+                    scaleY = itemScale
+                },
+        ) {
+            item(index, selectedFor(index))
         }
     }
 }
@@ -1191,16 +1262,44 @@ private fun ItemRow(
  * clamped to the first and last slot centres.
  */
 @Immutable
-internal data class GlassTabBarGeometry(val barWidth: Float, val inset: Float, val count: Int) {
+internal data class GlassTabBarGeometry(
+    val barWidth: Float,
+    val inset: Float,
+    val count: Int,
+    /** [GlassTabBarStyle.slotWidth] in px; NaN shares the bar out. */
+    val fixedSlot: Float = Float.NaN,
+    /** With [fixedSlot], the nearest an item's centre comes to a bar end: its pill's half plus inset. */
+    val endReach: Float = 0f,
+) {
+    val fixed: Boolean get() = fixedSlot.isFinite() && fixedSlot > 0f
+
     // Never negative: a bar narrower than its two insets (an expand-in, a zero-width first
     // frame) would otherwise put firstCentre past lastCentre, and every coerceIn between them throws.
-    val slotWidth: Float get() = ((barWidth - inset * 2f) / count).coerceAtLeast(0f)
+    val slotWidth: Float get() = if (fixed) fixedSlot else ((barWidth - inset * 2f) / count).coerceAtLeast(0f)
     val firstCentre: Float get() = centreOf(0)
     val lastCentre: Float get() = centreOf(count - 1)
 
-    fun centreOf(index: Int): Float = inset + (index + 0.5f) * slotWidth
+    fun centreOf(index: Int): Float = if (fixed) {
+        glassFixedSlotCentre(barWidth, count, fixedSlot, endReach, index)
+    } else inset + (index + 0.5f) * slotWidth
 
-    fun nearestIndex(x: Float): Int = ((x - inset) / slotWidth).toInt().coerceIn(0, count - 1)
+    fun nearestIndex(x: Float): Int = if (fixed) {
+        var i = 0
+        while (i < count - 1 && x > (centreOf(i) + centreOf(i + 1)) / 2f) i++
+        i
+    } else ((x - inset) / slotWidth).toInt().coerceIn(0, count - 1)
+
+    /**
+     * Each item's hit and layout half-width about its centre: half the gap to the nearer
+     * neighbour, so the clamped end items never overlap the next one's target.
+     */
+    fun itemHalfWidth(index: Int): Float {
+        if (!fixed) return slotWidth / 2f
+        val c = centreOf(index)
+        val left = if (index > 0) (c - centreOf(index - 1)) / 2f else Float.MAX_VALUE
+        val right = if (index < count - 1) (centreOf(index + 1) - c) / 2f else Float.MAX_VALUE
+        return min(min(left, right), slotWidth / 2f).coerceAtLeast(0f)
+    }
 
     /** A flick carries to the next item even if the finger never got it there. */
     fun projected(lastIndex: Int, releasedVelocity: Float, flingVelocity: Float): Int = when {
@@ -1208,6 +1307,29 @@ internal data class GlassTabBarGeometry(val barWidth: Float, val inset: Float, v
         releasedVelocity < -flingVelocity -> lastIndex - 1
         else -> lastIndex
     }.coerceIn(0, count - 1)
+}
+
+/** The item layout [style] asks for on a [barWidthPx] bar. */
+internal fun glassTabBarGeometry(density: Density, barWidthPx: Float, style: GlassTabBarStyle, count: Int): GlassTabBarGeometry =
+    with(density) {
+        if (!style.slotWidth.isSpecified) {
+            return GlassTabBarGeometry(barWidthPx, style.contentPadding.toPx(), count)
+        }
+        val slot = style.slotWidth.toPx()
+        val pill = if (style.pillWidth.isSpecified) max(style.pillWidth.toPx(), slot) else slot
+        GlassTabBarGeometry(barWidthPx, style.contentPadding.toPx(), count, slot, pill / 2f + style.pillInset.toPx())
+    }
+
+/**
+ * The centre of item [index] on equal [slot]-wide slots centred in a [barWidth] bar, held at least
+ * [endReach] from either end ([GlassTabBarStyle.slotWidth]). One function for the tab bar's
+ * geometry and the V3 selector's, so the two can never disagree about where a tab is.
+ */
+internal fun glassFixedSlotCentre(barWidth: Float, count: Int, slot: Float, endReach: Float, index: Int): Float {
+    val mid = barWidth / 2f
+    val free = mid + (index - (count - 1) / 2f) * slot
+    val lo = min(endReach, mid)
+    return free.coerceIn(lo, barWidth - lo)
 }
 
 /**
@@ -1354,6 +1476,13 @@ data class GlassTabBarStyle(
     val heldScale: Float = 1f,
     /** Additive lift of the bar's material while held, as a fraction of white: 16/255 on iOS 27. */
     val heldLift: Float = 0f,
+    /**
+     * Whether [heldLift] also lifts the bar for any touch, a tap included, rising within 50 ms of
+     * the press and falling over 260 ms after the lift. iOS's whole bar lifts on every touch:
+     * +13 grey levels at the tab a tap never visits, back to rest ~350 ms after the ink leaves
+     * (docs/1, 2026-10-15). False lifts only a formed (held) selector's bar, as before.
+     */
+    val touchLift: Boolean = false,
     /** How much the tab under the lens grows about its own centre while held: 1.18 on iOS 27. */
     val selectedScale: Float = 1f,
     /**
@@ -1406,11 +1535,82 @@ data class GlassTabBarStyle(
      * shows its selected colour. False keeps the r13 behaviour.
      */
     val lensInkAll: Boolean = false,
+    /**
+     * Equal item slots of this width, centred in the bar, in place of the bar's width shared out
+     * inside [contentPadding]. Where the slots are wider than the bar allows, the end items move
+     * in to where their resting indicator ([pillWidth]) sits [pillInset] inside the bar's end, so
+     * the inner spacing stays the slot and the ends close up. Measured on WhatsApp's iOS bar
+     * (JGEY2190 50-74 s, 17 October): a 348pt bar, tab centres 193/370/584.5/799/976 px at 3x, a
+     * 78pt pill 4pt inside the end; the inner spacing is 71.5pt (its widest item, 63.3pt, plus
+     * 8pt), wider than a fifth of the bar. This rule puts every centre within 2 px; slots sized
+     * per item miss by 13. Unspecified keeps the shared-out slots.
+     */
+    val slotWidth: Dp = Dp.Unspecified,
 ) {
     companion object {
         /** Recommended navigation preset. Material responds gently; the selector deforms
          * along travel only. Existing V3/Measured presets remain available for comparison. */
-        fun Calm(dark: Boolean = true): GlassTabBarStyle = V3(
+        fun Calm(dark: Boolean = true): GlassTabBarStyle = CalmRecordedSpace(dark).let { recorded ->
+            if (!dark) recorded else recorded.copy(
+                // Re-fitted in display colours (2026-10-15): the recordings are HDR10 and had been
+                // decoded as if sRGB, which raised every dark level. Measured over five recordings
+                // decoded correctly (docs/1, docs/2, IMG_6756, JGEY2190, LOLL8185; 117 rest moments,
+                // .local/sxs/levels.py): iOS's bar at rest 33 (ours read 46 at lift 45/255), its
+                // resting pill 15 (ours 27 at .42 black), its held bar 43.5 (ours 53).
+                // Page text under the bar reads as one soft copy, as iOS's does ([GlassStyle.softDetail]).
+                bar = recorded.bar.copy(tintLift = 32f / 255f, softDetail = 1f),
+                // Pass 16 (all five recordings, catalogued from the touches the bar shows): iOS's held
+                // bar 45-47 (ours 42-43 at 10/255), its held lens on a black page only ~2 above its
+                // bar (ours +12: 55 against 48-49), its resting pill 10 on black pages and 15 on
+                // docs/2's Calls page (ours 14-15 and 15 at .55 black). The lens's grey falls from
+                // 0x3A to 0x2B; the pill's black rises to .58, between the two pages (30 Calls-page
+                // moments at 0, 14 black-page moments at +4).
+                heldLift = 13f / 255f,
+                touchLift = true,
+                // Pass 18: both are clear glass with an offset, not a tint. Over a black page that
+                // reads the same as a tint; over content it does not. The resting pill shows the bar
+                // less 22/255, as the inset was first measured ("0.857 of the bar minus 17/255", in
+                // the sRGB-decoded space): docs/2's Calls page under it p10/50/75 12/29/47 against
+                // iOS's 15/25/51 (14/21/29 at .58 black), black 10 against 10. The held lens shows
+                // the bar less 3/255: IMG_6756's black page 48/49 against 48/49. (Pass 18 added 0.30 of
+                // the raw page to reach docs/2's percentiles; scored by region on 17 October that drew the
+                // page's text under the lens sharp and white, p90 155 against iOS's 102, where iOS's lens
+                // veils it as the bar does: without it 91, black page unchanged.) The share returns
+                // blurred ([GlassStyle.rawBlur], 17 October): iOS's lens reads ~10 above ours wherever
+                // the page has content and the same over black, which a blurred page term does and a
+                // tint or glow cannot. Scored by region (.local/sxs/hazescore.py, docs/2 5.75 s and
+                // IMG_6756 35.47 s), iOS / ours: text p50 82/83, p90 102/99, bottom band 75/70, black
+                // interior 47/48, top band 64/53; five regions 5.6 rms (9.7 without the share).
+                pill = recorded.pill.copy(tint = Color.Transparent, tintLift = -22f / 255f),
+                lens = recorded.lens.copy(tint = Color.Transparent, rawShare = 0.22f, rawBlur = 20.dp,
+                    tintLift = -3f / 255f, softDetail = 1f),
+            )
+        }
+
+        /**
+         * [Calm] with the clearer bar of WhatsApp's and the App Store's iOS 26 tab bars. Those
+         * bars pass about 0.9 of the page under them where the Phone bar, which [Calm] is fitted
+         * to, passes 0.59; over a black page both read the same. Measured in display colours on
+         * the owner's recordings (17 October): WhatsApp's bar 43 over its chats page (10) and 54
+         * over its grey settings card (23), the App Store's 32 over black and 57 over its card
+         * (28); its resting pill 19 and 30 over the same pages. The bar is black at
+         * [clearBarOpacity] over the Phone bar's 32/255 lift; the pill and held lens look through
+         * the bar as in [Calm], so they follow it. Light appearance has no recording and returns
+         * [Calm] unchanged.
+         */
+        fun CalmClear(dark: Boolean = true): GlassTabBarStyle = Calm(dark).let { calm ->
+            if (!dark) calm else calm.copy(bar = calm.bar.copy(tint = Color.Black.copy(alpha = clearBarOpacity)))
+        }
+
+        /** Black opacity of [CalmClear]'s bar, fitted over the four page levels its notes list. */
+        internal const val clearBarOpacity: Float = 0.10f
+
+        /**
+         * [Calm] as calibrated before 15 October 2026, against the owner's recordings decoded as
+         * if they were sRGB (they are HDR10): every dark level about 10-13 grey levels too light
+         * on a real display. Kept to reproduce the earlier passes and their evidence.
+         */
+        fun CalmRecordedSpace(dark: Boolean = true): GlassTabBarStyle = V3(
             dark = dark, spec = GlassSelectorSpec(response = GlassResponse.Calm),
         ).let { v3 -> v3.copy(
             // The held lens's rim over black in video2 (x 190, 1.7 s): an outer edge line of 62,
@@ -1420,7 +1620,21 @@ data class GlassTabBarStyle(
             // Inside the lens the page shows through crisply: text +27 to +37 over the interior
             // (p95/p99 at 1.7 s) from 133-level page text, about 0.28 of the raw page; V3's .01
             // left it as the bar's frost.
-            lens = v3.lens.copy(specular = 0.26f, heldGlow = 2f, heldGlowReach = 6.dp, rawShare = 0.28f),
+            // The outline is a ~65-level line over any ground (video2 held/moving lens, 14 October):
+            // drawn as such (heldEdgeTone) with the additive lobe lowered, so it is no white ring.
+            // The inward glow is a floor (heldGlowFloor): over the black page it is the measured
+            // 36, 22, 20 ... 9 band (ours 26, 25, 22 ... 10 at 1.5, 5 dp), over the bar it adds
+            // nothing (pass 13; pass 12 had turned it off because added over the bar it drew
+            // bright lines on a travelling lens). Raw page share .05, re-scored in pass 13 on the
+            // page text under the held lens at 1.8 s: p95/p99 82/105 against iOS's 84/109 (.28
+            // read 108/112 once the lens looked through the bar, which already shows the page).
+            lens = v3.lens.copy(specular = 0.08f, heldGlow = 1.5f, heldGlowReach = 5.dp, rawShare = 0.22f,
+                // A grey veil over what the lens shows (tint .55 of 0x3A): iOS's held lens pulls the
+                // page under it toward a mid grey, so the avatar under it reads 80 where a clear lens
+                // read 98; with the raw share at .22 the text keeps its edge (p95/p99 80/105 against
+                // 84/109) and the plain interior is 62 against 64 (video2 1.8 s, pass 14).
+                tint = Color(0xFF3A3A3A).copy(alpha = 0.55f),
+                heldEdgeTone = 65f / 255f, heldGlowFloor = 1f),
             // Measured over the black page of the owner's primary references (docs/1.MP4,
             // docs/2.MP4, recorded brightness space, 2026-10-13): bar 45 at rest and 53 held,
             // resting selector 24-30 (about .58 of the bar). V3's 32/44 and "0.5 x bar - 10"
@@ -1453,8 +1667,11 @@ data class GlassTabBarStyle(
                 // V3 already applies its measured heldLift to the bar's material. Adding
                 // the generic control lift again changed the44-level Phone plateau to54.
                 pressLift = 0f,
-                // iOS's held bar reaches toward the finger; its far side grows as usual.
-                pressReach = if (dark) .03f else 0f,
+                // No reach toward the finger: iOS's held bar grows evenly (its far end +24-28 px,
+                // its finger end about the same under the lens), and its lens, centred on the
+                // pressed tab, is what extends toward the finger (video2 1.8 s; pass 13). The
+                // .03 reach of pass 7 pushed our bar 13 px past the lens's cap.
+                pressReach = 0f,
                 // iOS's bar snaps back after lift (0.12 s, ~10% overshoot) and parts from the button.
                 releaseStiffness = if (dark) 530f else 0f, releaseDamping = if (dark) .6f else 1f,
                 // Once its lens is dragged, iOS's bar keeps about 10 px of growth a side.
@@ -1819,13 +2036,19 @@ class GlassTabBarAccessory(
     val gap: Dp = 8.dp,
     val fusion: Dp = 6.dp,
     val yieldsToLens: Boolean = false,
+    /**
+     * The accessory's own press and pull, published by its [liquidGlass] (same link): the bar's
+     * outline reaches for where the accessory is drawn, so pressing it closes the gap through a
+     * neck and pulling it away breaks the neck, as on iOS. Null keeps the accessory's laid-out circle.
+     */
+    val link: GlassAccessoryLink? = null,
 ) {
     override fun equals(other: Any?): Boolean =
         other is GlassTabBarAccessory && size == other.size && gap == other.gap && fusion == other.fusion &&
-            yieldsToLens == other.yieldsToLens
+            yieldsToLens == other.yieldsToLens && link === other.link
 
-    override fun hashCode(): Int = ((size.hashCode() * 31 + gap.hashCode()) * 31 + fusion.hashCode()) * 31 +
-        yieldsToLens.hashCode()
+    override fun hashCode(): Int = (((size.hashCode() * 31 + gap.hashCode()) * 31 + fusion.hashCode()) * 31 +
+        yieldsToLens.hashCode()) * 31 + (link?.hashCode() ?: 0)
 }
 
 /**
@@ -1853,7 +2076,7 @@ internal fun glassSelectorMaterial(style: GlassTabBarStyle, formation: Float, tr
     val material = lerpGlassStyle(style.pill, style.lens, opticalLift).copy(tint = pigment.tint, tintLift = pigment.tintLift)
     // A moving, unheld selector folds its band (see [glassSelectorFold]) instead of the held map.
     return if (glassSelectorFold(style, formation, transitAppearance) > 0f)
-        material.copy(profile = GlassProfile.Measured, foldAtCorners = 1f, rimMirror = GlassSelectorRimMirror, rimMirrorGain = GlassSelectorRimGain, dispersion = GlassSelectorRimDispersion, inkDispersion = GlassSelectorRimDispersion)
+        material.copy(profile = GlassProfile.Measured, foldAtCorners = GlassSelectorTransitFoldCorners, rimMirror = GlassSelectorRimMirror, rimMirrorGain = GlassSelectorRimGain, dispersion = GlassSelectorRimDispersion, inkDispersion = GlassSelectorRimDispersion)
     // A held lens keeps the measured held map when still and blends toward the same rim mirror
     // at its caps as it travels ([glassSelectorFormation] carries the travel amount).
     else if (style.tapOpticsFold > 0f && formation >= 0.5f) material.copy(foldAtCorners = 1f, rimMirror = GlassSelectorRimMirror, rimMirrorGain = GlassSelectorRimGain, dispersion = GlassSelectorRimDispersion, inkDispersion = GlassSelectorRimDispersion)
@@ -1865,6 +2088,12 @@ internal const val GlassSelectorRimMirror = 1.0f
 /** Radial draw of the moving selector's mirrored caps (authored, 2026-10-14 second pass). */
 internal const val GlassSelectorRimGain = 0.4f
 internal const val GlassSelectorRimDispersion = 0.05f
+/** How far the unheld transit fold is confined to the caps (1) rather than running along the
+ * whole rim (0). iOS's tapped lens also folds a little along its straight runs, the Keypad dots
+ * stretching up its top rim and the label bending along its bottom one as it lands (video1,
+ * 0.95-1.03 s). Authored against that frame sequence (2026-10-14 pass 12): .5 folded the label
+ * away and drew the dots into bars, .85 left the runs nearly clean. */
+internal const val GlassSelectorTransitFoldCorners = 0.75f
 
 /** `lensFormation` for the selector: the transit fold while unheld, the held lens's travel
  * (rim-mirror blend at its caps) while held. */

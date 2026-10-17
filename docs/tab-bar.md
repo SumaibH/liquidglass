@@ -58,8 +58,88 @@ stay flat against the end. Since 14 October a fast landing presses into the bar'
 pill narrows briefly from behind before widening back, as in iOS: after the lift its trailing edge
 travels on for about 0.3 s and passes its rest by about 40 px, scored on every wall landing of the
 reference recording, and a still-formed lens presses past the bar's end. The moving lens draws the
-content under its caps out toward the rim (`GlassStyle.rimMirrorGain`). See the
+content under its caps out toward the rim (`GlassStyle.rimMirrorGain`). Since pass 12 a held
+lens dragged quickly widens and flattens at constant area (`GlassPoseSpec.heldTravelStrain`),
+reaching about 0.75 of the bar's height at iOS's fast reversals; a quick flick releases before the
+strain has built, so wall landings keep their shape. Its outline is a thin grey line
+(`GlassStyle.heldEdgeTone`) rather than a white ring, and a tapped selector's fold also bends what
+lies under its straight top and bottom. Since pass 13 a held lens sits where the bar's press puts
+its tab, as iOS's does, and its inward glow shows only over darker ground (`GlassStyle.heldGlowFloor`). See the
 [continuous comparison](https://github.com/shayann07/liquidglass/blob/main/review/atlas/reference-replay-2026-10-13/README.md).
+
+Since 15 October dark Calm's levels are fitted in display colours: the reference recordings are
+HDR10, and earlier passes had compared them decoded as if they were sRGB, which raised every dark
+level by 10-13 grey levels. The bar rests at 33 and the pill at 10-15 as iOS's do; the earlier
+calibration is `GlassTabBarStyle.CalmRecordedSpace()`. The whole bar lifts for any touch, a tap
+included (`GlassTabBarStyle.touchLift`, off by default and on in dark `Calm()`): iOS's bar lights
+on every touch, and a tap's travelling pill, which shows the bar through it, needs that lift to read
+as bright as iOS's. Its resting pill and held lens are clear glass with an offset rather than a
+tint, so the page shows through them as through iOS's (the pill darkens black to 10 yet passes an
+avatar under it), and page text under the bar is one soft copy (`GlassStyle.softDetail`) rather than
+a grainy, ghosted one.
+
+## A clearer bar
+
+`Calm()` is fitted to the Phone app's bar, which passes about 0.59 of the page under it. WhatsApp's
+and the App Store's bars on the same device pass about 0.9: over a grey card WhatsApp's bar reads 54
+where the Phone material gives 46, while over black both read 32. `CalmClear()` is dark Calm with
+that bar; its resting pill and held lens look through the bar, so they follow it.
+
+```kotlin
+GlassTabBar(state = glass, itemCount = 5, selectedIndex = selected, onSelected = { selected = it },
+    style = GlassTabBarStyle.CalmClear().copy(slotWidth = 71.5.dp, pillWidth = 78.dp, pillInset = 4.dp),
+    modifier = Modifier.width(348.dp)) { index, isSelected -> Tab(index, isSelected) }
+```
+
+| Display colours, at rest | iOS | `CalmClear()` | `Calm()` |
+| :-- | --: | --: | --: |
+| WhatsApp bar / pill over its grey card (23) | 54 / 30 | 53 / 31 | 46 / 24 |
+| WhatsApp bar / pill over its chats page (10) | 43 / 19 | 41 / 19 | 38 / 16 |
+| App Store plain bar over its card, four gaps | 67 / 65 / 64 / 59 | 66 / 64 / 63 / 58 | 54 / 53 / 52 / 49 |
+| Any bar over black | 32 | 32 | 32 |
+
+iOS's chats page has text under the bar, so its 43 sits over slightly more than the bare page our
+scene uses. Text under the App Store bar still reads brighter in ours than in iOS's (p75 107 against
+80): iOS compresses bright content under that bar, which neither preset reproduces. Light appearance
+has no recording; `CalmClear(dark = false)` is `Calm(dark = false)`. The CanvasKit and .NET ports
+take it as `clear` on the bar material (`calmBarMaterial({clear: true})`, `CalmSelectorMaterial.Bar(..., clear: true)`).
+
+![Calm and CalmClear over the WhatsApp and App Store scenes](https://raw.githubusercontent.com/shayann07/liquidglass/main/review/atlas/reference-replay-2026-10-13/clear-bar.png)
+
+*Our renders only: the sample `WhatsAppScene` and `AppStoreScene` (neutral placeholders), desktop
+GPU replay at 3x, branch `claude/parity-2` after 722cb4d. The iOS levels in the captions are
+measurements on the owner's recordings, not pixels from them.*
+
+## Tabs on set slots
+
+By default the tabs share the bar equally inside `contentPadding`. iOS lays some bars out
+differently. WhatsApp's 348 pt bar puts its tabs 71.5 pt apart (its widest item, "Communities"
+at 63.3 pt, plus 8 pt), which is wider than a fifth of the bar, and pulls the two end tabs in to
+where their pill fits. `slotWidth` reproduces this:
+
+```kotlin
+GlassTabBar(
+    state = glass, itemCount = 5, selectedIndex = selected, onSelected = { selected = it },
+    style = GlassTabBarStyle.Calm().copy(slotWidth = 71.5.dp, pillWidth = 78.dp, pillInset = 4.dp),
+    modifier = Modifier.width(348.dp),
+) { index, isSelected -> Tab(index, isSelected) }
+```
+
+The slots are centred in the bar. If they are wider than the bar allows, an end tab moves in
+until its resting pill sits `pillInset` inside the bar's end. The pill, the held lens, hit
+targets, drag and the deforming body all use these centres. Measured on the owner's recording
+(17 October), this puts all five of WhatsApp's tab centres within 2 px of iOS's. Slots sized to
+each item miss by 13 px. The App Store bar fits the same rule with 64 pt slots and no closing up.
+A tap lands on the end tab at 129 px against iOS's 130, and a drag across the bar lands at 915
+against 913. The CanvasKit and .NET ports take the same option (`calmSelectorBar({slotWidth})`, `CalmSelectorBar.Create(slotWidth:)`).
+
+![Three resting selections of the WhatsApp scene with iOS's measured tab centres as ticks](https://raw.githubusercontent.com/shayann07/liquidglass/main/review/atlas/reference-replay-2026-10-13/whatsapp-slots.png)
+
+*Our renders only: the sample `WhatsAppScene` with neutral placeholders (a plain disc for the
+profile tab), desktop GPU replay at 3x, branch `claude/parity-2` after f94d518. Yellow ticks mark
+iOS's tab centres measured on the recording; blue ticks mark where equal shares would put them.
+Over the same grey card, iOS's bar reads 54 and `Calm()`'s 46; [`CalmClear()`](#a-clearer-bar)
+reads 53.*
 
 ## A neighbouring control: the search button
 
@@ -86,6 +166,29 @@ Box {
     ) { SearchIcon() }
 }
 ```
+
+To make the button press and pull as iOS's does, give it the free pull and link it to the bar.
+The button then grows by 8 dp a side and lightens when pressed, joining the bar through a neck.
+Pulled, it leaves its place with the finger, stretching up to about 1.3 times along the pull and
+thinning across it, and its glyph travels with it. On release it springs back, lands squashed
+against its resting edge and rebounds:
+
+```kotlin
+val link = rememberGlassAccessoryLink()
+GlassTabBar(..., trailingAccessory = GlassTabBarAccessory(size = 62.dp, gap = 8.dp, link = link))
+Box(
+    Modifier.offset(x = 307.dp).size(62.dp).liquidGlass(
+        glass, CircleShape, GlassTabBarStyle.Calm().bar,
+        interaction = GlassInteraction.Pullable.copy(pullShape = GlassPullShape.Free, pullLiftShare = 0.7f),
+        link = link,
+    ),
+    contentAlignment = Alignment.Center,
+) { SearchIcon() }
+```
+
+Against iOS 26's own search button (seven presses and pulls in one recording, display colours), its
+centre stays within 2-3 px rms, its height and width within 3-5 px, and its brightness within 8
+grey levels. Layout, hit targets and pointer coordinates stay where the button is laid out.
 
 The bar never draws or moves the accessory. Its outline is a smooth union with the accessory's
 circle (`fusion`, 6 dp by default), anchored so only the bar's own press growth closes the gap;

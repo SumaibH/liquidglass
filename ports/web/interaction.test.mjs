@@ -176,3 +176,32 @@ test('settled geometry preserves the existing portable contract for controls, pi
   const motion=createCalmInteraction(options);
   assert.throws(()=>motion.press(0,NaN),/displacement/);assert.throws(()=>motion.sample(-1),/timestamps/);
 });
+
+import {createFreeButton} from './interaction.mjs';
+import {readFileSync} from 'node:fs';
+
+test('free button: every frame of the Kotlin-exported trajectories is reproduced', () => {
+  const fixture = JSON.parse(readFileSync(new URL('../skia/fixtures/free-button.json', import.meta.url), 'utf8'));
+  const b = fixture.button;
+  let worstPx = 0, worstScalar = 0;
+  for (const s of fixture.scenarios) {
+    const button = createFreeButton({size: b.size, density: b.density, pressScale: b.pressScale,
+      pressGrowth: b.pressGrowth, pressLift: b.pressLift, pullFollow: b.pullFollow, pullElongation: b.pullElongation,
+      pullWidthRatio: b.pullWidthRatio, pullLimit: b.pullLimit, pullLiftShare: b.pullLiftShare});
+    let next = 0;
+    for (const [t, glow, pressScale, along, across, angle, tx, ty, pullX] of s.frames) {
+      while (next < s.calls.length && s.calls[next][0] <= t + 1e-9) {
+        const [ct, op, x, y] = s.calls[next++];
+        if (op === 'down') button.down(ct); else if (op === 'up') button.up(ct); else button.move(ct, x, y);
+      }
+      const o = button.sample(t);
+      for (const [a, e] of [[o.tx, tx], [o.ty, ty], [o.pullX, pullX]]) worstPx = Math.max(worstPx, Math.abs(a - e));
+      for (const [a, e] of [[o.glow, glow], [o.pressScale, pressScale], [o.along, along], [o.across, across]])
+        worstScalar = Math.max(worstScalar, Math.abs(a - e));
+    }
+  }
+  assert.ok(worstPx < .1, `offset or pull differs by ${worstPx} px`);
+  // Compose ends a spring once it is within its 0.01 visibility threshold; a scale can sit 0.003 off then.
+  assert.ok(worstScalar < 3e-3, `a scalar differs by ${worstScalar}`);
+  console.log(`FREE_BUTTON worst ${worstPx.toFixed(4)} px, ${worstScalar.toExponential(2)}`);
+});

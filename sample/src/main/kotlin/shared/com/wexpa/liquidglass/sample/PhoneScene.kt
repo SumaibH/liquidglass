@@ -10,6 +10,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.DrawScope
@@ -25,14 +26,18 @@ import com.wexpa.liquidglass.*
 /**
  * Colours for [PhoneScene].
  *
- * [Recorded] matches the owner's iOS reference recordings pixel for pixel in their own,
- * dimmer, brightness space (white labels read about 133 there); the navigation material was
- * calibrated in that space, so side-by-side comparisons use it. [Natural] is the same scene in
- * ordinary display colours for demonstrations.
+ * [Natural] is the iOS Phone page in display colours, measured on the owner's recordings decoded
+ * correctly from HDR10 (PQ, BT.2020) to sRGB (research/README.md II.4; docs/2.MP4 at 0.2 s and
+ * IMG_6756 at 3 s, 2026-10-15): names white, detail text 145, dividers 42, call buttons 15, keypad
+ * keys 32, the avatar a vertical gradient. Comparisons use it.
+ *
+ * [Recorded] is the earlier palette that matched the recordings decoded as if they were sRGB
+ * (white about 130): a decode error, kept only to reproduce passes 1-14.
  */
 data class PhonePalette(
     val page: Color, val primary: Color, val secondary: Color, val divider: Color,
     val avatar: Color, val button: Color, val accent: Color, val ink: Color, val call: Color,
+    val avatarEnd: Color = avatar, val key: Color = button, val missed: Color = primary,
 ) {
     companion object {
         val Recorded = PhonePalette(
@@ -41,9 +46,10 @@ data class PhonePalette(
             accent = Color(0xFF5A6A8C), ink = Color(0xFF808080), call = Color(0xFF4F7A4F),
         )
         val Natural = PhonePalette(
-            page = Color.Black, primary = Color.White, secondary = Color(0xFF98989F),
-            divider = Color(0xFF38383A), avatar = Color(0xFF7D7A91), button = Color(0xFF2C2C2E),
-            accent = Color(0xFF0A84FF), ink = Color(0xFFEBEBF5), call = Color(0xFF30D158),
+            page = Color.Black, primary = Color.White, secondary = Color(0xFF919191),
+            divider = Color(0xFF2A2A2A), avatar = Color(0xFF514C61), button = Color(0xFF0F0F0F),
+            accent = Color(0xFF369CFE), ink = Color.White, call = Color(0xFF177F2F),
+            avatarEnd = Color(0xFF342C4A), key = Color(0xFF202020), missed = Color(0xFFF74E53),
         )
     }
 }
@@ -67,7 +73,9 @@ object PhoneGeometry {
         base.copy(height = barHeight, contentPadding = itemInset, pillWidth = pillWidth)
 }
 
-private val Names = listOf("Alex Morgan", "Jordan Lee", "Sam Rivera", "Taylor Kim", "Riley Chen", "Casey Park")
+// Neutral placeholders. The row behind the bar has a name and subtitle of the reference's length,
+// so the glass bends glyph runs of the same extent; no private content is reproduced.
+private val Names = listOf("Alex Morgan", "Jordan Lee", "Avery Westbrook", "Taylor Kim", "Riley Chen", "Casey Park")
 
 /**
  * A phone-sized navigation scene matching the geometry of the owner's iOS references: a
@@ -82,6 +90,9 @@ fun PhoneScene(
     palette: PhonePalette = PhonePalette.Recorded,
     style: GlassTabBarStyle = PhoneGeometry.style(GlassTabBarStyle.Calm()),
     scroll: Float = 0f,
+    // The search button presses and pulls off its place as iOS's does (GlassInteraction.Pullable is
+    // fitted on this button's own episodes in IMG_6756); null keeps it passive, as before 15 October.
+    search: GlassInteraction? = GlassInteraction.Pullable.copy(pullShape = GlassPullShape.Free, pullLiftShare = 0.7f),
 ) {
     val state = rememberLiquidGlassState(palette.page)
     Box(modifier.size(PhoneGeometry.width, PhoneGeometry.height).background(palette.page)) {
@@ -92,17 +103,20 @@ fun PhoneScene(
             }
         }
         val barTop = PhoneGeometry.barCentreY - PhoneGeometry.barHeight / 2
+        // The bar's outline follows the search button as it is pressed and pulled away.
+        val searchLink = if (search != null) rememberGlassAccessoryLink() else null
         GlassTabBar(
             state, 3, selected, onSelected,
             Modifier.offset(PhoneGeometry.barLeft, barTop).width(PhoneGeometry.barWidth).testTag("phone-bar"),
             style = style,
             // The search button is separate glass the bar fuses with while pressed.
             trailingAccessory = GlassTabBarAccessory(PhoneGeometry.barHeight,
-                gap = PhoneGeometry.searchLeft - PhoneGeometry.barLeft - PhoneGeometry.barWidth, yieldsToLens = true),
+                gap = PhoneGeometry.searchLeft - PhoneGeometry.barLeft - PhoneGeometry.barWidth, yieldsToLens = true,
+                link = searchLink),
         ) { index, isSelected -> PhoneTab(index, if (isSelected) palette.accent else palette.ink) }
         Box(
             Modifier.offset(PhoneGeometry.searchLeft, barTop).size(PhoneGeometry.barHeight)
-                .liquidGlass(state, CircleShape, style.bar, light = style.light),
+                .liquidGlass(state, CircleShape, style.bar, light = style.light, interaction = search, link = searchLink),
             contentAlignment = Alignment.Center,
         ) {
             Canvas(Modifier.size(26.dp)) { searchGlyph(palette.ink) }
@@ -123,7 +137,10 @@ private fun PhoneTab(index: Int, color: Color) {
         Spacer(Modifier.height(3.dp))
         BasicText(
             listOf("Calls", "Contacts", "Keypad")[index],
-            style = TextStyle(color = color, fontSize = 10.sp, fontWeight = FontWeight.SemiBold),
+            // Measured on the decoded recordings (2026-10-15): iOS's labels are as tall as these
+            // but 11% wider (Contacts 137 px against 122, Calls 72 against 64, at 3 px/pt) and
+            // lighter; the spacing takes up the width, which the font alone does not.
+            style = TextStyle(color = color, fontSize = 10.sp, fontWeight = FontWeight.Medium, letterSpacing = 0.7.sp),
         )
     }
 }
@@ -134,21 +151,26 @@ private fun CallList(palette: PhonePalette, contacts: Boolean, scroll: Float) {
         repeat(Names.size) { i ->
             Row(Modifier.fillMaxWidth().height(75.dp).padding(horizontal = 16.dp),
                 verticalAlignment = Alignment.CenterVertically) {
-                Box(Modifier.size(45.dp).background(palette.avatar, CircleShape), contentAlignment = Alignment.Center) {
+                Box(Modifier.size(45.dp).background(Brush.verticalGradient(listOf(palette.avatar, palette.avatarEnd)), CircleShape),
+                    contentAlignment = Alignment.Center) {
                     BasicText(Names[i].split(" ").joinToString("") { it.take(1) },
                         style = TextStyle(color = palette.primary, fontSize = 17.sp, fontWeight = FontWeight.Bold))
                 }
-                Spacer(Modifier.width(14.dp))
+                // Measured in video2 (2026-10-14): names start 70 pt from the left, 17 pt semibold;
+                // subtitles and dates 16 pt; a 40 pt dark call button with a handset.
+                Spacer(Modifier.width(9.dp))
                 Column(Modifier.weight(1f)) {
-                    BasicText(Names[i], style = TextStyle(color = palette.primary, fontSize = 15.sp, fontWeight = FontWeight.SemiBold))
-                    if (!contacts) BasicText(if (i % 2 == 0) "↗ Audio" else "↙ Audio",
-                        style = TextStyle(color = palette.secondary, fontSize = 14.sp))
+                    // The second row is a missed call, red, as in the reference.
+                    BasicText(Names[i], style = TextStyle(color = if (i == 1 && !contacts) palette.missed else palette.primary,
+                        fontSize = 17.sp, fontWeight = FontWeight.SemiBold))
+                    if (!contacts) BasicText(if (i % 2 == 0) "↗ Network Audio" else "↙ Network Audio",
+                        style = TextStyle(color = palette.secondary, fontSize = 16.sp))
                 }
                 if (!contacts) {
-                    BasicText("Yesterday", style = TextStyle(color = palette.secondary, fontSize = 14.sp))
+                    BasicText("Yesterday", style = TextStyle(color = palette.secondary, fontSize = 16.sp))
                     Spacer(Modifier.width(10.dp))
                     Box(Modifier.size(40.dp).background(palette.button, CircleShape), contentAlignment = Alignment.Center) {
-                        Canvas(Modifier.size(16.dp)) { drawCircle(palette.accent, size.minDimension / 3f) }
+                        Canvas(Modifier.size(18.dp)) { handsetGlyph(palette.accent) }
                     }
                 }
             }
@@ -163,7 +185,7 @@ private fun Keypad(palette: PhonePalette) {
     // top, then the call button, centred, above the navigation bar.
     Box(Modifier.fillMaxSize()) {
         listOf(93.dp, 195.dp, 297.dp).forEach { x ->
-            Box(Modifier.offset(x - 39.dp, (-71).dp).size(78.dp).background(palette.button, CircleShape))
+            Box(Modifier.offset(x - 39.dp, (-71).dp).size(78.dp).background(palette.key, CircleShape))
         }
         Box(Modifier.offset(156.dp, 26.dp).size(78.dp).background(palette.call, CircleShape), contentAlignment = Alignment.Center) {
             Canvas(Modifier.size(28.dp)) { drawCircle(palette.ink, size.minDimension / 3f) }
@@ -176,20 +198,33 @@ private fun DrawScope.clockGlyph(color: Color) {
     drawCircle(color, r)
     val c = center
     drawLine(Color.Black.copy(alpha = .55f), c, Offset(c.x, c.y - r * .55f), r * .16f, StrokeCap.Round)
-    drawLine(Color.Black.copy(alpha = .55f), c, Offset(c.x + r * .4f, c.y), r * .16f, StrokeCap.Round)
+    // iOS's Calls clock reads ten to nine-ish: one hand up, one to the left (video2).
+    drawLine(Color.Black.copy(alpha = .55f), c, Offset(c.x - r * .4f, c.y), r * .16f, StrokeCap.Round)
 }
 
 private fun DrawScope.personGlyph(color: Color) {
     val r = size.minDimension / 2
     drawCircle(color, r)
-    drawCircle(Color.Black.copy(alpha = .55f), r * .3f, Offset(center.x, center.y - r * .2f))
-    drawArc(Color.Black.copy(alpha = .55f), 200f, 140f, false,
-        Offset(center.x - r * .6f, center.y + r * .25f), Size(r * 1.2f, r * 1.1f), style = Stroke(r * .22f))
+    // A filled head and a filled shoulder cut by the circle, as iOS's person.crop.circle.fill.
+    drawCircle(Color.Black.copy(alpha = .55f), r * .3f, Offset(center.x, center.y - r * .22f))
+    drawArc(Color.Black.copy(alpha = .55f), 200f, 140f, true,
+        Offset(center.x - r * .62f, center.y + r * .22f), Size(r * 1.24f, r * 1.0f))
 }
 
 private fun DrawScope.keypadGlyph(color: Color) {
+    // iOS's grid is 75 x 72 px against the 68 x 69 this drew at a 23 dp square (decoded
+    // recordings, 2026-10-15): wider spacing across than down, and slightly larger dots.
     val step = size.minDimension / 3
-    for (row in 0..2) for (col in 0..2) drawCircle(color, step * .42f, Offset(step * (col + .5f), step * (row + .5f)))
+    val r = step * .45f
+    for (row in 0..2) for (col in 0..2) drawCircle(color, r,
+        Offset(center.x + (col - 1) * step * 1.115f, center.y + (row - 1) * step * 1.05f))
+}
+
+private fun DrawScope.handsetGlyph(color: Color) {
+    // A telephone handset: two ear/mouth pieces joined by a curved grip, drawn as a thick arc.
+    val w = size.minDimension
+    drawArc(color, 110f, 140f, false, Offset(w * .08f, w * .08f), Size(w * .84f, w * .84f),
+        style = Stroke(w * .2f, cap = StrokeCap.Round))
 }
 
 private fun DrawScope.searchGlyph(color: Color) {

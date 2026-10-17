@@ -1,12 +1,12 @@
 import type {Canvas, CanvasKit, Image} from 'canvaskit-wasm';
 import type {CalmSelectorPose, CalmSelectorState} from './selector.mjs';
 export type {CalmSelectorPose, CalmSelectorState, CalmSelectorBar, CalmNavigation} from './selector.mjs';
-export {CalmSelectorController, calmSelectorBar, createCalmNavigation} from './selector.mjs';
+export {CalmSelectorController, calmSelectorBar, centreOf, nearestTab, createCalmNavigation} from './selector.mjs';
 /** The Compose Calm selector material as shader uniforms (lengths in dp) and its band blend. */
 export function calmSelectorMaterial(state?: {dark?: boolean; formation?: number; transit?: number; heldTravel?: number}):
   {values: Readonly<Record<string, number | readonly number[]>>; uFormation: number};
-/** The Compose Calm bar material (lengths in dp), its held lift following `formation`. */
-export function calmBarMaterial(state?: {dark?: boolean; formation?: number}): Readonly<Record<string, number | readonly number[]>>;
+/** The Compose Calm bar material (lengths in dp), its held lift following `formation` (or `touch`, for any touch). */
+export function calmBarMaterial(state?: {dark?: boolean; formation?: number; touch?: number; clear?: boolean}): Readonly<Record<string, number | readonly number[]>>;
 export interface CalmSelectorDrawOptions {
   dark?: boolean; density?: number; materialize?: number; reducedTransparency?: number; increasedContrast?: number;
   /** The source-sized backdrop with the bar's glass drawn over it: the lens looks through the bar. */
@@ -21,6 +21,8 @@ export interface GlassLensBounds { x: number; y: number; width: number; height?:
 export interface GlassMaterial {
   dark?: boolean; tintAmount?: number; density?: number; materialize?: number;
   reducedTransparency?: number; increasedContrast?: number;
+  /** Navigation bars only: GlassTabBarStyle.CalmClear's clearer bar (WhatsApp's and the App Store's). */
+  clear?: boolean;
 }
 export interface GlassFeedback {
   matrix: [number, number, number, number]; offset: [number, number];
@@ -44,6 +46,26 @@ export interface CalmInteraction {
 }
 export function createCalmInteraction(options: CalmOptions): CalmInteraction;
 
+/** Compose's GlassInteraction.Pullable with GlassPullShape.Free (the Phone scene's search button). Px. */
+export interface FreeButtonOptions {
+  size: number; density?: number; pressScale?: number; pressGrowth?: number; pressLift?: number;
+  pullFollow?: number; pullElongation?: number; pullWidthRatio?: number; pullLimit?: number; pullLiftShare?: number;
+}
+export interface FreeButtonTransform {
+  /** Press scale (both axes), then a stretch along and across `angle` (degrees), then the offset. */
+  pressScale: number; along: number; across: number; angle: number; tx: number; ty: number;
+  /** The press glow and the material lift it gives (fraction of white). */
+  glow: number; lift: number; pullX: number;
+}
+export interface FreeButton {
+  /** Monotonic seconds; `move` takes the total finger travel since `down`. */
+  down(time: number): void;
+  move(time: number, dx: number, dy: number): void;
+  up(time: number): void;
+  sample(time: number): FreeButtonTransform;
+}
+export function createFreeButton(options: FreeButtonOptions): FreeButton;
+
 export interface GlassPainter {
   /** Borrows an opaque source. Replace it before deleting the previous image. */
   setSource(image: Image): void;
@@ -51,7 +73,7 @@ export interface GlassPainter {
   drawLens(canvas: Canvas, bounds: GlassLensBounds): void;
   drawSurface(canvas: Canvas, bounds: GlassSurfaceBounds, material?: GlassMaterial): void;
   /** A Calm navigation bar's glass in the Compose Calm bar material (device px). */
-  drawCalmBar(canvas: Canvas, bar: GlassRect, options?: Omit<CalmSelectorDrawOptions, 'through'> & {formation?: number}): void;
+  drawCalmBar(canvas: Canvas, bar: GlassRect, options?: Omit<CalmSelectorDrawOptions, 'through'> & {formation?: number; touch?: number; clear?: boolean}): void;
   /** A navigation selector's pose body over the bar rect (device px), in the Compose Calm selector material. */
   drawSelector(canvas: Canvas, bar: GlassRect,
     selector: {pose: CalmSelectorPose; formation?: number; transit?: number; heldTravel?: number}, options?: CalmSelectorDrawOptions): void;

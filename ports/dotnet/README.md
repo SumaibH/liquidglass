@@ -140,11 +140,20 @@ var nav = new CalmNavigation(bar, selected: 0, onSelect: index => Route(index));
 nav.Down(x, y, seconds); nav.Move(x, y, seconds); nav.Up(x, y, seconds);
 if (nav.Frame(seconds)) RequestRedraw();
 var c = nav.Controller; var options = new GlassSurfaceOptions(Dark: true, Density: 1);
-painter.DrawCalmBar(canvas, barRect, (float)c.Formation, options);
+painter.DrawCalmBar(canvas, barRect, (float)c.Formation, options, (float)nav.Touch);   // Touch: the bar's lift for any touch
 using var through = surface.Snapshot();   // the page with the bar's glass over it
 painter.DrawSelector(canvas, barRect, c.Render(), (float)c.Formation, options,
     (float)c.TransitAppearance, (float)c.HeldTravel, through);
 ```
+
+`CalmSelectorBar.Create(..., slotWidth: px)` lays the tabs on equal slots of that width centred
+in the bar, as Compose's `GlassTabBarStyle.slotWidth` does: the end tabs close up until their pill
+sits `pillInset` inside the bar's end. Draw your items at `bar.CentreOf(i)`; `NearestTab` maps a
+bar-local x to a tab.
+
+`DrawCalmBar(..., clear: true)` (and `CalmSelectorMaterial.Bar(..., clear: true)`) draws Compose's
+`GlassTabBarStyle.CalmClear()` bar: the clearer glass of WhatsApp's and the App Store's dark iOS
+bars (black at 0.10 instead of 0.41, same lift; light appearance unchanged).
 
 `DrawCalmBar` and `DrawSelector` use the Compose Calm bar and selector material itself
 (`CalmSelectorMaterial`: the production styles exported by the Kotlin tests, blended by the same
@@ -236,6 +245,14 @@ area; a rebuild also needs a temporary surface. An owned recorded backdrop costs
 per pixel, before allocator/backend overhead. The CPU blur path is not a GPU performance claim.
 Use/dispose each instance on its owning rendering thread. Recreate it and its source after context
 loss if your host uses GPU-backed images.
+
+### A free button (the Phone search button)
+
+`FreeButton` is Compose's `GlassInteraction.Pullable` with `GlassPullShape.Free`: `Down(t)`,
+`Move(t, dx, dy)` (total travel since down) and `Up(t)` in seconds, then `Sample(t)` gives the press
+scale, the stretch along and across `Angle` (degrees), the offset and the lift to draw the button with.
+The checks replay the Kotlin-exported `free-button.json` frame by frame. The bar's outline does not
+follow it here.
 
 ## Lower-level passes and remaining gaps
 

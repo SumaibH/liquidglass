@@ -164,6 +164,32 @@ data class GlassStyle(
      */
     val heldEdgeRecovery: Dp = 0.dp,
     /**
+     * Opt-in: the held lens's outermost pixels as a grey line of this level (0 to 1), drawn
+     * nearly opaque over whatever lies behind, instead of only the additive rim light. Zero keeps
+     * the historical additive rim. The held iOS 26 Phone lens's outline reads about 65 grey levels
+     * over the bar (83) and over the black page alike: a line, not a highlight (video2, held and
+     * moving lens, 2026-10-14). Calm's lens uses 65/255.
+     */
+    val heldEdgeTone: Float = 0f,
+    /**
+     * Opt-in: how the held lens's inward rim glow ([heldGlow]) composes, from 0 (default: added
+     * to whatever is behind) to 1 (a floor: the glow only shows where the glass is darker than
+     * it). iOS's held lens glows inward from its edge over the black page (36, 22, 20, 17 ... 9
+     * levels) but adds nothing over its bar, where a travelling lens shows no bright line
+     * (video2 1.8 s and 19.0 s, 2026-10-15 pass 13). Calm's lens uses 1.
+     */
+    val heldGlowFloor: Float = 0f,
+    /**
+     * How the detail seen through the glass is drawn, 0 to 1. At 0 (the default) it is the measured
+     * high-pass along the element's long axis (FINDINGS 22), sampled through a per-pixel rotated
+     * scatter. At 1 it is a plain soft copy: the wide kernel's tone plus [fineShare] of the fine
+     * blur, sampled without rotation. Read in display colours, iOS 26's Phone bar shows page text
+     * under it as one soft, legible copy; the along-axis high-pass draws ghost copies of every
+     * glyph about 16 and 34 px to either side and the rotation turns the rest into grain
+     * (docs/2, horizontal detail 2.72 against iOS's 2.77, 4.94 at 0; 2026-10-15).
+     */
+    val softDetail: Float = 0f,
+    /**
      * A share of the raw backdrop added on top of the glass this element looks
      * [through][liquidGlass], 0 to 1. The measured tab-bar lens shows the bar's output plus
      * 0.11 of the content behind the bar, which is what makes its interior read clearer than
@@ -171,6 +197,13 @@ data class GlassStyle(
      * black. Ignored without `through`.
      */
     val rawShare: Float = 0f,
+    /**
+     * Gaussian sigma of the raw backdrop that [rawShare] adds. Zero adds it sharp, as before. A
+     * blurred share lifts the glass over content by what the content around it holds and adds
+     * nothing over black, without drawing the content's edges a second time. Ignored without
+     * [rawShare].
+     */
+    val rawBlur: Dp = 0.dp,
     /**
      * Amplitude of the mirrored edge band — the broad, soft, upside-down echo of nearby content
      * over roughly the outer third of the surface. A thin band reads as a hard streak; this one

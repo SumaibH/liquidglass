@@ -158,7 +158,8 @@ class GlassPhoneLandingSequenceTest {
      * narrowest frame. The trailing edge travels on underdamped toward the wall
      * ([GlassPoseSpec.releaseTrailingInOmega]) and keeps a tenth of its speed at the impact; the
      * earlier critical landing narrowed about 0.15 s early (rms 14.4 / 21.5 px on these series;
-     * now 3.0 / 6.3). The finger leads the ink by 33 ms (v2script.py LEAD).
+     * now 3.0 / 6.3; pass 12's held travel strain, 3.1 / 6.1). The finger leads the ink by 33 ms
+     * (v2script.py LEAD).
      */
     @Test fun calmLandsAgainstTheWallAndNarrowsFromBehind() {
         val right = floatArrayOf(241f,241f,242f,244f,247f,250f,253f,257f,261f,264f,267f,

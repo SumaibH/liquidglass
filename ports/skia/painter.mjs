@@ -22,15 +22,20 @@ export function createGlassPainter(kit, sources = glassShaderSources) {
   const assignMaterial=(uniforms,values)=>{for(const[k,v]of Object.entries(values))if(k in uniforms)uniforms[k]=v;return uniforms;};
   // Compose's elementSizeFactor: 0 for chrome up to 56 dp, 1 from 320 dp.
   const sizeFactor=(width,height,density)=>Math.max(0,Math.min(1,(Math.min(width,height)/density-56)/264));
-  // The backdrop with the glass the lens looks through over it, plus rawShare of the raw page.
-  function composeThrough(canvas,through,rawShare) {
+  // The backdrop with the glass the lens looks through over it, plus rawShare of the raw page,
+  // blurred by rawBlur (device px) as Compose's GlassStyle.rawBlur.
+  function composeThrough(canvas,through,rawShare,rawBlur=0) {
     const surface=canvas.makeSurface({width:source.width(),height:source.height(),colorType:kit.ColorType.RGBA_8888,
       alphaType:kit.AlphaType.Premul,colorSpace:kit.ColorSpace.SRGB});
     if(!surface)throw new Error('Could not allocate the selector backdrop');
     const add=new kit.Paint();
     try {
       const target=surface.getCanvas();target.clear(kit.BLACK);target.drawImage(through,0,0);
-      if(rawShare>.001){add.setBlendMode(kit.BlendMode.Plus);add.setAlphaf(rawShare);target.drawImage(source,0,0,add);}
+      if(rawShare>.001){
+        add.setBlendMode(kit.BlendMode.Plus);add.setAlphaf(rawShare);
+        if(rawBlur>.01)add.setImageFilter(kit.ImageFilter.MakeBlur(rawBlur,rawBlur,kit.TileMode.Clamp,null));
+        target.drawImage(source,0,0,add);
+      }
       surface.flush();return surface.makeImageSnapshot();
     } finally {add.delete();surface.delete();}
   }
@@ -96,17 +101,19 @@ export function createGlassPainter(kit, sources = glassShaderSources) {
 
     /**
      * Draw a Calm navigation bar's glass with the Compose Calm bar material (GlassTabBarStyle.Calm,
-     * its held lift following the selector's `formation`). Device px; `density` is px per dp.
+     * its held lift following the selector's `formation`, or for any touch the navigation's `touch`;
+     * `clear` for GlassTabBarStyle.CalmClear's clearer bar).
+     * Device px; `density` is px per dp.
      */
-    drawCalmBar(canvas,{x,y,width,height},{dark=true,density=1,formation=0,materialize=1,
-      reducedTransparency=0,increasedContrast=0}={}) {
+    drawCalmBar(canvas,{x,y,width,height},{dark=true,density=1,formation=0,touch=0,materialize=1,
+      reducedTransparency=0,increasedContrast=0,clear=false}={}) {
       checkAlive();
       if(!source)throw new Error('Call setSource before drawing glass');
       if(![x,y,width,height,density,formation].every(Number.isFinite)||width<=0||height<=0||density<=0)
         throw new RangeError('Calm bar requires finite geometry, positive dimensions and density');
       const pad=2,originX=x-pad,originY=y-pad;
       const uniforms=clearMaterialUniforms(effects,{width,height,pad,magnification:1});
-      assignMaterial(uniforms,calmMaterialUniforms(calmBarMaterial({dark,formation}),density));
+      assignMaterial(uniforms,calmMaterialUniforms(calmBarMaterial({dark,formation,touch,clear}),density));
       Object.assign(uniforms,{
         uRadii:Array(4).fill(height/2),uRefractBand:.6*height/2,uFormation:0,
         uScale:sizeFactor(width,height,density),uMaterialize:materialize,uFrost:reducedTransparency,uContrast:increasedContrast,
@@ -158,9 +165,9 @@ export function createGlassPainter(kit, sources = glassShaderSources) {
         if(through) {
           if(typeof through.width!=='function'||through.width()!==source.width()||through.height()!==source.height())
             throw new TypeError('through must be a live image the size of the source');
-          composed=composeThrough(canvas,through,values.rawShare);view=composed;
+          composed=composeThrough(canvas,through,values.rawShare,(values.rawBlur??0)*density);view=composed;
         }
-        const backdrop=sampler.shader(canvas,view,originX,originY,Math.max(uniforms.uWideKernel,1));
+        const backdrop=sampler.shader(canvas,view,originX,originY,uniforms.uWideKernel);
         uniforms.uWideStrip=uniforms.uWideKernel>=1?backdrop.strip:0;
         draw(canvas,uniforms,backdrop.shader,originX,originY);
       } finally {

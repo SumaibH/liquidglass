@@ -30,6 +30,9 @@ uniform float   uHeldGlow;     // share of the held lens inward rim glow that is
 uniform float   uFoldCorners;  // 0 folds every edge, 1 only corner arcs (GlassStyle.foldAtCorners)
 uniform float   uRimMirror;    // reflective rim band fraction for the measured family; 0 the fold (GlassStyle.rimMirror)
 uniform float   uRimMirrorGain; // mirrored depth per unit of band; 0 or 1 the plain mirror (GlassStyle.rimMirrorGain)
+uniform float   uHeldGlowFloor; // 0 adds the held glow, 1 lays it as a floor under darker glass (GlassStyle.heldGlowFloor)
+uniform float   uSoftDetail;   // 0 the along-axis high-pass with a dithered scatter, 1 a plain soft copy (GlassStyle.softDetail)
+uniform float   uHeldEdgeTone; // grey of the held lens's outermost pixels, drawn as a line; 0 off (GlassStyle.heldEdgeTone)
 uniform float   uHeldGlowReach; // px the held glow reaches inward; 0 uses the bevel (GlassStyle.heldGlowReach)
 uniform float   uHeldEdgeRecovery; // layer-pixel recovery length; 0 preserves the narrow side contour
 uniform float   uRestMap;      // resting-corner source map: 0 legacy, 1 the measured table (GlassRestMap)
@@ -291,7 +294,9 @@ float poseCorner(float2 x, float4 uPoseAInv, float4 uPoseC, float4 uPoseD) {
     float zx = (scaleX == 1.0) ? zi.x : (zi.x / max(scaleX, 1e-6));
     float halfSpine = (scaleX == 1.0) ? spine : (spine / max(scaleX, 1e-6));
     float soft = max(0.25 * uPoseD.y, 1.0);
-    return clamp(smoothstep(halfSpine - soft, halfSpine + soft, abs(zx)), 0.0, 1.0);
+    // Full from where the cap begins, ramping in along the run, as cornerWeight and bodyCorner do;
+    // straddling the cap start left the cap's shoulders and a circular body's middle at half.
+    return clamp(smoothstep(halfSpine - soft, halfSpine, abs(zx)), 0.0, 1.0);
 }
 
 
@@ -900,15 +905,18 @@ half4 main(float2 coord) {
         // point outward, into the margin the host recorded for it.
         shift = mix(max(shift, 0.0), shift, heldFamily) * mat * axisFade * smoothstep(0.0, 1.5, depth);
         // Dispersion lives in the fold's mirrored zone, and in the held lens's whole outer band.
-        float mirrorZone = mix(rimZone(u) * clamp(uFormation, 0.0, 1.0),
+        // The colour split lives where the fold does: at the caps when uFoldCorners confines it.
+        float foldMask = mix(1.0, corner, clamp(uFoldCorners, 0.0, 1.0));
+        float mirrorZone = mix(rimZone(u) * clamp(uFormation, 0.0, 1.0) * foldMask,
             (1.0 - smoothstep(0.45, 0.55, u)) * held, heldFamily);
         float delta = uAberration * W * 0.5 * mirrorZone * mat;
         push = -n * shift;
         // The fold shows red the deeper content; the held lens shows blue the deeper content,
         // so blue's copy of the pulled-in edge lands outermost (FINDINGS 19).
-        float dR = mix(delta, -delta, heldFamily);
+        float heldOrder = heldFamily * (1.0 - ((uRimMirror > 0.0) ? clamp(uFormation, 0.0, 1.0) * foldMask : 0.0));
+        float dR = mix(delta, -delta, heldOrder);
         pushR = -n * (shift + dR);
-        pushB = -n * mix(max(shift - delta, 0.0), shift + delta, heldFamily);
+        pushB = -n * mix(max(shift - delta, 0.0), shift + delta, heldOrder);
         bend = clamp(abs(shift) / W, 0.0, 1.0);
     }
     if (uProfile >= 2.5) {
@@ -945,7 +953,9 @@ half4 main(float2 coord) {
 
     // Scatter, keyed to distance from the edge. Squared, so the crisp compressed image stays
     // tight against the rim while the displacement itself still spans the whole band.
-    float2 rot = tapRotation(coord);
+    // A soft copy ([GlassStyle.softDetail]) samples its scatter unrotated: the rotation is what
+    // turns a sparse kernel's ghosts into grain.
+    float2 rot = (uSoftDetail >= 0.5) ? float2(1.0, 0.0) : tapRotation(coord);
     // At Tinted the fine share is 0 and the fine scatter would be thrown away: skip it.
     half3 soft = (uWideStrip >= 1.0 && uFineShare < 0.02)
         ? sharp
@@ -991,6 +1001,9 @@ half4 main(float2 coord) {
         // with no halo. The 0.7 calibrates the seven taps against the strip's own Gaussian: at
         // 1.0 the step response overshoots by 11 levels, at 0.7 by none.
         half3 line = axisMeanAt(base + push, uWideKernel * 0.7 * mat, rot);
+        // A soft copy takes its detail against the wide kernel's own tone: the two-kernel mix,
+        // with no ghost copies of the glyphs along the bar ([GlassStyle.softDetail]).
+        line = mix(line, wide, half(clamp(uSoftDetail, 0.0, 1.0)));
         bg = wide + (bg - line) * half(clamp(uFineShare, 0.0, 1.0));
     }
 
@@ -1016,8 +1029,13 @@ half4 main(float2 coord) {
     // Navigation's dark inset is a treatment of the bar substrate. A still-compressed
     // recovering body must not paint that inset onto the page above/below the bar.
     // Refraction, highlights and the geometric coverage stay independent of this tint mask.
-    float2 maskPoint = float2(dot(uTintMaskX.xy, local) + uTintMaskX.z,
-        dot(uTintMaskY.xy, local) + uTintMaskY.z);
+    // A held lens tints what it shows, so its mask is read where the refracted view comes
+    // from: read at the pixel, the bar's footprint tinted the black band the lens pulls in
+    // beyond the bar's image (pass 14). Every other profile keeps the pixel's own mask.
+    float heldMask = step(1.5, uProfile) * (1.0 - step(2.5, uProfile)) * step(0.001, uHeldLens);
+    float2 maskLocal = local + (base + push - coord) * heldMask;
+    float2 maskPoint = float2(dot(uTintMaskX.xy, maskLocal) + uTintMaskX.z,
+        dot(uTintMaskY.xy, maskLocal) + uTintMaskY.z);
     float tintCoverage = (uTintMaskX.w > 0.5)
         ? clamp(float(field.eval(maskPoint).a), 0.0, 1.0) : 1.0;
     float strength = uTint.a * tintCoverage * mix(mix(0.9, 1.25, scale), 1.0, measured)
@@ -1106,11 +1124,14 @@ half4 main(float2 coord) {
     float glowReach = (uHeldGlowReach > 0.0) ? mix(max(uBevel, 1.0), uHeldGlowReach, heldAmt) : max(uBevel, 1.0);
     float heldGlow = glowAmt * exp(-max(depth - 0.67 * uBevel, 0.0) / glowReach)
         * (max(facing, 0.0) + counterLight * max(-facing, 0.0));
+    float glowFloor = clamp(uHeldGlowFloor, 0.0, 1.0);
     float highlight = ((key + counter) * uSpecular
         + edgeLine * uSpecular * uEdgeLight
         + fresnel * uFresnel * bevelBand
-        + heldGlow) * mat;
+        + heldGlow * (1.0 - glowFloor)) * mat;
     col = applyHighlight(col, highlight, uHiChroma);
+    // The floor share of the glow lifts only glass darker than it (GlassStyle.heldGlowFloor).
+    if (glowFloor > 0.0) col = max(col, half3(half(heldGlow * glowFloor * mat)));
 
     // The dark contour that separates glass from its backdrop. Apple's 2026 revision pairs it
     // with a brighter specular; the 2025 material has none, so this is 0 on every preset here.
@@ -1135,6 +1156,13 @@ half4 main(float2 coord) {
     // On the held lens the step belongs to the sides only; the lit line owns the top and bottom.
     rimDark *= mix(1.0, 1.0 - abs(facing), heldAmt);
     col -= half3(half(rimDark * uEdgeShadow * mat));
+    // The held lens's outline as a line of a fixed grey (GlassStyle.heldEdgeTone): it reads dark
+    // over the bar and light over a black page, as the reference's does, never a white ring.
+    if (uHeldEdgeTone > 0.0 && heldAmt > 0.0) {
+        // Two pixels wide, as the reference's: the outermost one is partly covered.
+        float line = smoothstep(3.0, 1.5, depth) * heldAmt * mat;
+        col = mix(col, half3(half(uHeldEdgeTone)), half(0.9 * line));
+    }
 
     // Illumination from within, under the fingertip. A sixth of a stop at the peak: measured
     // against a device, where anything near 0.2 reads as a camera flash rather than as glass

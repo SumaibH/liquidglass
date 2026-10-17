@@ -2,7 +2,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFile} from 'node:fs/promises';
-import {CalmSelectorController, calmSelectorBar, createCalmNavigation} from './selector.mjs';
+import {CalmSelectorController, calmSelectorBar, centreOf, nearestTab, createCalmNavigation} from './selector.mjs';
 
 const fixture = JSON.parse(await readFile(new URL('./fixtures/selector-calm.json', import.meta.url), 'utf8'));
 const MODES = {Rest: 'rest', TapTransit: 'tap', PressPending: 'pending', Held: 'held', Released: 'released'};
@@ -61,6 +61,32 @@ test('navigation: a tap selects the tab under the finger and settles there', () 
   assert.ok(Math.abs(nav.state().centreX - nav.controller.bar.inset - 2.5 * nav.controller.bar.slotWidth) < .5);
 });
 
+test('navigation: any touch lifts the bar (touchLift), rising in 50 ms and gone 260 ms after the lift', () => {
+  const nav = createCalmNavigation({bar: bar()});
+  nav.frame(0); assert.equal(nav.state().touch, 0);
+  nav.down(700, 93, .1); nav.frame(.125);
+  const rising = nav.state().touch;
+  assert.ok(rising > 0 && rising < 1, `half-way through the rise: ${rising}`);
+  nav.frame(.15); assert.equal(nav.state().touch, 1);
+  nav.up(700, 93, .16); nav.frame(.29);
+  const falling = nav.state().touch;
+  assert.ok(falling > 0 && falling < 1, `half-way through the fall: ${falling}`);
+  nav.frame(.42); assert.equal(nav.state().touch, 0);
+  // A tap never forms the selector, so only the touch lifts the bar.
+  const dark = calmBarMaterial({dark: true, formation: 0, touch: 1}).uLift;
+  assert.ok(dark > calmBarMaterial({dark: true}).uLift + 12 / 255, 'dark Calm lifts for a touch');
+  assert.equal(calmBarMaterial({dark: false, touch: 1}).uLift, calmBarMaterial({dark: false}).uLift, 'light Calm does not');
+});
+
+test('clear bar (GlassTabBarStyle.CalmClear): black at 0.10 over the same lift, light unchanged', () => {
+  const calm = calmBarMaterial({dark: true}), clear = calmBarMaterial({dark: true, clear: true});
+  assert.deepEqual([...clear.uTint].slice(0, 3), [0, 0, 0]);
+  assert.ok(Math.abs(clear.uTint[3] - 26 / 255) < 1e-6, 'Compose stores the 0.10 alpha in 8 bits');
+  assert.equal(clear.uLift, calm.uLift);
+  assert.deepEqual({...clear, uTint: calm.uTint}, calm, 'only the tint differs');
+  assert.deepEqual(calmBarMaterial({dark: false, clear: true}), calmBarMaterial({dark: false}));
+});
+
 test('navigation: a hold-and-drag commits where the finger ends, a fling carries one further', () => {
   const b = bar(), selected = [];
   const nav = createCalmNavigation({bar: b, onSelect: i => selected.push(i)});
@@ -98,7 +124,7 @@ test('reduced motion snaps to rest and never holds', () => {
 });
 
 // ---- material: the Compose Calm selector's own uniforms (GlassSelectorPortMaterialTest)
-import {calmSelectorMaterial} from './selector-material.mjs';
+import {calmSelectorMaterial, calmBarMaterial} from './selector-material.mjs';
 import {createGlassPainter} from './painter.mjs';
 import CanvasKitInit from 'canvaskit-wasm';
 
@@ -177,4 +203,33 @@ test('ink: the selected ink shows only inside the selector', async () => {
     assert.ok(under[2] > 200 && under[2] > under[0] + 120, `selected ink missing inside the selector: ${under}`);
     assert.ok(beyond[2] < 120, `selected ink leaked outside the selector: ${beyond}`);
   } finally { painter.dispose(); inkImage.delete(); image.delete(); surface.delete(); }
+});
+
+test('set slots (GlassTabBarStyle.slotWidth): WhatsApp measured centres, taps and a drag to the end', () => {
+  // 348 x 62 pt at 3x, 71.5 pt slots, a 78 pt pill 4 pt inside: as GlassTabBarGeometryTest.
+  const b = calmSelectorBar({width: 1044, height: 186, count: 5, pillWidth: 234, pillInset: 12, density: 3, slotWidth: 214.5});
+  const ios = [130, 307, 521.5, 736.25, 913];
+  for (let i = 0; i < 5; i++) {
+    assert.ok(Math.abs(centreOf(b, i) - ios[i]) <= 2, `centre ${i}: ${centreOf(b, i)}`);
+    assert.equal(nearestTab(b, centreOf(b, i)), i);
+  }
+  assert.equal(centreOf(b, 0), 129); assert.equal(centreOf(b, 4), 915);
+  // Unset, the bar is shared out exactly as before.
+  const shared = calmSelectorBar({width: 1044, height: 186, count: 5, inset: 18, density: 3});
+  assert.ok(Number.isNaN(shared.fixedSlot));
+  assert.equal(centreOf(shared, 0), 18 + shared.slotWidth / 2);
+  const selected = [];
+  const nav = createCalmNavigation({bar: b, selected: 2, onSelect: i => selected.push(i)});
+  nav.down(140, 93, .1); nav.up(140, 93, .16);
+  assert.deepEqual(selected, [0]);
+  let t = .16;
+  while (nav.frame(t) && t < 3) t += 1 / 60;
+  assert.ok(Math.abs(nav.state().centreX - 129) < .5, `tap landed at ${nav.state().centreX}`);
+  nav.select(0);
+  nav.down(129, 93, 3); t = 3;
+  for (let k = 1; k <= 40; k++) { t = 3 + k / 60; nav.move(129 + k * (915 - 129) / 40, 93, t); nav.frame(t); }
+  nav.up(915, 93, t + 1 / 60);
+  while (nav.frame(t) && t < 7) t += 1 / 60;
+  assert.equal(selected[selected.length - 1], 4);
+  assert.ok(Math.abs(nav.state().centreX - 915) < .5, `drag landed at ${nav.state().centreX}`);
 });

@@ -21,6 +21,7 @@ import androidx.compose.ui.unit.LayoutDirection
 import kotlin.math.cos
 import kotlin.math.sin
 import kotlin.math.ceil
+import kotlin.math.min
 
 /** One resolved drawing transform, shared by a bar's material and both ink variants.
  * This never participates in measuring, placement, semantics or pointer coordinates. */
@@ -30,11 +31,94 @@ internal data class GlassMaterialDrawing(
     val pressY: Float = 1f,
     val centre: Offset = Offset.Zero,
     val footprint: ImageBitmap? = null,
+    /** The transform the material's content follows: the press and pull without the reach toward
+     * the finger ([GlassInteraction.pressReach]), which shapes the outline only. On iOS the held
+     * bar's icons follow its plain press scale while its edge reaches for the finger (video2,
+     * held at Calls: selected ink at 204 px, the 1.05 scale's position, 2026-10-14). */
+    val contentPull: GlassPullDeformation = pull,
+    val contentPressX: Float = pressX,
 )
 
 @Stable
 internal class GlassMaterialDrawingState {
     var drawing by mutableStateOf(GlassMaterialDrawing())
+}
+
+/**
+ * Connects a free glass button to the bar it fuses with ([GlassTabBarAccessory.link]): the button's
+ * [liquidGlass] publishes its animated press growth and pull, and the bar's outline reaches for
+ * where the button is drawn, not where it is laid out. iOS 26's Phone search button joins the bar
+ * through a neck while pressed and breaks away from it when pulled (IMG_6756, 2026-10-15).
+ */
+@Stable
+class GlassAccessoryLink internal constructor() {
+    internal val drawing = GlassMaterialDrawingState()
+}
+
+/** A [GlassAccessoryLink] that survives recomposition. */
+@Composable
+fun rememberGlassAccessoryLink(): GlassAccessoryLink = remember { GlassAccessoryLink() }
+
+/**
+ * The accessory's drawn body around its laid-out centre: centre offset, then its radius along x
+ * and along y (px). For a body stretched at a slant these are its reach along each axis, not its
+ * bounding box, so a shape built on them stays inside it.
+ */
+internal fun GlassMaterialDrawing.accessoryExtents(halfWidth: Float, halfHeight: Float): FloatArray {
+    val a = pull.angleDegrees * (kotlin.math.PI.toFloat() / 180f)
+    val c = cos(a); val s = sin(a)
+    // The pressed body stretched along the pull (half axis A) and thinned across it (B).
+    val r = (halfWidth * pressX + halfHeight * pressY) / 2f
+    val along = r * pull.along; val across = r * pull.across
+    fun reach(cx: Float, sx: Float) = 1f / kotlin.math.sqrt((cx * cx) / (along * along) + (sx * sx) / (across * across))
+    return floatArrayOf(pull.translationX, pull.translationY, reach(c, s), reach(s, c))
+}
+
+/**
+ * The largest stadium (half extents and corner radius, px) inside an axis-aligned ellipse with
+ * half axes [a], [b]: a bar fusing with a stretched round accessory must not show its rounded-rect
+ * copy past the accessory's elliptical body. Equal axes give the circle itself.
+ */
+internal fun glassInscribedStadium(a: Float, b: Float): FloatArray {
+    if (a <= 0f || b <= 0f) return floatArrayOf(a, b, min(a, b))
+    val long = maxOf(a, b); val short = min(a, b)
+    if (long - short < 1e-3f) return floatArrayOf(a, b, short)
+    fun inside(c: Float, r: Float): Boolean {
+        // The cap circle centred on the long axis at c, radius r, sampled every 7.5 degrees.
+        for (i in 0..12) {
+            val t = i * (kotlin.math.PI.toFloat() / 24f)
+            val x = c + r * cos(t); val y = r * sin(t)
+            if ((x * x) / (long * long) + (y * y) / (short * short) > 1.0001f) return false
+        }
+        return true
+    }
+    var best = floatArrayOf(short, short, 0f); var bestArea = -1f
+    for (i in 0..8) {
+        val r = short * (0.6f + 0.05f * i)
+        var lo = 0f; var hi = long - r
+        if (!inside(0f, r)) continue
+        repeat(14) { val mid = (lo + hi) / 2f; if (inside(mid, r)) lo = mid else hi = mid }
+        val area = 4f * lo * r + kotlin.math.PI.toFloat() * r * r
+        // 3% inside, for the slant the axis-aligned stadium cannot follow.
+        if (area > bestArea) { bestArea = area; best = floatArrayOf((lo + r) * .97f, r * .97f, r * .97f) }
+    }
+    return if (a >= b) floatArrayOf(best[0], best[1], best[2]) else floatArrayOf(best[1], best[0], best[2])
+}
+
+/** Where the material's content draws the point [x], [y] (its own frame): the forward map of
+ * [glassMaterialForeground]'s transform, the press and pull without the reach. */
+internal fun GlassMaterialDrawing.contentPoint(x: Float, y: Float): Offset {
+    val pull = contentPull
+    var px = (x - centre.x) * contentPressX
+    var py = (y - centre.y) * pressY
+    val a = pull.angleDegrees * kotlin.math.PI / 180.0
+    val c = kotlin.math.cos(a).toFloat(); val s = kotlin.math.sin(a).toFloat()
+    // R(a) S R(-a), as withGlassMaterialPull applies it, then the translation.
+    val u = (c * px + s * py) * pull.along
+    val v = (-s * px + c * py) * pull.across
+    px = c * u - s * v
+    py = s * u + c * v
+    return Offset(centre.x + px + pull.translationX, centre.y + py + pull.translationY)
 }
 
 /** Independent native-resolution alpha input. A transparent border makes out-of-bounds
@@ -73,6 +157,6 @@ internal fun Modifier.glassMaterialForeground(
     state: GlassMaterialDrawingState?, origin: Offset = Offset.Zero,
 ): Modifier = if (state == null) this else drawWithContent {
     val frame = state.drawing
-    withGlassMaterialPull(frame.pull, frame.pressX, frame.pressY,
+    withGlassMaterialPull(frame.contentPull, frame.contentPressX, frame.pressY,
         pivot = frame.centre - origin) { this@drawWithContent.drawContent() }
 }

@@ -166,14 +166,15 @@ private fun buildGlassSelectorBar(
     spec: GlassSelectorSpec,
 ): GlassSelectorBar = with(density) {
     val insetPx = style.contentPadding.toPx()
-    val slot = (barWidthPx - insetPx * 2f) / itemCount
+    val geometry = glassTabBarGeometry(density, barWidthPx, style, itemCount)
+    val slot = if (geometry.fixed) geometry.slotWidth else (barWidthPx - insetPx * 2f) / itemCount
     val pillWidth: Dp = if (style.pillWidth.isSpecified) maxOf(style.pillWidth, slot.toDp()) else slot.toDp()
     // A requested rest width may exceed the room around an end anchor on a compact bar.
     // Bound the reference capsule before it is published: moving the contact-solver centre
     // later would misalign the settled selection and leave its spring pushing into the wall.
     // This is layout feasibility, not a cap on held deformation or navigation intent.
     val restHalfWidth = if (spec.poseMotion) {
-        min(pillWidth.toPx() / 2f, (insetPx + slot / 2f - density.density).coerceAtLeast(density.density))
+        min(pillWidth.toPx() / 2f, ((if (geometry.fixed) geometry.firstCentre else insetPx + slot / 2f) - density.density).coerceAtLeast(density.density))
     } else pillWidth.toPx() / 2f
     val requestedHalfHeight = barHeightPx / 2f - style.pillInset.toPx()
     val pillHalfHeight = if (spec.poseMotion) min(requestedHalfHeight, restHalfWidth) else requestedHalfHeight
@@ -200,6 +201,8 @@ private fun buildGlassSelectorBar(
             2f * min(pillWidth.toPx() + style.lensExtraWidth.toPx(),
                 max(spec.maxWidthSlots, 2.4f) * slot / 2f + slot) + spec.maxExtraLength * slot,
         ),
+        fixedSlot = geometry.fixedSlot,
+        endReach = geometry.endReach,
     )
 }
 
@@ -342,6 +345,16 @@ internal class GlassPoseHandle(val controller: GlassPoseController) {
     var barPointerY: Float = Float.NaN
     var pressSource: GlassPressSource? = null
     val barCache = GlassSelectorBarCache()
+    /**
+     * How far the bar's own press moves the body at a bar-local x, or null: the drawn body then
+     * sits where the bar's pressed content puts that point, as its tab does. iOS's held lens
+     * at Calls is centred on the pressed tab (203 px), not on the finger (219; video2 1.8 s,
+     * 2026-10-15 pass 13). Navigation, touch and selection stay in the controller's frame.
+     */
+    var barShift: ((Float) -> Float)? = null
+    /** The current [barShift] at the controller's centre, applied by [publish]. */
+    var barShiftX: Float = 0f
+        private set
 
     private val extents = GlassPoseExtents()
 
@@ -357,10 +370,11 @@ internal class GlassPoseHandle(val controller: GlassPoseController) {
 
     fun publish() {
         controller.extents(extents)
-        centreX = controller.centreX
+        barShiftX = barShift?.invoke(controller.centreX) ?: 0f
+        centreX = controller.centreX + barShiftX
         centreY = controller.centreY
-        left = extents.left
-        right = extents.right
+        left = extents.left + barShiftX
+        right = extents.right + barShiftX
         formation = controller.formation
         transitAppearance = controller.transitAppearance
         heldTravel = controller.heldTravel
@@ -374,7 +388,7 @@ internal class GlassPoseHandle(val controller: GlassPoseController) {
         // renders nothing at all and the bar shows through with its own ink.
         render = glassPoseRenderOf(
             controller.frame,
-            dx = nodeLeft().toFloat() + envelopeWidth / 2f,
+            dx = nodeLeft().toFloat() + envelopeWidth / 2f - barShiftX,
             dy = nodeTop().toFloat() + nodeHeight / 2f,
         )
         resolvePress()
@@ -417,7 +431,20 @@ internal fun GlassPoseFrameLoop(
         while (true) {
             while (true) {
                 val idle = withFrameNanos { nanos ->
-                    if (handle.previousFrame < 0L) handle.previousFrame = nanos
+                    if (handle.previousFrame < 0L) {
+                        // Waking: the input that woke the loop has already advanced the
+                        // simulation to its own timestamp, but this frame presents later than
+                        // that. Present the frame's own time, or the whole gesture runs that far
+                        // behind the finger: about 1.5 frames on video2's throws after a still
+                        // hold (2026-10-14 pass 12). Only when the pointer and frame clocks
+                        // visibly share a base (0-50 ms apart); travel-only (Calm) specs only.
+                        val c = handle.controller
+                        if (c.spec.travelOnly && c.hasPointerClock) {
+                            val lag = nanos / 1_000_000_000.0 - c.lastPointerSeconds
+                            if (lag > 0.0 && lag <= WAKE_CATCH_UP_SECONDS) handle.clock += lag.toFloat()
+                        }
+                        handle.previousFrame = nanos
+                    }
                     handle.clock += (nanos - handle.previousFrame) / 1_000_000_000f
                     handle.previousFrame = nanos
                     handle.controller.motionEnabled = currentMotion
@@ -435,3 +462,6 @@ internal fun GlassPoseFrameLoop(
         }
     }
 }
+
+/** The most a woken pose loop catches up from its waking input to the frame: three 60 Hz frames. */
+private const val WAKE_CATCH_UP_SECONDS = 0.05
