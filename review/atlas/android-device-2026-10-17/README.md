@@ -29,6 +29,15 @@ What it shows, on the device's AGSL path:
 | Frame time p50 / p90 / p95 / p99 | 19 / 31 / 32 / 65 ms | 20 / 30 / 32 / 44 ms |
 | GPU time p50 / p90 / p99 | 12 / 17 / 20 ms | 12 / 15 / 19 ms |
 
+**Directional extremes.** A second recording pulled the search button 250 px in eight directions
+(600 ms each) and dragged the held bar 300-500 px off its axis, up and down, and past both ends. The
+button stretches toward the finger in every direction and lands back on its place; the bar's drags
+carry and land; no ghost disc, seam or stuck frame appears.
+
+![The search button pulled in eight directions on the Pixel 7 (dark Calm)](search-pulls.png)
+
+*Frames from the device's screen recording (10 per second), the bar's right end and the button.*
+
 **Limits.** The input is `adb shell input`, not a finger: a stationary hold sends no movement, and
 swipes are straight lines at constant speed. This check shows the behaviour runs correctly on the
 device; parity is measured on the desktop replay against the iOS recordings. At 90 Hz the frame budget

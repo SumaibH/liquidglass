@@ -174,8 +174,10 @@ trace was produced and no permission changes were made. See [performance](perfor
    CanvasKit and .NET ports have its press, pull and landing (`createFreeButton` / `FreeButton`, checked frame
    by frame against Kotlin) and, since 17 October, the bar's fusion with it (`accessoryFuse` /
    `AccessoryFuse`). Owner visual acceptance is pending.
-2. Verify all directional extreme envelopes on hardware. The physical-device check ran on 17 October
-   (Pixel 7, dark and light: tap, hold, drag, throw, search pulls; [record](https://github.com/shayann07/liquidglass/blob/main/review/atlas/android-device-2026-10-17/README.md)).
+2. Hardware: the physical-device check ran on 17 October (Pixel 7, dark and light: tap, hold, drag,
+   throw, the search button pulled 250 px in eight directions, off-axis bar drags; no artefacts;
+   [record](https://github.com/shayann07/liquidglass/blob/main/review/atlas/android-device-2026-10-17/README.md)).
+   Real-finger input on a device remains for the owner (adb input is straight and constant-speed).
 3. Resolve ordinary interaction/display performance (Pixel 7 at 90 Hz: frame p50 19-20 ms, p90 30-31 ms
    over the Phone scene's gestures) and final wide/narrow Atlas visual acceptance.
 4. Additional host integrations, with executable evidence.

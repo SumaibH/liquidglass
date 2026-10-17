@@ -201,6 +201,11 @@ This file records user-visible development changes. Published artifacts are iden
   tap, hold, drag, throw and the search button's pulls, recorded on the device
   (`review/atlas/android-device-2026-10-17/`). Frame time p50 19-20 ms at 90 Hz. Sample: `PhoneActivity`
   takes `--ez light true` for light Calm.
+- Phone search button (17 October): `pullLiftShare` 0.6 in the sample, the replay and both ports
+  (was 0.7), the share the library's own note measured ("settles at 70 once dragged"). Scored on
+  IMG_6756's search catalogue (`searchscore.py`): brightness 7.1 levels rms (was 8.0), half-width 2.7
+  px (2.8), centre and height unchanged. Width ratio 1.3 over-thins upward pulls (71 against iOS's 79)
+  and a longer pull limit overshoots the rise (124 against 112); both stay as they were.
 - `CalmClear()` (17 October): `legibility` 2.5 on its bar. iOS's App Store bar compresses bright text
   under it (band p50 / p75 69 / 80); a plain clear bar gave 73 / 107, this gives 67 / 98 and leaves a
   plain card and WhatsApp's levels unchanged (53 / 31).

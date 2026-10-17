@@ -138,7 +138,7 @@ private fun replay(args: Array<String>) {
                     style = WhatsAppGeometry.style(style), card = "+plain" !in variant, light = "light" in variant)
                 else PhoneScene(selected, { selected = it }, palette = palette, style = style,
                     search = if ("+passive" in variant) null else com.wexpa.liquidglass.GlassInteraction.Pullable.copy(
-                        pullShape = com.wexpa.liquidglass.GlassPullShape.Free, pullLiftShare = 0.7f).let { base ->
+                        pullShape = com.wexpa.liquidglass.GlassPullShape.Free, pullLiftShare = 0.6f).let { base ->
                         // "+search=<follow>,<elongation>,<widthRatio>,<limit>,<liftShare>": a search-button candidate.
                         val k = variant.substringAfter("+search=", "").substringBefore('+').split(',').mapNotNull { it.toFloatOrNull() }
                         if (k.size < 5) base else base.copy(pullFollow = k[0], pullElongation = k[1], pullWidthRatio = k[2],

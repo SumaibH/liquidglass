@@ -209,7 +209,7 @@ GlassTabBar(..., trailingAccessory = GlassTabBarAccessory(size = 62.dp, gap = 8.
 Box(
     Modifier.offset(x = 307.dp).size(62.dp).liquidGlass(
         glass, CircleShape, GlassTabBarStyle.Calm().bar,
-        interaction = GlassInteraction.Pullable.copy(pullShape = GlassPullShape.Free, pullLiftShare = 0.7f),
+        interaction = GlassInteraction.Pullable.copy(pullShape = GlassPullShape.Free, pullLiftShare = 0.6f),
         link = link,
     ),
     contentAlignment = Alignment.Center,

@@ -177,7 +177,7 @@ function animated(initial) {
  * stretch along and across `angle` (degrees), the offset, and the glow and its lift.
  */
 export function createFreeButton({size, density = 1, pressScale = 1.26, pressGrowth = 8, pressLift = .2,
-  pullFollow = .35, pullElongation = .217, pullWidthRatio = 1, pullLimit = .5, pullLiftShare = .7} = {}) {
+  pullFollow = .35, pullElongation = .217, pullWidthRatio = 1, pullLimit = .5, pullLiftShare = .6} = {}) {
   if (!(size > 0) || !(density > 0)) throw new RangeError('Positive size and density required');
   const growth = pressGrowth * density, radius = size / 2;
   const balloon = Math.min(1 + 2 * growth / size, pressScale);

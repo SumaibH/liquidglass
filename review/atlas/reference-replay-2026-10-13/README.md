@@ -904,8 +904,9 @@ the impact. The narrowing itself is real and is listed below.
 - Light appearance (IMG_7048, 17 October): the held lens's soft ~12 px edge band and the shadow under
   it (to 242) are a thin line and no shadow in ours; the bar's ends read 234 against 179-221; one pill
   offset cannot give iOS's Phone (246), WhatsApp (236) and App Store (217-228) pills at once (ours 242).
-- Search button (pass 17): the rise peaks 3-6 px short; sideways pulls squash 8 px less across;
-  brightness 8 levels rms. The ports have the free pull and, since 17 October, the bar's fusion with it
+- Search button (pass 17, lift share 0.6 since 17 October): the rise peaks 3-6 px short; sideways
+  pulls squash 8 px less across (min half-width 86 against 78; a width ratio of 1.3 over-thins the
+  upward pulls instead); brightness 7.1 levels rms (8.0 at 0.7). The ports have the free pull and, since 17 October, the bar's fusion with it
   (`accessoryFuse` / `AccessoryFuse`, checked against Kotlin).
 - Pass 14's level residuals (58 against 67, 62 against 64) were read on the sRGB-decoded recordings
   and are superseded above.
