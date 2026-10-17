@@ -148,6 +148,13 @@ Progress:
   the `calm+lens=a,grey,raw` replay variant): no tint/raw-share pair meets both pages (raw share
   saturates at ~75 on docs2; a brighter tint lifts black pages equally). Kept the black-page fit (13 of
   16 held moments); the page gain is a structural residual for a later pass.
+- 18 Oct (overnight, cont.): search button pullLiftShare .6 everywhere (level rms 7.1, was 8.0; widthRatio
+  1.3 and limit .6 rejected); light lens innerShadow .08 (band 245 vs 244, ~4 px vs ~12); device: 8-direction
+  search pulls + off-axis drags clean; perf by stage on Pixel 7: UI 6.9 / RT 1.9 / GPU 8.5 ms p50, keeps
+  90 Hz, renderScale barely matters (GPU 9->8 ms). PR #19 (claude/light-and-gaps) carries all of it.
+  Remaining: lens top band (dark), App Store p75 text 98 vs 80, light lens band width + shadow, App Store
+  light pill darker, search sideways squash 86 vs 78, landing/neck input-size residuals, owner acceptance,
+  real-finger device check.
 - 17 Oct night (owner: merge everything, light mode, overnight): merged #18/#16/#15 (admin). Branch
   claude/light-and-gaps: light Calm MEASURED (IMG_7048 light recording, research/datasets/ios27-phone/light/):
   bar white .41 + 10/255 (0.59B+115), edgeShadow .12 no highlight, contactShadow .2, pill -13/255, lens
