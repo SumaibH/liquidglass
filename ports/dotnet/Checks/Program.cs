@@ -10,6 +10,7 @@ var results = new List<object>();
 results.Add(MotionChecks.Run());
 results.Add(SelectorChecks.Run());
 results.Add(FreeButtonChecks.Run());
+results.Add(FuseChecks.Run());
 void Check(bool condition, string message) { if (!condition) throw new Exception(message); }
 void Throws<T>(Action action) where T : Exception
 {

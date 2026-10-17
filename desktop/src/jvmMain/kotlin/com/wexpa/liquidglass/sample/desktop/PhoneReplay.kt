@@ -73,11 +73,13 @@ private fun replay(args: Array<String>) {
         "calm-slot" -> GlassTabBarStyle.Calm().copy(height = PhoneGeometry.barHeight)
         // The material calibrated on the wrongly decoded recordings, with their dimmed palette.
         "calm-recorded" -> PhoneGeometry.style(GlassTabBarStyle.CalmRecordedSpace())
+        // Light appearance (authored): "calm-light", "whatsapp-light", "appstore-light".
+        "calm-light" -> PhoneGeometry.style(GlassTabBarStyle.Calm(dark = false))
         // The clearer bar of WhatsApp and the App Store ("whatsapp-clear", "appstore-clear").
-        else -> if ("-clear" in variant) PhoneGeometry.style(GlassTabBarStyle.CalmClear())
-            else PhoneGeometry.style(GlassTabBarStyle.Calm())
+        else -> if ("-clear" in variant) PhoneGeometry.style(GlassTabBarStyle.CalmClear(dark = "light" !in variant))
+            else PhoneGeometry.style(GlassTabBarStyle.Calm(dark = "light" !in variant))
     }.let { base ->
-        // "calm+lens=<alpha>,<grey 0-255>[,<rawShare>[,<lift /255>[,<fineShare>[,<wide dp>[,<heldGlow>[,<glowFloor>[,<glowReach dp>[,<blur dp>[,<rawBlur dp>]]]]]]]]]": a lens candidate, for fitting by replay.
+        // "calm+lens=<alpha>,<grey 0-255>[,<rawShare>[,<lift /255>[,<fineShare>[,<wide dp>[,<heldGlow>[,<glowFloor>[,<glowReach dp>[,<blur dp>[,<rawBlur dp>[,<refraction depth dp>[,<innerShadow>[,<edge tone /255>]]]]]]]]]]]]": a lens candidate, for fitting by replay.
         val lens = variant.substringAfter("+lens=", "").substringBefore('+').split(',').mapNotNull { it.toFloatOrNull() }
         if (lens.size < 2) base else base.copy(lens = base.lens.copy(
             tint = androidx.compose.ui.graphics.Color(lens[1] / 255f, lens[1] / 255f, lens[1] / 255f, lens[0]),
@@ -90,16 +92,20 @@ private fun replay(args: Array<String>) {
             heldGlowReach = lens.getOrNull(8)?.let { androidx.compose.ui.unit.Dp(it) } ?: base.lens.heldGlowReach,
             blurRadius = lens.getOrNull(9)?.let { androidx.compose.ui.unit.Dp(it) } ?: base.lens.blurRadius,
             rawBlur = lens.getOrNull(10)?.let { androidx.compose.ui.unit.Dp(it) } ?: base.lens.rawBlur,
+            refractionDepth = lens.getOrNull(11)?.let { androidx.compose.ui.unit.Dp(it) } ?: base.lens.refractionDepth,
+            innerShadow = lens.getOrElse(12) { base.lens.innerShadow },
+            heldEdgeTone = lens.getOrNull(13)?.let { it / 255f } ?: base.lens.heldEdgeTone,
         ))
     }.let { base ->
-        // "+bar=<black alpha>,<lift /255>[,<fineShare>[,<blur dp>[,<softDetail>[,<wide dp>]]]]": a bar candidate, for fitting by replay.
+        // "+bar=<black alpha>,<lift /255>[,<fineShare>[,<blur dp>[,<softDetail>[,<wide dp>[,<legibility>]]]]]": a bar candidate, for fitting by replay.
         val bar = variant.substringAfter("+bar=", "").substringBefore('+').split(',').mapNotNull { it.toFloatOrNull() }
         if (bar.size < 2) base else base.copy(bar = base.bar.copy(
             tint = androidx.compose.ui.graphics.Color(0f, 0f, 0f, bar[0]), tintLift = bar[1] / 255f,
             fineShare = bar.getOrElse(2) { base.bar.fineShare },
             blurRadius = bar.getOrNull(3)?.let { androidx.compose.ui.unit.Dp(it) } ?: base.bar.blurRadius,
             softDetail = bar.getOrElse(4) { base.bar.softDetail },
-            wideKernel = bar.getOrNull(5)?.let { androidx.compose.ui.unit.Dp(it) } ?: base.bar.wideKernel))
+            wideKernel = bar.getOrNull(5)?.let { androidx.compose.ui.unit.Dp(it) } ?: base.bar.wideKernel,
+            legibility = bar.getOrElse(6) { base.bar.legibility }))
     }.let { base ->
         // "+pill=<black alpha>,<lift in /255>": a resting pill candidate, for fitting by replay.
         val pill = variant.substringAfter("+pill=", "").substringBefore('+').split(',').mapNotNull { it.toFloatOrNull() }
@@ -108,7 +114,8 @@ private fun replay(args: Array<String>) {
     }
     // Display colours measured on the correctly decoded recordings; "-recorded" reproduces the
     // passes that compared against the recordings decoded as sRGB (2026-10-15).
-    val palette = if (variant.endsWith("recorded")) PhonePalette.Recorded else PhonePalette.Natural
+    val palette = if (variant.endsWith("recorded")) PhonePalette.Recorded
+        else if ("light" in variant) PhonePalette.Light else PhonePalette.Natural
 
     lateinit var scene: ImageComposeScene
     lateinit var composeScene: ComposeScene
@@ -126,14 +133,19 @@ private fun replay(args: Array<String>) {
                 // "+passive": the search button without press and pull, as rendered before 15 October.
                 // "appstore": iOS 26's App Store five-tab bar over a dark card (AppStoreScene).
                 if (variant.startsWith("appstore")) AppStoreScene(selected, { selected = it },
-                    style = AppStoreGeometry.style(style))
+                    style = AppStoreGeometry.style(style), light = "light" in variant)
                 // "whatsapp": WhatsApp's five-tab bar on its measured slots (WhatsAppScene);
                 // "+plain": over the bare page, without the settings card.
                 else if (variant.startsWith("whatsapp")) WhatsAppScene(selected, { selected = it },
-                    style = WhatsAppGeometry.style(style), card = "+plain" !in variant)
+                    style = WhatsAppGeometry.style(style), card = "+plain" !in variant, light = "light" in variant)
                 else PhoneScene(selected, { selected = it }, palette = palette, style = style,
                     search = if ("+passive" in variant) null else com.wexpa.liquidglass.GlassInteraction.Pullable.copy(
-                        pullShape = com.wexpa.liquidglass.GlassPullShape.Free, pullLiftShare = 0.7f))
+                        pullShape = com.wexpa.liquidglass.GlassPullShape.Free, pullLiftShare = 0.6f).let { base ->
+                        // "+search=<follow>,<elongation>,<widthRatio>,<limit>,<liftShare>": a search-button candidate.
+                        val k = variant.substringAfter("+search=", "").substringBefore('+').split(',').mapNotNull { it.toFloatOrNull() }
+                        if (k.size < 5) base else base.copy(pullFollow = k[0], pullElongation = k[1], pullWidthRatio = k[2],
+                            pullLimit = k[3], pullLiftShare = k[4])
+                    })
             }
         }
         // ImageComposeScene draws into a CPU raster. Reuse its scene and frame clock, but draw

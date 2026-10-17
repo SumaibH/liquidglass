@@ -134,6 +134,12 @@ carries falls by about half: 61 to 26, 38 to 20, 77 to 53 on successive rows. Th
 outline is unaffected, because that is geometry rather than refracted detail, but the compressed
 image of the surroundings that makes the edge read as glass gets softer.
 
+On a Pixel 7 at 90 Hz (17 October; the Phone comparison scene, a bar, its selector and the search
+button) the glass is not the bottleneck: per frame the UI thread takes 6.9 ms, the RenderThread 1.9 ms
+and the GPU 8.5 ms at p50, all under the 11.1 ms budget, and `renderScale` 0.5 lowers GPU time only from
+9 to 8 ms ([device record](https://github.com/shayann07/liquidglass/blob/main/review/atlas/android-device-2026-10-17/README.md)).
+The scrolling Material screen above is the expensive arrangement; there, resolution matters.
+
 So the default is 1, and it should stay 1 unless a screen is actually missing frames. If it is,
 0.7 is the value to try first: it halves the pixel count, and on a busy screen the rim detail it
 gives up is competing with everything else for attention anyway. Below about 0.5 the rim stops

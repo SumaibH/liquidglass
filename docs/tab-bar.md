@@ -48,7 +48,7 @@ pigment recovers gradually when both subside. These are authored response parame
 against the original short/long tap sequences, not recovered Apple mechanics. Its held refraction
 band, rim and whole-bar lift retain their separate
 response. Use `tapTintFade = 0f` and `tapSelectedScale = 1f` to disable those two additions.
-Light Calm and historical presets retain these defaults. See the [API reference](api-reference.md)
+Light Calm uses them too since 17 October (the light recording shows the same transit); historical presets retain these defaults. See the [API reference](api-reference.md)
 for the field contract and [current research](research/atlas-stabilization.md) for the measured
 comparisons, authored choices and remaining limitations.
 
@@ -99,16 +99,46 @@ GlassTabBar(state = glass, itemCount = 5, selectedIndex = selected, onSelected =
 | Any bar over black | 32 | 32 | 32 |
 
 iOS's chats page has text under the bar, so its 43 sits over slightly more than the bare page our
-scene uses. Text under the App Store bar still reads brighter in ours than in iOS's (p75 107 against
-80): iOS compresses bright content under that bar, which neither preset reproduces. Light appearance
+scene uses. iOS also compresses bright text under that bar: over the App Store's headline its band
+reads p50 / p75 69 / 80. `CalmClear()` raises its tint where the page under it has contrast
+(`legibility` 2.5), which leaves a plain card alone and gives 67 / 98 (a plain 0.9 gave 73 / 107;
+stronger values saturate, 6 gives 63 / 95). Light appearance
 has no recording; `CalmClear(dark = false)` is `Calm(dark = false)`. The CanvasKit and .NET ports
 take it as `clear` on the bar material (`calmBarMaterial({clear: true})`, `CalmSelectorMaterial.Bar(..., clear: true)`).
 
-![Calm and CalmClear over the WhatsApp and App Store scenes](https://raw.githubusercontent.com/shayann07/liquidglass/main/review/atlas/reference-replay-2026-10-13/clear-bar.png)
+## Light appearance
 
-*Our renders only: the sample `WhatsAppScene` and `AppStoreScene` (neutral placeholders), desktop
-GPU replay at 3x, branch `claude/parity-2` after 722cb4d. The iOS levels in the captions are
-measurements on the owner's recordings, not pixels from them.*
+`Calm(dark = false)` is measured on the owner's light-mode recording (17 October; display colours;
+Phone keypad page, App Store cards, WhatsApp, Threads):
+
+| Light, at rest | iOS | `Calm(dark = false)` |
+| :-- | --: | --: |
+| Bar over the page (least squares over seven page levels, 171-245) | 0.58 of the page + 116 | 0.59 + 115 |
+| Bar over white | 255 | 255 |
+| Bar rim, top / bottom / ends | 246 / 242-247 / 179-221 | 246 / 246 / 234 |
+| Shadow under the bar | 253 | 251-253 |
+| Resting pill: Phone keypad page / WhatsApp | 246 / 236 | 242 / 242 |
+
+The bar has the dark Phone bar's slope (white at 0.41 plus 10/255), clearer than the light toolbar the
+Photos screenshots measured (0.42 plus 140). Its rim is a darker line and it casts a faint shadow. The
+resting pill is clear glass 13/255 below the bar: because the bar reads white over a white page, one
+offset cannot give both iOS's Phone (246) and WhatsApp (236) pills, and the App Store's is darker
+again (217-228). The held lens is clear glass over the bar with a light outline (243/255), where dark
+Calm's is a 65-level line. The bar lifts for any touch, and the tap optics and motion are dark Calm's.
+`CalmRecordedSpace(dark = false)` keeps the light preset this replaced.
+
+Still different: iOS's held lens shows a soft ~12 px grey band at its edge and a soft shadow under it
+(to 242); ours draws the band's level (245, an inner shadow of 0.08) over ~4 px and no shadow; the bar's ends read lighter than iOS's.
+
+In both appearances iOS draws page text under a tab bar as one soft, legible copy (the owner's
+Contacts recording, IMG_7049), which is what `softDetail` gives the Calm presets; the toolbar role's
+sharper high-pass, with its ghost copies, does not apply to tab bars.
+
+![Light Calm in the Phone, WhatsApp and App Store scenes, at rest and held](https://raw.githubusercontent.com/shayann07/liquidglass/main/review/atlas/reference-replay-2026-10-13/light-calm.png)
+
+*Our renders only: desktop GPU replay at 3x, branch `claude/light-and-gaps`; the sample's light
+palettes (`PhonePalette.Light`, `light = true`) are iOS's system colours. The iOS levels are
+measurements on the owner's recording, not pixels from it.*
 
 ## Tabs on set slots
 
@@ -179,7 +209,7 @@ GlassTabBar(..., trailingAccessory = GlassTabBarAccessory(size = 62.dp, gap = 8.
 Box(
     Modifier.offset(x = 307.dp).size(62.dp).liquidGlass(
         glass, CircleShape, GlassTabBarStyle.Calm().bar,
-        interaction = GlassInteraction.Pullable.copy(pullShape = GlassPullShape.Free, pullLiftShare = 0.7f),
+        interaction = GlassInteraction.Pullable.copy(pullShape = GlassPullShape.Free, pullLiftShare = 0.6f),
         link = link,
     ),
     contentAlignment = Alignment.Center,

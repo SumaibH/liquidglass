@@ -70,8 +70,11 @@ fun WhatsAppScene(
     modifier: Modifier = Modifier,
     style: GlassTabBarStyle = WhatsAppGeometry.style(GlassTabBarStyle.CalmClear()),
     card: Boolean = true,
+    // Light appearance, ASSUMED colours (grouped background, white card, black ink).
+    light: Boolean = false,
 ) {
-    val page = Color(0xFF0A0A0A)
+    val page = if (light) Color(0xFFF2F2F7) else Color(0xFF0A0A0A)
+    val ink = if (light) Color.Black else Color.White
     val state = rememberLiquidGlassState(page)
     Box(modifier.size(PhoneGeometry.width, PhoneGeometry.height).background(page)) {
         Box(Modifier.fillMaxSize().liquidGlassSource(state)) {
@@ -79,16 +82,16 @@ fun WhatsAppScene(
             // outlined glyph at 37 pt and a 17 pt label at 77 pt, one row behind the bar. Without
             // [card], the bare page (10), as under the bar on WhatsApp's chats list.
             if (card) Box(Modifier.offset(16.dp, 0.dp).size(358.dp, 260.dp)
-                .background(Color(0xFF171717), RoundedCornerShape(26.dp)))
+                .background(if (light) Color.White else Color(0xFF171717), RoundedCornerShape(26.dp)))
             if (card) for ((i, label) in listOf("Account", "Storage", "Privacy", "Chats", "Appearance").withIndex()) {
                 val y = (28f + 50f * i).dp
                 Canvas(Modifier.offset(37.dp, y - 10.dp).size(20.dp)) {
-                    drawRoundRect(Color.White, Offset(size.width * .1f, size.height * .1f),
+                    drawRoundRect(ink, Offset(size.width * .1f, size.height * .1f),
                         Size(size.width * .8f, size.height * .8f), CornerRadius(size.width * .22f),
                         style = Stroke(size.width * .09f))
                 }
                 BasicText(label, Modifier.offset(77.dp, y - 11.dp),
-                    style = TextStyle(color = Color.White, fontSize = 17.sp))
+                    style = TextStyle(color = ink, fontSize = 17.sp))
             }
         }
         val barTop = PhoneGeometry.barCentreY - PhoneGeometry.barHeight / 2
@@ -96,71 +99,71 @@ fun WhatsAppScene(
             state, 5, selected, onSelected,
             Modifier.offset(WhatsAppGeometry.barLeft, barTop).width(WhatsAppGeometry.barWidth).testTag("whatsapp-bar"),
             style = style,
-        ) { index, isSelected -> WhatsAppTab(index, isSelected) }
+        ) { index, isSelected -> WhatsAppTab(index, isSelected, ink) }
     }
 }
 
 @Composable
-private fun WhatsAppTab(index: Int, selected: Boolean) {
+private fun WhatsAppTab(index: Int, selected: Boolean, ink: Color = Color.White) {
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
         Canvas(Modifier.size(WhatsAppIconWidths[index], 22.dp)) {
             val fill: DrawStyle = if (selected) Fill else Stroke(2.2.dp.toPx())
             when (index) {
-                0 -> updatesGlyph(fill)
-                1 -> callsGlyph(fill)
-                2 -> communitiesGlyph(fill)
-                3 -> chatsGlyph(fill)
-                else -> profileGlyph(selected)
+                0 -> updatesGlyph(fill, ink)
+                1 -> callsGlyph(fill, ink)
+                2 -> communitiesGlyph(fill, ink)
+                3 -> chatsGlyph(fill, ink)
+                else -> profileGlyph(selected, ink)
             }
         }
         Spacer(Modifier.height(5.dp))
-        BasicText(WhatsAppLabels[index], style = TextStyle(color = Color.White, fontSize = 10.5.sp,
+        BasicText(WhatsAppLabels[index], style = TextStyle(color = ink, fontSize = 10.5.sp,
             fontWeight = if (selected) FontWeight.SemiBold else FontWeight.Medium, letterSpacing = 0.2.sp))
     }
 }
 
 // Glyphs of the recording's extents, drawn plainly: ink of the right size and weight under the glass.
-private fun DrawScope.updatesGlyph(fill: DrawStyle) {
+private fun DrawScope.updatesGlyph(fill: DrawStyle, ink: Color = Color.White) {
     val r = size.minDimension / 2f
-    drawCircle(Color.White, r * .92f, center, style = Stroke(r * .14f))
-    drawCircle(Color.White, r * .58f, center, style = fill)
+    drawCircle(ink, r * .92f, center, style = Stroke(r * .14f))
+    drawCircle(ink, r * .58f, center, style = fill)
 }
 
-private fun DrawScope.callsGlyph(fill: DrawStyle) {
+private fun DrawScope.callsGlyph(fill: DrawStyle, ink: Color = Color.White) {
     val w = size.width; val h = size.height
     drawPath(Path().apply {
         moveTo(w * .12f, h * .08f); lineTo(w * .34f, h * .04f); lineTo(w * .44f, h * .3f); lineTo(w * .32f, h * .4f)
         cubicTo(w * .4f, h * .58f, w * .5f, h * .68f, w * .62f, h * .74f)
         lineTo(w * .72f, h * .6f); lineTo(w * .96f, h * .7f); lineTo(w * .92f, h * .94f)
         cubicTo(w * .5f, h * 1f, w * .02f, h * .56f, w * .12f, h * .08f); close()
-    }, Color.White, style = fill)
+    }, ink, style = fill)
 }
 
-private fun DrawScope.communitiesGlyph(fill: DrawStyle) {
+private fun DrawScope.communitiesGlyph(fill: DrawStyle, ink: Color = Color.White) {
     val w = size.width; val h = size.height
     for ((cx, r, top) in listOf(Triple(.5f, .17f, .02f), Triple(.2f, .13f, .14f), Triple(.8f, .13f, .14f))) {
-        drawCircle(Color.White, h * r, Offset(w * cx, h * (top + r)), style = fill)
+        drawCircle(ink, h * r, Offset(w * cx, h * (top + r)), style = fill)
         val bw = if (cx == .5f) w * .4f else w * .3f
         val by = h * (top + r * 2f + .12f)
-        drawArc(Color.White, 180f, 180f, true, Offset(w * cx - bw / 2f, by),
+        drawArc(ink, 180f, 180f, true, Offset(w * cx - bw / 2f, by),
             Size(bw, (h - by) * 2f - h * .04f), style = fill)
     }
 }
 
-private fun DrawScope.chatsGlyph(fill: DrawStyle) {
+private fun DrawScope.chatsGlyph(fill: DrawStyle, ink: Color = Color.White) {
     val w = size.width; val h = size.height
-    drawOval(Color.White, Offset(w * .36f, h * .12f), Size(w * .62f, h * .7f), style = fill)
-    drawOval(Color.White, Offset(w * .02f, h * .02f), Size(w * .62f, h * .74f), style = fill)
+    drawOval(ink, Offset(w * .36f, h * .12f), Size(w * .62f, h * .7f), style = fill)
+    drawOval(ink, Offset(w * .02f, h * .02f), Size(w * .62f, h * .74f), style = fill)
     drawPath(Path().apply { moveTo(w * .12f, h * .62f); lineTo(w * .08f, h * .98f); lineTo(w * .3f, h * .74f); close() },
-        Color.White, style = fill)
+        ink, style = fill)
 }
 
-private fun DrawScope.profileGlyph(selected: Boolean) {
+private fun DrawScope.profileGlyph(selected: Boolean, ink: Color = Color.White) {
     val r = size.height / 2f + 4.5.dp.toPx()
     val c = Offset(size.width / 2f, size.height / 2f)
     drawCircle(Color(0xFF5E5E5E), r * (if (selected) .84f else 1f), c)
     drawCircle(Color(0xFF9A9A9A), r * .3f, Offset(c.x, c.y - r * .18f))
     drawArc(Color(0xFF9A9A9A), 200f, 140f, true, Rect(c.x - r * .55f, c.y + r * .2f, c.x + r * .55f, c.y + r * 1.1f).topLeft,
         Size(r * 1.1f, r * .9f))
-    if (selected) drawCircle(Color.White, r, c, style = Stroke(r * .1f))
+    if (selected) drawCircle(ink, r, c, style = Stroke(r * .1f))
 }

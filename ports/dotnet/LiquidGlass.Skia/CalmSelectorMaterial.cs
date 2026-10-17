@@ -14,7 +14,7 @@ public sealed record CalmMaterial(IReadOnlyDictionary<string, float[]> Values, f
 public static class CalmSelectorMaterial
 {
     private sealed record Style(Dictionary<string, float[]> Pill, Dictionary<string, float[]> Lens, Dictionary<string, float[]> Bar,
-        float[] ClearBarTint, float HeldLift, bool TouchLift, bool PillInkFollows, bool LensInkFollows, float TapOptics, float TapOpticsFold, float TapTintFade);
+        Dictionary<string, float[]> ClearBar, float HeldLift, bool TouchLift, bool PillInkFollows, bool LensInkFollows, float TapOptics, float TapOpticsFold, float TapTintFade);
 
     private static readonly HashSet<string> Snap = ["uProfile", "uRestMap", "uHeldInk"];
     private static readonly Lazy<(HashSet<string> Dp, Dictionary<string, float> Fold, Style Dark, Style Light)> Data = new(Load);
@@ -36,7 +36,7 @@ public static class CalmSelectorMaterial
         {
             var s = root.GetProperty("styles").GetProperty(name);
             return new(Map(s.GetProperty("pill")), Map(s.GetProperty("lens")), Map(s.GetProperty("bar")),
-                s.GetProperty("clearBarTint").EnumerateArray().Select(x => x.GetSingle()).ToArray(), s.GetProperty("heldLift").GetSingle(),
+                Map(s.GetProperty("clearBar")), s.GetProperty("heldLift").GetSingle(),
                 s.GetProperty("touchLift").GetBoolean(), s.GetProperty("pillInkFollows").GetBoolean(), s.GetProperty("lensInkFollows").GetBoolean(),
                 s.GetProperty("tapOptics").GetSingle(), s.GetProperty("tapOpticsFold").GetSingle(), s.GetProperty("tapTintFade").GetSingle());
         }
@@ -128,8 +128,7 @@ public static class CalmSelectorMaterial
     {
         var (_, _, darkStyle, lightStyle) = Data.Value;
         var style = dark ? darkStyle : lightStyle;
-        var values = style.Bar.ToDictionary(p => p.Key, p => (float[])p.Value.Clone());
-        if (clear) values["uTint"] = (float[])style.ClearBarTint.Clone();
+        var values = (clear ? style.ClearBar : style.Bar).ToDictionary(p => p.Key, p => (float[])p.Value.Clone());
         var lift = style.TouchLift ? Math.Max(formation, touch) : formation;
         values["uLift"] = [values["uLift"][0] + style.HeldLift * Math.Clamp((float)lift, 0, 1)];
         return new(values, 0, values["rawShare"][0], values["rawBlur"][0]);

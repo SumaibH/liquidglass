@@ -23,7 +23,7 @@ import kotlin.test.assertEquals
 class GlassFreePullPortFixtureTest {
     private val density = 3f
     private val size = 186f
-    private val interaction = GlassInteraction.Pullable.copy(pullShape = GlassPullShape.Free, pullLiftShare = 0.7f)
+    private val interaction = GlassInteraction.Pullable.copy(pullShape = GlassPullShape.Free, pullLiftShare = 0.6f)
 
     /** One animated float with animateFloatAsState's retarget rule. */
     private class Anim(private var value0: Float) {
@@ -114,7 +114,7 @@ class GlassFreePullPortFixtureTest {
 
     @Test fun freeButtonTrajectoriesForPorts() {
         val json = "{\"button\":{\"size\":186,\"density\":3,\"pressScale\":1.26,\"pressGrowth\":8,\"pressLift\":0.2," +
-            "\"pullFollow\":0.35,\"pullElongation\":0.217,\"pullWidthRatio\":1,\"pullLimit\":0.5,\"pullLiftShare\":0.7},\n" +
+            "\"pullFollow\":0.35,\"pullElongation\":0.217,\"pullWidthRatio\":1,\"pullLimit\":0.5,\"pullLiftShare\":${interaction.pullLiftShare}},\n" +
             "\"frameFields\":[\"t\",\"glow\",\"pressScale\",\"along\",\"across\",\"angle\",\"tx\",\"ty\",\"pullX\"],\n" +
             "\"scenarios\":[\n" + scenarios().joinToString(",\n") + "]}\n"
         val file = File("../ports/skia/fixtures/free-button.json")

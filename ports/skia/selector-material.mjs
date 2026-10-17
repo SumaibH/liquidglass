@@ -76,8 +76,8 @@ export function calmSelectorMaterial({dark = true, formation = 0, transit = 0, h
 export function calmBarMaterial({dark = true, formation = 0, touch = 0, clear = false} = {}) {
   const style = DATA.styles[dark ? 'dark' : 'light'];
   const lift = style.touchLift ? Math.max(formation, touch) : formation;
-  return {...style.bar, uTint: clear ? style.clearBarTint : style.bar.uTint,
-    uLift: style.bar.uLift + style.heldLift * clamp(lift, 0, 1)};
+  const bar = clear ? style.clearBar : style.bar;
+  return {...bar, uLift: bar.uLift + style.heldLift * clamp(lift, 0, 1)};
 }
 
 /** Uniform values in device px for a density. */

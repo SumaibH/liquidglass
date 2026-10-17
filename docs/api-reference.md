@@ -205,8 +205,12 @@ morphs between, exposed so a host can start from them.
 falling over 260 ms after the lift), as iOS's bar lifts on every touch; off by default, on in dark
 `Calm()`. `CalmRecordedSpace()` is dark Calm as calibrated before 15 October, against recordings
 decoded as if they were sRGB. `CalmClear()` is dark Calm with the clearer bar of WhatsApp's and the
-App Store's iOS bars (black at 0.10 instead of 0.41 over the same lift; light appearance unchanged;
-[tab bar guide](tab-bar.md#a-clearer-bar)).
+App Store's iOS bars (black at 0.10 instead of 0.41 over the same lift, and `legibility` 2.5 so it
+darkens over text as iOS's does; light appearance unchanged; [tab bar guide](tab-bar.md#a-clearer-bar)).
+`Calm(dark = false)` is measured on the owner's light recording (17 October): a bar passing 0.59 of the
+page plus 115 (white at 0.41 plus 10/255) with a darker rim and a faint shadow, a clear resting pill
+13/255 below it, a clear held lens with a light outline (243/255), touch lift and dark Calm's tap optics.
+`CalmRecordedSpace(false)` keeps the light preset it replaced ([tab bar guide](tab-bar.md#light-appearance)).
 
 `slotWidth` lays the tabs on equal slots of that width centred in the bar, instead of sharing the
 bar out inside `contentPadding`. Slots wider than the bar allows close up at the ends: an end tab
@@ -253,7 +257,9 @@ and selected ink grows about its own anchor. The response is bounded below full 
 formation and fades as held zoom takes over. It does not enable a hold, change the bar's lift
 or strain, move hit targets, or drive the selector's held band/rim parameters.
 Set these two fields to `0f` and `1f` respectively to retain the earlier tap appearance.
-Light Calm and historical presets keep those defaults. The gains are authored from measured
+Light `Calm()` uses them too since 17 October (its light recording shows the same refracting
+transit and growing ink); historical presets keep
+those defaults. The gains are authored from measured
 dark Phone patches and icon bounds; full optical parity remains unproven. See the
 [candidate evidence](https://github.com/shayann07/liquidglass/blob/main/review/atlas/tap-optics-candidate-2026-10-11/README.md)
 for current verification status.
@@ -808,7 +814,7 @@ advanced tab-bar/container integration. `glass` does not make a button clickable
 | `GlassInteraction.pullShape` | Appended parameter, default `GlassPullShape.Adaptive`. `AreaPreserving` couples bounded stretch/narrowing and a material-only directional bias for navigation, without the card size policy; press and layout stay separate. See [generic interaction](generic-interaction.md). |
 | `GlassStyle.softDetail` | Appended parameter, default 0 (the measured along-axis high-pass with a dithered scatter). 1 draws the detail seen through the glass as one soft copy: the wide kernel's tone plus `fineShare` of an unrotated fine blur. Dark `Calm()` uses 1 on its bar and lens. |
 | `GlassPullShape.Free` | Appended enum value. A free-standing button pulled off its place: the body follows the finger by `pullFollow` (resisted by `pullLimit`), stretches along the pull and thins across it, its content moves with it, and on release it squashes against its own resting edge away from the pull before settling (`GlassMotion.FreeRelease`). Drawing only; layout and hit targets stay put. Measured on iOS 26's Phone search button. |
-| `GlassInteraction.pullLiftShare` | Appended parameter, default 1. Share of the press glow that remains once the finger has moved more than 4 dp (iOS's search button: 0.7). |
+| `GlassInteraction.pullLiftShare` | Appended parameter, default 1. Share of the press glow that remains once the finger has moved more than 4 dp (iOS's search button: 0.6, 17 October; 0.7 before). |
 | `Modifier.liquidGlass(..., link: GlassAccessoryLink? = null)`, `rememberGlassAccessoryLink()`, `GlassTabBarAccessory(..., link)` | Opt-in. The accessory's glass publishes its animated press and pull; a tab bar given the same link reaches for where the accessory is drawn, so pressing it joins the two through a neck and pulling it away breaks it. Null keeps the laid-out circle. |
 | `GlassTabBarStyle.Calm(dark: Boolean = true)` | V3 optical roles with calm selector travel, no off-axis selector squeeze, and bounded bar drawing feedback shared with ordinary/selected ink. Its reference-backed 5% press is separate from the restrained drag response. |
 | `GlassSelectorSpec.response` | Chooses the pose response family; default `Expressive` preserves V3. Other legacy fields still belong to the old horizontal controller. |

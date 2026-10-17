@@ -120,7 +120,15 @@ as Compose's `GlassTabBarStyle.slotWidth` does: the end tabs close up until thei
 `clear: true` on the bar material (`calmBarMaterial({clear})`, `painter.drawCalmBar(..., {clear})`,
 or `material: {clear: true}` on `addNavigation`) draws Compose's `GlassTabBarStyle.CalmClear()` bar:
 the clearer glass of WhatsApp's and the App Store's dark iOS bars (black at 0.10 instead of 0.41,
-same lift; light appearance unchanged). Pass the same bar as `through` so the lens follows it.
+same lift, legibility 2.5; light appearance unchanged). Pass the same bar as `through` so the lens follows it.
+
+A free button beside the bar (Compose's `GlassTabBarAccessory.link`, the Phone search button) fuses
+with it: `accessoryFuse({bar: {width, height, pressX, pressY}, button: {x, y, width, height},
+transform: freeButton.sample(t), smoothing})` gives `drawCalmBar(..., {fuse})` the rect the bar's
+outline reaches for (button rect bar-local, device px), so pressing the button closes the gap through a
+neck and pulling it away breaks it. Multiply `smoothing` by `1 - accessoryYield(formation, lensEdge,
+barWidth, barHeight)` so the neck gives way as a formed lens arrives at that end. Checked against a
+Kotlin-exported fixture (`fixtures/accessory-fuse.json`).
 
 The motion is a line-by-line port of the Compose pose controller (`selector.mjs`:
 `CalmSelectorController`, `calmSelectorBar`, `centreOf`, `nearestTab`, `createCalmNavigation`), checked frame by frame against

@@ -755,8 +755,10 @@ candidates (share / blur dp), same regions, iOS / ours:
 Dark Calm's held lens adds 0.22 of the raw page blurred 20 dp. The top band does not move with any
 candidate: our page under the bar's upper half is black, so the share adds nothing there, while
 iOS's band near its lens reads 9-11 above the bar it sits in and the bar farther away matches ours
-(47 / 47). That band is local to iOS's lens and stays a residual of the held map, with the lens
-standing ~8 px higher on iOS.
+(47 / 47). That band is local to iOS's lens and stays a residual of the held map. A deeper refraction band does
+not move it (refraction depth 20 and 28 dp score the same as 14). The "~8 px higher" note does not
+hold at this frame: the lens's top and bottom outlines sit at rows 436 / 654 on both (iOS 436-438),
+within 2 px.
 
 ![The held lens with and without the blurred raw share, over content and over black](lens-raw-blur.png)
 
@@ -822,6 +824,31 @@ WhatsApp and App Store scenes default to `CalmClear()`.
 *Our renders only: `WhatsAppScene` and `AppStoreScene`, desktop GPU replay at 3x, branch
 `claude/parity-2` after 722cb4d. The iOS levels are measurements on the owner's recordings.*
 
+### Light appearance and the blur under the bar (17 October)
+
+The owner recorded light mode (IMG_7048: Phone 4-60 s, App Store 64-100 s, WhatsApp 108-140 s, Threads
+148-170 s; bottom 570 rows, 3 px/pt) and the Contacts list under the bar in both appearances
+(IMG_7049). Measured in display colours:
+
+| Light, at rest | iOS | light `Calm()` | before (light toolbar) |
+| :-- | --: | --: | --: |
+| Bar over page levels 171-245 (least squares) | 0.58 B + 116 | 0.59 B + 115 | 0.42 B + 140 |
+| Bar over white | 255 | 255 | 255 |
+| Rim top / bottom / ends | 246 / 242-247 / 179-221 | 246 / 246 / 234 | 255 |
+| Shadow under the bar | 253 | 251-253 | 255 |
+| Resting pill, Phone keypad page / WhatsApp | 246 / 236 | 242 / 242 | 235 |
+| Held lens edge | soft band to ~244, shadow to 242 below | 2 px line at 243, no shadow | 175 |
+
+A light tap travels as refracting glass with growing ink, as in dark (6.8-6.9 s), so light Calm takes
+dark Calm's tap optics. The App Store's light pill is darker than the others (217-228). Under the bar,
+in both appearances, iOS shows text as one soft copy, legible, without the ghost copies a toolbar's
+high-pass draws: the tab bar is the soft-copy role the Calm presets use. An edge-slope estimate puts
+iOS's text edges under the bar at 0.74 px (dark) / 0.61 px (light) against ours 0.62 / 0.61.
+
+![Light Calm in the Phone, WhatsApp and App Store scenes](light-calm.png)
+
+*Our renders only: desktop GPU replay at 3x, branch `claude/light-and-gaps`.*
+
 ### WhatsApp's motion (17 October)
 
 WhatsApp's selected ink stays white, so the blue-ink tracker of the Phone and App Store bars does not
@@ -868,13 +895,19 @@ the impact. The narrowing itself is real and is listed below.
   leaves; our inferred tap presses 16 ms before (finger timing).
 - Held lens over content (17 October, blurred raw share 0.22 / 20 dp): text and the bottom band
   within 1-5 of iOS's, black unchanged; the top band near the rim reads 11 below iOS's (53 against
-  64), local to iOS's lens, which also stands ~8 px higher.
+  64), local to iOS's lens; refraction depth does not move it, and the lens's outline sits within 2 px
+  of iOS's vertically.
 - WhatsApp motion (17 October): throws' flights reach the far tab ~40 ms before iOS's tracker shows
   them (p90 140 px); input is inferred and the fill cross-fade lags the tracker.
-- App Store bar: text under it reads brighter in ours (p75 107 against 80); iOS compresses bright
-  content under that bar.
-- Search button (pass 17): the rise peaks 3-6 px short; sideways pulls squash 8 px less across;
-  brightness 8 levels rms. The ports have the free pull, not the bar's outline link.
+- App Store bar: with `legibility` 2.5 on `CalmClear()` the text under it reads p50 / p75 67 / 98
+  against iOS's 69 / 80 (a plain clear bar: 73 / 107); stronger legibility saturates.
+- Light appearance (IMG_7048, 17 October): the held lens's soft ~12 px edge band and the shadow under
+  it (to 242) are a thin line and no shadow in ours; the bar's ends read 234 against 179-221; one pill
+  offset cannot give iOS's Phone (246), WhatsApp (236) and App Store (217-228) pills at once (ours 242).
+- Search button (pass 17, lift share 0.6 since 17 October): the rise peaks 3-6 px short; sideways
+  pulls squash 8 px less across (min half-width 86 against 78; a width ratio of 1.3 over-thins the
+  upward pulls instead); brightness 7.1 levels rms (8.0 at 0.7). The ports have the free pull and, since 17 October, the bar's fusion with it
+  (`accessoryFuse` / `AccessoryFuse`, checked against Kotlin).
 - Pass 14's level residuals (58 against 67, 62 against 64) were read on the sRGB-decoded recordings
   and are superseded above.
 - Wall landings (pass 13): rms 6.0 px right / 5.4 px left (pass 10: 5.5 / 4.1); the 9.9 s landing passes its rest by

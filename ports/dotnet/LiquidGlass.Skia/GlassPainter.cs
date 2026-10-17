@@ -115,19 +115,29 @@ public sealed class GlassPainter : IDisposable
     /// (GlassTabBarStyle.Calm; its held lift follows the selector's <paramref name="formation"/>, or for
     /// any touch <paramref name="touch"/>, <see cref="CalmNavigation.Touch"/>).
     /// Device px; <c>options.Density</c> is px per dp, <c>options.TintAmount</c> is not used. <paramref name="clear"/>
-    /// draws GlassTabBarStyle.CalmClear's clearer bar.</summary>
+    /// draws GlassTabBarStyle.CalmClear's clearer bar. <paramref name="fuse"/> (<see cref="AccessoryFuse.Compute"/>,
+    /// device px) draws the neck to a free button beside the bar.</summary>
     public void DrawCalmBar(SKCanvas canvas, SKRect bar, float formation = 0, GlassSurfaceOptions? options = null, float touch = 0,
-        bool clear = false)
+        bool clear = false, float[]? fuse = null)
     {
         Ready(canvas, bar);
         options ??= new(Dark: true);
         if (!float.IsFinite(formation) || !float.IsFinite(options.Density) || options.Density <= 0)
             throw new ArgumentOutOfRangeException(nameof(formation));
-        var v = ClearUniforms(material, bar.Width, bar.Height, 2, 1);
+        if (fuse is not null && (fuse.Length != 6 || !fuse.All(float.IsFinite)))
+            throw new ArgumentOutOfRangeException(nameof(fuse), "Six finite numbers required (AccessoryFuse.Compute)");
+        // The fused outline reaches past the bar to the button: draw over it, and the neck's bow (a quarter
+        // of the smoothing) beyond, as Compose's recordPad does.
+        var fusing = fuse is not null && fuse[5] > 0;
+        var pad = fusing
+            ? MathF.Ceiling(Math.Max(2, Math.Max(Math.Abs(fuse![0]) + fuse[2] - bar.Width / 2, Math.Abs(fuse[1]) + fuse[3] - bar.Height / 2)) + fuse[5] / 4 + 2)
+            : 2;
+        var v = ClearUniforms(material, bar.Width, bar.Height, pad, 1);
         Apply(v, CalmSelectorMaterial.Bar(options.Dark, formation, touch, clear), options);
         Set(v, "uRadii", Enumerable.Repeat(bar.Height / 2, 4).ToArray()); Set(v, "uRefractBand", .6f * bar.Height / 2);
         Set(v, "uFormation", 0); Set(v, "uScale", Math.Clamp((Math.Min(bar.Width, bar.Height) / options.Density - 56) / 264, 0, 1));
-        var origin = new SKPoint(bar.Left - 2, bar.Top - 2);
+        if (fusing) { Set(v, "uFuse", fuse![0], fuse[1], fuse[2], fuse[3]); Set(v, "uFuseShape", fuse[4], fuse[5]); }
+        var origin = new SKPoint(bar.Left - pad, bar.Top - pad);
         using var shader = Backdrop(origin, v["uWideKernel"][0], out var strip);
         Set(v, "uWideStrip", v["uWideKernel"][0] >= 1 ? strip : 0);
         Draw(canvas, v, shader, origin);

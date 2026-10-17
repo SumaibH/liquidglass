@@ -183,8 +183,38 @@ This file records user-visible development changes. Published artifacts are iden
   `WhatsAppScene` and `AppStoreScene` default to it; Atlas replay variants `whatsapp-clear`,
   `appstore-clear`, and `whatsapp+plain` (the bare page). Ports: `calmBarMaterial({clear})` /
   `drawCalmBar(..., {clear})` / scene material `clear` in CanvasKit, `CalmSelectorMaterial.Bar(...,
-  clear:)` / `DrawCalmBar(..., clear:)` in .NET, from a `clearBarTint` exported with the fixture.
+  clear:)` / `DrawCalmBar(..., clear:)` in .NET, from the clear bar's uniforms exported with the fixture.
   Residual: text under the App Store bar still reads brighter than iOS's (p75 107 against 80).
+- Light `Calm()` (17 October), measured on the owner's light-mode recording (Phone, App Store, WhatsApp,
+  Threads; display colours). The bar passes 0.59 of the page plus 115 (iOS: 0.58 + 116 over seven page
+  levels; the light toolbar it used passed 0.42 + 140), with a darker rim (246 top and bottom, as iOS's)
+  and a faint shadow (251-253 against 253); the resting pill is clear glass 13/255 below the bar (iOS
+  246 on the Phone's keypad page, 236 on WhatsApp's; ours 242); the held lens is clear glass with a
+  light outline (243/255) and no raw page; touch lift and dark Calm's tap optics. Before, light Calm
+  carried dark-page measurements (a 0.55 grey veil and 0.22 raw page on the held lens, a half-black
+  pill). The old light preset stays as `CalmRecordedSpace(false)`. Residuals: iOS's held lens has a soft
+  ~12 px edge band and a shadow under it; the App Store's pill is darker (217-228). Sample:
+  `PhonePalette.Light` and `light` on `WhatsAppScene` / `AppStoreScene` (iOS system colours); Atlas
+  replay variants `calm-light`, `whatsapp-clear-light`, `appstore-clear-light`. Ports follow through
+  the exported material.
+- Physical device (17 October): the Calm tab bar on a Pixel 7 (Android 17), dark and light, through
+  tap, hold, drag, throw and the search button's pulls, recorded on the device
+  (`review/atlas/android-device-2026-10-17/`). It keeps the 90 Hz display rate (UI thread 6.9 ms, GPU 8.5 ms
+  p50 per frame; 2-3% janky). Sample: `PhoneActivity` takes `--ez light true` for light Calm and
+  `--ef renderScale <f>`; `PhoneScene` takes `renderScale`.
+- Phone search button (17 October): `pullLiftShare` 0.6 in the sample, the replay and both ports
+  (was 0.7), the share the library's own note measured ("settles at 70 once dragged"). Scored on
+  IMG_6756's search catalogue (`searchscore.py`): brightness 7.1 levels rms (was 8.0), half-width 2.7
+  px (2.8), centre and height unchanged. Width ratio 1.3 over-thins upward pulls (71 against iOS's 79)
+  and a longer pull limit overshoots the rise (124 against 112); both stay as they were.
+- `CalmClear()` (17 October): `legibility` 2.5 on its bar. iOS's App Store bar compresses bright text
+  under it (band p50 / p75 69 / 80); a plain clear bar gave 73 / 107, this gives 67 / 98 and leaves a
+  plain card and WhatsApp's levels unchanged (53 / 31).
+- Ports (17 October): the Calm bar's fusion with a free button (Compose's `GlassTabBarAccessory.link`).
+  CanvasKit `accessoryFuse`, `accessoryYield`, `inscribedStadium` and `drawCalmBar(..., {fuse})`; .NET
+  `AccessoryFuse.Compute` / `Yield` and `DrawCalmBar(..., fuse:)`. Checked against a Kotlin-exported
+  fixture (`ports/skia/fixtures/accessory-fuse.json`, 18 press/pull cases: worst 0.00003 px in .NET)
+  and drawn: a pressed button closes the gap through a neck and the bar's middle is unchanged.
 - `GlassStyle.rawBlur` (new, 17 October; 0 dp by default, so `rawShare` stays sharp everywhere it
   was): the raw backdrop that `rawShare` adds is blurred first. Dark `Calm()`'s held lens now adds
   0.22 of the raw page blurred 20 dp (was no share since earlier on 17 October). iOS's lens reads about
