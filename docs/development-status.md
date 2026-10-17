@@ -171,8 +171,8 @@ trace was produced and no permission changes were made. See [performance](perfor
    optics, and since 18 October the held lens's shadow, cast by the lens rather than its node).
    The owner's device check (18 October) changed five things: icons hold still on taps, taps travel
    as a lens, the held lens no longer shows the bar's outline as a second capsule, the search button
-   follows a swipe less, and a held lens joins the search button through a neck. Refraction of text
-   under the bar's rounded ends is open.
+   follows a swipe less, and a held lens joins the search button through a neck; the bar's rounded
+   ends lens what lies beyond them (`capFold`).
    Text under a tab bar is one soft copy
    in both appearances (IMG_7049), as the Calm presets draw it.
    The search button presses, pulls and lands as iOS's does since pass 17 (centre 2-3 px rms); the

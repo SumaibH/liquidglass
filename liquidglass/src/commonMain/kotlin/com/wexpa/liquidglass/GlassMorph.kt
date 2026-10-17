@@ -83,6 +83,7 @@ fun lerpGlassStyle(start: GlassStyle, stop: GlassStyle, fraction: Float): GlassS
         contactShadow = f(start.contactShadow, stop.contactShadow),
         contactShadowInside = f(start.contactShadowInside, stop.contactShadowInside),
         bodyBandScale = f(start.bodyBandScale, stop.bodyBandScale),
+        capFold = f(start.capFold, stop.capFold),
         contactShadowBlur = d(start.contactShadowBlur, stop.contactShadowBlur),
         contactShadowOffset = d(start.contactShadowOffset, stop.contactShadowOffset),
         innerShadow = f(start.innerShadow, stop.innerShadow),

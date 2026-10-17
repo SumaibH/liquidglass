@@ -1603,7 +1603,8 @@ data class GlassTabBarStyle(
                 // .local/sxs/levels.py): iOS's bar at rest 33 (ours read 46 at lift 45/255), its
                 // resting pill 15 (ours 27 at .42 black), its held bar 43.5 (ours 53).
                 // Page text under the bar reads as one soft copy, as iOS's does ([GlassStyle.softDetail]).
-                bar = recorded.bar.copy(tintLift = 32f / 255f, softDetail = 1f),
+                // Its rounded ends lens what lies beyond them (GlassStyle.capFold, 18 October; IMG_7049).
+                bar = recorded.bar.copy(tintLift = 32f / 255f, softDetail = 1f, capFold = 1f),
                 // Pass 16 (all five recordings, catalogued from the touches the bar shows): iOS's held
                 // bar 45-47 (ours 42-43 at 10/255), its held lens on a black page only ~2 above its
                 // bar (ours +12: 55 against 48-49), its resting pill 10 on black pages and 15 on
@@ -1666,7 +1667,7 @@ data class GlassTabBarStyle(
          */
         private fun calmLight(recorded: GlassTabBarStyle): GlassTabBarStyle = recorded.copy(
             bar = recorded.bar.copy(tint = Color.White.copy(alpha = 0.41f), tintLift = 10f / 255f, softDetail = 1f,
-                edgeShadow = 0.12f, specular = 0f, bevelPeak = 0f, contactShadow = 0.2f),
+                edgeShadow = 0.12f, specular = 0f, bevelPeak = 0f, contactShadow = 0.2f, capFold = 1f),
             touchLift = true,
             itemsFollowBarPress = false,
             tapTransitFold = 0f,

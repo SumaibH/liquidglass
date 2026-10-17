@@ -123,6 +123,10 @@ private fun replay(args: Array<String>) {
         if (lr.size < 3) base else base.copy(lens = base.lens.copy(innerShadow = lr[0], heldGlow = lr[1], heldEdgeTone = lr[2] / 255f,
             heldGlowFloor = lr.getOrElse(3) { base.lens.heldGlowFloor }, specular = lr.getOrElse(4) { base.lens.specular }))
     }.let { base ->
+        // "+capfold=<c>[,<band scale>]": the bar's rounded ends folded at rest (GlassStyle.capFold).
+        val cf = variant.substringAfter("+capfold=", "").substringBefore('+').split(',').mapNotNull { it.toFloatOrNull() }
+        if (cf.isEmpty()) base else base.copy(bar = base.bar.copy(capFold = cf[0]))
+    }.let { base ->
         // "+barrest": the bar on the measured resting-corner map (GlassRestMap.Measured).
         if ("+barrest" !in variant) base else base.copy(bar = base.bar.copy(restMap = com.wexpa.liquidglass.GlassRestMap.Measured))
     }.let { base ->

@@ -23,7 +23,8 @@ class GlassSelectorPortMaterialTest {
         "uHeldMagnification" to listOf(s.heldMagnification.coerceIn(0f, .6f)),
         "uHeldGlow" to listOf(s.heldGlow.coerceIn(0f, 2f)),
         "uHeldGlowReach" to listOf(s.heldGlowReach.value.coerceAtLeast(0f)),
-        "uFoldCorners" to listOf(s.foldAtCorners.coerceIn(0f, 1f)),
+        // GlassStyle.capFold rides on the same uniform above 1, as LiquidGlass sets it.
+        "uFoldCorners" to listOf(if (s.capFold > 0f) 1f + s.capFold.coerceIn(0f, 1f) else s.foldAtCorners.coerceIn(0f, 1f)),
         "uRimMirror" to listOf(s.rimMirror.coerceIn(0f, 1f)),
         "uRimMirrorGain" to listOf(s.rimMirrorGain.coerceIn(.05f, 1f)),
         "uHeldEdgeRecovery" to listOf(s.heldEdgeRecovery.value.coerceAtLeast(0f)),
