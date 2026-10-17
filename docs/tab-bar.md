@@ -78,6 +78,38 @@ tint, so the page shows through them as through iOS's (the pill darkens black to
 avatar under it), and page text under the bar is one soft copy (`GlassStyle.softDetail`) rather than
 a grainy, ghosted one.
 
+## A clearer bar
+
+`Calm()` is fitted to the Phone app's bar, which passes about 0.59 of the page under it. WhatsApp's
+and the App Store's bars on the same device pass about 0.9: over a grey card WhatsApp's bar reads 54
+where the Phone material gives 46, while over black both read 32. `CalmClear()` is dark Calm with
+that bar; its resting pill and held lens look through the bar, so they follow it.
+
+```kotlin
+GlassTabBar(state = glass, itemCount = 5, selectedIndex = selected, onSelected = { selected = it },
+    style = GlassTabBarStyle.CalmClear().copy(slotWidth = 71.5.dp, pillWidth = 78.dp, pillInset = 4.dp),
+    modifier = Modifier.width(348.dp)) { index, isSelected -> Tab(index, isSelected) }
+```
+
+| Display colours, at rest | iOS | `CalmClear()` | `Calm()` |
+| :-- | --: | --: | --: |
+| WhatsApp bar / pill over its grey card (23) | 54 / 30 | 53 / 31 | 46 / 24 |
+| WhatsApp bar / pill over its chats page (10) | 43 / 19 | 41 / 19 | 38 / 16 |
+| App Store plain bar over its card, four gaps | 67 / 65 / 64 / 59 | 66 / 64 / 63 / 58 | 54 / 53 / 52 / 49 |
+| Any bar over black | 32 | 32 | 32 |
+
+iOS's chats page has text under the bar, so its 43 sits over slightly more than the bare page our
+scene uses. Text under the App Store bar still reads brighter in ours than in iOS's (p75 107 against
+80): iOS compresses bright content under that bar, which neither preset reproduces. Light appearance
+has no recording; `CalmClear(dark = false)` is `Calm(dark = false)`. The CanvasKit and .NET ports
+take it as `clear` on the bar material (`calmBarMaterial({clear: true})`, `CalmSelectorMaterial.Bar(..., clear: true)`).
+
+![Calm and CalmClear over the WhatsApp and App Store scenes](https://raw.githubusercontent.com/shayann07/liquidglass/main/review/atlas/reference-replay-2026-10-13/clear-bar.png)
+
+*Our renders only: the sample `WhatsAppScene` and `AppStoreScene` (neutral placeholders), desktop
+GPU replay at 3x, branch `claude/parity-2` after 722cb4d. The iOS levels in the captions are
+measurements on the owner's recordings, not pixels from them.*
+
 ## Tabs on set slots
 
 By default the tabs share the bar equally inside `contentPadding`. iOS lays some bars out
@@ -106,8 +138,8 @@ against 913. The CanvasKit and .NET ports take the same option (`calmSelectorBar
 *Our renders only: the sample `WhatsAppScene` with neutral placeholders (a plain disc for the
 profile tab), desktop GPU replay at 3x, branch `claude/parity-2` after f94d518. Yellow ticks mark
 iOS's tab centres measured on the recording; blue ticks mark where equal shares would put them.
-Over the same grey card, iOS's bar reads 54 and ours 46, and its pill 30 against our 25. This is
-the clearer bar also seen in the App Store, recorded but not fitted.*
+Over the same grey card, iOS's bar reads 54 and `Calm()`'s 46; [`CalmClear()`](#a-clearer-bar)
+reads 53.*
 
 ## A neighbouring control: the search button
 

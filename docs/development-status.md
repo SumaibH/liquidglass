@@ -158,10 +158,14 @@ trace was produced and no permission changes were made. See [performance](perfor
    colours (since 15 October, five recordings) the rest, held and tap levels are within 0-4 grey
    levels; since pass 18 the pill and lens pass page content as iOS's do and text under the bar is
    one soft copy. Since 17 October the held lens no longer passes the raw page, so text under it
-   is veiled as under iOS's (p90 91 against 102, was 155); its bands near the rims still read 11-12
-   below iOS's over content. `GlassTabBarStyle.slotWidth` lays tabs on set slots as WhatsApp's bar
-   does (all five centres within 2 px), in Compose and both ports. WhatsApp's and the App Store's
-   bars are clearer glass than the Phone bar (over a grey card 54 against our 46); not fitted.
+   is veiled as under iOS's; it adds the raw page blurred (`GlassStyle.rawBlur`, 0.22 / 20 dp), so
+   it lifts over content as iOS's does (text p50 83 against 82, black unchanged); its top band near
+   the rim still reads 11 below iOS's. `GlassTabBarStyle.slotWidth` lays tabs on set slots as
+   WhatsApp's bar does (all five centres within 2 px), in Compose and both ports.
+   `GlassTabBarStyle.CalmClear()` is the clearer bar of WhatsApp and the App Store (bar 53 against
+   iOS's 54 over a grey card, Calm 46), in Compose and both ports; text under the App Store bar still
+   reads brighter than iOS's. WhatsApp's motion lands 14/14 and settles a median 21 ms early, read by
+   one tracker on both sides with inferred input.
    The search button presses, pulls and lands as iOS's does since pass 17 (centre 2-3 px rms); the
    CanvasKit and .NET ports have its press, pull and landing (`createFreeButton` / `FreeButton`, checked frame
    by frame against Kotlin) but not the bar's outline link. Owner visual acceptance is pending.

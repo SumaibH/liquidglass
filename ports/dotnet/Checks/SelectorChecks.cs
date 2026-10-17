@@ -10,6 +10,12 @@ internal static class SelectorChecks
 
     public static object Run()
     {
+        // GlassTabBarStyle.CalmClear: only the dark bar's tint differs (black at 0.10, 8-bit), light unchanged.
+        var calmBar = CalmSelectorMaterial.Bar(true, 0).Values; var clearBar = CalmSelectorMaterial.Bar(true, 0, clear: true).Values;
+        Check(clearBar["uTint"].SequenceEqual(new[] { 0f, 0f, 0f, 26f / 255 }), $"clear bar tint {string.Join(",", clearBar["uTint"])}");
+        Check(calmBar.All(p => p.Key == "uTint" || p.Value.SequenceEqual(clearBar[p.Key])), "clear bar differs beyond its tint");
+        Check(CalmSelectorMaterial.Bar(false, 0, clear: true).Values.All(p => p.Value.SequenceEqual(CalmSelectorMaterial.Bar(false, 0).Values[p.Key])),
+            "light clear bar must equal Calm");
         using var json = JsonDocument.Parse(File.ReadAllText(Path.Combine(AppContext.BaseDirectory, "fixtures", "selector-calm.json")));
         var root = json.RootElement; var b = root.GetProperty("bar");
         var bar = CalmSelectorBar.Create(b.GetProperty("width").GetDouble(), b.GetProperty("height").GetDouble(), b.GetProperty("count").GetInt32(),

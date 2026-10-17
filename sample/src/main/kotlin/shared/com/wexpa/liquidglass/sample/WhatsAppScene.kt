@@ -60,7 +60,7 @@ private val WhatsAppIconWidths = listOf(25.dp, 22.dp, 32.dp, 32.dp, 31.dp)
 /**
  * The WhatsApp reference scene: a settings list on a near-black page behind a five-tab Calm bar
  * on [WhatsAppGeometry]'s slots. Selected ink stays white over the dark pill, as on the recording;
- * a selected tab's glyph fills. Neutral placeholders: the "You" tab is a plain disc, not the
+ * a selected tab's glyph fills. [card] false leaves the bare page behind the bar. Neutral placeholders: the "You" tab is a plain disc, not the
  * recording's profile photo, and no page content of the recording is reproduced.
  */
 @Composable
@@ -68,17 +68,19 @@ fun WhatsAppScene(
     selected: Int,
     onSelected: (Int) -> Unit,
     modifier: Modifier = Modifier,
-    style: GlassTabBarStyle = WhatsAppGeometry.style(GlassTabBarStyle.Calm()),
+    style: GlassTabBarStyle = WhatsAppGeometry.style(GlassTabBarStyle.CalmClear()),
+    card: Boolean = true,
 ) {
     val page = Color(0xFF0A0A0A)
     val state = rememberLiquidGlassState(page)
     Box(modifier.size(PhoneGeometry.width, PhoneGeometry.height).background(page)) {
         Box(Modifier.fillMaxSize().liquidGlassSource(state)) {
             // A grouped list card, x 48-1122 px (grey 23 on 10), rows on a 50 pt pitch with an
-            // outlined glyph at 37 pt and a 17 pt label at 77 pt, one row behind the bar.
-            Box(Modifier.offset(16.dp, 0.dp).size(358.dp, 260.dp)
+            // outlined glyph at 37 pt and a 17 pt label at 77 pt, one row behind the bar. Without
+            // [card], the bare page (10), as under the bar on WhatsApp's chats list.
+            if (card) Box(Modifier.offset(16.dp, 0.dp).size(358.dp, 260.dp)
                 .background(Color(0xFF171717), RoundedCornerShape(26.dp)))
-            for ((i, label) in listOf("Account", "Storage", "Privacy", "Chats", "Appearance").withIndex()) {
+            if (card) for ((i, label) in listOf("Account", "Storage", "Privacy", "Chats", "Appearance").withIndex()) {
                 val y = (28f + 50f * i).dp
                 Canvas(Modifier.offset(37.dp, y - 10.dp).size(20.dp)) {
                     drawRoundRect(Color.White, Offset(size.width * .1f, size.height * .1f),

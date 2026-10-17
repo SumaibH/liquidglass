@@ -60,6 +60,8 @@ class GlassSelectorPortMaterialTest {
         "uBevelPeak" to listOf(s.bevelPeak),
         // Host terms: the raw backdrop added over the bar it looks through.
         "rawShare" to listOf(s.rawShare),
+        // The raw backdrop's blur (GlassStyle.rawBlur), in dp; a host term like rawShare.
+        "rawBlur" to listOf(s.rawBlur.value),
     )
 
     private val dpFields = listOf("uRefractDepth", "uHeldGlowReach", "uHeldEdgeRecovery", "uWideKernel", "uBevel", "uBlur", "uRimSoft")
@@ -75,7 +77,7 @@ class GlassSelectorPortMaterialTest {
             val style = GlassTabBarStyle.Calm(dark)
             if (styles.isNotEmpty()) styles.append(",\n")
             styles.append("\"${if (dark) "dark" else "light"}\":{\"pill\":${json(uniforms(style.pill))},\"lens\":${json(uniforms(style.lens))}," +
-                "\"bar\":${json(uniforms(style.bar))},\"heldLift\":${style.heldLift},\"touchLift\":${style.touchLift}," +
+                "\"bar\":${json(uniforms(style.bar))},\"clearBarTint\":${uniforms(GlassTabBarStyle.CalmClear(dark).bar).getValue("uTint").joinToString(",", "[", "]")},\"heldLift\":${style.heldLift},\"touchLift\":${style.touchLift}," +
                 "\"pillInkFollows\":${style.pill.inkDispersion.isNaN()},\"lensInkFollows\":${style.lens.inkDispersion.isNaN()}," +
                 "\"tapOptics\":${style.tapOptics},\"tapOpticsFold\":${style.tapOpticsFold},\"tapTintFade\":${style.tapTintFade}}")
             for (formation in listOf(0f, .2f, .49f, .5f, .7f, 1f)) for (transit in listOf(0f, .3f, .8f, 1f)) for (travel in listOf(0f, .6f)) {

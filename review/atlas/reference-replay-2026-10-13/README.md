@@ -732,10 +732,36 @@ whole lens. Scored by region (docs/2 at 5.75 s, tab 0, and IMG_6756's black keyp
 | raw share 0.30 (pass 18) | 64 / 53 | 75 / 64 | 102 / 155 | 82 / 89 | 47 / 48 | 24.9 |
 | raw share 0 (now) | 64 / 52 | 75 / 63 | 102 / 91 | 82 / 75 | 47 / 48 | 9.7 |
 
-Dark Calm's lens now has no raw share (`rawShare` 0). A black page is unchanged. The bands near the
+Dark Calm's lens then had no raw share (`rawShare` 0). A black page is unchanged. The bands near the
 rims still read 11-12 below iOS's over content. An additive wide glow would also light them over a
-black page, where they already match, and a blur does not change them. They stay a residual of the
-held map.
+black page, where they already match, and a blur does not change them.
+
+### The raw page returns, blurred (17 October)
+
+What iOS's lens adds over ours is page-shaped: about 10 levels wherever the page has content (bands
++12, text +7 to +11) and nothing over black. That is a share of the raw page, blurred so that it
+carries no edges. `GlassStyle.rawBlur` blurs the share `rawShare` adds. Fitted by replay over five
+candidates (share / blur dp), same regions, iOS / ours:
+
+| | top band | bottom band | text p90 | text p50 | black interior | rms |
+| --- | --- | --- | --- | --- | --- | --- |
+| no share (earlier today) | 64 / 52 | 75 / 63 | 102 / 91 | 82 / 75 | 47 / 48 | 9.7 |
+| 0.12 / 6 | 64 / 52 | 75 / 65 | 102 / 101 | 82 / 85 | 47 / 48 | 7.1 |
+| 0.18 / 6 | 64 / 52 | 75 / 66 | 102 / 106 | 82 / 89 | 47 / 48 | 7.6 |
+| 0.18 / 12 | 64 / 52 | 75 / 68 | 102 / 100 | 82 / 85 | 47 / 48 | 6.5 |
+| 0.15 / 16 | 64 / 52 | 75 / 68 | 102 / 96 | 82 / 81 | 47 / 48 | 6.9 |
+| **0.22 / 20 (now)** | 64 / 53 | 75 / 70 | 102 / 99 | 82 / 83 | 47 / 48 | **5.6** |
+
+Dark Calm's held lens adds 0.22 of the raw page blurred 20 dp. The top band does not move with any
+candidate: our page under the bar's upper half is black, so the share adds nothing there, while
+iOS's band near its lens reads 9-11 above the bar it sits in and the bar farther away matches ours
+(47 / 47). That band is local to iOS's lens and stays a residual of the held map, with the lens
+standing ~8 px higher on iOS.
+
+![The held lens with and without the blurred raw share, over content and over black](lens-raw-blur.png)
+
+*Our renders only: the Phone comparison scene, desktop GPU replay at 3x, branch `claude/parity-2`
+after 722cb4d, inferred input (docs/2 at 5.75 s, IMG_6756's keypad hold at 35.47 s).*
 
 ### WhatsApp's slots (17 October)
 
@@ -771,6 +797,61 @@ the Phone bar's glass.
 f94d518. Yellow ticks are iOS's measured tab centres, blue ticks where equal shares inside a 6 dp
 padding would put them.*
 
+### The clearer bar, fitted (17 October)
+
+WhatsApp's bar over three pages, in display colours at rest (JGEY2190: the chats page, 10, at
+59.5 / 64 / 67 s; the settings card, 23, at 58 / 65.5 s) and the App Store's over black (LOLL8185
+74.5 s): iOS's bar reads 43 over the chats page, 54 over the card and 32 over black, and its resting
+pill 19 and 30. That is about 0.9 of the page plus the Phone bar's 32/255 lift; the Phone bar passes
+0.59. The pill is the bar less 22/255 here too, as on the Phone bar. `GlassTabBarStyle.CalmClear()`
+is dark Calm with the bar black at 0.10 instead of 0.41, fitted over the four page levels (0, 10, 23
+and the App Store card's 28 against 32 / 43 / 54 / 57). Scored by replay (rest frames, our scenes):
+
+| At rest | iOS | `CalmClear()` | `Calm()` |
+| :-- | --: | --: | --: |
+| WhatsApp bar / pill over the grey card | 54 / 30 | 53 / 31 | 46 / 24 |
+| WhatsApp bar / pill over the bare page (iOS: chats page, with text) | 43 / 19 | 41 / 19 | 38 / 16 |
+| App Store plain bar, four gaps between tabs (38.5 / 43.9 s) | 67 / 65 / 64 / 59 | 66 / 64 / 63 / 58 | 54 / 53 / 52 / 49 |
+
+Text under the App Store bar stays brighter in ours (band p75 107 against 80): iOS compresses bright
+content under that bar, which no tint reproduces (pass 18 notes). Dark `Calm()` is unchanged; the
+WhatsApp and App Store scenes default to `CalmClear()`.
+
+![Calm and CalmClear over the WhatsApp and App Store scenes](clear-bar.png)
+
+*Our renders only: `WhatsAppScene` and `AppStoreScene`, desktop GPU replay at 3x, branch
+`claude/parity-2` after 722cb4d. The iOS levels are measurements on the owner's recordings.*
+
+### WhatsApp's motion (17 October)
+
+WhatsApp's selected ink stays white, so the blue-ink tracker of the Phone and App Store bars does not
+apply. A selected glyph fills, though, and every glyph under the held lens fills (as `lensInkAll`
+draws): `.local/sxs/trackwa.py` reads the selection as the centroid of white fill in the icon band,
+each column weighted by how filled it is against that column's own selected fill, so the photo tab
+(a ring only) counts as much as a filled glyph. Each tab's resting centroid maps to its centre.
+Touches come from the bar: WhatsApp changes page with its tab, so a touch is the bar's level jumping
+(+4 within two frames) with its ends growing within ten frames (`genwa.py`). Fourteen touches in
+JGEY2190 49.8-67 s: two taps, three quick drags and nine throws.
+
+The finger is inferred, and throws needed one more rule. While iOS's lens rests on a tab its finger
+keeps going, so a finger led by the lens is nearly still at the lift and never flings. Where iOS
+settles past the lens's tab at the lift, the inferred finger leaves the tab before at 1.5 times the
+fling speed over the last 100 ms (Compose fits the lift velocity over 100 ms); otherwise it stands
+on its tab for those 100 ms. A touch under 0.2 s that settles on another tab is a tap there. The
+landing tabs of the throws therefore agree by construction. What is scored is the path and the
+timing, read by the same tracker on our replay (`cmpwa.py`; `CalmClear()` on `WhatsAppScene`):
+
+| | |
+| :-- | :-- |
+| Landing tabs | 14 / 14 (9 throws inferred from iOS's landing) |
+| Settling after the lift, ours − iOS | median −21 ms, p25 / p75 −31 / +75 ms |
+| Selection path | median 3 px, p75 59 px, p90 140 px; best shift −42 ms |
+
+The large errors are in throws' flights: ours reaches the far tab about 40 ms before iOS's tracker
+shows it, which is within what the inferred lift (one to three frames) and WhatsApp's glyph-fill
+cross-fade can account for. The motion model is unchanged: the pose dynamics fitted on the Phone
+bar carry to WhatsApp's five-tab bar on set slots.
+
 ### Re-reading the landing evidence
 
 The removed impact model was calibrated to one frame, video 2 at 2.5567 s ("frame082": width
@@ -785,8 +866,13 @@ the impact. The narrowing itself is real and is listed below.
   88 against our 61 over the avatar); no tint or raw page share reproduces it (fits by replay). The
   resting pill reads 3 above iOS's on black pages. iOS's bar lights 33 ms before a tap's ink
   leaves; our inferred tap presses 16 ms before (finger timing).
-- Held lens over content (pass 18, raw share removed 17 October): its bands near the rims read 11-12
-  below iOS's over content (docs/2 top band 52 against 64), matching over a black page.
+- Held lens over content (17 October, blurred raw share 0.22 / 20 dp): text and the bottom band
+  within 1-5 of iOS's, black unchanged; the top band near the rim reads 11 below iOS's (53 against
+  64), local to iOS's lens, which also stands ~8 px higher.
+- WhatsApp motion (17 October): throws' flights reach the far tab ~40 ms before iOS's tracker shows
+  them (p90 140 px); input is inferred and the fill cross-fade lags the tracker.
+- App Store bar: text under it reads brighter in ours (p75 107 against 80); iOS compresses bright
+  content under that bar.
 - Search button (pass 17): the rise peaks 3-6 px short; sideways pulls squash 8 px less across;
   brightness 8 levels rms. The ports have the free pull, not the bar's outline link.
 - Pass 14's level residuals (58 against 67, 62 against 64) were read on the sRGB-decoded recordings

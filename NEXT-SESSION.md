@@ -148,6 +148,17 @@ Progress:
   the `calm+lens=a,grey,raw` replay variant): no tint/raw-share pair meets both pages (raw share
   saturates at ~75 on docs2; a brighter tint lifts black pages equally). Kept the black-page fit (13 of
   16 held moments); the page gain is a structural residual for a later pass.
+- 17 Oct (owner: "do all of these"): (1) CalmClear DONE: GlassTabBarStyle.CalmClear() bar black .10 (Phone .41),
+  same lift; WhatsApp card bar/pill 53/31 vs iOS 54/30 (Calm 46/24), bare page 41/19 vs chats page 43/19,
+  App Store gaps 66/64/63/58 vs 67/65/64/59; ports `clear` (clearBarTint in fixture). Replay variants
+  whatsapp-clear / appstore-clear / whatsapp+plain. (2) WhatsApp motion DONE (scored, no motion change):
+  .local/sxs/trackwa.py (white-fill tracker, per-column activation; also runs on a replay dir),
+  genwa.py (touch = level jump + ends grow; lift inferred from iOS's landing, 100 ms Lsq2 tail; taps),
+  cmpwa.py (same tracker both sides): landings 14/14, settle median -21 ms, path p50 3 px / p90 140.
+  Renders .local/sxs/ref/whatsapp/m5. (3) Lens bands: GlassStyle.rawBlur (new, opt-in 0); Calm dark lens
+  rawShare .22 rawBlur 20dp (tag rbE): hazescore rms 5.6 (was 9.7); top band 53 vs 64 remains (local to
+  iOS's lens; iOS lens ~8 px higher). Ports blur the share (rawBlur in material fixture).
+  (4) Needs owner: iOS tab bar over text screenshot; physical device (adb lists none); admin merge PR #14.
 - Lens haze (17 Oct, DONE): Calm dark lens rawShare 0 (was .30). hazescore (shipped, tag hzShip):
   top 64/52, bottom 75/63, text p90 102/91 (was 155), p50 82/75, black 47/48, rms 9.7 (was 24.9).
   Residual: rim bands 11-12 low over content only. Suite 395/0 fail/27 skip; ports regenerated.

@@ -114,15 +114,17 @@ public sealed class GlassPainter : IDisposable
     /// <summary>Draw a Calm navigation bar's glass in the Compose Calm bar material
     /// (GlassTabBarStyle.Calm; its held lift follows the selector's <paramref name="formation"/>, or for
     /// any touch <paramref name="touch"/>, <see cref="CalmNavigation.Touch"/>).
-    /// Device px; <c>options.Density</c> is px per dp, <c>options.TintAmount</c> is not used.</summary>
-    public void DrawCalmBar(SKCanvas canvas, SKRect bar, float formation = 0, GlassSurfaceOptions? options = null, float touch = 0)
+    /// Device px; <c>options.Density</c> is px per dp, <c>options.TintAmount</c> is not used. <paramref name="clear"/>
+    /// draws GlassTabBarStyle.CalmClear's clearer bar.</summary>
+    public void DrawCalmBar(SKCanvas canvas, SKRect bar, float formation = 0, GlassSurfaceOptions? options = null, float touch = 0,
+        bool clear = false)
     {
         Ready(canvas, bar);
         options ??= new(Dark: true);
         if (!float.IsFinite(formation) || !float.IsFinite(options.Density) || options.Density <= 0)
             throw new ArgumentOutOfRangeException(nameof(formation));
         var v = ClearUniforms(material, bar.Width, bar.Height, 2, 1);
-        Apply(v, CalmSelectorMaterial.Bar(options.Dark, formation, touch), options);
+        Apply(v, CalmSelectorMaterial.Bar(options.Dark, formation, touch, clear), options);
         Set(v, "uRadii", Enumerable.Repeat(bar.Height / 2, 4).ToArray()); Set(v, "uRefractBand", .6f * bar.Height / 2);
         Set(v, "uFormation", 0); Set(v, "uScale", Math.Clamp((Math.Min(bar.Width, bar.Height) / options.Density - 56) / 264, 0, 1));
         var origin = new SKPoint(bar.Left - 2, bar.Top - 2);
@@ -163,7 +165,7 @@ public sealed class GlassPainter : IDisposable
         Set(v, "uRadii", Enumerable.Repeat(Math.Min(node.Width, node.Height) / 2, 4).ToArray());
         Set(v, "uScale", Math.Clamp((Math.Min(node.Width, node.Height) / options.Density - 56) / 264, 0, 1));
         var origin = new SKPoint(node.Left - 2, node.Top - 2);
-        using var view = through is null ? null : ComposeThrough(through, calm.RawShare);
+        using var view = through is null ? null : ComposeThrough(through, calm.RawShare, calm.RawBlur * options.Density);
         using var shader = Backdrop(origin, v["uWideKernel"][0], out var strip, view);
         Set(v, "uWideStrip", v["uWideKernel"][0] >= 1 ? strip : 0);
         Draw(canvas, v, shader, origin);
@@ -219,8 +221,9 @@ public sealed class GlassPainter : IDisposable
         Set(v, "uMaterialize", o.Materialize); Set(v, "uFrost", o.ReducedTransparency); Set(v, "uContrast", o.IncreasedContrast);
     }
 
-    // The backdrop with the glass the lens looks through over it, plus rawShare of the raw page.
-    private SKImage ComposeThrough(SKImage through, float rawShare)
+    // The backdrop with the glass the lens looks through over it, plus rawShare of the raw page,
+    // blurred by rawBlur (device px) as Compose's GlassStyle.rawBlur.
+    private SKImage ComposeThrough(SKImage through, float rawShare, float rawBlur = 0)
     {
         using var surface = SKSurface.Create(new SKImageInfo(source!.Width, source.Height, SKColorType.Rgba8888, SKAlphaType.Premul))
             ?? throw new InvalidOperationException("Cannot allocate the selector backdrop");
@@ -228,7 +231,8 @@ public sealed class GlassPainter : IDisposable
         surface.Canvas.DrawImage(through, 0, 0, Sampling);
         if (rawShare > .001f)
         {
-            using var add = new SKPaint { BlendMode = SKBlendMode.Plus, Color = SKColors.White.WithAlpha((byte)Math.Round(rawShare * 255)) };
+            using var blur = rawBlur > .01f ? SKImageFilter.CreateBlur(rawBlur, rawBlur, SKShaderTileMode.Clamp) : null;
+            using var add = new SKPaint { BlendMode = SKBlendMode.Plus, Color = SKColors.White.WithAlpha((byte)Math.Round(rawShare * 255)), ImageFilter = blur };
             surface.Canvas.DrawImage(source, 0, 0, Sampling, add);
         }
         surface.Canvas.Flush();

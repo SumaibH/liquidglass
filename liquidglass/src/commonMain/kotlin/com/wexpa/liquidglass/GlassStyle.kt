@@ -198,6 +198,13 @@ data class GlassStyle(
      */
     val rawShare: Float = 0f,
     /**
+     * Gaussian sigma of the raw backdrop that [rawShare] adds. Zero adds it sharp, as before. A
+     * blurred share lifts the glass over content by what the content around it holds and adds
+     * nothing over black, without drawing the content's edges a second time. Ignored without
+     * [rawShare].
+     */
+    val rawBlur: Dp = 0.dp,
+    /**
      * Amplitude of the mirrored edge band — the broad, soft, upside-down echo of nearby content
      * over roughly the outer third of the surface. A thin band reads as a hard streak; this one
      * is what makes the edge read as liquid rather than as a bevel.

@@ -319,6 +319,8 @@ internal fun Modifier.liquidGlassCore(
     // The panel's own contact shadow, blurred in its own layer so it can be drawn *into* the
     // recorded backdrop and therefore refracted along with it. See GlassStyle.contactShadow.
     val shadowLayer = rememberGraphicsLayer()
+    // The raw backdrop that GlassStyle.rawShare adds, blurred by GlassStyle.rawBlur.
+    val rawLayer = rememberGraphicsLayer()
     // Effects are rebuilt only when their inputs change: building one binds some fifty
     // uniforms and allocates, per panel, and on a scrolling screen the inputs are the same
     // frame after frame (the backdrop changes, the uniforms do not).
@@ -718,6 +720,16 @@ internal fun Modifier.liquidGlassCore(
                     }
                     val throughLayer = through?.layer
                     val throughDelta = through?.let { panelOffsetInSource(it.sourceCoordinates, coordinates) }
+                    val rawBlurPx = style.rawBlur.toPx()
+                    val blurRaw = style.rawShare > 0.001f && rawBlurPx > 0.01f && throughLayer != null && throughDelta != null
+                    if (blurRaw) {
+                        rawLayer.record(size = paddedSize) {
+                            scale(rs, rs, pivot = Offset.Zero) {
+                                translate(-delta.x + pad, -delta.y + pad) { drawLayer(source) }
+                            }
+                        }
+                        rawLayer.renderEffect = effects.raw(rawBlurPx * rs)
+                    }
                     if (useWide) {
                         wideLayer.record(size = stripSize) {
                             drawRect(state.background)
@@ -752,7 +764,10 @@ internal fun Modifier.liquidGlassCore(
                         if (throughLayer != null && throughDelta != null) {
                             translate(-throughDelta.x + pad, -throughDelta.y + pad) { drawLayer(throughLayer) }
                             // And a share of the raw backdrop again, added on top (rawShare).
-                            if (style.rawShare > 0.001f) {
+                            if (blurRaw) {
+                                // Recorded at the padded size in device px: undo this layer's scale.
+                                scale(1f / rs, 1f / rs, pivot = Offset.Zero) { drawAdded(rawLayer, 0f, 0f, style.rawShare) }
+                            } else if (style.rawShare > 0.001f) {
                                 drawAdded(source, -delta.x + pad, -delta.y + pad, style.rawShare)
                             }
                         }
@@ -971,6 +986,8 @@ internal class GlassEffectCache {
     private var wideSigma: Float = Float.NaN
     private var wideEffect: androidx.compose.ui.graphics.RenderEffect? = null
     private var shadowSigma: Float = Float.NaN
+    private var rawSigma: Float = Float.NaN
+    private var rawEffect: androidx.compose.ui.graphics.RenderEffect? = null
     private var shadowEffect: androidx.compose.ui.graphics.RenderEffect? = null
 
     fun panel(uniforms: GlassUniforms): androidx.compose.ui.graphics.RenderEffect? {
@@ -1003,6 +1020,14 @@ internal class GlassEffectCache {
             wideSigma = sigmaPx
         }
         return wideEffect
+    }
+
+    fun raw(blurPx: Float): androidx.compose.ui.graphics.RenderEffect {
+        if (blurPx != rawSigma) {
+            rawEffect = BlurEffect(blurPx, blurPx, TileMode.Clamp)
+            rawSigma = blurPx
+        }
+        return rawEffect!!
     }
 
     fun shadow(blurPx: Float): androidx.compose.ui.graphics.RenderEffect {

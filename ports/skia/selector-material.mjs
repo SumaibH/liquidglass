@@ -70,19 +70,21 @@ export function calmSelectorMaterial({dark = true, formation = 0, transit = 0, h
 /**
  * The Calm bar's material, lengths in dp. Its held lift follows the selector's formation, or, where
  * the style lifts for any touch (GlassTabBarStyle.touchLift), the larger of that and `touch`
- * (the navigation's touch amount).
+ * (the navigation's touch amount). `clear` is GlassTabBarStyle.CalmClear's bar: the clearer glass
+ * of WhatsApp's and the App Store's dark bars (the same in light appearance).
  */
-export function calmBarMaterial({dark = true, formation = 0, touch = 0} = {}) {
+export function calmBarMaterial({dark = true, formation = 0, touch = 0, clear = false} = {}) {
   const style = DATA.styles[dark ? 'dark' : 'light'];
   const lift = style.touchLift ? Math.max(formation, touch) : formation;
-  return {...style.bar, uLift: style.bar.uLift + style.heldLift * clamp(lift, 0, 1)};
+  return {...style.bar, uTint: clear ? style.clearBarTint : style.bar.uTint,
+    uLift: style.bar.uLift + style.heldLift * clamp(lift, 0, 1)};
 }
 
 /** Uniform values in device px for a density. */
 export function calmMaterialUniforms(values, density = 1) {
   const out = {};
   for (const [key, value] of Object.entries(values)) {
-    if (key === 'rawShare') continue;
+    if (key === 'rawShare' || key === 'rawBlur') continue;
     out[key] = DATA.dpFields.includes(key) ? value * density : value;
   }
   return out;

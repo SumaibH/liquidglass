@@ -73,9 +73,11 @@ private fun replay(args: Array<String>) {
         "calm-slot" -> GlassTabBarStyle.Calm().copy(height = PhoneGeometry.barHeight)
         // The material calibrated on the wrongly decoded recordings, with their dimmed palette.
         "calm-recorded" -> PhoneGeometry.style(GlassTabBarStyle.CalmRecordedSpace())
-        else -> PhoneGeometry.style(GlassTabBarStyle.Calm())
+        // The clearer bar of WhatsApp and the App Store ("whatsapp-clear", "appstore-clear").
+        else -> if ("-clear" in variant) PhoneGeometry.style(GlassTabBarStyle.CalmClear())
+            else PhoneGeometry.style(GlassTabBarStyle.Calm())
     }.let { base ->
-        // "calm+lens=<alpha>,<grey 0-255>[,<rawShare>[,<lift /255>[,<fineShare>[,<wide dp>[,<heldGlow>[,<glowFloor>[,<glowReach dp>[,<blur dp>]]]]]]]]": a lens candidate, for fitting by replay.
+        // "calm+lens=<alpha>,<grey 0-255>[,<rawShare>[,<lift /255>[,<fineShare>[,<wide dp>[,<heldGlow>[,<glowFloor>[,<glowReach dp>[,<blur dp>[,<rawBlur dp>]]]]]]]]]": a lens candidate, for fitting by replay.
         val lens = variant.substringAfter("+lens=", "").substringBefore('+').split(',').mapNotNull { it.toFloatOrNull() }
         if (lens.size < 2) base else base.copy(lens = base.lens.copy(
             tint = androidx.compose.ui.graphics.Color(lens[1] / 255f, lens[1] / 255f, lens[1] / 255f, lens[0]),
@@ -87,6 +89,7 @@ private fun replay(args: Array<String>) {
             heldGlowFloor = lens.getOrElse(7) { base.lens.heldGlowFloor },
             heldGlowReach = lens.getOrNull(8)?.let { androidx.compose.ui.unit.Dp(it) } ?: base.lens.heldGlowReach,
             blurRadius = lens.getOrNull(9)?.let { androidx.compose.ui.unit.Dp(it) } ?: base.lens.blurRadius,
+            rawBlur = lens.getOrNull(10)?.let { androidx.compose.ui.unit.Dp(it) } ?: base.lens.rawBlur,
         ))
     }.let { base ->
         // "+bar=<black alpha>,<lift /255>[,<fineShare>[,<blur dp>[,<softDetail>[,<wide dp>]]]]": a bar candidate, for fitting by replay.
@@ -124,9 +127,10 @@ private fun replay(args: Array<String>) {
                 // "appstore": iOS 26's App Store five-tab bar over a dark card (AppStoreScene).
                 if (variant.startsWith("appstore")) AppStoreScene(selected, { selected = it },
                     style = AppStoreGeometry.style(style))
-                // "whatsapp": WhatsApp's five-tab bar on its measured slots (WhatsAppScene).
+                // "whatsapp": WhatsApp's five-tab bar on its measured slots (WhatsAppScene);
+                // "+plain": over the bare page, without the settings card.
                 else if (variant.startsWith("whatsapp")) WhatsAppScene(selected, { selected = it },
-                    style = WhatsAppGeometry.style(style))
+                    style = WhatsAppGeometry.style(style), card = "+plain" !in variant)
                 else PhoneScene(selected, { selected = it }, palette = palette, style = style,
                     search = if ("+passive" in variant) null else com.wexpa.liquidglass.GlassInteraction.Pullable.copy(
                         pullShape = com.wexpa.liquidglass.GlassPullShape.Free, pullLiftShare = 0.7f))

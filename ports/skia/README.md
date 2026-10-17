@@ -117,6 +117,11 @@ canvas.addEventListener('pointerdown', e => nav.down(e.offsetX, e.offsetY, e.tim
 as Compose's `GlassTabBarStyle.slotWidth` does: the end tabs close up until their pill sits
 `pillInset` inside the bar's end. Draw your items at `centreOf(bar, i)`.
 
+`clear: true` on the bar material (`calmBarMaterial({clear})`, `painter.drawCalmBar(..., {clear})`,
+or `material: {clear: true}` on `addNavigation`) draws Compose's `GlassTabBarStyle.CalmClear()` bar:
+the clearer glass of WhatsApp's and the App Store's dark iOS bars (black at 0.10 instead of 0.41,
+same lift; light appearance unchanged). Pass the same bar as `through` so the lens follows it.
+
 The motion is a line-by-line port of the Compose pose controller (`selector.mjs`:
 `CalmSelectorController`, `calmSelectorBar`, `centreOf`, `nearestTab`, `createCalmNavigation`), checked frame by frame against
 trajectories the Kotlin controller exports (`fixtures/selector-calm.json`: taps, a held throw into

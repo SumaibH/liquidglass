@@ -64,6 +64,7 @@ fun lerpGlassStyle(start: GlassStyle, stop: GlassStyle, fraction: Float): GlassS
         heldGlowFloor = f(start.heldGlowFloor, stop.heldGlowFloor),
         softDetail = f(start.softDetail, stop.softDetail),
         rawShare = f(start.rawShare, stop.rawShare),
+        rawBlur = d(start.rawBlur, stop.rawBlur),
         mirror = f(start.mirror, stop.mirror),
         bevel = d(start.bevel, stop.bevel),
         tint = lerpTintPremultiplied(start.tint, stop.tint, t),

@@ -173,6 +173,32 @@ This file records user-visible development changes. Published artifacts are iden
   (p90 155 against iOS's 102). Without it the lens veils text as the bar does: p90 91, p50 75
   against 82, five regions 9.7 rms against 24.9. A black page is unchanged (48 against 47). The
   lens's top and bottom bands still read 11-12 below iOS's over content.
+- `GlassTabBarStyle.CalmClear()` (new preset, 17 October; `Calm()` unchanged): dark Calm with the
+  clearer bar of WhatsApp's and the App Store's iOS bars, black at 0.10 (the Phone bar's 0.41) over
+  the same 32/255 lift. Measured in display colours on the owner's recordings, iOS against
+  CalmClear (Calm): WhatsApp over its grey card bar 54 against 53 (46), pill 30 against 31 (24);
+  over its chats page bar 43 against 41 (38), pill 19 against 19 (16); the App Store's plain bar
+  67/65/64/59 against 66/64/63/58 (54/53/52/49); over black both 32. The pill and held lens look
+  through the bar and follow it. Light appearance returns `Calm(false)`. The sample's
+  `WhatsAppScene` and `AppStoreScene` default to it; Atlas replay variants `whatsapp-clear`,
+  `appstore-clear`, and `whatsapp+plain` (the bare page). Ports: `calmBarMaterial({clear})` /
+  `drawCalmBar(..., {clear})` / scene material `clear` in CanvasKit, `CalmSelectorMaterial.Bar(...,
+  clear:)` / `DrawCalmBar(..., clear:)` in .NET, from a `clearBarTint` exported with the fixture.
+  Residual: text under the App Store bar still reads brighter than iOS's (p75 107 against 80).
+- `GlassStyle.rawBlur` (new, 17 October; 0 dp by default, so `rawShare` stays sharp everywhere it
+  was): the raw backdrop that `rawShare` adds is blurred first. Dark `Calm()`'s held lens now adds
+  0.22 of the raw page blurred 20 dp (was no share since earlier on 17 October). iOS's lens reads about
+  10 above ours wherever the page has content and the same over black; a blurred page term does
+  both, where a tint or glow lifts black too and a sharp share redraws the text. Scored by region
+  (docs/2 5.75 s, IMG_6756 35.47 s), iOS / ours: text p50 82 / 83 (was 75), p90 102 / 99 (91),
+  bottom band 75 / 70 (63), black interior 47 / 48 (48), top band 64 / 53 (52); five regions 5.6 rms
+  (9.7). The top band near the rim stays 11 low. Both ports blur the share the same way (`rawBlur`
+  exported with the material fixture). Atlas replay `+lens=` takes it as the eleventh value.
+- WhatsApp motion checked (17 October; no motion change): a white-fill tracker for WhatsApp's bar
+  and finger scripts inferred from its touches (14 in JGEY2190 49.8-67 s). Read by the same tracker
+  on both sides, `CalmClear()` on `WhatsAppScene` lands on the same tab 14/14 (nine throws' lifts are
+  inferred from iOS's landing) and settles a median 21 ms before iOS (p25 / p75 -31 / +75 ms); the
+  selection path is within 3 px at the median, p90 140 px in throws' flights.
 
 ### Added
 

@@ -151,6 +151,10 @@ in the bar, as Compose's `GlassTabBarStyle.slotWidth` does: the end tabs close u
 sits `pillInset` inside the bar's end. Draw your items at `bar.CentreOf(i)`; `NearestTab` maps a
 bar-local x to a tab.
 
+`DrawCalmBar(..., clear: true)` (and `CalmSelectorMaterial.Bar(..., clear: true)`) draws Compose's
+`GlassTabBarStyle.CalmClear()` bar: the clearer glass of WhatsApp's and the App Store's dark iOS
+bars (black at 0.10 instead of 0.41, same lift; light appearance unchanged).
+
 `DrawCalmBar` and `DrawSelector` use the Compose Calm bar and selector material itself
 (`CalmSelectorMaterial`: the production styles exported by the Kotlin tests, blended by the same
 rules and checked against 96 Kotlin-computed uniform sets). Pass `through` so the lens looks through

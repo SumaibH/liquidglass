@@ -204,7 +204,9 @@ morphs between, exposed so a host can start from them.
 `touchLift` applies `heldLift` for any touch, a tap included (rising within 50 ms of the press,
 falling over 260 ms after the lift), as iOS's bar lifts on every touch; off by default, on in dark
 `Calm()`. `CalmRecordedSpace()` is dark Calm as calibrated before 15 October, against recordings
-decoded as if they were sRGB.
+decoded as if they were sRGB. `CalmClear()` is dark Calm with the clearer bar of WhatsApp's and the
+App Store's iOS bars (black at 0.10 instead of 0.41 over the same lift; light appearance unchanged;
+[tab bar guide](tab-bar.md#a-clearer-bar)).
 
 `slotWidth` lays the tabs on equal slots of that width centred in the bar, instead of sharing the
 bar out inside `contentPadding`. Slots wider than the bar allows close up at the ends: an end tab
@@ -406,7 +408,7 @@ The V3 preset uses `1.dp`, an authored shoulder and recovery curve constrained b
 original Phone frames. It changes material darkening, not source or ink sharpness, and
 interpolates with the style during formation. Other presets retain zero.
 
-### `GlassProfile.Held`, `heldLens`, `rawShare`
+### `GlassProfile.Held`, `heldLens`, `rawShare`, `rawBlur`
 
 The third optical family, for the lens a finger raises on a tab bar (measured model, section
 2c). `GlassProfile.Held` with `heldLens = 0` is identity — no rest lens at the arcs, no fold —
@@ -415,7 +417,10 @@ seam hiding the content between the band and the interior; the modifier records 
 margin the outward sampling needs. A resting indicator and the lens it swells into both sit in
 this family so the morph never crosses into the fold. `rawShare` adds that share of the raw
 backdrop on top of the glass the element looks `through` (the measured lens: 0.11); it is
-ignored without `through`. `tintLift` may be negative when `liftAdaptivity` is 0 (the resting
+ignored without `through`. `rawBlur: Dp = 0.dp` blurs that raw backdrop before it is added: the
+glass then lifts over content by what the content around it holds and adds nothing over black,
+without drawing the content's edges a second time. Zero adds it sharp, as before; dark `Calm()`'s
+held lens uses 0.22 blurred 20 dp (17 October). `tintLift` may be negative when `liftAdaptivity` is 0 (the resting
 indicator is the bar's output at 0.857 minus 17/255).
 
 ### `GlassMaterial`

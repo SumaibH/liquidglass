@@ -85,7 +85,8 @@ export function createGlassScene(kit, options) {
     const m = layer.material;
     const s = layer.nav.state();
     return {dark: m.dark ?? true, density: (m.density ?? 1) * ratio, formation: s.formation, touch: s.touch ?? 0,
-      materialize: m.materialize ?? 1, reducedTransparency: m.reducedTransparency ?? 0, increasedContrast: m.increasedContrast ?? 0};
+      materialize: m.materialize ?? 1, reducedTransparency: m.reducedTransparency ?? 0, increasedContrast: m.increasedContrast ?? 0,
+      clear: m.clear ?? false};
   }
   function barThrough(canvas, layer, deviceBounds, ratio) {
     const surface = canvas.makeSurface({width: image.width(), height: image.height(), colorType: kit.ColorType.RGBA_8888,

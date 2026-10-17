@@ -7,13 +7,14 @@ using System.Text.Json;
 namespace LiquidGlass.Skia;
 
 /// <summary>A Calm material: shader uniforms with lengths in dp, the band blend
-/// (<c>uFormation</c>) and the share of raw backdrop added over the glass the lens looks through.</summary>
-public sealed record CalmMaterial(IReadOnlyDictionary<string, float[]> Values, float Formation, float RawShare);
+/// (<c>uFormation</c>), the share of raw backdrop added over the glass the lens looks through and that
+/// backdrop's blur in dp (GlassStyle.rawBlur).</summary>
+public sealed record CalmMaterial(IReadOnlyDictionary<string, float[]> Values, float Formation, float RawShare, float RawBlur = 0);
 
 public static class CalmSelectorMaterial
 {
     private sealed record Style(Dictionary<string, float[]> Pill, Dictionary<string, float[]> Lens, Dictionary<string, float[]> Bar,
-        float HeldLift, bool TouchLift, bool PillInkFollows, bool LensInkFollows, float TapOptics, float TapOpticsFold, float TapTintFade);
+        float[] ClearBarTint, float HeldLift, bool TouchLift, bool PillInkFollows, bool LensInkFollows, float TapOptics, float TapOpticsFold, float TapTintFade);
 
     private static readonly HashSet<string> Snap = ["uProfile", "uRestMap", "uHeldInk"];
     private static readonly Lazy<(HashSet<string> Dp, Dictionary<string, float> Fold, Style Dark, Style Light)> Data = new(Load);
@@ -34,7 +35,8 @@ public static class CalmSelectorMaterial
         Style Read(string name)
         {
             var s = root.GetProperty("styles").GetProperty(name);
-            return new(Map(s.GetProperty("pill")), Map(s.GetProperty("lens")), Map(s.GetProperty("bar")), s.GetProperty("heldLift").GetSingle(),
+            return new(Map(s.GetProperty("pill")), Map(s.GetProperty("lens")), Map(s.GetProperty("bar")),
+                s.GetProperty("clearBarTint").EnumerateArray().Select(x => x.GetSingle()).ToArray(), s.GetProperty("heldLift").GetSingle(),
                 s.GetProperty("touchLift").GetBoolean(), s.GetProperty("pillInkFollows").GetBoolean(), s.GetProperty("lensInkFollows").GetBoolean(),
                 s.GetProperty("tapOptics").GetSingle(), s.GetProperty("tapOpticsFold").GetSingle(), s.GetProperty("tapTintFade").GetSingle());
         }
@@ -115,19 +117,21 @@ public static class CalmSelectorMaterial
             }
         }
         var band = style.TapOpticsFold > 0 && f >= .5f ? Math.Clamp(h * style.TapOpticsFold, 0, 1) : folded;
-        return new(values, Math.Clamp(band, 0, 1), values["rawShare"][0]);
+        return new(values, Math.Clamp(band, 0, 1), values["rawShare"][0], values["rawBlur"][0]);
     }
 
     /// <summary>The Calm bar's material; its held lift follows the selector's formation, or, where the
     /// style lifts for any touch (GlassTabBarStyle.touchLift), the larger of that and <paramref name="touch"/>
-    /// (<see cref="CalmNavigation.Touch"/>).</summary>
-    public static CalmMaterial Bar(bool dark, double formation, double touch = 0)
+    /// (<see cref="CalmNavigation.Touch"/>). <paramref name="clear"/> is GlassTabBarStyle.CalmClear's bar: the
+    /// clearer glass of WhatsApp's and the App Store's dark bars (the same in light appearance).</summary>
+    public static CalmMaterial Bar(bool dark, double formation, double touch = 0, bool clear = false)
     {
         var (_, _, darkStyle, lightStyle) = Data.Value;
         var style = dark ? darkStyle : lightStyle;
         var values = style.Bar.ToDictionary(p => p.Key, p => (float[])p.Value.Clone());
+        if (clear) values["uTint"] = (float[])style.ClearBarTint.Clone();
         var lift = style.TouchLift ? Math.Max(formation, touch) : formation;
         values["uLift"] = [values["uLift"][0] + style.HeldLift * Math.Clamp((float)lift, 0, 1)];
-        return new(values, 0, values["rawShare"][0]);
+        return new(values, 0, values["rawShare"][0], values["rawBlur"][0]);
     }
 }

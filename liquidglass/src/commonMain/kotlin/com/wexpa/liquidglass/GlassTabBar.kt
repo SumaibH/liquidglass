@@ -1575,12 +1575,35 @@ data class GlassTabBarStyle(
                 // the bar less 3/255: IMG_6756's black page 48/49 against 48/49. (Pass 18 added 0.30 of
                 // the raw page to reach docs/2's percentiles; scored by region on 17 October that drew the
                 // page's text under the lens sharp and white, p90 155 against iOS's 102, where iOS's lens
-                // veils it as the bar does: without it 91, black page unchanged.)
+                // veils it as the bar does: without it 91, black page unchanged.) The share returns
+                // blurred ([GlassStyle.rawBlur], 17 October): iOS's lens reads ~10 above ours wherever
+                // the page has content and the same over black, which a blurred page term does and a
+                // tint or glow cannot. Scored by region (.local/sxs/hazescore.py, docs/2 5.75 s and
+                // IMG_6756 35.47 s), iOS / ours: text p50 82/83, p90 102/99, bottom band 75/70, black
+                // interior 47/48, top band 64/53; five regions 5.6 rms (9.7 without the share).
                 pill = recorded.pill.copy(tint = Color.Transparent, tintLift = -22f / 255f),
-                lens = recorded.lens.copy(tint = Color.Transparent, rawShare = 0f, tintLift = -3f / 255f,
-                    softDetail = 1f),
+                lens = recorded.lens.copy(tint = Color.Transparent, rawShare = 0.22f, rawBlur = 20.dp,
+                    tintLift = -3f / 255f, softDetail = 1f),
             )
         }
+
+        /**
+         * [Calm] with the clearer bar of WhatsApp's and the App Store's iOS 26 tab bars. Those
+         * bars pass about 0.9 of the page under them where the Phone bar, which [Calm] is fitted
+         * to, passes 0.59; over a black page both read the same. Measured in display colours on
+         * the owner's recordings (17 October): WhatsApp's bar 43 over its chats page (10) and 54
+         * over its grey settings card (23), the App Store's 32 over black and 57 over its card
+         * (28); its resting pill 19 and 30 over the same pages. The bar is black at
+         * [clearBarOpacity] over the Phone bar's 32/255 lift; the pill and held lens look through
+         * the bar as in [Calm], so they follow it. Light appearance has no recording and returns
+         * [Calm] unchanged.
+         */
+        fun CalmClear(dark: Boolean = true): GlassTabBarStyle = Calm(dark).let { calm ->
+            if (!dark) calm else calm.copy(bar = calm.bar.copy(tint = Color.Black.copy(alpha = clearBarOpacity)))
+        }
+
+        /** Black opacity of [CalmClear]'s bar, fitted over the four page levels its notes list. */
+        internal const val clearBarOpacity: Float = 0.10f
 
         /**
          * [Calm] as calibrated before 15 October 2026, against the owner's recordings decoded as

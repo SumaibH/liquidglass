@@ -78,6 +78,15 @@ test('navigation: any touch lifts the bar (touchLift), rising in 50 ms and gone 
   assert.equal(calmBarMaterial({dark: false, touch: 1}).uLift, calmBarMaterial({dark: false}).uLift, 'light Calm does not');
 });
 
+test('clear bar (GlassTabBarStyle.CalmClear): black at 0.10 over the same lift, light unchanged', () => {
+  const calm = calmBarMaterial({dark: true}), clear = calmBarMaterial({dark: true, clear: true});
+  assert.deepEqual([...clear.uTint].slice(0, 3), [0, 0, 0]);
+  assert.ok(Math.abs(clear.uTint[3] - 26 / 255) < 1e-6, 'Compose stores the 0.10 alpha in 8 bits');
+  assert.equal(clear.uLift, calm.uLift);
+  assert.deepEqual({...clear, uTint: calm.uTint}, calm, 'only the tint differs');
+  assert.deepEqual(calmBarMaterial({dark: false, clear: true}), calmBarMaterial({dark: false}));
+});
+
 test('navigation: a hold-and-drag commits where the finger ends, a fling carries one further', () => {
   const b = bar(), selected = [];
   const nav = createCalmNavigation({bar: b, onSelect: i => selected.push(i)});

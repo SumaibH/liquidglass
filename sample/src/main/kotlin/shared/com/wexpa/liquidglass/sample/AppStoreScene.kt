@@ -59,7 +59,7 @@ fun AppStoreScene(
     selected: Int,
     onSelected: (Int) -> Unit,
     modifier: Modifier = Modifier,
-    style: GlassTabBarStyle = AppStoreGeometry.style(GlassTabBarStyle.Calm()),
+    style: GlassTabBarStyle = AppStoreGeometry.style(GlassTabBarStyle.CalmClear()),
     accent: Color = Color(0xFF369CFE),
 ) {
     val state = rememberLiquidGlassState(Color.Black)
