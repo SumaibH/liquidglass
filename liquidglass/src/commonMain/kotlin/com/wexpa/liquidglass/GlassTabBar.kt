@@ -1638,8 +1638,10 @@ data class GlassTabBarStyle(
                 // bar's straight edges and rounded end showed through as a second capsule inside the
                 // lens ("two glasses", the owner's device check); iOS's lens fills with the bar nearly
                 // to its rim and bends what lies beyond into a thin crescent (IMG_6756 35.47 s, docs/2
-                // 5.75 s). Region levels move by 2 at most (top band 53 -> 51).
-                lens = recorded.lens.copy(tint = Color.Transparent, rawShare = 0.22f, rawBlur = 20.dp,
+                // 5.75 s). Region levels move by 2 at most (top band 53 -> 51). Its raw page then wider and
+                // stronger (0.5 at 50 dp, was 0.22 at 20 dp; 18 October): top band 60 against iOS's 64 (51),
+                // bottom 73/75, text p90 / p50 101/102 and 86/82, black 48/47; five regions 2.8 rms (6.6).
+                lens = recorded.lens.copy(tint = Color.Transparent, rawShare = 0.5f, rawBlur = 50.dp,
                     tintLift = -3f / 255f, softDetail = 1f, bodyBandScale = 0.3f),
             )
         }

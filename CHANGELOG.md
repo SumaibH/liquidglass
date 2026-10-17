@@ -7,6 +7,13 @@ This file records user-visible development changes. Published artifacts are iden
 
 ### Changed (18 October, the owner's device check)
 
+- Dark `Calm()` held lens: the raw page wider and stronger (`rawShare` 0.5 at `rawBlur` 50 dp, was 0.22 at
+  20 dp). Scored by region on docs/2 5.75 s and IMG_6756 35.47 s, iOS / ours: top band 64/60 (was 51),
+  bottom 75/73, text p90 102/101, p50 82/86, black 47/48; five regions 2.8 rms (6.6).
+- `GlassInteraction.pullReleaseDampingX` (new, default NaN = the shared spring); `Pullable` uses 0.3.
+  Released sideways, iOS's search button springs further past its place than upward (IMG_6756 19-34 s):
+  centre 2.3 px rms (2.6), half-width 2.2 (2.7), its narrowest 83 px (86; iOS 78). Ports follow.
+
 - `GlassTabBarStyle.Calm()`: the bar's rounded ends lens what lies beyond them (`GlassStyle.capFold`,
   new, default 0; 1 in `Calm()`), as iOS's do (an icon's edge outside the bar shows ~30 px inside its cap,
   IMG_7049); the straight runs keep their rest offset, since a fold there garbled text. Before, the caps

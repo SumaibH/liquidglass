@@ -113,6 +113,10 @@ private fun replay(args: Array<String>) {
             refractionDepth = bf.getOrNull(2)?.let { androidx.compose.ui.unit.Dp(it) } ?: base.bar.refractionDepth,
             bevel = bf.getOrNull(3)?.let { androidx.compose.ui.unit.Dp(it) } ?: base.bar.bevel))
     }.let { base ->
+        // "+lraw=<rawShare>,<rawBlur dp>": the held lens's raw page term.
+        val lw = variant.substringAfter("+lraw=", "").substringBefore('+').split(',').mapNotNull { it.toFloatOrNull() }
+        if (lw.size < 2) base else base.copy(lens = base.lens.copy(rawShare = lw[0], rawBlur = androidx.compose.ui.unit.Dp(lw[1])))
+    }.let { base ->
         // "+lband=<body band scale>": the held lens's rim band.
         val lbs = variant.substringAfter("+lband=", "").substringBefore('+').split(',').mapNotNull { it.toFloatOrNull() }
         if (lbs.isEmpty()) base else base.copy(lens = base.lens.copy(bodyBandScale = lbs[0],
@@ -180,7 +184,7 @@ private fun replay(args: Array<String>) {
                         // "+search=<follow>,<elongation>,<widthRatio>,<limit>,<liftShare>": a search-button candidate.
                         val k = variant.substringAfter("+search=", "").substringBefore('+').split(',').mapNotNull { it.toFloatOrNull() }
                         if (k.size < 5) base else base.copy(pullFollow = k[0], pullElongation = k[1], pullWidthRatio = k[2],
-                            pullLimit = k[3], pullLiftShare = k[4])
+                            pullLimit = k[3], pullLiftShare = k[4], pullReleaseDampingX = k.getOrElse(5) { Float.NaN })
                     })
             }
         }

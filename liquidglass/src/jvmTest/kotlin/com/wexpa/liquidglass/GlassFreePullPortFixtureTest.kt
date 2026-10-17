@@ -72,7 +72,11 @@ class GlassFreePullPortFixtureTest {
                     "up" -> {
                         glow.to(c.t, 0f, GlassMotion.FreeGlow)
                         press.to(c.t, 0f, GlassMotion.PressUp)
-                        px.to(c.t, 0f, GlassMotion.FreeRelease); py.to(c.t, 0f, GlassMotion.FreeRelease)
+                        // GlassInteraction.pullReleaseDampingX, as LiquidGlass applies it to x.
+                        val releaseX = interaction.pullReleaseDampingX.takeIf { it.isFinite() }?.let {
+                            androidx.compose.animation.core.spring<Float>(dampingRatio = it.coerceIn(.05f, 2f), stiffness = 264f)
+                        } ?: GlassMotion.FreeRelease
+                        px.to(c.t, 0f, releaseX); py.to(c.t, 0f, GlassMotion.FreeRelease)
                     }
                 }
             }
@@ -114,7 +118,7 @@ class GlassFreePullPortFixtureTest {
 
     @Test fun freeButtonTrajectoriesForPorts() {
         val json = "{\"button\":{\"size\":186,\"density\":3,\"pressScale\":1.26,\"pressGrowth\":8,\"pressLift\":0.2," +
-            "\"pullFollow\":${interaction.pullFollow},\"pullElongation\":${interaction.pullElongation},\"pullWidthRatio\":1,\"pullLimit\":0.5,\"pullLiftShare\":${interaction.pullLiftShare}},\n" +
+            "\"pullFollow\":${interaction.pullFollow},\"pullElongation\":${interaction.pullElongation},\"pullWidthRatio\":1,\"pullLimit\":0.5,\"pullLiftShare\":${interaction.pullLiftShare},\"pullReleaseDampingX\":${interaction.pullReleaseDampingX}},\n" +
             "\"frameFields\":[\"t\",\"glow\",\"pressScale\",\"along\",\"across\",\"angle\",\"tx\",\"ty\",\"pullX\"],\n" +
             "\"scenarios\":[\n" + scenarios().joinToString(",\n") + "]}\n"
         val file = File("../ports/skia/fixtures/free-button.json")

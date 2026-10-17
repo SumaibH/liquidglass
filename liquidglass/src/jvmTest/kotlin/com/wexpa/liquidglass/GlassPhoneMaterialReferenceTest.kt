@@ -50,13 +50,14 @@ class GlassPhoneMaterialReferenceTest {
 
     @Test fun theCalmLensAddsTheRawPageBlurred() {
         // 17 October: iOS's held lens reads ~10 above ours over content and the same over black;
-        // the raw page returns at 0.22, blurred 20 dp (scored by region, review record).
+        // the raw page returns blurred; 0.5 at 50 dp since 18 October (0.22 at 20 dp before; scored by
+        // region, review record).
         val calm = GlassTabBarStyle.Calm(dark = true)
-        assertEquals(0.22f, calm.lens.rawShare)
-        assertEquals(20.dp, calm.lens.rawBlur)
+        assertEquals(0.5f, calm.lens.rawShare)
+        assertEquals(50.dp, calm.lens.rawBlur)
         assertEquals(0f, calm.pill.rawShare)
         // The pill-to-lens morph carries the blur with the share; light Calm and V3 add it sharp.
-        assertEquals(10f, lerpGlassStyle(calm.pill, calm.lens, .5f).rawBlur.value, 1e-4f)
+        assertEquals(25f, lerpGlassStyle(calm.pill, calm.lens, .5f).rawBlur.value, 1e-4f)
         assertEquals(0.dp, GlassTabBarStyle.Calm(dark = false).lens.rawBlur)
         assertEquals(0.dp, GlassTabBarStyle.V3(dark = true).lens.rawBlur)
     }

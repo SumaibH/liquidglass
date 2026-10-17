@@ -50,6 +50,8 @@ export function createCalmInteraction(options: CalmOptions): CalmInteraction;
 export interface FreeButtonOptions {
   size: number; density?: number; pressScale?: number; pressGrowth?: number; pressLift?: number;
   pullFollow?: number; pullElongation?: number; pullWidthRatio?: number; pullLimit?: number; pullLiftShare?: number;
+  /** Release damping along x (Compose `GlassInteraction.pullReleaseDampingX`), 0.3; y keeps 0.45. */
+  pullReleaseDampingX?: number;
 }
 export interface FreeButtonTransform {
   /** Press scale (both axes), then a stretch along and across `angle` (degrees), then the offset. */

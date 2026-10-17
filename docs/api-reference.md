@@ -428,7 +428,7 @@ backdrop on top of the glass the element looks `through` (the measured lens: 0.1
 ignored without `through`. `rawBlur: Dp = 0.dp` blurs that raw backdrop before it is added: the
 glass then lifts over content by what the content around it holds and adds nothing over black,
 without drawing the content's edges a second time. Zero adds it sharp, as before; dark `Calm()`'s
-held lens uses 0.22 blurred 20 dp (17 October). `tintLift` may be negative when `liftAdaptivity` is 0 (the resting
+held lens uses 0.5 blurred 50 dp (18 October; 0.22 at 20 dp on 17 October). `tintLift` may be negative when `liftAdaptivity` is 0 (the resting
 indicator is the bar's output at 0.857 minus 17/255).
 
 ### `GlassMaterial`
@@ -825,6 +825,7 @@ advanced tab-bar/container integration. `glass` does not make a button clickable
 | `GlassTabBarStyle.itemsFollowBarPress` | Appended option, default true. False: the ink and the selector's anchor follow the bar's press growth only as far as the selector has formed, so a tap leaves the icons in place and a hold carries them. `Calm()` uses false (18 October). |
 | `GlassTabBarStyle.tapTransitFold` | Appended option, default NaN (follows `tapOpticsFold`). The fold of a tapped selector while it travels; 0 shows the held lens's own optics, as a throw does. `Calm()` uses 0. |
 | `GlassTabBarAccessory.lensFusion` | Appended parameter, default 0 dp. With `yieldsToLens`, a formed lens at the accessory's end joins it through a neck of this strength. |
+| `GlassInteraction.pullReleaseDampingX` | Appended parameter, default NaN (the shared `FreeRelease` spring). A free button's release damping along x; `Pullable` uses 0.3. |
 | `GlassStyle.capFold` | Appended parameter, default 0. With the measured profile, the outline's corner arcs lens what lies beyond them at rest, as the held lens's map does; straight runs keep their rest offset. `Calm()`'s bar uses 1. |
 | `GlassStyle.bodyBandScale` | Appended parameter, default 1. Scale on a selector body's refraction band (0.6 of its radius). `Calm()`'s lens uses 0.3. |
 | `GlassStyle.contactShadowInside`, `contactShadowBlur`, `contactShadowOffset` | Appended parameters, defaults 1, unspecified, unspecified. The share of the contact shadow drawn into the refracted backdrop, and the shadow's blur and downward offset (unspecified: sized from the panel). Light `Calm()`'s lens uses 0.5, 6 dp, 5 dp. |

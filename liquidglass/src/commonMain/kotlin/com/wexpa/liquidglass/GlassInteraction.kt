@@ -145,6 +145,12 @@ data class GlassInteraction(
      * (IMG_6756 in display colours: 0.6 of the lift, 2026-10-15).
      */
     val pullLiftShare: Float = 1f,
+    /**
+     * [GlassPullShape.Free]'s release damping along x, when it differs from y's
+     * ([GlassMotion.FreeRelease], 0.45). NaN, the default, uses the same spring on both axes;
+     * [Pullable] uses 0.3, fitted on iOS's sideways releases.
+     */
+    val pullReleaseDampingX: Float = Float.NaN,
 ) {
     companion object {
         val Default = GlassInteraction()
@@ -167,6 +173,10 @@ data class GlassInteraction(
             // 18 October (was 0.35): the owner's device check found the held search button far too
             // eager to follow a swipe against iOS's; the recordings have no finger trace to fit it.
             pullFollow = 0.2f, pullElongation = 0.124f, pullWidthRatio = 1f, pullLimit = 0.5f,
+            // Released sideways, iOS's search button springs further past its place than upward (IMG_6756
+            // 19-34 s, three releases: glyph +6 px against our +2 at 0.45; 18 October): x damping 0.3 scores
+            // centre 2.3 px rms (2.6), half-width 2.2 (2.7) and its narrowest 83 px (86; iOS 78).
+            pullReleaseDampingX = 0.3f,
         )
         /**
          * What Apple's Reduce Motion asks for: "decreases the intensity of some effects and
