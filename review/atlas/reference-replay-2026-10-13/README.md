@@ -648,14 +648,42 @@ copies of every glyph about 16 and 34 px to either side (the fine term is a high
 its average taken from five taps along it) and turned the rest into grain (its scatter is rotated per
 pixel). `GlassStyle.softDetail` draws the detail as the wide kernel's tone plus a share of an unrotated
 fine blur: horizontal detail over the text 2.72 against iOS's 2.77 (4.94 before). On dark Calm's bar
-and lens. The along-bar high-pass came from the Photos toolbar target read in the wrong colours; the
-grain was a deliberate cost trade, kept as the default.
+and lens. The along-bar high-pass was measured on screenshots of the Photos toolbar over the calibration
+target (display colours, so the decode error did not touch it) and remains the default; see the check
+below for what that comparison says about the tab bar.
 
 With both, over all five recordings: rest bar and pill 0, held bar +0.5, held lens over a black page
 +1, a tap's travelling pill 47-50 against iOS's 48-53. Still open: iOS's held lens adds a milky haze
 over dark parts near content (docs/2's lens p10 52 against 62).
 
 ![The text under the bar and the held lens over content, pass 17 and pass 18 (our renders only, desktop Direct3D replay, deterministic 60 fps, inferred input)](pass18-page.png)
+
+### Checked against the calibration target (17 October)
+
+The in-app dark law of the record (III.2-III.3) was measured on screenshots of the Photos toolbar
+over the calibration target, where every page pixel is known and the decode error never applied.
+`GlassCalibrationRenderTest.renderTheCalmBarOverTheDarkTarget` (opt-in, `-Pliquidglass.calibration=`)
+renders dark Calm's bar in the toolbar capsule's box over the same target, for the C1a stills:
+
+| Capsule interior over the dark target | iOS, Tint 50 (C1a) | Calm, pass 18 | `CalmRecordedSpace()` |
+| :-- | --: | --: | --: |
+| Mean / standard deviation | 102.6 / 20.6 | 102.2 / 20.8 | 112.6 / 20.6 |
+| p5 / p50 / p95 | 67 / 106 / 133 | 69 / 103 / 131 | 77 / 116 / 143 |
+
+The re-fit made on the videos in display colours lands on the screenshot law at the default tint,
+independently: iOS's in-app dark glass is linear in its page (no compression), and the earlier
+calibration was 10 levels too light. The App Store bar's gap over its card (pass 18 notes) is then
+most likely our page, not the material: the law reproduces iOS's 68 if the blurred page under its
+bar averages about 60, which iOS's large headline would give.
+
+The detail is the open part. Over the target's stripes the measured along-bar high-pass reproduces
+the toolbar row by row (3.0 levels rms), and the soft copy dark Calm now uses does not (7.9; 14 at the
+rows a boundary crosses). On the Phone bar's video the soft copy matches the text under the bar and
+the high-pass draws ghost copies. A smooth along-bar Gaussian (no discrete taps) fixes the text but
+not the stripes (7.0-8.2): the stripes need the high-pass's side lobes, and those lobes are what
+draw the copies. The toolbar is its own role in the record; whether the Phone tab bar shares its
+kernel cannot be settled from these two sources. Kept: the soft copy on dark Calm (the role
+measured), the high-pass as the default.
 
 ### The App Store bar (17 October, in progress)
 

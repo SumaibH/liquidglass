@@ -147,6 +147,14 @@ Progress:
   the `calm+lens=a,grey,raw` replay variant): no tint/raw-share pair meets both pages (raw share
   saturates at ~75 on docs2; a brighter tint lifts black pages equally). Kept the black-page fit (13 of
   16 held moments); the page gain is a structural residual for a later pass.
+- Calibration target (17 Oct): the C1a stills (Photos toolbar over the known target, screenshots =
+  display colours) were never affected by the decode error. New opt-in
+  `GlassCalibrationRenderTest.renderTheCalmBarOverTheDarkTarget` + `GlassRender(softDetail)`. Calm bar
+  (pass 18) over the target: mean/std 102.2/20.8 vs iOS Tint 50 102.6/20.6; CalmRecordedSpace 112.6.
+  Linear law confirmed, no compression -> App Store gap is our page, not the material. Detail: the
+  high-pass matches the toolbar's stripes (3.0 rms), softDetail 7.9; smooth along-bar Gaussian 7.0-8.2
+  (fixes text, not stripes). Toolbar vs tab-bar role unresolved; softDetail kept for Calm. NEXT: make the
+  App Store scene's page match (headline size/weight/position under the bar), then re-score.
 - App Store bar (17 Oct, in progress): sample AppStoreScene + replay variant `appstore` (also `+bar=a,lift,
   fineShare,blurDp` for fitting); `.local/sxs/trackas.py` (as-track.csv), `genas.py` (as-script.txt; touch =
   bar lit vs local baseline AND left end out >= 6 px: the 38.0 s card scroll is not a touch), `scoreas.py`.

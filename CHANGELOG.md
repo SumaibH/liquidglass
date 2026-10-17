@@ -150,6 +150,10 @@ This file records user-visible development changes. Published artifacts are iden
   five-tab bar (348 x 62 pt, 64 pt slots, an 83.7 pt resting pill) over a dark card, measured on the
   owner's recording; the Atlas replay renders it (`appstore` variant). Its one-touch drag across all
   five tabs tracks iOS's at 10.1 px rms, best shift -8 ms, as the Phone bar does. No library change.
+- Calibration-target check (17 October): `GlassCalibrationRenderTest.renderTheCalmBarOverTheDarkTarget`
+  (opt-in) renders dark Calm's bar over the calibration target for comparison with the Photos-toolbar
+  screenshots. Calm's bar reads 102.2 / 20.8 (mean / standard deviation) against iOS's 102.6 / 20.6 at
+  the default tint: the display-colour re-fit agrees with the screenshot-measured law.
 
 ### Added
 

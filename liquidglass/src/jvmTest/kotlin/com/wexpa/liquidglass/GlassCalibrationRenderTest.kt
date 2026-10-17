@@ -61,6 +61,29 @@ class GlassCalibrationRenderTest {
         }
     }
 
+    /**
+     * Dark Calm's bar material in the toolbar capsule's box, over the dark target, for comparing with the
+     * C1a stills (in-app glass over a known page, screenshots in display colours). Opt-in like the test
+     * above; composites land in `<dir>/library/calm-bar-<preset>.png`. 2026-10-17.
+     */
+    @Test
+    fun renderTheCalmBarOverTheDarkTarget() {
+        val dir = System.getProperty("liquidglass.calibration") ?: return
+        val out = File(dir, "library").apply { mkdirs() }
+        val src = ImageIO.read(File(dir, "calibration-target-dark.png"))
+        val presets = listOf(
+            "calm" to GlassTabBarStyle.Calm(dark = true).bar,
+            "calm-measured-detail" to GlassTabBarStyle.Calm(dark = true).bar.copy(softDetail = 0f),
+            "calm-recorded" to GlassTabBarStyle.CalmRecordedSpace(dark = true).bar,
+        )
+        for ((name, style) in presets) {
+            val composite = BufferedImage(src.width, src.height, BufferedImage.TYPE_INT_RGB)
+            composite.graphics.drawImage(src, 0, 0, null)
+            drawPanel(src, composite, boxes[3], style, 0f)
+            ImageIO.write(composite, "png", File(out, "calm-bar-$name.png"))
+        }
+    }
+
     private fun drawPanel(src: BufferedImage, dst: BufferedImage, b: Box, style: GlassStyle, restMap: Float) {
         val w = b.x1 - b.x0
         val h = b.y1 - b.y0
@@ -78,7 +101,7 @@ class GlassCalibrationRenderTest {
             innerShadow = style.innerShadow, edgeShadow = style.edgeShadow,
             tintAlpha = style.tint.alpha, tint = Triple(style.tint.red, style.tint.green, style.tint.blue),
             profile = 1f, formation = 0f, restMap = restMap,
-            wide = style.wideKernel.value * px, fineShare = style.fineShare,
+            wide = style.wideKernel.value * px, fineShare = style.fineShare, softDetail = style.softDetail,
             lift = style.tintLift, liftAdapt = style.liftAdaptivity,
             bevel = style.bevel.value * px, specularPower = style.specularPower,
             counterLight = style.counterLight, edgeLight = style.edgeLight, legibility = 0f,
