@@ -147,6 +147,13 @@ Progress:
   the `calm+lens=a,grey,raw` replay variant): no tint/raw-share pair meets both pages (raw share
   saturates at ~75 on docs2; a brighter tint lifts black pages equally). Kept the black-page fit (13 of
   16 held moments); the page gain is a structural residual for a later pass.
+- App Store bar (17 Oct, in progress): sample AppStoreScene + replay variant `appstore` (also `+bar=a,lift,
+  fineShare,blurDp` for fitting); `.local/sxs/trackas.py` (as-track.csv), `genas.py` (as-script.txt; touch =
+  bar lit vs local baseline AND left end out >= 6 px: the 38.0 s card scroll is not a touch), `scoreas.py`.
+  LOLL8185 36.5-44: path 10.1 px rms, -8 ms. Bar over the card: iOS p10/50/75 58/68/79, ours 49/54/72;
+  clear bar (+bar=0,32) 60/69/101; docs2 p75 rises 48 -> 59-66 with it. iOS: ~page+32 dark, compressive
+  bright. NEXT: regress iOS 37.9 (black) vs 38.5 (card) per pixel for the bar's response curve, then a
+  compressive opt-in (e.g. a highlight knee) on the bar; then JGEY2190 76-102 taps (bright cards).
 - Next target found (15 Oct): the "light App Store / WhatsApp" bars in these recordings are DARK five-tab
   bars: JGEY2190 50-74 s WhatsApp (Updates/Calls/Communities/Chats/You), 78-101 s App Store (Today/
   Games/Apps/Arcade/Search), LOLL8185 36-44 s App Store. LOLL8185's other segments: home screen over the

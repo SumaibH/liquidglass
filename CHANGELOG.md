@@ -146,6 +146,10 @@ This file records user-visible development changes. Published artifacts are iden
     glass is one soft copy, as iOS's is, instead of the along-axis high-pass whose taps drew ghost
     copies of every glyph and whose rotated scatter turned the rest into grain (horizontal detail
     2.72 against iOS's 2.77; 4.94 before).
+- App Store comparison (17 October): sample `AppStoreScene` / `AppStoreGeometry`, iOS 26's App Store
+  five-tab bar (348 x 62 pt, 64 pt slots, an 83.7 pt resting pill) over a dark card, measured on the
+  owner's recording; the Atlas replay renders it (`appstore` variant). Its one-touch drag across all
+  five tabs tracks iOS's at 10.1 px rms, best shift -8 ms, as the Phone bar does. No library change.
 
 ### Added
 

@@ -13,6 +13,8 @@ import androidx.compose.ui.scene.ComposeScene
 import androidx.compose.ui.scene.ComposeScenePointer
 import androidx.compose.ui.unit.Density
 import com.wexpa.liquidglass.GlassTabBarStyle
+import com.wexpa.liquidglass.sample.AppStoreGeometry
+import com.wexpa.liquidglass.sample.AppStoreScene
 import com.wexpa.liquidglass.sample.LoupeScreen
 import com.wexpa.liquidglass.sample.PhoneGeometry
 import com.wexpa.liquidglass.sample.PhonePalette
@@ -79,6 +81,13 @@ private fun replay(args: Array<String>) {
             tintLift = lens.getOrNull(3)?.let { it / 255f } ?: base.lens.tintLift,
         ))
     }.let { base ->
+        // "+bar=<black alpha>,<lift in /255>[,<fineShare>[,<blur dp>]]": a bar candidate, for fitting by replay.
+        val bar = variant.substringAfter("+bar=", "").substringBefore('+').split(',').mapNotNull { it.toFloatOrNull() }
+        if (bar.size < 2) base else base.copy(bar = base.bar.copy(
+            tint = androidx.compose.ui.graphics.Color(0f, 0f, 0f, bar[0]), tintLift = bar[1] / 255f,
+            fineShare = bar.getOrElse(2) { base.bar.fineShare },
+            blurRadius = bar.getOrNull(3)?.let { androidx.compose.ui.unit.Dp(it) } ?: base.bar.blurRadius))
+    }.let { base ->
         // "+pill=<black alpha>,<lift in /255>": a resting pill candidate, for fitting by replay.
         val pill = variant.substringAfter("+pill=", "").substringBefore('+').split(',').mapNotNull { it.toFloatOrNull() }
         if (pill.size < 2) base else base.copy(pill = base.pill.copy(
@@ -102,7 +111,10 @@ private fun replay(args: Array<String>) {
             else {
                 var selected by remember { mutableIntStateOf(initial) }
                 // "+passive": the search button without press and pull, as rendered before 15 October.
-                PhoneScene(selected, { selected = it }, palette = palette, style = style,
+                // "appstore": iOS 26's App Store five-tab bar over a dark card (AppStoreScene).
+                if (variant.startsWith("appstore")) AppStoreScene(selected, { selected = it },
+                    style = AppStoreGeometry.style(style))
+                else PhoneScene(selected, { selected = it }, palette = palette, style = style,
                     search = if ("+passive" in variant) null else com.wexpa.liquidglass.GlassInteraction.Pullable.copy(
                         pullShape = com.wexpa.liquidglass.GlassPullShape.Free, pullLiftShare = 0.7f))
             }

@@ -657,6 +657,23 @@ over dark parts near content (docs/2's lens p10 52 against 62).
 
 ![The text under the bar and the held lens over content, pass 17 and pass 18 (our renders only, desktop Direct3D replay, deterministic 60 fps, inferred input)](pass18-page.png)
 
+### The App Store bar (17 October, in progress)
+
+A second bar from the same system: the App Store's five tabs in dark appearance (LOLL8185 36-44 s, a
+hold and slow drag from Today to Search and back over an editorial card). Replayed with the sample's
+`AppStoreScene`, from a touch-driven script (`.local/sxs/genas.py`): the lens's path follows iOS's at
+10.1 px rms with the same -8 ms best shift as the Phone recordings, so the pose dynamics carry to a
+five-tab bar unchanged. Two findings for the material, not yet changed:
+
+- The touch detector read a page scroll as a press: a card scrolled in under the untouched bar at
+  38.0 s and lifted its level. A touch now needs the bar's end to move out 6 px as well (the held bar
+  grows); the card's edge alone moves it 3.
+- Over the card, iOS's bar reads 68 at its median against our 54, and over a black page both read 32:
+  iOS's bar is close to clear glass plus 32/255 for dark content, as its pill and lens are (pass 18),
+  but it compresses bright content (blurred text 45-79 where a clear bar gives 64-110). A tint cannot
+  do both, nor can a lower fine share (the excess is in the wide tone). Next: fit a compressive response
+  on iOS against itself, before and after the card scrolls in (37.9 against 38.5 s).
+
 ### Re-reading the landing evidence
 
 The removed impact model was calibrated to one frame, video 2 at 2.5567 s ("frame082": width
