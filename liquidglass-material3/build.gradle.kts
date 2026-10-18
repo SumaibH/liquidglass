@@ -42,7 +42,7 @@ kotlin {
             @OptIn(org.jetbrains.compose.ExperimentalComposeLibrary::class)
             implementation(compose.uiTest)
             // Icons for the showcase renders only (the last published material-icons-core).
-            implementation("org.jetbrains.compose.material:material-icons-core:1.7.3")
+            implementation(libs.compose.material.icons.core)
         }
     }
 }

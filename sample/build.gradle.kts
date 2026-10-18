@@ -20,6 +20,9 @@ dependencies {
     implementation(libs.compose.ui)
     // One screen converts stock Material 3 components. The library itself never needs this.
     implementation(libs.compose.material3)
+    // The glass Material 3 components and the showcase screen shared with desktop and web.
+    implementation(project(":liquidglass-material3"))
+    implementation(libs.compose.material.icons.core)
 }
 
 android {

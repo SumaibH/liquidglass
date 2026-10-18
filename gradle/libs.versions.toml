@@ -23,6 +23,8 @@ compose-ui = { module = "org.jetbrains.compose.ui:ui", version.ref = "composeMul
 # The sample only. The core library does not depend on material3; liquidglass-material3 uses the next.
 compose-material3 = { module = "org.jetbrains.compose.material3:material3", version.ref = "material3" }
 compose-material3-library = { module = "org.jetbrains.compose.material3:material3", version.ref = "material3Library" }
+# Icons for the demos and the Material renders (the last published material-icons-core).
+compose-material-icons-core = { module = "org.jetbrains.compose.material:material-icons-core", version = "1.7.3" }
 androidx-activity-compose = { module = "androidx.activity:activity-compose", version.ref = "androidx-activity" }
 
 [plugins]

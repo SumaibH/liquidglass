@@ -2,6 +2,7 @@ package com.wexpa.liquidglass
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -64,6 +65,41 @@ class GlassThemeComponentsTest {
         tab.performTouchInput { val w = width / 3f; down(Offset(w * 2.5f, height / 2f)); advanceEventTime(60); up() }
         waitForIdle()
         assertEquals(2, selected, "the tap did not reach the bar")
+    }
+
+    /**
+     * An accessory composed after a tab bar draws over the bar's portal, linked or not: its content
+     * (a red square) stays visible. Before 18 October the overlay drew every glass element before every
+     * portal, and the bar's portal covered Atlas's search icon.
+     */
+    @Test fun anAccessoryComposedAfterTheBarDrawsOverIt() = runComposeUiTest(testTimeout = 4.minutes) {
+        setContent {
+            CompositionLocalProvider(LocalDensity provides Density(1f)) {
+                LiquidGlassTheme(dark = true, background = Color(0xFF808080)) {
+                    Box(Modifier.size(400.dp, 120.dp).background(Color(0xFF808080)).testTag("scene")) {
+                        Row(Modifier.align(Alignment.Center), verticalAlignment = Alignment.CenterVertically) {
+                            GlassTabBar(3, 0, {}, Modifier.width(260.dp),
+                                trailingAccessory = GlassTabBarAccessory(62.dp, gap = 8.dp, yieldsToLens = true)) { _, _ ->
+                                Box(Modifier.size(18.dp).background(Color.White))
+                            }
+                            Spacer(Modifier.width(8.dp))
+                            Box(Modifier.size(62.dp).glassEffect(Glass.TabBar, CircleShape), contentAlignment = Alignment.Center) {
+                                Box(Modifier.size(20.dp).background(Color.Red))
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        waitForIdle()
+        val img = onNodeWithTag("scene").captureToImage().toAwtImage()
+        ImageIO.write(img, "png", File(out, "tabbar-accessory-order.png"))
+        // The accessory's centre: the bar (260) + gap (8) + half the button (31), centred in 400.
+        val x = (400 - (260 + 8 + 62)) / 2 + 260 + 8 + 31
+        val rgb = img.getRGB(x, 60)
+        val r = (rgb shr 16) and 0xFF; val g = (rgb shr 8) and 0xFF
+        println("GLASS_ACCESSORY_ORDER x=$x r=$r g=$g")
+        assertTrue(r > 180 && g < 90, "the accessory's content is hidden under the bar (r=$r g=$g)")
     }
 
     @Test fun aNestedThemeChangesAccessibilityForItsSubtree() {

@@ -100,6 +100,12 @@ private fun Home(open: (KClass<out Activity>) -> Unit) {
                 style = GlassStyle.Regular,
             ) { open(GalleryActivity::class) }
             Door(
+                title = "Material 3 in glass",
+                detail = "A Material 3 app built from liquidglass-material3: the tab bar, a dialog, " +
+                    "a sheet, a menu and the controls, in the app's own colours.",
+                style = GlassStyle.Regular,
+            ) { open(MaterialShowcaseActivity::class) }
+            Door(
                 title = "Material 3, converted",
                 detail = "Stock Card and Button. Transparent container, one modifier, no " +
                     "bespoke component.",

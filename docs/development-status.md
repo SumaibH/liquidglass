@@ -35,7 +35,10 @@ JVM renders, not a physical-device record; this page links no device record for 
 - `liquidglass-bom` (new) and the Gradle plugin `dev.shayxo.liquidglass` (new): one line adds the right
   artifacts; `liquidGlassAdopt` switches an app's Material 3 imports once. Not published.
 - Evidence: [Material 3 renders](https://github.com/shayann07/liquidglass/blob/main/review/atlas/material3-2026-10-18/README.md).
-  Not checked on Android devices or in the browser yet.
+  Android: the showcase and Atlas render on a Pixel 7 (Android 17) with every glass element and its
+  content, at the same frame rate as the pre-Phase-2 build in a paired run, and on the Android 37.1
+  emulator ([evidence](https://github.com/shayann07/liquidglass/blob/main/review/atlas/android-material3-2026-10-18/README.md)).
+  The browser build runs (live demo, `#material3`).
 
 ## Atlas and the current material
 

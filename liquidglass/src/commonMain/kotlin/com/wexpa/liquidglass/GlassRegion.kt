@@ -143,8 +143,8 @@ fun Modifier.glassEffect(glass: Glass? = null, shape: Shape = CapsuleShape, link
     entry.link = link
     DisposableEffect(region, entry) {
         entry.disposed = false
-        region.entries += entry
-        onDispose { entry.disposed = true; region.entries -= entry }
+        region.layers += entry
+        onDispose { entry.disposed = true; region.layers -= entry }
     }
     var modifier = withMorph.onGloballyPositioned { entry.place(region.root, it) }
     if (resolved.isInteractive) modifier = modifier.pointerInput(entry) { observePress(entry.press) }
@@ -175,8 +175,12 @@ internal class GlassRegion(val state: LiquidGlassState) {
             }
         }
     }
-    val entries = mutableStateListOf<GlassOverlayEntry>()
-    val portals = mutableStateListOf<GlassPortalEntry>()
+    /**
+     * The glass elements ([GlassOverlayEntry]) and portals ([GlassPortalEntry]) in the order they
+     * entered composition, which the overlay draws them in: a later sibling draws over an earlier one,
+     * as in an ordinary layout, and a dialog opened later draws over everything before it.
+     */
+    val layers = mutableStateListOf<Any>()
 }
 
 /** A [glassEffect] element: where it is, what it looks like, and its content to draw on top. */
@@ -220,11 +224,12 @@ internal class GlassOverlayEntry(
 @Composable
 private fun GlassOverlay(region: GlassRegion, modifier: Modifier) {
     Box(modifier) {
-        for (entry in region.entries) if (entry.link == null) key(entry) { OverlayGlass(region, entry) }
-        for (portal in region.portals) key(portal) { PortalContent(region, portal) }
-        // A bar's linked accessory (the search button) draws over the bar's portal, whose neck reaches
-        // under it: drawn first, the bar's fused body would cover the accessory's icon.
-        for (entry in region.entries) if (entry.link != null) key(entry) { OverlayGlass(region, entry) }
+        for (layer in region.layers) key(layer) {
+            when (layer) {
+                is GlassOverlayEntry -> OverlayGlass(region, layer)
+                is GlassPortalEntry -> PortalContent(region, layer)
+            }
+        }
     }
 }
 
