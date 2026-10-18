@@ -7,6 +7,13 @@ This file records user-visible development changes. Published artifacts are iden
 
 ### Changed (18 October, the owner's device check)
 
+- Ports (CanvasKit, .NET): everything from the device check that the ports draw. The held lens's rim band
+  (`bodyBandScale`), light Calm's held-lens contact shadow, a held lens's neck to the free button
+  (`lensFuse` / `AccessoryFuse.LensFuse`), and `itemFollow` / `ItemFollow` on the navigation state (items
+  share the bar's press only on a hold). Their blurs now convert a Compose radius to a Skia sigma as
+  Compose does (`0.577 r + 0.5`); the raw-page blur had been about 1.7 times too strong. Checked: CanvasKit
+  44/44, .NET 16/16, material reproduced from the Kotlin fixture.
+
 - Landing timing (18 October, measurement): WhatsApp's motion paths agree within one frame of the 60 fps
   recording (best shift -17 ms, was -42; path rms 62.7 px, was 79.9). A sweep of the inferred lift does
   not move it further.

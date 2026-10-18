@@ -63,6 +63,13 @@ class GlassSelectorPortMaterialTest {
         "rawShare" to listOf(s.rawShare),
         // The raw backdrop's blur (GlassStyle.rawBlur), in dp; a host term like rawShare.
         "rawBlur" to listOf(s.rawBlur.value),
+        // Host terms for the selector body (18 October): its refraction band's scale, and its contact
+        // shadow (strength, share inside the backdrop, blur and offset in dp; -1 = sized from the panel).
+        "bodyBandScale" to listOf(s.bodyBandScale),
+        "contactShadow" to listOf(s.contactShadow.coerceIn(0f, 1f)),
+        "contactShadowInside" to listOf(s.contactShadowInside.coerceIn(0f, 1f)),
+        "contactShadowBlur" to listOf(if (s.contactShadowBlur.isSpecified) s.contactShadowBlur.value else -1f),
+        "contactShadowOffset" to listOf(if (s.contactShadowOffset.isSpecified) s.contactShadowOffset.value else -1f),
     )
 
     private val dpFields = listOf("uRefractDepth", "uHeldGlowReach", "uHeldEdgeRecovery", "uWideKernel", "uBevel", "uBlur", "uRimSoft")

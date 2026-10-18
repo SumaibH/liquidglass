@@ -11,6 +11,10 @@ export interface CalmSelectorDrawOptions {
   dark?: boolean; density?: number; materialize?: number; reducedTransparency?: number; increasedContrast?: number;
   /** The source-sized backdrop with the bar's glass drawn over it: the lens looks through the bar. */
   through?: Image | null;
+  /** lensFuse's six numbers, device px: a held lens's neck to a free button (drawSelector only). */
+  fuse?: readonly number[] | null;
+  /** False skips the lens's contact shadow (light Calm's held lens casts one; drawSelector only). */
+  shadow?: boolean;
 }
 
 export interface GlassShaderSources { material: string; content: string; endpoint: string }
@@ -144,6 +148,11 @@ export function accessoryFuse(input: {
   bar: {width: number; height: number; pressX?: number; pressY?: number};
   button: GlassRect; transform?: Partial<FreeButtonTransform>; smoothing: number;
 }): [number, number, number, number, number, number];
+/** Compose's GlassTabBarAccessory.lensFusion: a held lens's own neck to the free button beside the bar.
+ * Bar-local device px; returns drawSelector's `fuse`, or null while the lens is not formed (formation < 0.5). */
+export function lensFuse(input: {
+  bar: {width: number; height: number}; button: GlassRect; formation: number; lensFusion: number;
+}): [number, number, number, number, number, number] | null;
 /** How much of the neck a formed lens reaching the bar's end has taken over, 0 to 1 (glassAccessoryYield). */
 export function accessoryYield(formation: number, endEdge: number, barWidth: number, barHeight: number): number;
 /** The largest stadium inside an axis-aligned ellipse: [half width, half height, corner radius]. */

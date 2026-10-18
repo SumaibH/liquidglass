@@ -63,6 +63,21 @@ public static class AccessoryFuse
         return [(float)(fx / ex), (float)(fy / ey), (float)(stadium[0] / ex), (float)(stadium[1] / ey), (float)(stadium[2] / e), (float)(smoothing / e)];
     }
 
+    /// <summary>Compose's GlassTabBarAccessory.lensFusion: a held lens at the bar's end joins the free button
+    /// beside it through a neck of its own. Bar-local device px; <paramref name="lensFusion"/> is the neck's
+    /// strength in device px (Compose's sample: 12 dp). Returns DrawSelector's fuse, or null while the lens is
+    /// not formed enough to take the neck (formation below 0.5).</summary>
+    public static float[]? LensFuse(double barWidth, double barHeight, RectD button, double formation, double lensFusion)
+    {
+        if (!new[] { barWidth, barHeight, button.X, button.Y, button.Width, button.Height, formation, lensFusion }.All(double.IsFinite))
+            throw new ArgumentOutOfRangeException(nameof(button), "Finite bar, button, formation and lensFusion required");
+        var f = Math.Clamp((formation - .5) / .5, 0, 1); var taken = f * f * (3 - 2 * f);
+        if (lensFusion <= 0 || taken <= .01) return null;
+        var r = Math.Min(button.Width, button.Height) / 2;
+        return [(float)(button.X + button.Width / 2 - barWidth / 2), (float)(button.Y + button.Height / 2 - barHeight / 2),
+            (float)(button.Width / 2), (float)(button.Height / 2), (float)r, (float)(lensFusion * taken)];
+    }
+
     /// <summary>How much of the neck a formed lens reaching the bar's end has taken over, 0 to 1
     /// (glassAccessoryYield). <paramref name="endEdge"/> is the lens body's edge on the button's side, bar-local px.</summary>
     public static double Yield(double formation, double endEdge, double barWidth, double barHeight)

@@ -1107,6 +1107,13 @@ public sealed class CalmNavigation
     /// <summary>The bar's touch lift amount at the last frame, 0 to 1 (GlassTabBarStyle.touchLift).</summary>
     public double Touch => TouchAt(clock);
 
+    /// <summary>How much of a press transform the host applies to the bar its items should share, 0 to 1:
+    /// 0 on a tap, rising to 1 as a hold forms the lens (Compose's GlassTabBarStyle.itemsFollowBarPress = false).</summary>
+    public double ItemFollow
+    {
+        get { var f = Math.Clamp((Controller.Formation - .5) / .5, 0, 1); return f * f * (3 - 2 * f); }
+    }
+
     private double TouchAt(double seconds)
     {
         var u = Math.Clamp((seconds - touch.T0) / touch.Duration, 0, 1);

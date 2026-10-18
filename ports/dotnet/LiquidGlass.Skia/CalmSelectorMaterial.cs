@@ -17,6 +17,8 @@ public static class CalmSelectorMaterial
         Dictionary<string, float[]> ClearBar, float HeldLift, bool TouchLift, bool PillInkFollows, bool LensInkFollows, float TapOptics, float TapOpticsFold, float TapTintFade, float TapTransitFold);
 
     private static readonly HashSet<string> Snap = ["uProfile", "uRestMap", "uHeldInk"];
+    // Lengths that may be unset (-1): an unset end snaps at the midpoint (GlassMorph `d`).
+    private static readonly HashSet<string> OptionalDp = ["contactShadowBlur", "contactShadowOffset"];
     private static readonly Lazy<(HashSet<string> Dp, Dictionary<string, float> Fold, Style Dark, Style Light)> Data = new(Load);
 
     /// <summary>The fields given in dp; multiply by the density for shader px.</summary>
@@ -65,7 +67,7 @@ public static class CalmSelectorMaterial
         {
             var b = style.Lens[key];
             output[key] = key == "uTint" ? LerpTint(a, b, t)
-                : Snap.Contains(key) ? (float[])(t < .5f ? a : b).Clone()
+                : Snap.Contains(key) || (OptionalDp.Contains(key) && (a[0] < 0 || b[0] < 0)) ? (float[])(t < .5f ? a : b).Clone()
                 : a.Zip(b, (x, y) => t <= 0 ? x : t >= 1 ? y : x + (y - x) * t).ToArray();
         }
         // An ink split that follows dispersion snaps with the identity (GlassMorph `s`).

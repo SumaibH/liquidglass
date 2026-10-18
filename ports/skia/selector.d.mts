@@ -25,6 +25,9 @@ export interface CalmSelectorState {
   /** The bar's touch lift amount, 0 to 1 (GlassTabBarStyle.touchLift). */
   touch: number;
   transitAppearance: number; heldTravel: number; held: boolean; protrusion: number; pose: CalmSelectorPose;
+  /** How much of a press transform the host applies to the bar its items should share, 0 to 1: 0 on a
+   * tap, rising to 1 as a hold forms the lens (Compose's GlassTabBarStyle.itemsFollowBarPress = false). */
+  itemFollow: number;
 }
 export type CalmSelectorSpec = Readonly<Record<string, number | boolean>>;
 export const CALM_SELECTOR_SPEC: CalmSelectorSpec;

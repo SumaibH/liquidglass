@@ -1093,6 +1093,8 @@ export function createCalmNavigation({bar, selected = 0, onSelect = () => {}, sp
       return {centreX: controller.centreX, centreY: controller.centreY, extents: e,
         formation: controller.formation, transitAppearance: controller.transitAppearance, touch: touchAt(clock),
         heldTravel: controller.heldTravel, held: controller.isHeld, protrusion: controller.protrusion(),
+        // GlassTabBarStyle.itemsFollowBarPress = false: items share the bar's press only as the lens forms.
+        itemFollow: (() => { const f = clamp((controller.formation - .5) / .5, 0, 1); return f * f * (3 - 2 * f); })(),
         pose: controller.render(originX, originY)};
     },
   };

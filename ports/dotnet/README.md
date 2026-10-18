@@ -153,8 +153,15 @@ bar-local x to a tab.
 
 `DrawCalmBar(..., clear: true)` (and `CalmSelectorMaterial.Bar(..., clear: true)`) draws Compose's
 `GlassTabBarStyle.CalmClear()` bar: the clearer glass of WhatsApp's and the App Store's dark iOS
-bars (black at 0.10 instead of 0.41, same lift, legibility 2 and a 7 dp blur; light appearance unchanged). The ports draw no contact shadows: light
-Calm's held lens casts one in Compose (`contactShadow` 0.5), which a host draws under the lens itself.
+bars (black at 0.10 instead of 0.41, same lift, legibility 2 and a 7 dp blur; light appearance unchanged).
+
+`DrawSelector` follows Compose's held lens fully (18 October): its rim band is the material's
+`bodyBandScale` share of the body's own (0.3 in Calm), and light Calm's lens casts its contact shadow
+(`shadow: false` skips it). `AccessoryFuse.LensFuse(barWidth, barHeight, button, formation, lensFusion)`
+gives `DrawSelector(..., fuse:)` a held lens's own neck to the free button (Compose's
+`GlassTabBarAccessory.lensFusion`), null until the lens has formed. `CalmNavigation.ItemFollow` is how much of
+a press transform the host applies to the bar its items should share: 0 on a tap, 1 once a hold has formed
+the lens. Blurs follow Compose's radius-to-sigma conversion (`0.577 r + 0.5`).
 
 A free button beside the bar (Compose's `GlassTabBarAccessory.link`) fuses with it:
 `AccessoryFuse.Compute(barWidth, barHeight, new RectD(x, y, w, h), button.Sample(t), smoothing, barPressX,

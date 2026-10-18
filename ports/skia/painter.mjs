@@ -22,18 +22,35 @@ export function createGlassPainter(kit, sources = glassShaderSources) {
   const assignMaterial=(uniforms,values)=>{for(const[k,v]of Object.entries(values))if(k in uniforms)uniforms[k]=v;return uniforms;};
   // Compose's elementSizeFactor: 0 for chrome up to 56 dp, 1 from 320 dp.
   const sizeFactor=(width,height,density)=>Math.max(0,Math.min(1,(Math.min(width,height)/density-56)/264));
+  // Compose's BlurEffect takes a radius; Skia's blur a sigma (Compose's convertRadiusToSigma).
+  const sigma=r=>r>0?.57735*r+.5:0;
+  // A contact shadow: the caster's rounded rect in black at `alpha`, blurred and moved down (device px).
+  function drawShadow(target,s,alpha,clipOut=null){
+    if(!(alpha>0))return;
+    const p=new kit.Paint();
+    try {
+      p.setColor(kit.Color4f(0,0,0,alpha));p.setAntiAlias(true);
+      if(s.blur>.01)p.setImageFilter(kit.ImageFilter.MakeBlur(sigma(s.blur),sigma(s.blur),kit.TileMode.Decal,null));
+      target.save();
+      if(clipOut)target.clipRRect(kit.RRectXY(kit.XYWHRect(clipOut.x,clipOut.y,clipOut.width,clipOut.height),clipOut.radius,clipOut.radius),kit.ClipOp.Difference,true);
+      target.drawRRect(kit.RRectXY(kit.XYWHRect(s.x,s.y+s.offset,s.width,s.height),s.radius,s.radius),p);
+      target.restore();
+    } finally {p.delete();}
+  }
   // The backdrop with the glass the lens looks through over it, plus rawShare of the raw page,
-  // blurred by rawBlur (device px) as Compose's GlassStyle.rawBlur.
-  function composeThrough(canvas,through,rawShare,rawBlur=0) {
+  // blurred by rawBlur (a Compose radius, device px) as Compose's GlassStyle.rawBlur. With `shadow`,
+  // the lens's own contact shadow at its inside share, where the bar does not cover it.
+  function composeThrough(canvas,through,rawShare,rawBlur=0,shadow=null) {
     const surface=canvas.makeSurface({width:source.width(),height:source.height(),colorType:kit.ColorType.RGBA_8888,
       alphaType:kit.AlphaType.Premul,colorSpace:kit.ColorSpace.SRGB});
     if(!surface)throw new Error('Could not allocate the selector backdrop');
     const add=new kit.Paint();
     try {
-      const target=surface.getCanvas();target.clear(kit.BLACK);target.drawImage(through,0,0);
-      if(rawShare>.001){
+      const target=surface.getCanvas();target.clear(kit.BLACK);target.drawImage(through??source,0,0);
+      if(shadow)drawShadow(target,shadow,shadow.alpha*shadow.inside,shadow.bar);
+      if(through&&rawShare>.001){
         add.setBlendMode(kit.BlendMode.Plus);add.setAlphaf(rawShare);
-        if(rawBlur>.01)add.setImageFilter(kit.ImageFilter.MakeBlur(rawBlur,rawBlur,kit.TileMode.Clamp,null));
+        if(rawBlur>.01)add.setImageFilter(kit.ImageFilter.MakeBlur(sigma(rawBlur),sigma(rawBlur),kit.TileMode.Clamp,null));
         target.drawImage(source,0,0,add);
       }
       surface.flush();return surface.makeImageSnapshot();
@@ -139,7 +156,9 @@ export function createGlassPainter(kit, sources = glassShaderSources) {
      * Calm selector's own (calmSelectorMaterial: the production pill and lens styles, fold and
      * rim mirror). Like Compose, the lens looks through the bar: pass `through`, an image the
      * size of the source holding the backdrop with the bar's glass drawn over it, and a share of
-     * the raw backdrop is added on top; without it the lens sees the backdrop alone.
+     * the raw backdrop is added on top; without it the lens sees the backdrop alone. `fuse` (from
+     * lensFuse, device px) joins a held lens to a free button through a neck; `shadow: false` skips
+     * the lens's contact shadow (light Calm's held lens casts one).
      * Labels and selected ink stay with the host.
      */
     drawSelector(canvas,{x,y,width,height},{pose,formation=0,transit=0,heldTravel=0},options={}) {
@@ -149,10 +168,14 @@ export function createGlassPainter(kit, sources = glassShaderSources) {
         throw new RangeError('Selector requires a finite bar rect, formation, transit and held travel');
       if(!pose||![pose.a,pose.aInv,pose.c,pose.d].every(v=>Array.isArray(v)&&v.length===4&&v.every(Number.isFinite)))
         throw new TypeError('Selector requires a pose from CalmSelectorController.render()');
-      const {dark=true,density=1,materialize=1,reducedTransparency=0,increasedContrast=0,through=null}=options;
+      const {dark=true,density=1,materialize=1,reducedTransparency=0,increasedContrast=0,through=null,fuse=null,shadow=true}=options;
       if(!Number.isFinite(density)||density<=0)throw new RangeError('Selector density must be positive');
+      if(fuse&&(fuse.length!==6||!fuse.every(Number.isFinite)))throw new RangeError('fuse must be six finite numbers (lensFuse)');
       // The body may stand proud of the bar while held and protrude past its ends in transit.
-      const mx=height*.6,my=height*.4,nodeW=width+2*mx,nodeH=height+2*my,pad=2;
+      const mx=height*.6,my=height*.4,nodeW=width+2*mx,nodeH=height+2*my;
+      // A neck to a free button (lensFuse) reaches past the node: draw over it, and its bow beyond.
+      const fusing=fuse&&fuse[5]>0;
+      const pad=fusing?Math.ceil(Math.max(2,Math.abs(fuse[0])+fuse[2]-nodeW/2,Math.abs(fuse[1])+fuse[3]-nodeH/2)+fuse[5]/4+2):2;
       const originX=x-mx-pad,originY=y-my-pad;
       const {values,uFormation}=calmSelectorMaterial({dark,formation,transit,heldTravel});
       const uniforms=clearMaterialUniforms(effects,{width:nodeW,height:nodeH,pad,magnification:1});
@@ -161,18 +184,35 @@ export function createGlassPainter(kit, sources = glassShaderSources) {
       assignMaterial(uniforms,calmMaterialUniforms(values,density));
       Object.assign(uniforms,{
         uFormation,uBodyKind:2,uPoseA:pose.a,uPoseAInv:pose.aInv,uPoseD:pose.d,
-        uPoseC:[cx-width/2,cy-height/2,bx,by],uRefractBand:pose.d[3],
+        // GlassStyle.bodyBandScale: the lens refracts over this share of the body's own band.
+        uPoseC:[cx-width/2,cy-height/2,bx,by],uRefractBand:pose.d[3]*Math.min(Math.max(values.bodyBandScale??1,.25),4),
         uRadii:Array(4).fill(Math.min(nodeW,nodeH)/2),uScale:sizeFactor(nodeW,nodeH,density),
         uMaterialize:materialize,uFrost:reducedTransparency,uContrast:increasedContrast,
       });
+      if(fusing)Object.assign(uniforms,{uFuse:fuse.slice(0,4),uFuseShape:[fuse[4],fuse[5]]});
+      // GlassStyle.contactShadow on the lens: cast by its body, 0.14 strong (glassShadow), on the page
+      // under it and, at its inside share, in what it looks through (light Calm's held lens).
+      const castAlpha=shadow?.14*Math.min(Math.max(values.contactShadow??0,0),1):0;
+      let cast=null;
+      if(castAlpha>0){
+        const s=sizeFactor(nodeW,nodeH,density);
+        const [a0,a1,a2,a3]=pose.a,[spine,r,scaleX]=pose.d,hx=spine+r*scaleX,hy=r;
+        const ex=Math.abs(a0)*hx+Math.abs(a1)*hy,ey=Math.abs(a2)*hx+Math.abs(a3)*hy;
+        cast={x:x+cx-ex,y:y+cy-ey,width:2*ex,height:2*ey,radius:Math.min(ex,ey),alpha:castAlpha,
+          inside:Math.min(Math.max(values.contactShadowInside??1,0),1),
+          blur:((values.contactShadowBlur??-1)>=0?values.contactShadowBlur:18*(.6+.6*s))*density,
+          offset:((values.contactShadowOffset??-1)>=0?values.contactShadowOffset:4*(.5+.9*s))*density,
+          bar:{x,y,width,height,radius:height/2}};
+        drawShadow(canvas,cast,castAlpha);
+      }
       sampler??=createBackdropSampler(kit);
       let composed=null;
       try {
         let view=source;
-        if(through) {
-          if(typeof through.width!=='function'||through.width()!==source.width()||through.height()!==source.height())
-            throw new TypeError('through must be a live image the size of the source');
-          composed=composeThrough(canvas,through,values.rawShare,(values.rawBlur??0)*density);view=composed;
+        if(through&&(typeof through.width!=='function'||through.width()!==source.width()||through.height()!==source.height()))
+          throw new TypeError('through must be a live image the size of the source');
+        if(through||cast){
+          composed=composeThrough(canvas,through,values.rawShare,(values.rawBlur??0)*density,cast);view=composed;
         }
         const backdrop=sampler.shader(canvas,view,originX,originY,uniforms.uWideKernel);
         uniforms.uWideStrip=uniforms.uWideKernel>=1?backdrop.strip:0;
@@ -208,7 +248,7 @@ export function createGlassPainter(kit, sources = glassShaderSources) {
       const [cx,cy,bx,by]=pose.c;
       Object.assign(material,px,{
         uFormation,uBodyKind:2,uPoseA:pose.a,uPoseAInv:pose.aInv,uPoseD:pose.d,
-        uPoseC:[cx-width/2,cy-height/2,bx,by],uRefractBand:pose.d[3],
+        uPoseC:[cx-width/2,cy-height/2,bx,by],uRefractBand:pose.d[3]*Math.min(Math.max(values.bodyBandScale??1,.25),4),
         uRadii:Array(4).fill(Math.min(nodeW,nodeH)/2),uScale:sizeFactor(nodeW,nodeH,density),uMaterialize:materialize,
       });
       // The content pass shares the material's geometry and optics; it emits the ink premultiplied
