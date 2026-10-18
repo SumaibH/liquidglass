@@ -2,7 +2,8 @@
   NuGet metadata shared by the packable projects (LiquidGlass, LiquidGlass.WinForms). Imported by their
   .csproj files. The version is the library's own, read from the root gradle.properties (VERSION_NAME),
   so every artifact of a release carries one number. Packing is verified in CI; nothing is published
-  until the owner says so.
+  until the owner says so. The lock files name the package (`liquidglass`) and WinFormsDemo's pins its
+  version: after changing VERSION_NAME, run `dotnet restore --force-evaluate` on the .NET projects.
 -->
 <Project>
   <PropertyGroup>
