@@ -232,7 +232,8 @@ jobs:
           dotnet pack ports/dotnet/LiquidGlass.Skia/LiquidGlass.Skia.csproj -c Release -o ports/dotnet/artifacts/nuget
           if [ "$RUNNER_OS" = "Windows" ]; then
             dotnet pack ports/dotnet/LiquidGlass.WinForms/LiquidGlass.WinForms.csproj -c Release -o ports/dotnet/artifacts/nuget
-            node ports/dotnet/check-packages.mjs ports/dotnet/artifacts/nuget --winforms
+            dotnet pack ports/dotnet/LiquidGlass.Wpf/LiquidGlass.Wpf.csproj -c Release -o ports/dotnet/artifacts/nuget
+            node ports/dotnet/check-packages.mjs ports/dotnet/artifacts/nuget --winforms --wpf
           else
             node ports/dotnet/check-packages.mjs ports/dotnet/artifacts/nuget
           fi
@@ -246,6 +247,15 @@ jobs:
         if: runner.os == 'Windows'
         timeout-minutes: 2
         run: dotnet ports/dotnet/WinFormsDemo/bin/Debug/net10.0-windows10.0.19041.0/WinFormsDemo.dll --controls --capture ports/dotnet/artifacts/controls
+      - name: Build the WPF host and verify its glass offscreen
+        if: runner.os == 'Windows'
+        timeout-minutes: 4
+        run: |
+          dotnet restore ports/dotnet/WpfDemo/WpfDemo.csproj --locked-mode
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          dotnet build ports/dotnet/WpfDemo/WpfDemo.csproj --no-restore
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          dotnet ports/dotnet/WpfDemo/bin/Debug/net10.0-windows10.0.19041.0/WpfDemo.dll --capture ports/dotnet/artifacts/wpf
       - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7
         if: always()
         with:
