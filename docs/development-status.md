@@ -42,6 +42,19 @@ run the canvas engine, but their headless builds render no `backdrop-filter` blu
 look there is unverified. Not checked: Safari, mobile browsers, a physical device, comparison with iOS.
 Open: the CanvasKit painter binds the light as (0, -1) where `Glass.Regular` uses (-0.35, -0.94).
 
+## Material 3, the plugin and the BOM (18 October)
+
+- `liquidglass-material3` (new artifact): glass versions of the Material 3 components with the same
+  names and parameters ([guide](material3.md)). Default look: iOS 26 shapes and motion in the app's
+  colour scheme; bars take `layout = GlassLayout.Material`. Dialogs, sheets and menus are drawn in the
+  app's window (`GlassOverlay`), so their glass refracts the app behind them. The tab bar, segmented
+  controls and tab rows use the measured Calm tab bar; the other components' looks are authored, not
+  measured against iOS.
+- `liquidglass-bom` (new) and the Gradle plugin `dev.shayxo.liquidglass` (new): one line adds the right
+  artifacts; `liquidGlassAdopt` switches an app's Material 3 imports once. Not published.
+- Evidence: [Material 3 renders](https://github.com/shayann07/liquidglass/blob/main/review/atlas/material3-2026-10-18/README.md).
+  Not checked on Android devices or in the browser yet.
+
 ## Atlas and the current material
 
 ![Native Windows Atlas grid scene](https://raw.githubusercontent.com/shayann07/liquidglass/b46207d665725a0aa841102bfbdcbe74aaf4ac3c/review/atlas/wide-input-2026-10-11/static.png)
@@ -174,6 +187,11 @@ This completes usable whole-surface feedback and one native control-capture path
 navigation selector (motion, gestures and the Compose material) is also ported. Additional
 frameworks, high-level portable refracted foreground, ported selected ink and universal widget
 capture remain incomplete. No NuGet package was published.
+
+Packaging (18 October): the painter is packed as `LiquidGlass` and the Windows Forms host as
+`LiquidGlass.WinForms`, at the library's version, with Source Link and symbols. CI packs both on Linux
+and Windows and checks each package's readme, NOTICE, licence, version, assembly and embedded shaders.
+Publishing waits for the owner.
 
 ## Verification and performance
 
