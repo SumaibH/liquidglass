@@ -34,7 +34,9 @@ Phases, one PR each, suite and ports green each time, the owner reviews between 
    APIs removed/internal; sample/desktop/web migrated. GlassEffectTest 7/7. Backdrop decision: Hybrid
    (overlay everywhere now; Skia backdrop saveLayer for desktop/web is a follow-up, spikes in
    review/atlas/backdrop-spikes-2026-10-18, worktree .local/wt-spike). Known: the merged neck shows a
-   faint crease; the calibration "fused_closed" fixture no longer fuses.
+   faint crease; the calibration "fused_closed" fixture no longer fuses. 19 Oct: the fixture fuses
+   again through GlassEffectContainer. A density-2 probe of two 140 dp capsules (merge 30 dp) shows no
+   crease along the neck centre; only a small kink where the fillet meets the waist (left as is).
 - 18 Oct evening: full-suite hangs. Three full runs on claude/glass-api and one on the pre-Phase-2 baseline
   (6121bb7, which passed at 18:43) hung inside tab bar tests (GlassTabBarGestureTest, GlassTabBarTouchFrameTest).
   The AWT thread spun in Skiko RenderNode_nDrawInto or in composition apply for minutes. Run alone or in
