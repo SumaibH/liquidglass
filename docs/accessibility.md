@@ -6,18 +6,18 @@ of this page.
 
 ## Reduce Transparency — no Android setting exists
 
-iOS has it. Android does not, at any API level. So `frost` is driven by whatever control **your
-app** exposes, and an app that ships this material without offering one is giving users less
-control than iOS does.
+iOS has it. Android does not, at any API level. So `reduceTransparency` is driven by whatever
+control **your app** exposes, and an app that ships this material without offering one is giving
+users less control than iOS does.
 
 ```kotlin
-val state = rememberLiquidGlassState(
+LiquidGlassTheme(
     background = ground,
-    frost = if (prefs.reduceTransparency) 1f else 0f,
-)
+    reduceTransparency = if (prefs.reduceTransparency) 1f else 0f,
+) { App() }
 ```
 
-Frost raises the material's opacity rather than switching it off, which keeps the shape and the
+It raises the material's opacity rather than switching it off, which keeps the shape and the
 edge lighting intact for anyone who wants to keep seeing them. It is a slider, not a boolean, if
 you want to offer that.
 
@@ -28,9 +28,11 @@ rather than materials, so treating it as Apple's setting is an approximation rat
 same thing. Say so in your settings copy if you surface it.
 
 ```kotlin
-val contrast = if (highContrastEnabled) 1f else 0f
-val state = rememberLiquidGlassState(background = ground, contrast = contrast)
+LiquidGlassTheme(background = ground, increaseContrast = if (highContrastEnabled) 1f else 0f) { App() }
 ```
+
+Both settings apply to every glass element under the theme. A theme nested inside another
+changes them for its subtree only.
 
 At 1 the material goes predominantly black or white — chosen against the backdrop's luminance —
 with a contrasting border. That is Apple's stated behaviour: the effect becomes solid rather
@@ -44,7 +46,10 @@ Apple's guidance is that Reduce Motion "decreases the intensity of some effects 
 elastic properties", which maps cleanly:
 
 ```kotlin
-val interaction = if (reduceMotion) GlassInteraction.ReducedMotion else GlassInteraction.Default
+val response = if (reduceMotion) GlassInteraction.ReducedMotion else GlassInteraction.Calm
+Modifier.glassEffect(Glass.Regular.interactive(response = response), CircleShape)
+
+GlassTabBar(..., motionEnabled = !reduceMotion)
 val materializeSpec = if (reduceMotion) GlassMotion.MaterializeReduced else GlassMotion.MaterializeIn
 ```
 
@@ -66,9 +71,10 @@ it, with symbols flipping light/dark in lockstep. That is a compositing mode ins
 renderer.
 
 Compose has no equivalent, and a fragment shader drawn *behind* content cannot touch that
-content. The nearest available approach is the per-element `inversion` scalar (see
-[Adaptation](adaptation.md)) handed to both the glass and whatever draws the labels. It works,
-and it is coarser: one decision per element per frame, not per glyph. A label straddling a
+content. The nearest available approach is one light/dark decision per element (see
+[Adaptation](adaptation.md)) handed to both the glass and whatever draws the labels; today that
+decision is the app's, through `LiquidGlassTheme(dark = …)`, since backdrop-driven inversion became
+internal on 18 October. It works, and it is coarser: one decision per element per frame, not per glyph. A label straddling a
 light/dark boundary in the backdrop will not track it the way Apple's vibrancy does.
 
 Design around it. Do not put small text over glass that sits on a high-contrast backdrop and

@@ -1,8 +1,28 @@
 # Development status and visual guide
 
-Updated **13 October 2026**. This describes the unreleased source, not the published 0.1.0 artifact.
+Updated **18 October 2026**. This describes the unreleased source, not the published 0.1.0 artifact.
 Full iOS parity, final owner acceptance and arbitrary-stack support are not established. Historical
 research remains available; this page identifies which later changes supersede its implementation.
+
+## Public Compose API (18 October)
+
+The Compose API was replaced on 18 October by one root and one modifier, named after SwiftUI's:
+`LiquidGlassTheme { App() }` around the app, `Modifier.glassEffect(glass, shape)` on any element,
+`Glass` variants (`Regular`, `Clear`, `Identity`, and the measured `Lens`, `TabBar`, `Toolbar`),
+`GlassEffectContainer` and `glassEffectID`. `GlassTabBar` takes no state. The state-and-modifier
+API and `GlassScene` are internal now; the [API reference](api-reference.md#removed-18-october)
+maps each removed name to its replacement.
+
+Glass is drawn in an overlay above the theme's recording, on every platform, so it never samples
+itself. Two consequences are open limits: glass draws above content that is not glass, and an
+ancestor's alpha does not fade it ([Limitations](limitations.md#glass-draws-above-content-that-is-not-glass)).
+Desktop and web are planned to move to Skia's own backdrop, which removes both there.
+
+Evidence: `GlassEffectTest` in the desktop render suite checks that a lens magnifies the page and
+not its own content at the top level, under a `graphicsLayer` and inside a scrolled column; that a
+click reaches the element under interactive glass; that `Glass.Identity` draws no glass; the
+stand-in without a theme; merging in a container; and a `glassEffectID` morph. These are desktop
+JVM renders, not a physical-device record; this page links no device record for the new API yet.
 
 ## Atlas and the current material
 
@@ -18,9 +38,9 @@ backend comparison. [GPU evidence](https://github.com/shayann07/liquidglass/blob
 
 | Use case | Entry point | Responsibility and scope |
 | --- | --- | --- |
-| Compose app | `GlassScene` and scoped `Modifier.glass` | Shared recorded backdrop; host keeps layout, actions and semantics |
+| Compose app | `LiquidGlassTheme` at the root and `Modifier.glassEffect` | One recording per theme; the element keeps layout, actions and semantics |
 | Compose for Web | the same Compose APIs, `wasmJs` target | Same Skia actuals as desktop (`skikoMain`); `:web` runs Atlas in the browser ([record](https://github.com/shayann07/liquidglass/blob/main/review/atlas/web-2026-10-18/README.md)) |
-| Explicit Compose control | `rememberLiquidGlassState`, `liquidGlassSource`, `Modifier.liquidGlass` | Existing API and historical presets retained |
+| Full optical control | `Glass(style = GlassStyle(...))`, `GlassEffectContainer`, `glassEffectID` | Every optical parameter and the historical presets; the explicit state API was removed on 18 October |
 | Free magnifier | `GlassStyle.clearLens` / native `DrawLens` | Continuous mapping; distinct from a held navigation selector |
 | Calm navigation | `GlassTabBarStyle.Calm()` | Tap/held travel, landing recovery, whole-bar off-axis strain and separate appearance |
 | Portable production renderer | CanvasKit `createGlassScene` / `createGlassPainter` | Production shaders, explicit source, density, lifecycle and input |
@@ -197,7 +217,8 @@ trace was produced and no permission changes were made. See [performance](perfor
    21-29 ms on Intel UHD, slower than the 11 October record (4.5 / 8.9 ms). A 14 October build times the same
    as this one, so the 18 October changes did not cause it; its cause is not established. Owner visual
    acceptance of the desktop windows is still open.
-4. Additional host integrations, with executable evidence.
+4. Additional host integrations, with executable evidence. In Compose, the Skia backdrop path
+   for desktop and web, which would lift the overlay's two limits there.
 5. No release/tag is authorized.
 
 The current checklist has 27 completed and 22 open entries of unequal size; this is not a progress

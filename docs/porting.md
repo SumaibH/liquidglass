@@ -8,7 +8,7 @@ Separate the material, motion and host integration instead of duplicating a samp
 
 | Host | Integration today | Status |
 | --- | --- | --- |
-| Android Compose / Compose Desktop | `GlassScene` or explicit state/modifiers | Main implementation; shader and interaction suites |
+| Android Compose / Compose Desktop / Compose for Web | `LiquidGlassTheme` at the root and `Modifier.glassEffect` | Main implementation; shader and interaction suites |
 | Android Views | Place a ComposeView over a Compose-recorded backdrop, or supply an independent renderer | Bridge work required for a View-owned backdrop; no transparent capture of arbitrary Views |
 | React, Vue, Svelte, Angular, vanilla HTML | ES module with a supplied canvas/image/video texture | Continuous lens preview in `ports/web`; not the full measured material |
 | CanvasKit / another Skia RuntimeEffect host | Generated production material, content and aperture shaders in `ports/skia` | CanvasKit software rendering verified against JVM pixels; host capture/input remain explicit |

@@ -7,89 +7,214 @@ these are source-preview APIs, not additions to the published Maven artifact.
 
 Every public symbol in the library. The guides explain *why*; this is *what*.
 
+> **Development snapshot.** The API in the first section replaced the state-and-modifier API on
+> 18 October. It is in the current source, **not** in the published `0.1.0` artifact; build it
+> with `./gradlew publishToMavenLocal` ([getting started](getting-started.md)). The APIs it
+> replaced are listed under [Removed](#removed-18-october).
+
 ---
 
-## State
+## Glass
 
-### `rememberLiquidGlassState`
+The names follow SwiftUI's (`glassEffect(_:in:)`, `Glass`, `GlassEffectContainer`,
+`glassEffectID(_:in:)`), in Kotlin casing.
+
+```kotlin
+LiquidGlassTheme {
+    Box {
+        Page()
+        Icon(Icons.Default.Edit, null,
+            Modifier.align(Alignment.TopEnd).size(44.dp).glassEffect(Glass.Regular.interactive(), CircleShape))
+    }
+}
+```
+
+### `LiquidGlassTheme`
 
 ```kotlin
 @Composable
-fun rememberLiquidGlassState(
-    background: Color = Color.Black,
-    inversion: Float = 0f,
-    frost: Float = 0f,
-    contrast: Float = 0f,
-): LiquidGlassState
+fun LiquidGlassTheme(
+    dark: Boolean = isSystemInDarkTheme(),
+    background: Color = if (dark) Color.Black else Color.White,
+    glass: Glass = Glass.Regular,
+    containerSpacing: Dp = 20.dp,
+    renderScale: Float = 1f,
+    reduceTransparency: Float = 0f,
+    increaseContrast: Float = 0f,
+    content: @Composable () -> Unit,
+)
 ```
 
-Links a backdrop to the panels that refract it. One state serves any number of panels: the
-backdrop is recorded once per frame and each panel samples the region beneath itself.
+The root of Liquid Glass. Wrap the app in it once, as you would `MaterialTheme`. It records what
+is drawn below it once per frame, and every `glassEffect` below it refracts what is behind it.
+Nothing has to be marked as a backdrop. Glass draws nothing in place: it is drawn over the
+recording with its own content on top, so no glass samples itself.
+
+A theme nested inside another changes the defaults, the appearance and the accessibility settings
+for its subtree. The outermost one records, and its `background` is the one used.
 
 | Parameter | |
 | :--- | :--- |
-| `background` | The **opaque colour behind the recorded backdrop**. Not decoration — a backdrop layer is transparent wherever your app painted nothing, and the shader needs this to reconstruct what a viewer sees there. Wrong value shows as a halo around every panel. |
-| `inversion` | 0 to 1. How far elements that allow it flip light/dark. One decision per element, because labels drawn *on* the glass must flip with it. Leave at 0 for a permanently dark or light app. See [Adaptation](adaptation.md). |
-| `frost` | 0 to 1. Reduce Transparency. Android has no system setting; drive it from your own. |
-| `contrast` | 0 to 1. Increase Contrast. Takes the material predominantly black or white with a contrasting border. |
+| `dark` | The appearance glass variants resolve in (`Glass.Regular`, `Glass.TabBar` and `Glass.Toolbar` differ between the two). Follows the system by default. |
+| `background` | The **opaque colour behind the app** wherever it draws nothing. Not decoration: the recording is transparent wherever nothing was painted, and the shader needs this to reconstruct what a viewer sees there. A wrong value shows as a halo around every panel. |
+| `glass` | What `glassEffect` draws when it is given no `Glass`. |
+| `containerSpacing` | `GlassEffectContainer`'s default merge distance. |
+| `renderScale` | 0.25 to 1. The fraction of full resolution the glass renders at. See [Performance](performance.md#rendering-at-reduced-resolution). |
+| `reduceTransparency` | 0 to 1. Reduce Transparency: raises the material's opacity. Android has no system setting; drive it from your own. See [Accessibility](accessibility.md). |
+| `increaseContrast` | 0 to 1. Increase Contrast: the material goes predominantly black or white with a contrasting border. |
 
-### `LiquidGlassState`
-
-Opaque handle. Construct it with `rememberLiquidGlassState`; it exposes only:
+### `Modifier.glassEffect`
 
 ```kotlin
-val isReady: Boolean       // true once a backdrop has been recorded
-val inversion: Float
-val frost: Float
-val contrast: Float
+fun Modifier.glassEffect(
+    glass: Glass? = null,
+    shape: Shape = CapsuleShape,
+    link: GlassAccessoryLink? = null,
+): Modifier
+```
+
+Draws this element as Liquid Glass, as SwiftUI's `glassEffect(_:in:)` does: the screen behind it
+refracted through `shape`, with the element's own content on top. Layout, hit targets, clicks and
+semantics stay the element's own; it does not make anything clickable or add a role.
+
+| Parameter | |
+| :--- | :--- |
+| `glass` | What to draw. `LiquidGlassTheme`'s `glass` when null. `Glass.Identity` draws the content only. |
+| `shape` | Rounded rects, capsules and circles are evaluated analytically; `GlassSquircleShape` carries its own corner exponent; anything else is measured. A capsule by default, as in SwiftUI. See [Shapes](shapes.md). |
+| `link` | Publishes this glass's press and pull to a `GlassTabBar` whose `GlassTabBarAccessory` has the same link, so the bar's neck follows it. See [the search button](tab-bar.md#a-neighbouring-control-the-search-button). |
+
+Needs a `LiquidGlassTheme` above it. Without one it draws a frosted, rim-lit stand-in and logs
+one warning; it does not crash. Inside a `GlassEffectContainer` it joins the container's merged
+body instead of drawing its own glass.
+
+Current limits of the renderer: glass draws above content that is not glass, and it does not take
+an ancestor's alpha. Do not fade glass by fading a parent; change its `Glass` instead (for example
+to `Glass.Identity`, or through `animateGlassStyle`).
+
+Where the platform cannot run the shader this degrades to `style.fallbackSurface` with the same
+rim lighting.
+
+### `Glass`
+
+```kotlin
+@Immutable
+class Glass {
+    fun tint(color: Color?): Glass
+    fun interactive(enabled: Boolean = true, response: GlassInteraction = GlassInteraction.Calm): Glass
+    val isIdentity: Boolean
+    fun style(dark: Boolean): GlassStyle?
+    fun light(dark: Boolean): GlassLight
+
+    companion object {
+        val Regular: Glass
+        val Clear: Glass
+        val Identity: Glass
+        val TabBar: Glass
+        val Toolbar: Glass
+        fun Lens(magnification: Float = 1.4f): Glass
+        operator fun invoke(style: GlassStyle, dark: GlassStyle? = null, light: GlassLight = GlassLight.Default): Glass
+    }
+}
+```
+
+A kind of glass, as SwiftUI's `Glass` is. Start from a variant and refine it:
+`Glass.Regular.tint(Color.Blue).interactive()`.
+
+| Variant | |
+| :--- | :--- |
+| `Regular` | Apple's regular glass: the measured in-app material (`GlassStyle.inApp(dark)`), for navigation pills, buttons and panels. |
+| `Clear` | Apple's clear glass (`GlassStyle.Clear`): permanently more transparent, no adaptive behaviour. Needs content behind it that is dimmed or calm enough to stay legible. |
+| `Identity` | No glass: the element draws its content only. For switching glass off without changing the layout. |
+| `TabBar` | iOS 26's tab bar material, measured on recordings (`GlassTabBarStyle.Calm(dark).bar`, with its light). |
+| `Toolbar` | A toolbar's material (`GlassStyle.toolbar(dark)`): the pill's, more opaque. |
+| `Lens(magnification)` | A clear magnifier (`GlassStyle.clearLens`): `magnification` at the centre, easing back to none at the rim, 1 to 2.5. |
+| `Glass(style, dark, light)` | Every optical parameter given: see `GlassStyle`. `dark` is used in a dark appearance when given, `style` otherwise; `light` is where the light comes from. |
+
+`tint` colours the glass, as `.tint(_:)` does; use it to carry meaning, not as decoration. Null
+removes a tint. `interactive` makes the glass respond to touch and pointer, as `.interactive()`
+does: it lifts, glows where it is pressed and, with `GlassInteraction.Pullable`, stretches toward
+the finger. It observes the pointer without consuming it, so the element keeps its own clicks and
+scrolls. Apply it only to elements that act on a tap. `response` chooses how it responds; see
+`GlassInteraction`. `style(dark)` and `light(dark)` resolve the variant for an appearance; `style`
+is null for `Identity`.
+
+### `CapsuleShape`
+
+```kotlin
+val CapsuleShape: RoundedCornerShape = RoundedCornerShape(percent = 50)
+```
+
+A capsule: SwiftUI's default glass shape, and `glassEffect`'s.
+
+### `GlassEffectContainer`
+
+```kotlin
+@Composable
+fun GlassEffectContainer(
+    modifier: Modifier = Modifier,
+    spacing: Dp = Dp.Unspecified,
+    glass: Glass? = null,
+    content: @Composable () -> Unit,
+)
+```
+
+Groups glass so that nearby pieces merge, as SwiftUI's `GlassEffectContainer` does. Every
+`glassEffect` inside joins one body of glass: pieces within `spacing` of each other grow a liquid
+neck and fuse, and part again as they move apart. Nothing animates the merge; it is a consequence
+of the geometry, which is why it stays correct at any speed and under interruption.
+
+`spacing` is `LiquidGlassTheme`'s `containerSpacing` when unspecified; keep it at or below your
+layout's own spacing, or pieces blend at rest. The container draws all its pieces with one `glass`
+(the theme's default when null): the pieces' own variants are not mixed. It is optional; glass
+outside a container works on its own. It needs a `LiquidGlassTheme` above it.
+
+Capped at **eight pieces**: SkSL needs an unrollable loop, and every piece is evaluated at every
+pixel, which is exactly what lets the fields interact.
+
+### `Modifier.glassEffectID` / `rememberGlassNamespace`
+
+```kotlin
+fun Modifier.glassEffectID(id: Any, namespace: GlassNamespace): Modifier
+
+@Composable
+fun rememberGlassNamespace(): GlassNamespace
+
+@Stable
+class GlassNamespace
+```
+
+Names a piece of glass for morphing, as SwiftUI's `glassEffectID(_:in:)` does: when a piece with
+this `id` appears in `namespace` where another with the same id was, it grows out of the old one's
+outline instead of popping in. Use it inside a `GlassEffectContainer`, after `glassEffect` in the
+modifier chain.
+
+```kotlin
+val ns = rememberGlassNamespace()
+GlassEffectContainer(spacing = 20.dp) {
+    Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+        Icon(..., Modifier.size(44.dp).glassEffect().glassEffectID("edit", ns))
+        if (expanded) Icon(..., Modifier.size(44.dp).glassEffect().glassEffectID("share", ns))
+    }
+}
 ```
 
 ---
 
-## Modifiers
+## Removed (18 October)
 
-### `Modifier.liquidGlassSource`
+These were public in `0.1.0` or in the development snapshot before 18 October. They are internal
+now; the library still uses several of them underneath the API above.
 
-```kotlin
-fun Modifier.liquidGlassSource(state: LiquidGlassState): Modifier
-```
-
-Marks this content as the backdrop that glass panels refract. Put it on the thing the glass
-floats over — usually the scrolling body — and **not** on an ancestor that also contains the
-glass, or a panel will sample itself.
-
-### `Modifier.liquidGlass`
-
-```kotlin
-fun Modifier.liquidGlass(
-    state: LiquidGlassState,
-    shape: Shape = RectangleShape,
-    style: GlassStyle = GlassStyle.Regular,
-    light: GlassLight = GlassLight.Default,
-    interaction: GlassInteraction? = null,
-    materialize: Float = 1f,
-    pressSource: GlassPressSource? = null,
-    refractContent: Boolean = false,
-    through: LiquidGlassState? = null,
-    lensFormation: Float = 0f,
-): Modifier
-```
-
-Draws this element as a piece of glass over `state`'s backdrop.
-
-| Parameter | |
+| Removed | Replacement |
 | :--- | :--- |
-| `shape` | Rounded rects, capsules and circles are evaluated analytically; `GlassSquircleShape` carries its own corner exponent; anything else is measured. See [Shapes](shapes.md). |
-| `interaction` | Non-null opts into touch response. See `GlassInteraction`. |
-| `materialize` | 0 to 1. Drive this instead of `alpha` — at 0 the shader returns the backdrop untouched, so the element leaves by ceasing to bend light. |
-| `pressSource` | Drive the press from outside, when another node owns the gesture. See `GlassPressSource`. |
-| `refractContent` | Draw the element's content **inside** the glass — bent and colour-split through the same bevel the backdrop goes through, clipped to the shape — instead of on top. For content that is the material's subject: what a magnifier is over, the symbol a selection lens is crossing. See [Interaction](interaction.md#content-inside-the-glass). |
-| `restMap` | `GlassRestMap.Legacy` (default) or `Measured`: which source map the resting corner lens of the measured profile uses. `Measured` is the resting-corner table fitted on the Photos toolbar's 72 px ends in the closeout; it changes only the resting-corner term and is a scale extrapolation at any other radius. Ignored by the legacy profile and by the held family. See [limitations](limitations.md#the-rest-lens-is-measured-at-one-size-and-selected-per-style). |
-| `lensFormation` | 0 to 1. How far the measured edge fold has formed. At 0 the corner arcs show the measured rest lens (the ring 0.33 R inside, mapped onto the whole outer third) and straight runs show nothing but a few px of inward offset; on iOS 27 the full fold appears only while a finger tracks a surface past about 117 dp of pull and never on chrome at rest or a committed animation, so the default is 0; a host tracking a drag drives it from the pull with `GlassMaterial.lensFormation` and animates it back on release. Ignored by the legacy profile. |
-| `through` | Glass this element looks **through**. A lens on a tab bar sees the bar, not past it: record the bar with `liquidGlassSource` into a second state and pass it here, and it is composited over the backdrop before this element's shader runs. The element must not be inside that source's subtree. See [Tab bar](tab-bar.md). |
-
-Where the platform cannot run the shader this degrades to `style.fallbackSurface` with the same
-rim lighting.
+| `rememberLiquidGlassState(background, inversion, frost, contrast)`, `LiquidGlassState` | `LiquidGlassTheme(background = …, reduceTransparency = …, increaseContrast = …)` around the app. Backdrop-driven inversion has no public replacement yet; choose the appearance with `dark`. |
+| `Modifier.liquidGlassSource(state)` (both forms) | Nothing: `LiquidGlassTheme` records the screen. |
+| `Modifier.liquidGlass(state, shape, style, …)` (both forms) | `Modifier.glassEffect(Glass(style), shape)`, or a named variant: `GlassStyle.inApp(dark)` ≈ `Glass.Regular`, `GlassStyle.Clear` = `Glass.Clear`, `GlassStyle.clearLens(m)` = `Glass.Lens(m)`, `GlassStyle.toolbar(dark)` = `Glass.Toolbar`, `GlassTabBarStyle.Calm(dark).bar` = `Glass.TabBar`. `interaction = I` becomes `.interactive(response = I)`; `light` moves into `Glass(style, light = …)`. `materialize`, `pressSource`, `refractContent`, `through`, `fuse`, `lensFormation` have no public replacement. |
+| `GlassScene`, `GlassSceneScope`, `Modifier.glass()` | `LiquidGlassTheme(background = …) { Box { backdrop content; … Modifier.glassEffect(…) } }` |
+| `LiquidGlassScene`, `ProvideLiquidGlassState`, `LocalLiquidGlassState`, `currentLiquidGlassState` | `LiquidGlassTheme` |
+| `LiquidGlassContainer(state, mergeDistance = d) { Modifier.glassMember(shape) }`, `LiquidGlassContainerScope`, `GlassMember` | `GlassEffectContainer(spacing = d) { Modifier.glassEffect(shape = shape) }` |
+| `rememberBackdropInversion` | None yet. |
+| `GlassTabBar(state, itemCount, …)` | `GlassTabBar(itemCount, …)` inside a `LiquidGlassTheme`. |
 
 ---
 
@@ -99,10 +224,12 @@ rim lighting.
 class GlassFuse(bounds: DpRect, cornerRadius: Dp, smoothing: Dp = 16.dp, anchored: Boolean = false)
 ```
 
-Passed to `Modifier.liquidGlass(fuse = ...)`. Another rounded rect, in this element's own
-coordinates, that the element's outline **fuses** with. Not a union: where the two outlines cross
-the silhouette bows out by about a quarter of `smoothing` to meet the other shape instead of
-making a crease, and the bevel, rim and refraction all follow the fused outline from there on.
+Another rounded rect, in an element's own coordinates, that the element's outline **fuses** with.
+Still public, but the `fuse` parameter that took it is internal since 18 October; `GlassTabBar`
+builds its fused outlines (`lensFuse`, `trailingAccessory`) from it. Not a union: where the two
+outlines cross the silhouette bows out by about a quarter of `smoothing` to meet the other shape
+instead of making a crease, and the bevel, rim and refraction all follow the fused outline from
+there on.
 
 This is what iOS 27's tab bar does with its selection lens, which stands proud of the bar; on the
 reference the bar's edge sits 12 px above both outlines where they cross and rejoins the flat run
@@ -111,11 +238,11 @@ about 40 px away, which is 16 pt of smoothing (measured model, section 2d). `Gla
 the lens rather than as the lens rising out of the bar.
 
 Costs the closed-form normal, which cannot describe a fused outline, so the shader differences
-the distance field instead. Null leaves the outline alone.
+the distance field instead.
 
-`anchored = true` keeps the rect where it was laid out while this element's material grows or
+`anchored = true` keeps the rect where it was laid out while the element's material grows or
 strains under touch, for a separate neighbouring control the material should reach for rather
-than carry along; only the near side and the fusion are drawn by this element. `GlassTabBar`'s
+than carry along; only the near side and the fusion are drawn by the element. `GlassTabBar`'s
 `trailingAccessory` uses it.
 
 ## Components
@@ -125,12 +252,11 @@ than carry along; only the near side and the fusion are drawn by this element. `
 ```kotlin
 @Composable
 fun GlassTabBar(
-    state: LiquidGlassState,
     itemCount: Int,
     selectedIndex: Int,
     onSelected: (Int) -> Unit,
     modifier: Modifier = Modifier,
-    style: GlassTabBarStyle = GlassTabBarStyle.Dark,
+    style: GlassTabBarStyle = GlassTabBarStyle.Calm(dark),   // dark: the LiquidGlassTheme's appearance
     motionEnabled: Boolean = true,
     materialize: Float = 1f,
     trailingAccessory: GlassTabBarAccessory? = null,
@@ -138,8 +264,12 @@ fun GlassTabBar(
 )
 
 class GlassTabBarAccessory(size: Dp, gap: Dp = 8.dp, fusion: Dp = 6.dp, yieldsToLens: Boolean = false,
-    link: GlassAccessoryLink? = null)
+    lensFusion: Dp = 0.dp, link: GlassAccessoryLink? = null)
 ```
+
+Needs a `LiquidGlassTheme` above it, which supplies what the bar refracts; it takes no state
+(the `state` parameter was removed on 18 October). Without a theme it draws its fallback and logs
+one warning. The default style follows the theme's `dark`.
 
 `trailingAccessory` describes a separate glass control beside the bar's trailing end (iOS 26
 Phone's search button). The bar fuses with it through a liquid neck while held; you lay it out
@@ -154,7 +284,7 @@ release. Every default is measured off an iOS 26 tab bar; see [Tab bar](tab-bar.
 | :--- | :--- |
 | `item` | Called twice per tab on the shader path — `selected = false` for the copy on the bar, `true` for the copy inside the lens — and once, with the real selection, where the shader is unavailable. Change only colour between the two. |
 | `motionEnabled` | False disables the lens, the gel and the fling; taps and drags still select. |
-| `materialize` | Passed to the bar's glass. |
+| `materialize` | 0 to 1, for the bar to materialize in and out. Drive this instead of `alpha`: at 0 the bar returns the backdrop untouched, so it leaves by ceasing to bend light. |
 
 Put a shadow on `modifier` with `clip = false`; the held lens is taller than the bar.
 
@@ -372,6 +502,12 @@ coordinate. The page material's own map is unaffected.
 own radius at bind time, so it means the same blur on Android and the desktop; `backdropBlur` is
 the legacy radius and is used when `backdropSigma` is unspecified.
 
+**`restMap`** is `GlassRestMap.Legacy` (default) or `Measured`: which source map the resting
+corner lens of the measured profile uses. `Measured` is the resting-corner table fitted on the
+Photos toolbar's 72 px ends in the closeout; it changes only the resting-corner term and is a scale
+extrapolation at any other radius. Ignored by the legacy profile and by the held family. See
+[limitations](limitations.md#the-rest-lens-is-measured-at-one-size-and-selected-per-style).
+
 **Factories** (every number measured): `inApp(dark, tintAmount)` for a navigation pill or
 buttons; `toolbar(dark, tintAmount)` for a toolbar or tab bar, the pill's kernels with the
 toolbar's own tint (white at 0.55-0.67 in light; black at 0.41-0.63 over the 35/255 lift in
@@ -454,7 +590,8 @@ object GlassMaterial {
 The measured material as formulas, for hosts that build their own styles: tint opacity and fine
 share against the Tint Amount slider (and the toolbar role's own opacity and tint), the kernels, the system backdrop's blur, the dim a cover
 sheet applies to what it covers as a function of pull, and the lens formation a tracked drag
-should pass to `lensFormation`.
+reaches (`LiquidGlassCoverSheet` applies the last two; the modifier's `lensFormation` parameter is
+internal since 18 October).
 
 ### `GlassLight`
 
@@ -505,7 +642,7 @@ data class GlassSquircleShape(
 
 A rounded rectangle whose corners are superellipse arcs rather than circular ones — Apple's
 actual corner geometry. An ordinary `Shape`, so it works for `clip`, `background` and `border`;
-pass the same instance to `liquidGlass` and the material reads the exponent off it, so the field
+pass the same instance to `glassEffect` and the material reads the exponent off it, so the field
 and the clip agree.
 
 `power = 2` is identical to `RoundedCornerShape`; `4` is Apple's squircle.
@@ -522,43 +659,9 @@ The squircle corner radius Apple's own containers land near, for a card-sized su
 
 ## Merging
 
-### `LiquidGlassContainer`
-
-```kotlin
-@Composable
-fun LiquidGlassContainer(
-    state: LiquidGlassState,
-    modifier: Modifier = Modifier,
-    style: GlassStyle = GlassStyle.Regular,
-    light: GlassLight = GlassLight.Default,
-    mergeDistance: Dp = 24.dp,
-    content: @Composable LiquidGlassContainerScope.() -> Unit,
-)
-```
-
-Renders several panels as one body of glass. Members within `mergeDistance` of each other grow a
-neck and fuse. Nothing animates the merge — it is a consequence of the geometry, which is why it
-stays correct at any speed and under interruption.
-
-Keep `mergeDistance` at or below your layout's own spacing, or members blend at rest.
-
-### `LiquidGlassContainerScope`
-
-```kotlin
-interface LiquidGlassContainerScope {
-    fun Modifier.glassMember(shape: Shape): Modifier
-}
-```
-
-Marks a child as taking part in the container's merged field. It draws no material of its own —
-it contributes its shape and the container renders all of them in one pass.
-
-Capped at **eight members**: SkSL needs an unrollable loop, and every member is evaluated at
-every pixel, which is exactly what lets the fields interact.
-
-### `GlassMember`
-
-The handle the container keeps per member. Created by `glassMember`; you never construct one.
+`GlassEffectContainer` is documented under [Glass](#glasseffectcontainer). The container it
+replaced, `LiquidGlassContainer` with `glassMember`, is internal since 18 October; see
+[Removed](#removed-18-october).
 
 ---
 
@@ -643,14 +746,15 @@ fun rememberGlassPressSource(): GlassPressSource
 
 Drives a panel's press response from outside, for when **another node owns the gesture**.
 
-`Modifier.liquidGlass` normally watches its own pointer, which is right for a panel that is also
+Glass normally watches its own pointer, which is right for a panel that is also
 the thing you touch. It is wrong for anything a *parent* manipulates — a selection indicator
 inside a tab bar is the case that forced this to exist: the indicator sits beneath the tab
 buttons, so it never sees a touch, and the bar has to drag it. Without a way in, such an element
 can be moved but can never light up.
 
-Pass it as `liquidGlass(..., pressSource = source)` and call `press()` on every pointer move as
-well as on down, so the glow tracks rather than jumps. `release()` deliberately leaves the
+The `pressSource` parameter that took it is internal since 18 October; `GlassTabBar` uses it for
+its selection lens, and no public modifier accepts it at present. The owner calls `press()` on
+every pointer move as well as on down, so the glow tracks rather than jumps. `release()` deliberately leaves the
 position where it was: the glow fades from where the finger lifted rather than sliding back to
 the middle of the panel.
 
@@ -666,28 +770,9 @@ Springs and timings, kept together so the press channels cannot drift apart:
 
 ## Adaptation
 
-### `rememberBackdropInversion`
-
-```kotlin
-@Composable
-fun rememberBackdropInversion(
-    state: LiquidGlassState,
-    region: Rect? = null,
-    sampleIntervalMillis: Long = 100L,
-    enterAbove: Float = 0.60f,
-    leaveBelow: Float = 0.44f,
-): State<Float>
-```
-
-Decides whether glass over a region should flip to its light or dark style. Reads a sparse grid
-off the main thread, applies hysteresis (the band stops it chattering when a headline scrolls
-past), and crossfades over 180ms.
-
-Hand the result to `rememberLiquidGlassState(inversion = …)` **and** to whatever draws the
-content on the glass, so the two stay in step.
-
-> Costs a bitmap read ten times a second. If your app is permanently dark or light, do not use
-> it — leave `inversion` at 0.
+Backdrop-driven inversion (`rememberBackdropInversion`) is internal since 18 October and has no
+public replacement yet. Choose the appearance with `LiquidGlassTheme(dark = …)`; see
+[Adaptation](adaptation.md).
 
 ### `glassShadow` / `glassShadowAlpha`
 
@@ -776,35 +861,13 @@ See [generic interaction](generic-interaction.md) for integration, ownership and
 Pullable preserves touch feedback and controls up to 80dp. Its drag-only surface policy
 smoothly transitions by 160dp to one-fifth gain and a 2dp total extension cap. Both dimensions
 use unpressed layout size in dp; density does not change the response. This is automatic in
-`liquidGlass`, not a separate card implementation. See [generic interaction](generic-interaction.md).
+`glassEffect` with an interactive `Glass`, not a separate card implementation. See [generic interaction](generic-interaction.md).
 
-## Scene, continuous lens and calm response (development)
+## Continuous lens and calm response (development)
 
 These APIs require the current source snapshot; they are not in the published `0.1.0` artifact.
-
-```kotlin
-@Composable
-fun GlassScene(
-    background: Color,
-    backdrop: @Composable BoxScope.() -> Unit,
-    modifier: Modifier = Modifier,
-    content: @Composable GlassSceneScope.() -> Unit,
-)
-
-class GlassSceneScope : BoxScope {
-    val state: LiquidGlassState
-    fun Modifier.glass(
-        shape: Shape = RoundedCornerShape(20.dp),
-        style: GlassStyle = GlassStyle.Regular,
-        interaction: GlassInteraction? = GlassInteraction.Calm,
-        materialize: Float = 1f,
-    ): Modifier
-}
-```
-
-The host owns one state and backdrop recording. Size the host explicitly. Put page content in `backdrop`
-and controls in `content`; do not nest the glass inside its own source. The exposed `state` supports
-advanced tab-bar/container integration. `glass` does not make a button clickable or add a semantic role.
+The `GlassScene` host this section used to open with was removed on 18 October; use
+`LiquidGlassTheme` ([Removed](#removed-18-october)).
 
 | API | Contract |
 | --- | --- |
@@ -817,7 +880,7 @@ advanced tab-bar/container integration. `glass` does not make a button clickable
 | `GlassStyle.softDetail` | Appended parameter, default 0 (the measured along-axis high-pass with a dithered scatter). 1 draws the detail seen through the glass as one soft copy: the wide kernel's tone plus `fineShare` of an unrotated fine blur. Dark `Calm()` uses 1 on its bar and lens. |
 | `GlassPullShape.Free` | Appended enum value. A free-standing button pulled off its place: the body follows the finger by `pullFollow` (resisted by `pullLimit`), stretches along the pull and thins across it, its content moves with it, and on release it squashes against its own resting edge away from the pull before settling (`GlassMotion.FreeRelease`). Drawing only; layout and hit targets stay put. Measured on iOS 26's Phone search button. |
 | `GlassInteraction.pullLiftShare` | Appended parameter, default 1. Share of the press glow that remains once the finger has moved more than 4 dp (iOS's search button: 0.65 since 18 October; 0.6 on 17 October, 0.7 before). |
-| `Modifier.liquidGlass(..., link: GlassAccessoryLink? = null)`, `rememberGlassAccessoryLink()`, `GlassTabBarAccessory(..., link)` | Opt-in. The accessory's glass publishes its animated press and pull; a tab bar given the same link reaches for where the accessory is drawn, so pressing it joins the two through a neck and pulling it away breaks it. Null keeps the laid-out circle. |
+| `Modifier.glassEffect(..., link: GlassAccessoryLink? = null)`, `rememberGlassAccessoryLink()`, `GlassTabBarAccessory(..., link)` | Opt-in. The accessory's glass publishes its animated press and pull; a tab bar given the same link reaches for where the accessory is drawn, so pressing it joins the two through a neck and pulling it away breaks it. Null keeps the laid-out circle. |
 | `GlassTabBarStyle.Calm(dark: Boolean = true)` | V3 optical roles with calm selector travel, no off-axis selector squeeze, and bounded bar drawing feedback shared with ordinary/selected ink. Its reference-backed 5% press is separate from the restrained drag response. |
 | `GlassSelectorSpec.response` | Chooses the pose response family; default `Expressive` preserves V3. Other legacy fields still belong to the old horizontal controller. |
 | `GlassTabBarStyle.barInteraction` | Optional whole-bar feedback, default null; `Calm()` enables it and keeps label layout fixed. |

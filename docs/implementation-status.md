@@ -13,8 +13,9 @@ the investigation. Competitor appearance and passing internal tests do not estab
 
 ## Current development: Atlas stabilization
 
-The current source adds `GlassScene`, `GlassStyle.clearLens`, `GlassInteraction.Calm` and
-`GlassTabBarStyle.Calm()`. Free magnifiers share one continuous backdrop/ink map. Navigation assigns
+The current source adds `LiquidGlassTheme` with `Modifier.glassEffect` (which replaced the
+state-and-modifier API and the short-lived `GlassScene` on 18 October), `GlassStyle.clearLens`,
+`GlassInteraction.Calm` and `GlassTabBarStyle.Calm()`. Free magnifiers share one continuous backdrop/ink map. Navigation assigns
 off-axis squeeze to the anchored whole bar, while its selector deforms with along-bar travel and throw.
 Input is integrated by timestamp and the held height is checked against the original Phone reference.
 The bar separately matches ordinary-held growth (195.3px against 196±1px) and keeps full-screen pulls
@@ -51,7 +52,8 @@ The following r13 material comparisons remain historical evidence, not r14 devic
 
 For the current development source, opt in using `GlassTabBar(..., style = GlassTabBarStyle.Calm())`.
 `V3()` retains the earlier response for comparisons.
-The app supplies the backdrop through `LiquidGlassState`; see [Tab bars](tab-bar.md).
+The bar refracts what the app's `LiquidGlassTheme` records; it takes no state since 18 October.
+See [Tab bars](tab-bar.md).
 Unreleased snapshot versions require building and publishing the matching library locally.
 They are not advertised as available on Maven Central.
 

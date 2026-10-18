@@ -85,9 +85,9 @@ backdropBlur)`, so dropping `refractionDepth` shrinks every recorded layer.
 **Do not animate a path shape's size.** The distance field rebuilds on the calling thread when
 shape or size changes. See [Shapes](shapes.md).
 
-**Turn off `inversion` if you do not need it.** `rememberBackdropInversion` reads the backdrop
-back into a bitmap ten times a second. A permanently dark or permanently light app should leave
-it at 0.
+**Backdrop-driven inversion is not running.** It read the backdrop back into a bitmap ten times
+a second; since 18 October it is internal and `LiquidGlassTheme` does not use it, so there is
+nothing to turn off.
 
 **Check your app's idle redraw first.** In that historical experiment no added material cost was resolved, and a background
 animation was redrawing the whole screen at ~90fps while nothing was happening. Quantising that
@@ -96,8 +96,8 @@ recovered more than the shader ever cost, and let the app reach idle at all.
 
 ## What `through` costs
 
-A panel that looks through other glass (`liquidGlass(through = …)`, which `GlassTabBar` uses so
-its lens sees the bar) needs that glass recorded into a second layer every frame and composited
+A panel that looks through other glass (the internal `through` input, which `GlassTabBar` uses
+so its lens sees the bar) needs that glass recorded into a second layer every frame and composited
 into the panel's padded slice before its shader runs. On a Galaxy S24+ at 120 Hz, over 1,291
 frames of dragging the tab bar's lens, that moved the drag session from p50 10 ms / p95 14 ms to
 **p50 14 ms / p95 22 ms**, with janky frames unchanged at about 1%. It is the price of the lens
@@ -118,7 +118,7 @@ Two lessons from tuning this app that generalise:
 
 The shader runs once per pixel of a padded layer per panel per frame, so resolution is the one
 knob that changes the cost by a large factor rather than a small one. `renderScale` on
-`LiquidGlassScene` and `rememberLiquidGlassState` records the layers smaller, tells the shader
+`LiquidGlassTheme` records the layers smaller, tells the shader
 smaller lengths, and scales the result back up. Geometry, position and colour are unaffected,
 the contact shadow inside the backdrop included (fixed 17 October: before, it shrank toward the
 panel's corner below full resolution; `GlassContactShadowScaleTest`).

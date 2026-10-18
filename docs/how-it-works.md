@@ -3,6 +3,12 @@
 One fragment shader, in the SkSL dialect shared by AGSL (Android 13+) and Skia (Desktop), over a
 backdrop the host records for it. This walks the shader in the order it runs.
 
+In the Compose library the host is `LiquidGlassTheme`. It records what the app draws below it
+once per frame, without the glass: each `glassEffect` element draws nothing in place, and is drawn
+afterwards in an overlay above the recording, at its position in the root, with its own content on
+top. That is why no glass samples itself, and also why glass currently draws above content that
+is not glass and ignores an ancestor's alpha ([Limitations](limitations.md#glass-draws-above-content-that-is-not-glass)).
+
 Since 0.2 the shader carries two optical models and a switch, `GlassStyle.profile`. The default,
 `Measured`, is the material fitted from calibration captures of iOS 27 on a real device (see
 [the measured model](research/measured-model.md)); every number below in that path is a
@@ -108,12 +114,13 @@ their luma difference raises the tint a little as text scrolls underneath; the t
 and glow, and Increase Contrast's solid-with-border treatment, sit on top of either optical
 model. See [Interaction](interaction.md) and [Accessibility](accessibility.md).
 
-With `refractContent` the element's own content is run through a **second pass** that shares
+With `refractContent` (an internal option since 18 October, used by the tab bar's lens) the
+element's own content is run through a **second pass** that shares
 steps 0 and 1 above — the same field and the same fold — and nothing else, then composited
 over the material. A test pins the two passes together: the functions that decide where a pixel
 samples from, `foldSource` included, must be identical text in both shaders.
 
-`through` adds a second layer to the padded backdrop — whatever glass sits between this panel
+`through` (internal, like `refractContent`) adds a second layer to the padded backdrop — whatever glass sits between this panel
 and the content — so a panel on top of other glass refracts that glass rather than seeing past
 it. It is how a selection lens sees its bar.
 
@@ -126,7 +133,7 @@ straight run shows what is under it, plus a few px of inward offset. The blend b
 runs over 0.2 R along the edge. `lensFormation` then carries both toward the full fold while a
 finger tracks the surface.
 
-`LiquidGlassContainer` runs the same two paths with one difference: a fused body is chrome at
+`GlassEffectContainer` runs the same two paths with one difference: a fused body is chrome at
 rest, so its lens formation is always 0.
 
 `GlassProfile.Legacy` is the 0.1 material, kept so `Chrome`, `DarkChrome`, `Clear`, `Thick` and
@@ -163,8 +170,8 @@ Using the premultiplied result composites those pixels toward black: a heavy dar
 every panel. Dividing the alpha out instead blows partly-covered pixels to white. **Neither is
 what a viewer sees.** What a viewer sees is the backdrop over the ground behind it.
 
-So the padded layer is filled with `LiquidGlassState.background` *before* the backdrop is drawn
-into it. Once it is opaque by construction, the shader can treat any alpha shortfall as
+So the padded layer is filled with `LiquidGlassTheme`'s `background` *before* the backdrop is
+drawn into it. Once it is opaque by construction, the shader can treat any alpha shortfall as
 filtering error at the layer's own boundary and reconstruct through it.
 
 ## Samples must be bounded by the backdrop, not by the layer

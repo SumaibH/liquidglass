@@ -18,8 +18,9 @@ CanvasKit and SkiaSharp.
 <p align="center"><sub>Rendered by the library (Calm navigation, desktop Skia, deterministic 60 fps replay of
 an authored tap, hold and throw; shown at 30 fps). Placeholder content.</sub></p>
 
-> **Status.** `0.1.0` is on Maven Central. The scene API, continuous magnifier and Calm
-> navigation shown here are on this branch and **unreleased**; their APIs may still change.
+> **Status.** `0.1.0` is on Maven Central. The `LiquidGlassTheme` / `glassEffect` API, continuous
+> magnifier and Calm navigation shown here are on this branch and **unreleased**; their APIs may
+> still change.
 > Motion and material are compared against real iOS 26 recordings and are close but **not yet
 > identical** — the [current differences](review/atlas/reference-replay-2026-10-13/README.md#remaining-differences)
 > are listed openly.
@@ -34,43 +35,46 @@ an authored tap, hold and throw; shown at 30 fps). Placeholder content.</sub></p
   A separate search button beside the bar joins it through a liquid neck while the bar is held.
 - **Calm interaction.** Press and drag responses are restrained, large cards respond less than
   small controls, and layout and hit targets never move — only the material does.
-- **One backdrop, many surfaces.** Record the page once; every bar, card and lens on top samples it.
+- **One theme, any number of surfaces.** Wrap the app once; every glass element refracts whatever
+  is behind it. Nothing has to be marked as a backdrop.
 
 ## Quick start
 
-```kotlin
-GlassScene(
-    background = Color(0xFF09111E),
-    modifier = Modifier.fillMaxSize(),
-    backdrop = { YourPage() },          // what the glass refracts; keep it opaque
-) {
-    // A floating toolbar: ordinary Compose content on a glass surface.
-    Row(
-        Modifier.align(Alignment.BottomCenter).padding(24.dp)
-            .glass(style = GlassStyle.DarkChrome)
-            .padding(16.dp),
-    ) { YourToolbarItems() }
+Wrap the app once, as you would with `MaterialTheme`. It records the screen, and every
+`glassEffect` below it refracts what is behind it.
 
-    // A magnifier: one continuous lens over the same recorded page.
-    Box(
-        Modifier.align(Alignment.Center).size(180.dp)
-            .glass(CircleShape, GlassStyle.clearLens(magnification = 1.25f)),
-    )
+```kotlin
+LiquidGlassTheme(background = Color(0xFF09111E)) {   // the opaque colour behind your app
+    Box(Modifier.fillMaxSize()) {
+        YourPage()
+
+        // A button: ordinary Compose content on glass that responds to touch.
+        Icon(
+            Icons.Default.Edit, contentDescription = "Edit",
+            Modifier.align(Alignment.TopEnd).padding(24.dp).size(44.dp)
+                .clickable(onClick = edit)
+                .glassEffect(Glass.Regular.interactive(), CircleShape)
+                .padding(10.dp),
+        )
+
+        // A magnifier: one continuous lens over the same page.
+        Box(Modifier.align(Alignment.Center).size(180.dp).glassEffect(Glass.Lens(1.25f), CircleShape))
+    }
 }
 ```
 
-Navigation with the iOS-style selector:
+The element keeps its own layout, clicks and semantics; `glassEffect` only changes how it is drawn.
+Without a `LiquidGlassTheme` above it, it draws a frosted stand-in and logs a warning. Two current
+limits: glass draws above content that is not glass, and an ancestor's alpha does not fade it
+([limitations](docs/limitations.md#glass-draws-above-content-that-is-not-glass)).
+
+Navigation with the iOS-style selector, anywhere inside the theme:
 
 ```kotlin
-val glass = rememberLiquidGlassState(background = Color.Black)
-Box {
-    Page(Modifier.fillMaxSize().liquidGlassSource(glass))
-    GlassTabBar(
-        state = glass, itemCount = 3, selectedIndex = selected, onSelected = { selected = it },
-        style = GlassTabBarStyle.Calm(),
-        modifier = Modifier.align(Alignment.BottomCenter).padding(20.dp).width(280.dp),
-    ) { index, isSelected -> Tab(index, tint = if (isSelected) Accent else Ink) }
-}
+GlassTabBar(
+    itemCount = 3, selectedIndex = selected, onSelected = { selected = it },
+    modifier = Modifier.align(Alignment.BottomCenter).padding(20.dp).width(280.dp),
+) { index, isSelected -> Tab(index, tint = if (isSelected) Accent else Ink) }
 ```
 
 Draw each tab the same way whether or not it is selected and change only its colour: the row is
@@ -83,8 +87,9 @@ More in the [tab bar guide](docs/tab-bar.md) and [getting started](docs/getting-
 implementation("dev.shayxo.liquidglass:liquidglass:0.1.0")   // published, original API
 ```
 
-The APIs above (`GlassScene`, `GlassStyle.clearLens`, `GlassTabBarStyle.Calm`) are not in `0.1.0`
-yet. To use them, build this branch with `./gradlew publishToMavenLocal` and depend on the
+The APIs above (`LiquidGlassTheme`, `glassEffect`, `Glass`, `GlassTabBarStyle.Calm`) are not in
+`0.1.0` yet; `0.1.0` has the earlier state-and-modifier API, which this branch has replaced
+([what changed](docs/api-reference.md#removed-18-october)). To use them, build this branch with `./gradlew publishToMavenLocal` and depend on the
 `VERSION_NAME` in [gradle.properties](gradle.properties) with `mavenLocal()` scoped to
 `dev.shayxo.liquidglass` — [step by step](docs/getting-started.md).
 

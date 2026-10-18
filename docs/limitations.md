@@ -23,50 +23,60 @@ Check `LiquidGlassSupport.hasShaders` if you want to change the design rather th
 
 ## There is no system backdrop — every element pays for its own
 
-Apple's material is composited by the OS. Android has no equivalent, so the host must *record*
-the backdrop into a layer and hand it to the shader. Consequences:
+Apple's material is composited by the OS. Android has no equivalent, so `LiquidGlassTheme`
+*records* what the app draws below it into a layer and hands it to the shader. Consequences:
 
-- An extra full-screen layer per backdrop, and a `RenderEffect` per glass element.
-- Glass can only sample **what your app drew**. Never the wallpaper, never another app, never
-  the system UI beneath. A "translucent" status bar is not available to you.
-- Glass does not automatically discover other glass. The explicit `through` composition path
-  records specified intervening glass (used by navigation); arbitrary stacking without that
-  recorded input will not reproduce its appearance. It also adds rendering cost.
+- An extra full-screen layer for the recording, and a `RenderEffect` per glass element.
+- Glass can only sample **what your app drew** inside the theme. Never the wallpaper, never
+  another app, never the system UI beneath. A "translucent" status bar is not available to you.
+- Glass does not see other glass. The recording holds no glass, so a glass element over another
+  refracts the content beneath both. `GlassTabBar` composes its lens over its own bar internally;
+  arbitrary stacked glass does not reproduce that appearance.
+
+## Glass draws above content that is not glass
+
+`LiquidGlassTheme` draws every glass element, with its content, in an overlay above the recorded
+screen, so that no glass samples itself. The consequence is z-order: a glass element is drawn
+above **every** non-glass element inside the theme, including ones that come later in the tree or
+sit in a layer above it, such as a sheet or a menu drawn as a later sibling. Its layout, hit targets and
+semantics stay where they were, so a covering element still receives the touches.
+
+Keep content that must cover glass out of the glass's area, or switch the glass off while it is
+covered (`Glass.Identity`). Desktop and web are planned to move to Skia's own backdrop, which
+draws glass in place and removes this limit there; Android keeps the overlay.
+
+## An ancestor's alpha does not fade glass
+
+For the same reason, glass is not drawn by its parent, so an ancestor's `alpha` or
+`graphicsLayer { alpha = … }` fades the element's siblings but not the glass or its content. Fade
+glass by changing its `Glass` (to `Glass.Identity`, or through `animateGlassStyle`), or with
+`GlassTabBar`'s `materialize`. The planned Skia backdrop path removes this limit on desktop and web
+as well.
 
 ## Glass inside a scroll
 
-This one is worth understanding because it is silent when it goes wrong.
+With the state-and-modifier API (removed on 18 October) a glass element inside a scrolling
+container whose backdrop source was outside it could not find its own offset, and the backdrop
+slid out from under it as the content scrolled.
 
-A glass element **inside** a scrolling container whose backdrop source is **outside** it cannot
-discover its own offset. Compose applies a scroll offset when it *draws* rather than when it
-*lays out*, and every layout API — `positionInRoot`, `positionOnScreen`, `localPositionOf` with
-or without `includeMotionFrameOfReference` — reports the element's unscrolled position. There is
-no public API that sees it.
-
-The symptom is a backdrop that slides out from under the element as you scroll. On a repetitive
-backdrop it is nearly invisible; once the element scrolls past the recorded height the sample
-region collapses and it goes flat.
-
-**Two supported arrangements:**
-
-1. Glass **outside** the scroll, over a scrolling backdrop. This is what chrome is, and what the
-   material is for.
-2. Both **inside** the same scroll, sharing a frame.
-
-Outside those, the material detects the empty sample region and degrades to its flat fallback
-rather than drawing a hole. It will not crash and it will not look right.
+`LiquidGlassTheme` records the whole screen and places each glass element by its position in
+the root, so glass inside a scroll is an ordinary arrangement now. A render test in the desktop
+suite (`GlassEffectTest`) places a lens inside a scrolled `Column` and checks that it magnifies the
+page behind it and not itself. It has not yet been checked on an Android device.
 
 ## No vibrancy
 
 Apple's biggest legibility mechanism for content *on* glass is automatic and lives inside their
 compositor. A fragment shader drawn behind content cannot recolour that content.
 
-The per-element `inversion` scalar is the workaround and it is coarser: one decision per element
-per frame, not per glyph. See [Accessibility](accessibility.md#vibrancy-the-gap-you-cannot-close).
+Backdrop-driven inversion was the workaround, and it is coarser: one decision per element per
+frame, not per glyph. It is internal since 18 October; choose the appearance with
+`LiquidGlassTheme(dark = …)`. See [Accessibility](accessibility.md#vibrancy-the-gap-you-cannot-close).
 
 ## No Reduce Transparency setting
 
-Android has none, at any API level. `frost` must be driven by an in-app control. Reduce Motion
+Android has none, at any API level. `LiquidGlassTheme(reduceTransparency = …)` must be driven by an
+in-app control. Reduce Motion
 has a real analogue; Increase Contrast has a partial one that is about text rather than
 materials.
 
@@ -93,17 +103,18 @@ The distance field for an arbitrary path is measured, not computed — see [Shap
 It is rebuilt whenever the shape or size changes, on the calling thread. Animating a path
 shape's size continuously will rebuild every frame and you will feel it.
 
-## No morph identity
+## Morph identity is partial
 
-Apple's morphing is identity-driven (`glassEffectID`, `glassEffectUnion`). Compose has
-`LookaheadScope` and shared-element transitions, which can approximate matched geometry but do
-not participate in the material's own union. Forcing shapes into one silhouette at rest has to
-be emulated by giving members an artificially large `mergeDistance`, which also inflates their
-bevels — an approximation, not an equivalent.
+Apple's morphing is identity-driven (`glassEffectID`, `glassEffectUnion`). `Modifier.glassEffectID`
+covers the first: inside a `GlassEffectContainer`, a piece that appears where another with the
+same id was grows out of the old outline with a spring. It is not Apple's transition; its timing is
+authored, not measured. There is no `glassEffectUnion`. Forcing shapes into one silhouette at rest
+has to be emulated by giving the container an artificially large `spacing`, which also inflates
+the bevels — an approximation, not an equivalent.
 
-## Eight members per container
+## Eight pieces per container
 
-SkSL needs an unrollable loop, so the cap is compiled in. Every member is evaluated at every
+SkSL needs an unrollable loop, so the cap is compiled in. Every piece is evaluated at every
 pixel, which is precisely what lets the fields interact, and is also why the cap exists.
 
 ## Historical refractive profiles contain a caustic fold
@@ -127,9 +138,9 @@ physical-device behavior have not been verified for this revision.
 
 ## Containers are chrome at rest
 
-`LiquidGlassContainer` runs the measured optics too, but a container has no drag to track, so
+`GlassEffectContainer` runs the measured optics too, but a container has no drag to track, so
 its lens formation is fixed at 0: fused bodies get the two-kernel tone, the lift and the
-inward rest profile, never the fold. Its members also share one style, so a container cannot
+inward rest profile, never the fold. Its pieces also share one `Glass`, so a container cannot
 mix roles.
 
 ## The measured tone is within a few levels, not exact
