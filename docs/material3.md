@@ -52,6 +52,12 @@ The glass `Scaffold` is the root: it records the screen once and every glass com
 
 ## What each component becomes
 
+<p align="center">
+  <img src="assets/material3-catalogue-controls.png" width="300" alt="Glass buttons, icon buttons, floating action buttons, chips, switches, a slider and cards over diagonal colour bands, dark scheme">
+  <img src="assets/material3-catalogue-navigation.png" width="300" alt="Glass top app bars, a tab row, multi-choice segmented buttons, an open search bar, a snackbar and a bottom app bar, light scheme">
+</p>
+<p align="center"><sub>Every component over diagonal colour bands, so each glass edge crosses a boundary and shows its refraction. Rendered by the library (desktop Skia, 390 × 844 dp at density 2) by <code>GlassMaterialCatalogueTest</code>. <a href="https://github.com/shayann07/liquidglass/blob/main/review/atlas/material3-2026-10-18/README.md">All renders</a>.</sub></p>
+
 | Material 3 | Glass version (iOS 26 look, your colours) |
 | :-- | :-- |
 | `Scaffold` | records the screen for everything glass in it; content runs under the bars |

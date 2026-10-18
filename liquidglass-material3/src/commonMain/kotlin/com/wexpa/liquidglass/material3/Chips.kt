@@ -1,8 +1,15 @@
 package com.wexpa.liquidglass.material3
 
+import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.layout.*
+import androidx.compose.material3.LocalContentColor
+import androidx.compose.material3.ProvideTextStyle
+import androidx.compose.material3.Text
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.foundation.interaction.MutableInteractionSource
-import androidx.compose.foundation.layout.ColumnScope
-import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.material3.AssistChipDefaults
 import androidx.compose.material3.FilterChipDefaults
 import androidx.compose.material3.InputChipDefaults
@@ -26,7 +33,6 @@ import androidx.compose.material3.FilterChip as M3FilterChip
 import androidx.compose.material3.InputChip as M3InputChip
 import androidx.compose.material3.NavigationRail as M3NavigationRail
 import androidx.compose.material3.NavigationRailItem as M3NavigationRailItem
-import androidx.compose.material3.Snackbar as M3Snackbar
 import androidx.compose.material3.SuggestionChip as M3SuggestionChip
 
 // ---- Chips: glass capsules; a selected filter or input chip is prominent glass --------------------
@@ -121,7 +127,10 @@ fun SuggestionChip(
 
 // ---- Snackbar --------------------------------------------------------------------------------------
 
-/** Material 3's `Snackbar` as a floating glass capsule. */
+/**
+ * Material 3's `Snackbar` as floating glass: the message, then the action and the dismiss action.
+ * Drawn here rather than by Material's, whose surface always casts its own shadow inside the glass.
+ */
 @Composable
 fun Snackbar(
     modifier: Modifier = Modifier,
@@ -134,9 +143,30 @@ fun Snackbar(
     actionContentColor: Color = MaterialTheme.colorScheme.primary,
     dismissActionContentColor: Color = MaterialTheme.colorScheme.onSurfaceVariant,
     content: @Composable () -> Unit,
-) = M3Snackbar(modifier = modifier.glassEffect(glass, shape), action = action, dismissAction = dismissAction,
-    actionOnNewLine = actionOnNewLine, shape = shape, containerColor = Color.Transparent, contentColor = contentColor,
-    actionContentColor = actionContentColor, dismissActionContentColor = dismissActionContentColor, content = content)
+) {
+    val message = @Composable {
+        Box(Modifier.padding(vertical = 14.dp)) {
+            CompositionLocalProvider(LocalContentColor provides contentColor) {
+                ProvideTextStyle(MaterialTheme.typography.bodyMedium) { content() }
+            }
+        }
+    }
+    val actions = @Composable {
+        if (action != null) CompositionLocalProvider(LocalContentColor provides actionContentColor) {
+            ProvideTextStyle(MaterialTheme.typography.labelLarge) { action() }
+        }
+        if (dismissAction != null) CompositionLocalProvider(LocalContentColor provides dismissActionContentColor) { dismissAction() }
+    }
+    val box = modifier.widthIn(max = 600.dp).fillMaxWidth().heightIn(min = 48.dp).glassEffect(glass, shape)
+        .padding(start = 16.dp, end = 8.dp)
+    if (actionOnNewLine) Column(box) {
+        message()
+        Row(Modifier.align(Alignment.End).padding(bottom = 4.dp), verticalAlignment = Alignment.CenterVertically) { actions() }
+    } else Row(box, verticalAlignment = Alignment.CenterVertically) {
+        Box(Modifier.weight(1f)) { message() }
+        actions()
+    }
+}
 
 /** Material 3's `Snackbar` for a [SnackbarHostState][androidx.compose.material3.SnackbarHostState]'s data, as glass. */
 @Composable
@@ -150,9 +180,31 @@ fun Snackbar(
     actionColor: Color = MaterialTheme.colorScheme.primary,
     actionContentColor: Color = MaterialTheme.colorScheme.primary,
     dismissActionContentColor: Color = MaterialTheme.colorScheme.onSurfaceVariant,
-) = M3Snackbar(snackbarData = snackbarData, modifier = modifier.glassEffect(glass, shape), actionOnNewLine = actionOnNewLine,
-    shape = shape, containerColor = Color.Transparent, contentColor = contentColor, actionColor = actionColor,
-    actionContentColor = actionContentColor, dismissActionContentColor = dismissActionContentColor)
+) {
+    val visuals = snackbarData.visuals
+    Snackbar(
+        modifier = modifier,
+        action = visuals.actionLabel?.let { label ->
+            { TextButton(onClick = { snackbarData.performAction() }, contentColor = actionColor) { Text(label) } }
+        },
+        dismissAction = if (!visuals.withDismissAction) null else {
+            { IconButton(onClick = { snackbarData.dismiss() }) { CloseGlyph() } }
+        },
+        actionOnNewLine = actionOnNewLine, shape = shape, glass = glass, contentColor = contentColor,
+        actionContentColor = actionContentColor, dismissActionContentColor = dismissActionContentColor,
+    ) { Text(visuals.message) }
+}
+
+/** A 14 dp cross in the content colour, without an icon library. */
+@Composable
+private fun CloseGlyph() {
+    val color = LocalContentColor.current
+    Canvas(Modifier.size(14.dp)) {
+        val w = 1.8.dp.toPx()
+        drawLine(color, Offset.Zero, Offset(size.width, size.height), w, StrokeCap.Round)
+        drawLine(color, Offset(size.width, 0f), Offset(0f, size.height), w, StrokeCap.Round)
+    }
+}
 
 // ---- Navigation rail -------------------------------------------------------------------------------
 

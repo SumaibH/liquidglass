@@ -155,7 +155,11 @@ fun MultiChoiceSegmentedButtonRowScope.SegmentedButton(
     icon: @Composable () -> Unit = {},
     label: @Composable () -> Unit,
 ) {
-    val color = if (checked) colors.activeContentColor else colors.inactiveContentColor
+    // A checked segment is prominent glass, tinted with the primary colour, so the default active
+    // colour (primary) would vanish into it: take onPrimary, as Button does, unless the caller chose.
+    val scheme = MaterialTheme.colorScheme
+    val color = if (!checked) colors.inactiveContentColor
+        else if (colors.activeContentColor == scheme.primary) scheme.onPrimary else colors.activeContentColor
     TextButton(onClick = { onCheckedChange(!checked) }, modifier = modifier.weight(1f), enabled = enabled, shape = CapsuleShape,
         glass = if (checked) GlassMaterialDefaults.prominent() else Glass.Identity, contentColor = color,
         contentPadding = contentPadding, interactionSource = interactionSource) { label() }

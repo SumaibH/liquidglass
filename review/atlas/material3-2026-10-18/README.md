@@ -17,6 +17,27 @@ material-icons-core. The covers are test content.*
 | :-: | :-: | :-: |
 | ![AlertDialog](dialog.png) | ![ModalBottomSheet](sheet.png) | ![DropdownMenu](menu.png) |
 
+## Every component (catalogue)
+
+From `GlassMaterialCatalogueTest` (same backend and window), over diagonal colour bands so each glass
+edge crosses a colour boundary.
+
+| Controls, dark | Controls, light |
+| :-: | :-: |
+| ![Buttons, icon buttons, FABs, chips, switches, slider, cards (dark)](catalogue-controls-dark.png) | ![The same in the light scheme](catalogue-controls-light.png) |
+
+| Navigation, dark | Navigation, light |
+| :-: | :-: |
+| ![Top app bars, tab row, segmented buttons, search, snackbar, bottom app bar (dark)](catalogue-navigation-dark.png) | ![The same in the light scheme](catalogue-navigation-light.png) |
+
+![Scrollable tab row, navigation rail and a two-line snackbar (dark; cropped)](catalogue-rail-dark.png)
+
+*Fixed from the first catalogue render: checked multi-choice segments drew primary text on primary-tinted
+glass (now `onPrimary`, as `Button`), and `Snackbar` showed Material's surface shadow as a rectangle
+inside the glass (now drawn by the library).*
+
+## Interaction
+
 Checked by the test: a tap on the third tab of the glass `NavigationBar` selects it; a glass `Button`
 clicks; `AlertDialog` opens and its button dismisses it; `ModalBottomSheet` shows its content;
 `DropdownMenu` opens under its anchor and an item closes it.

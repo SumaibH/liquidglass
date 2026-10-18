@@ -152,6 +152,33 @@ class GlassMaterialCatalogueTest {
         }, floatingActionButton = { FloatingActionButton(onClick = {}) { Icon(Icons.Default.Add, null) } })
     }
 
+    @Composable private fun RailAndMore(dark: Boolean) = Page(dark) {
+        Label("Scrollable tab row")
+        var tab by remember { mutableIntStateOf(2) }
+        ScrollableTabRow(selectedTabIndex = tab) {
+            listOf("Featured", "Popular", "New", "Classics", "Live", "Mixes").forEachIndexed { i, t ->
+                Tab(selected = tab == i, onClick = { tab = i }, text = { Text(t) })
+            }
+        }
+        Label("Navigation rail")
+        Row(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
+            var item by remember { mutableIntStateOf(0) }
+            NavigationRail(Modifier.height(300.dp)) {
+                listOf(Icons.Default.Home to "Home", Icons.Default.Favorite to "Saved", Icons.Default.Settings to "Settings")
+                    .forEachIndexed { i, (icon, label) ->
+                        NavigationRailItem(selected = item == i, onClick = { item = i }, icon = { Icon(icon, null) }, label = { Text(label) })
+                    }
+            }
+            Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
+                Label("Snackbar, action on a new line")
+                Snackbar(actionOnNewLine = true, action = { TextButton(onClick = {}) { Text("View") } },
+                    dismissAction = { IconButton(onClick = {}) { Icon(Icons.Default.Close, "Dismiss") } }) {
+                    Text("Three tracks were added to your library")
+                }
+            }
+        }
+    }
+
     private fun shoot(name: String, content: @Composable () -> Unit) = runDesktopComposeUiTest(780, 1688, testTimeout = 4.minutes) {
         setContent {
             CompositionLocalProvider(LocalDensity provides Density(2f)) {
@@ -166,4 +193,5 @@ class GlassMaterialCatalogueTest {
     @Test fun controlsLight() = shoot("catalogue-controls-light") { Controls(dark = false) }
     @Test fun navigationDark() = shoot("catalogue-navigation-dark") { Navigation(dark = true) }
     @Test fun navigationLight() = shoot("catalogue-navigation-light") { Navigation(dark = false) }
+    @Test fun railDark() = shoot("catalogue-rail-dark") { RailAndMore(dark = true) }
 }

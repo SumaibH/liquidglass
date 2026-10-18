@@ -26,6 +26,8 @@ This file records user-visible development changes. Published artifacts are iden
 - A tab bar's linked accessory (the search button) drew its glass but not its icon under
   `LiquidGlassTheme`: the overlay drew it before the bar's portal. Linked accessories now draw after
   portals, as `GlassTabBarAccessory` documents.
+- `liquidglass-material3`: checked multi-choice segments use `onPrimary` text on their tinted glass;
+  `Snackbar` is drawn by the library, without Material's surface shadow inside the glass.
 
 ### Changed — new public API (18 October, Phase 2)
 
