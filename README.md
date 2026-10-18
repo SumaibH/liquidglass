@@ -101,7 +101,7 @@ The APIs above (`LiquidGlassTheme`, `glassEffect`, `Glass`, `GlassTabBarStyle.Ca
 | Android below 13 | Tinted fallback with rim lighting; no refraction |
 | Desktop JVM | Full shader (Skia). Tested on Windows and Linux; macOS untested |
 | Web, Compose (Wasm) | Full shader (Skia), the same code as desktop. Unreleased; checked in Chromium ([record](review/atlas/web-2026-10-18/README.md)) |
-| Web, any framework | [CanvasKit port](ports/skia/README.md) with the production shaders, scene API, Calm navigation selector and input controller; [small WebGL lens preview](ports/web/README.md) |
+| Web, any framework | [`<liquid-glass>` web component](ports/npm/README.md) (npm `liquidglass`, unpublished): refracts live HTML in Chromium and frosts elsewhere, or draws the production shaders over a source you give it ([evidence](review/web-component-2026-10-18/README.md)); [CanvasKit port](ports/skia/README.md) with the production shaders, scene API, Calm navigation selector and input controller; [small WebGL lens preview](ports/web/README.md) |
 | .NET | [SkiaSharp painter, Calm navigation selector and WinForms adapter](ports/dotnet/README.md) |
 | iOS (Compose or SwiftUI) | Not supported yet |
 | Anything else with Skia | Shaders are portable; follow the [porting contract](docs/porting.md) |

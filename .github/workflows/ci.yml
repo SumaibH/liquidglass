@@ -106,6 +106,35 @@ jobs:
           if-no-files-found: ignore
           retention-days: 14
 
+  web-component:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    defaults:
+      run:
+        working-directory: ports/npm
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: ports/npm/package-lock.json
+      - run: npm ci --ignore-scripts
+      - name: Unit, provenance, vendored-file and type checks
+        run: npm test
+      - run: npx playwright install --with-deps chromium
+      - name: Browser tests (element, both engines, interaction)
+        run: npm run test:browser
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7
+        if: always()
+        with:
+          name: web-component-proof
+          path: |
+            ports/npm/playwright-report/
+            ports/npm/test-results/
+          if-no-files-found: ignore
+          retention-days: 14
+
   dotnet-port:
     strategy:
       fail-fast: false

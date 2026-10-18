@@ -11,6 +11,11 @@ It is a Kotlin Multiplatform module with Android, desktop JVM and web (`wasmJs`,
 each target needs. It depends on Compose Multiplatform's foundation and ui, and on nothing else
 — it does **not** need material3, and it does not care whether your app uses it.
 
+**Not using Compose?** On an ordinary web page, or with React, Vue, Svelte or Angular, use the
+[`<liquid-glass>` web component](web-component.md) instead (npm package `liquidglass`, not published
+yet). It refracts live HTML in Chromium, frosts elsewhere, and can draw the production shaders over a
+source you give it.
+
 **To try an unreleased change**, build it yourself:
 
 ```bash

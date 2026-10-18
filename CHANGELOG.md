@@ -5,6 +5,29 @@ This file records user-visible development changes. Published artifacts are iden
 
 ## Unreleased — Atlas stabilization
 
+### Added (18 October, Phase 6: the web component)
+
+- `ports/npm`: `<liquid-glass>`, a standard custom element for any page or framework (npm package
+  `liquidglass`, **unpublished**: `"private": true` until the owner publishes). Slotted content stays
+  ordinary, accessible HTML above the glass. Attributes `variant` (`regular`, `clear`), `shape`
+  (`capsule`, `rect`), `radius`, `tint` (as `Glass.tint`), `scheme` (`auto`, `light`, `dark`), `engine`,
+  `interactive` (the Calm press and a glow under the pointer; honours reduced motion) and `lensing`.
+- Two engines. `engine="html"` refracts the live page through `backdrop-filter`: in Chromium an SVG
+  displacement filter whose map is computed by ports of the shader's geometry (the measured
+  resting-corner map for Regular, the Snell bevel for Clear); elsewhere a frosted blur. It is an
+  approximation; the material numbers are inherited from `GlassStyle.inApp` / `GlassStyle.Clear` and
+  checked against the Kotlin sources by a unit test, and the CSS-only values are labelled authored.
+  `engine="canvas"` draws the production shaders through the CanvasKit painter over a `source` image,
+  canvas or video; CanvasKit is an optional peer dependency loaded only when used.
+- Tests: 27 Node unit tests (attribute parsing, engine selection, lensing detection, displacement and
+  rim map pixels, the ported functions evaluated against the production SkSL text, provenance against
+  Kotlin) and 7 Playwright tests in Chromium plus an opt-in capture test; a `web-component` CI job runs both. Evidence:
+  [review/web-component-2026-10-18](review/web-component-2026-10-18/README.md). Guide:
+  [docs/web-component.md](docs/web-component.md).
+- CanvasKit port: `drawSurface`'s material takes an optional `tint` ([r, g, b, a]), Compose's
+  `Glass.tint(color)`: it replaces the tint colour and opacity (8-bit, as Compose stores it) and keeps
+  the dark lift. Default output is unchanged.
+
 ### Changed — new public API (18 October, Phase 2)
 
 Breaking: the library now has one way in, named after SwiftUI's Liquid Glass API.
