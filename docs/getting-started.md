@@ -7,7 +7,7 @@
 implementation("dev.shayxo.liquidglass:liquidglass:0.1.0")
 ```
 
-It is a Kotlin Multiplatform module with Android and desktop JVM variants; Gradle picks the one
+It is a Kotlin Multiplatform module with Android, desktop JVM and web (`wasmJs`, unreleased) variants; Gradle picks the one
 each target needs. It depends on Compose Multiplatform's foundation and ui, and on nothing else
 — it does **not** need material3, and it does not care whether your app uses it.
 

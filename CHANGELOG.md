@@ -5,6 +5,14 @@ This file records user-visible development changes. Published artifacts are iden
 
 ## Unreleased — Atlas stabilization
 
+### Added (18 October, Compose for Web)
+
+- A `wasmJs` target: the library runs on Compose for Web with the full shader. Web draws through
+  the same Skia as desktop, so desktop's actuals moved to a shared `skikoMain` source set; the optics
+  are unchanged. `:web` is Atlas Studio in the browser (`./gradlew :web:wasmJsBrowserDevelopmentRun`),
+  checked in Chromium ([record](review/atlas/web-2026-10-18/README.md)).
+- Atlas Studio's tab icons are drawn rather than typed: the web build's font has no ✦ or ▦.
+
 ### Changed (18 October, the owner's device check)
 
 - `GlassStyle.capEdgeShadow` (new, default 0): the edge contour darkens by `1 + capEdgeShadow * nx^2`

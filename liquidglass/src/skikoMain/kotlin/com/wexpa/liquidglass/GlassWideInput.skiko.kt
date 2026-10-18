@@ -33,9 +33,13 @@ internal fun glassWideInputFilter(
 ): ImageFilter {
     // Inverse mapping of the old lookup: sample(q * scale + (0, strip)). Declaring
     // both transforms here lets Skia map destination clips back to the storage rectangle.
-    return ImageFilter.makeOffset(0f, -strip, input, null).use { shifted ->
-        ImageFilter.makeMatrixTransform(Matrix33.makeScale(1f / scale), SamplingMode.LINEAR, shifted).use { wide ->
+    return ImageFilter.makeOffset(0f, -strip, input, null).closing { shifted ->
+        ImageFilter.makeMatrixTransform(Matrix33.makeScale(1f / scale), SamplingMode.LINEAR, shifted).closing { wide ->
             ImageFilter.makeRuntimeShader(builder, arrayOf("content", "wideContent"), arrayOf(input, wide))
         }
     }
 }
+
+/** `use` for Skia objects on every Skiko target: Wasm's Skia objects are not `AutoCloseable`. */
+internal inline fun <T : org.jetbrains.skia.impl.Managed, R> T.closing(block: (T) -> R): R =
+    try { block(this) } finally { close() }

@@ -4,7 +4,34 @@ Updated 14 October 2026 (Claude takeover from Codex). The previous, longer hando
 at commit `efcc3b5` and in `.local/handoffs/`. Full iOS parity and owner visual acceptance are
 **not** established. Read [TODO.md](TODO.md) and the full objective before changing source.
 
-## CURRENT PLAN (15 Oct 2026, owner-approved) — read this first
+## PRODUCT PLAN (18 Oct 2026, owner-approved) — read this first
+
+Goal: a universal, star-worthy library. One-line Compose integration on Android, desktop and web,
+market-standard docs with real visuals. Positioning: the most faithful Liquid Glass, measured against
+iOS recordings; never claim "first" (Kyant0 Backdrop has ~4.2k stars). Never ship iOS. No Maven, npm
+or NuGet publish until the owner says. Use AskUserQuestion before design decisions, comparing the options first.
+
+Layers, all maintained, all fully customisable, iOS-measured defaults:
+1. Gradle plugin `dev.shayxo.liquidglass`: one-line entry. It adds the dependencies and can auto-adopt
+   Material 3 apps (a compiler plugin redirects Material calls to the glass versions). A BOM and plain
+   artifacts are also published.
+2. Glass versions of EVERY Material 3 component: same names, one import swap. Default iOS 26 look in
+   the app's colours; `layout = GlassLayout.Material` for Material proportions.
+3. SwiftUI vocabulary: `Modifier.glassEffect(Glass.regular.tint().interactive(), shape)`,
+   `GlassEffectContainer`, `glassEffectID`, glass button styles.
+4. `LiquidGlassTheme` defaults.
+REMOVE every old public API (GlassScene, LiquidGlassScene, LiquidGlassState / liquidGlassSource /
+liquidGlass); the engine becomes internal.
+
+Phases, one PR each, suite and ports green each time, the owner reviews between phases:
+1. Web target (wasmJs + skikoMain + `:web` Atlas): branch claude/web-target. DONE pending suite and CI.
+2. Engine API: SwiftUI vocabulary + theme; remove the old APIs.
+3. Material 3 glass components (all).
+4. Gradle plugin + compiler plugin + BOM.
+5. Docs/README rewrite, live web demo on the docs site, visuals for every component.
+6. npm web component, NuGet; then release on the owner's word.
+
+## Parity plan (15 Oct 2026, owner-approved; parity work accepted 18 Oct)
 
 Two mistakes found by the owner, both affecting every pass 1-14 level measurement:
 

@@ -35,3 +35,4 @@ plugins {
 include(":liquidglass")
 include(":sample")
 include(":desktop")
+include(":web")

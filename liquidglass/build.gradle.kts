@@ -1,5 +1,6 @@
 import com.vanniktech.maven.publish.JavadocJar
 import com.vanniktech.maven.publish.KotlinMultiplatform
+import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
@@ -13,6 +14,11 @@ plugins {
 kotlin {
     jvm()
 
+    // Compose for Web. It draws through the same Skia (Skiko) as desktop, so it shares desktop's
+    // actuals in skikoMain and renders the same production shaders.
+    @OptIn(ExperimentalWasmDsl::class)
+    wasmJs { browser() }
+
     android {
         namespace = "com.wexpa.liquidglass"
         compileSdk = libs.versions.android.compileSdk.get().toInt()
@@ -24,6 +30,11 @@ kotlin {
     }
 
     sourceSets {
+        // The Skia actuals, shared by desktop JVM and web Wasm.
+        val skikoMain by creating { dependsOn(commonMain.get()) }
+        jvmMain.get().dependsOn(skikoMain)
+        wasmJsMain.get().dependsOn(skikoMain)
+
         commonMain.dependencies {
             implementation(libs.compose.runtime)
             implementation(libs.compose.foundation)
@@ -82,3 +93,7 @@ tasks.withType<Test>().configureEach {
         maxHeapSize = "2g"
     }
 }
+
+// The library has no Wasm UI tests (the renderer suite runs on the JVM, the same Skia), so the Compose
+// check that a Wasm UI-test bundle can load Skiko does not apply; a library declares no executable.
+tasks.matching { it.name == "checkComposeUiTestConfigurationForWasmJs" }.configureEach { enabled = false }

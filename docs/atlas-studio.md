@@ -16,6 +16,7 @@ at 1.5×), 14 October 2026. Not a performance measurement.*
 
 ```sh
 ./gradlew :desktop:run
+./gradlew :web:wasmJsBrowserDevelopmentRun   # the same app in the browser (Compose for Web)
 ```
 
 The Calm navigation bar (`GlassTabBarStyle.Calm()`) is the only scene switcher: Sky (a drifting

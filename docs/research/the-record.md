@@ -1116,7 +1116,7 @@ the device runs.
 | `GlassScrollEdge.kt` | 110 | how the scroll edge effect dissolves content beneath floating chrome |
 | `GlassGallery.kt` | 262 | a tuning surface — the material can only be judged against content worth refracting |
 | `LiquidGlass.android.kt` | 396 | the Android actual: `RenderEffect`, the AGSL uniform binding, API gating |
-| `LiquidGlass.jvm.kt` | 388 | the desktop actual: Skia `RuntimeEffect`, the same uniforms, so the tests render the shipped shader |
+| `LiquidGlass.skiko.kt` | 388 | the desktop and web actual: Skia `RuntimeEffect`, the same uniforms, so the tests render the shipped shader |
 
 ### V.3 The public API
 
@@ -1221,7 +1221,7 @@ and source maps against **independent coordinate-coded readback**.
 
 | Harness file | Lines | What it does |
 | :-- | --: | :-- |
-| `GlassRender.kt` | 282 | renders the panel shader off-device exactly as `LiquidGlass.jvm.kt` does at runtime — same text, same uniform names, padded backdrop bound as `content`, panel inset by `pad` |
+| `GlassRender.kt` | 282 | renders the panel shader off-device exactly as `LiquidGlass.skiko.kt` does at runtime — same text, same uniform names, padded backdrop bound as `content`, panel inset by `pad` |
 | `GlassSourceField.kt` | 286 | **reads the geometry of all three shaders as the source coordinate every pixel samples**: the backdrop is coordinate-coded and read back in two passes per axis (coarse in red at ~2 px per level, fine in green at 16/4 px), resolving to ≈ 0.016 px |
 | `GlassEndpointRender.kt` | 269 | the three passes of the endpoint compositor, off-device, in the order the modifier runs them |
 
