@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.selection.toggleable
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.RangeSliderState
 import androidx.compose.material3.SliderColors
 import androidx.compose.material3.SliderDefaults
 import androidx.compose.material3.SliderState
@@ -33,6 +34,7 @@ import androidx.compose.ui.unit.dp
 import com.wexpa.liquidglass.CapsuleShape
 import com.wexpa.liquidglass.Glass
 import com.wexpa.liquidglass.glassEffect
+import androidx.compose.material3.RangeSlider as M3RangeSlider
 import androidx.compose.material3.Slider as M3Slider
 
 /** The iOS 26 control thumb: a white pill at rest that turns into a glass lens while held. Authored
@@ -111,6 +113,62 @@ fun Slider(
         track = { GlassSliderTrack(it, valueRange, colors, enabled) },
         valueRange = valueRange,
     )
+}
+
+/**
+ * Material 3's `RangeSlider`, iOS 26 style: the same thin track, filled between the two thumbs, and
+ * two thumbs that each become a glass lens while dragged. The same parameters as Material's.
+ */
+@Composable
+fun RangeSlider(
+    value: ClosedFloatingPointRange<Float>,
+    onValueChange: (ClosedFloatingPointRange<Float>) -> Unit,
+    modifier: Modifier = Modifier,
+    enabled: Boolean = true,
+    valueRange: ClosedFloatingPointRange<Float> = 0f..1f,
+    steps: Int = 0,
+    onValueChangeFinished: (() -> Unit)? = null,
+    colors: SliderColors = SliderDefaults.colors(
+        activeTrackColor = MaterialTheme.colorScheme.primary,
+        inactiveTrackColor = MaterialTheme.colorScheme.onSurface.copy(alpha = .16f),
+    ),
+) {
+    val start = remember { MutableInteractionSource() }
+    val end = remember { MutableInteractionSource() }
+    val startHeld by start.collectIsPressedAsState()
+    val startDragged by start.collectIsDraggedAsState()
+    val endHeld by end.collectIsPressedAsState()
+    val endDragged by end.collectIsDraggedAsState()
+    M3RangeSlider(
+        value = value, onValueChange = onValueChange, modifier = modifier, enabled = enabled,
+        valueRange = valueRange, onValueChangeFinished = onValueChangeFinished, colors = colors,
+        startInteractionSource = start, endInteractionSource = end,
+        startThumb = { GlassThumb(startHeld || startDragged, enabled) },
+        endThumb = { GlassThumb(endHeld || endDragged, enabled) },
+        track = { GlassRangeTrack(it, colors, enabled) },
+        steps = steps,
+    )
+}
+
+/** [GlassSliderTrack] for a range: filled between the two thumbs' centres. */
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun GlassRangeTrack(state: RangeSliderState, colors: SliderColors, enabled: Boolean) {
+    val active = if (enabled) colors.activeTrackColor else colors.disabledActiveTrackColor
+    val inactive = if (enabled) colors.inactiveTrackColor else colors.disabledInactiveTrackColor
+    val range = state.valueRange
+    fun fraction(v: Float) = if (range.endInclusive > range.start)
+        ((v - range.start) / (range.endInclusive - range.start)).coerceIn(0f, 1f) else 0f
+    val from = fraction(state.activeRangeStart)
+    val to = fraction(state.activeRangeEnd)
+    Canvas(Modifier.fillMaxWidth().height(6.dp)) {
+        val r = CornerRadius(size.height / 2f)
+        val thumb = GlassThumbWidth.toPx()
+        val a = thumb / 2f + from * (size.width - thumb)
+        val b = thumb / 2f + to * (size.width - thumb)
+        drawRoundRect(inactive, cornerRadius = r)
+        drawRoundRect(active, topLeft = androidx.compose.ui.geometry.Offset(a, 0f), size = Size(b - a, size.height), cornerRadius = r)
+    }
 }
 
 /**

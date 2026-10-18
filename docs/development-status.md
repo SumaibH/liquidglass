@@ -58,6 +58,14 @@ Open: the CanvasKit painter binds the light as (0, -1) where `Glass.Regular` use
   emulator ([evidence](https://github.com/shayann07/liquidglass/blob/main/review/atlas/android-material3-2026-10-18/README.md)).
   The browser build runs (live demo, `#material3`).
 
+## Material 3 coverage (19 October)
+
+- Every Material 3 component with a container now has a glass version. New this pass: icon toggle
+  buttons, elevated chips, `RangeSlider`, `Surface`, tooltips, drawer sheets and items, the date and
+  time picker dialogs, and the leading-icon and scrollable tab rows. The codemod knows them all.
+- Evidence: [coverage renders](https://github.com/shayann07/liquidglass/blob/main/review/atlas/m3-coverage-2026-10-19/README.md),
+  and an interaction test for the toggle and the tooltip.
+
 ## iOS 27's rim (19 October)
 
 - `GlassStyle.outerContour` (new, opt-in): iOS 27's dark contour outside the outline, strongest at

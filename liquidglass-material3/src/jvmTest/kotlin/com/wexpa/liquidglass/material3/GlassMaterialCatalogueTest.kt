@@ -8,6 +8,8 @@ import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.rememberTooltipState
+import androidx.compose.material3.TooltipDefaults
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.*
@@ -179,6 +181,83 @@ class GlassMaterialCatalogueTest {
         }
     }
 
+    @Composable private fun More(dark: Boolean) = Page(dark) {
+        Label("Icon toggle buttons")
+        Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
+            IconToggleButton(checked = false, onCheckedChange = {}) { Icon(Icons.Default.FavoriteBorder, null) }
+            IconToggleButton(checked = true, onCheckedChange = {}) { Icon(Icons.Default.Favorite, null) }
+            FilledIconToggleButton(checked = true, onCheckedChange = {}) { Icon(Icons.Default.Star, null) }
+            FilledTonalIconToggleButton(checked = true, onCheckedChange = {}) { Icon(Icons.Default.Notifications, null) }
+            OutlinedIconToggleButton(checked = true, onCheckedChange = {}) { Icon(Icons.Default.Lock, null) }
+        }
+        Label("Elevated chips")
+        Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+            ElevatedAssistChip(onClick = {}, label = { Text("Assist") })
+            ElevatedFilterChip(selected = true, onClick = {}, label = { Text("Filter") })
+            ElevatedSuggestionChip(onClick = {}, label = { Text("Suggest") })
+        }
+        Label("Range slider")
+        var range by remember { mutableStateOf(0.2f..0.7f) }
+        RangeSlider(value = range, onValueChange = { range = it })
+        Label("Leading icon tabs and a scrollable tab row")
+        var tab by remember { mutableIntStateOf(0) }
+        PrimaryTabRow(selectedTabIndex = tab) {
+            listOf(Icons.Default.Home to "Home", Icons.Default.Search to "Browse").forEachIndexed { i, (icon, t) ->
+                LeadingIconTab(selected = tab == i, onClick = { tab = i }, text = { Text(t) }, icon = { Icon(icon, null) })
+            }
+        }
+        var scroll by remember { mutableIntStateOf(1) }
+        PrimaryScrollableTabRow(selectedTabIndex = scroll) {
+            listOf("Featured", "Popular", "New", "Classics", "Live").forEachIndexed { i, t ->
+                Tab(selected = scroll == i, onClick = { scroll = i }, text = { Text(t) })
+            }
+        }
+        Label("Surface and a plain tooltip")
+        Row(horizontalArrangement = Arrangement.spacedBy(24.dp), verticalAlignment = Alignment.Bottom) {
+            Surface(Modifier.size(170.dp, 64.dp), shape = androidx.compose.foundation.shape.RoundedCornerShape(20.dp)) {
+                Text("A glass Surface", Modifier.padding(16.dp))
+            }
+            Column {
+                Spacer(Modifier.height(40.dp))
+                TooltipBox(TooltipDefaults.rememberPlainTooltipPositionProvider(), { PlainTooltip { Text("Add to library") } },
+                    rememberTooltipState(initialIsVisible = true, isPersistent = true)) {
+                    IconButton(onClick = {}) { Icon(Icons.Default.Add, "Add") }
+                }
+            }
+        }
+        Label("A rich tooltip")
+        Spacer(Modifier.height(120.dp))
+        TooltipBox(TooltipDefaults.rememberRichTooltipPositionProvider(), {
+            RichTooltip(title = { Text("Offline") }, action = { TextButton(onClick = {}) { Text("Learn more") } }) {
+                Text("Downloaded music plays without a connection.")
+            }
+        }, rememberTooltipState(initialIsVisible = true, isPersistent = true)) {
+            IconButton(onClick = {}) { Icon(Icons.Default.Info, "Info") }
+        }
+    }
+
+    @Composable private fun Drawer(dark: Boolean) = Page(dark) {
+        val state = androidx.compose.material3.rememberDrawerState(androidx.compose.material3.DrawerValue.Open)
+        var item by remember { mutableIntStateOf(0) }
+        androidx.compose.material3.ModalNavigationDrawer(drawerState = state, scrimColor = Color.Transparent, drawerContent = {
+            ModalDrawerSheet {
+                Text("Library", Modifier.padding(horizontal = 24.dp, vertical = 12.dp), style = MaterialTheme.typography.titleMedium)
+                listOf(Icons.Default.Home to "Listen now", Icons.Default.Favorite to "Loved", Icons.Default.Person to "Artists",
+                    Icons.Default.Settings to "Settings").forEachIndexed { i, (icon, t) ->
+                    NavigationDrawerItem(label = { Text(t) }, selected = item == i, onClick = { item = i }, icon = { Icon(icon, null) })
+                }
+            }
+        }) { Box(Modifier.fillMaxSize()) }
+    }
+
+    @Composable private fun Picker(dark: Boolean) = Page(dark) {
+        val state = androidx.compose.material3.rememberDatePickerState(initialSelectedDateMillis = 1_792_368_000_000L)
+        DatePickerDialog(onDismissRequest = {}, confirmButton = { TextButton(onClick = {}) { Text("OK") } },
+            dismissButton = { TextButton(onClick = {}) { Text("Cancel") } }) {
+            DatePicker(state, showModeToggle = false)
+        }
+    }
+
     private fun shoot(name: String, content: @Composable () -> Unit) = runDesktopComposeUiTest(780, 1688, testTimeout = 4.minutes) {
         setContent {
             CompositionLocalProvider(LocalDensity provides Density(2f)) {
@@ -189,6 +268,10 @@ class GlassMaterialCatalogueTest {
         ImageIO.write(onNodeWithTag("page").captureToImage().toAwtImage(), "png", File(out, "$name.png"))
     }
 
+    @Test fun moreLight() = shoot("catalogue-more-light") { More(dark = false) }
+    @Test fun moreDark() = shoot("catalogue-more-dark") { More(dark = true) }
+    @Test fun drawerLight() = shoot("catalogue-drawer-light") { Drawer(dark = false) }
+    @Test fun pickerLight() = shoot("catalogue-picker-light") { Picker(dark = false) }
     @Test fun controlsDark() = shoot("catalogue-controls-dark") { Controls(dark = true) }
     @Test fun controlsLight() = shoot("catalogue-controls-light") { Controls(dark = false) }
     @Test fun navigationDark() = shoot("catalogue-navigation-dark") { Navigation(dark = true) }

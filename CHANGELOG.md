@@ -5,6 +5,21 @@ This file records user-visible development changes. Published artifacts are iden
 
 ## Unreleased — Atlas stabilization
 
+### Added — the rest of Material 3 in glass (19 October)
+
+- Glass versions of the remaining Material 3 components that have a container:
+  - the four icon toggle buttons and the three elevated chips;
+  - `RangeSlider` and `Surface`;
+  - tooltips (`TooltipBox`, `PlainTooltip`, `RichTooltip`), drawn in the app's window;
+  - the drawer sheets and `NavigationDrawerItem` (iPadOS's sidebar);
+  - `DatePickerDialog`, `TimePickerDialog`, and `DatePicker` and `DateRangePicker` without their
+    opaque container;
+  - `LeadingIconTab`, `PrimaryScrollableTabRow` and `SecondaryScrollableTabRow`.
+
+  They take Material's parameters, and `liquidGlassAdopt` switches their imports.
+- The top app bar's buttons, the toolbars, the rail and the segmented capsules draw
+  `GlassMaterialDefaults` glass (new `toolbar`), so they carry the iOS 27 rim like the rest.
+
 ### Added — iOS 27's rim (19 October)
 
 - `GlassStyle.outerContour` and `outerContourFloor` (new, opt-in, 0 by default): iOS 27's dark

@@ -178,6 +178,44 @@ class GlassMaterialComponentsTest {
         assertEquals(2, tab, "a tap on the third tab did not select it")
     }
 
+    @Test fun togglesToggleAndALongPressShowsATooltip() = runDesktopComposeUiTest(390, 700, testTimeout = 4.minutes) {
+        var liked by mutableStateOf(false)
+        var clicks by mutableIntStateOf(0)
+        lateinit var tip: androidx.compose.material3.TooltipState
+        setContent {
+            CompositionLocalProvider(LocalDensity provides Density(1f)) {
+                MaterialTheme(colorScheme = lightColorScheme()) {
+                    Scaffold(Modifier.size(390.dp, 700.dp)) { _ ->
+                        Box(Modifier.fillMaxSize()) {
+                            Page()
+                            Column(Modifier.padding(24.dp), verticalArrangement = Arrangement.spacedBy(80.dp)) {
+                                IconToggleButton(checked = liked, onCheckedChange = { liked = it }, modifier = Modifier.testTag("toggle")) {
+                                    Icon(Icons.Default.Favorite, "Like")
+                                }
+                                tip = androidx.compose.material3.rememberTooltipState(isPersistent = true)
+                                TooltipBox(androidx.compose.material3.TooltipDefaults.rememberPlainTooltipPositionProvider(),
+                                    { PlainTooltip { Text("Add", Modifier.testTag("tip")) } }, tip) {
+                                    IconButton(onClick = { clicks++ }, modifier = Modifier.testTag("anchor")) { Icon(Icons.Default.Add, "Add") }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        waitForIdle()
+        onNodeWithTag("toggle").performClick(); waitForIdle()
+        assertTrue(liked, "the glass toggle did not toggle on")
+        onNodeWithTag("toggle").performClick(); waitForIdle()
+        assertTrue(!liked, "the glass toggle did not toggle off")
+        // A tap still reaches the anchor: the tooltip observes input and never consumes it.
+        onNodeWithTag("anchor").performClick(); waitForIdle()
+        assertEquals(1, clicks, "the tooltip's anchor lost its click")
+        onNodeWithTag("anchor").performTouchInput { longClick() }
+        waitUntil(timeoutMillis = 10_000) { tip.isVisible }
+        onNodeWithTag("tip", useUnmergedTree = true).assertExists()
+    }
+
     @Test fun buttonsClickAndOverlaysOpenAndDismiss() = runDesktopComposeUiTest(390, 700, testTimeout = 4.minutes) {
         var clicks by mutableIntStateOf(0)
         var dialog by mutableStateOf(false)

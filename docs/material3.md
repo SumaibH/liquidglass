@@ -84,6 +84,22 @@ The glass `Scaffold` is the root: it records the screen once and every glass com
 | `ModalBottomSheet`, `rememberModalBottomSheetState` | an iOS sheet: a floating glass panel; drag down or tap outside to dismiss |
 | `DropdownMenu`, `DropdownMenuItem` | an iOS menu: a glass panel under its anchor |
 | `Snackbar` (both) | a glass capsule |
+| `IconToggleButton`, `FilledIconToggleButton`, `FilledTonalIconToggleButton`, `OutlinedIconToggleButton` | round glass buttons: plain glass when off, prominent glass when on |
+| `ElevatedAssistChip`, `ElevatedFilterChip`, `ElevatedSuggestionChip` | the glass chips (glass carries its own depth) |
+| `RangeSlider` | iOS's thin track filled between two thumbs, each a glass lens while dragged |
+| `Surface` (both) | a frosted glass panel; `color` tints it |
+| `TooltipBox`, `PlainTooltip`, `RichTooltip` | a glass capsule or panel in the app's window, placed by Material's position provider; long press or hover shows it |
+| `ModalDrawerSheet`, `DismissibleDrawerSheet`, `PermanentDrawerSheet`, `NavigationDrawerItem` | iPadOS's sidebar: a floating frosted panel inside Material's drawer; the selected item is a prominent glass capsule |
+| `DatePickerDialog`, `TimePickerDialog`, `DatePicker`, `DateRangePicker` | a glass dialog in the app's window; the pickers lose their opaque container |
+| `LeadingIconTab`, `PrimaryScrollableTabRow`, `SecondaryScrollableTabRow` | glass segments; Material's scrolling tabs in a glass capsule |
+
+Text fields, checkboxes, radio buttons, progress indicators, dividers, badges and list items have no
+container that iOS draws as glass, so they keep coming from Material.
+
+<p align="center">
+  <img src="assets/material3-catalogue-more.png" width="300" alt="Glass icon toggle buttons, elevated chips, a range slider, leading-icon tabs, a scrollable tab row, a Surface and two tooltips over colour bands">
+  <img src="assets/material3-catalogue-drawer.png" width="300" alt="A glass navigation drawer sheet with its items over colour bands">
+</p>
 
 Every component takes a `glass` parameter (`Glass.Regular`, `Glass.Clear`, a tint, or
 `Glass(GlassStyle(...))`) for full control. Large surfaces (cards, dialogs, sheets, menus, snackbars

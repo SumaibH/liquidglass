@@ -32,6 +32,7 @@ import androidx.compose.material3.Card as M3Card
 import androidx.compose.material3.ExtendedFloatingActionButton as M3ExtendedFab
 import androidx.compose.material3.FloatingActionButton as M3Fab
 import androidx.compose.material3.IconButton as M3IconButton
+import androidx.compose.material3.IconToggleButton as M3IconToggleButton
 
 /** Glass replaces Material's container, ripple and minimum touch padding: the press is the glass's own. */
 @Composable
@@ -185,6 +186,82 @@ fun OutlinedIconButton(
     interactionSource: MutableInteractionSource? = null,
     content: @Composable () -> Unit,
 ) = IconButton(onClick, modifier, enabled, glass, contentColor, shape, interactionSource, content)
+
+/**
+ * Material 3's `IconToggleButton` as a round glass button: plain glass when off, prominent glass
+ * (tinted with the primary colour) when on, as an iOS toggle button. The same parameters as
+ * Material's, plus the glass for each state.
+ */
+@Composable
+fun IconToggleButton(
+    checked: Boolean,
+    onCheckedChange: (Boolean) -> Unit,
+    modifier: Modifier = Modifier,
+    enabled: Boolean = true,
+    glass: Glass = if (LocalInGlassGroup.current) Glass.Identity else GlassMaterialDefaults.regular,
+    checkedGlass: Glass = GlassMaterialDefaults.prominent(),
+    contentColor: Color = MaterialTheme.colorScheme.onSurface,
+    checkedContentColor: Color = MaterialTheme.colorScheme.onPrimary,
+    shape: Shape = CircleShape,
+    interactionSource: MutableInteractionSource? = null,
+    content: @Composable () -> Unit,
+) = GlassComponent {
+    val g = if (checked) checkedGlass else glass
+    val ink = if (checked) checkedContentColor else contentColor
+    M3IconToggleButton(checked, onCheckedChange,
+        modifier.sizeIn(minWidth = GlassButtonHeight, minHeight = GlassButtonHeight)
+            .glassEffect(if (enabled) g.interactive() else g, shape), enabled,
+        IconButtonDefaults.iconToggleButtonColors(containerColor = Color.Transparent, contentColor = ink,
+            checkedContainerColor = Color.Transparent, checkedContentColor = ink),
+        interactionSource, shape = shape, content = content)
+}
+
+/** Material 3's `FilledIconToggleButton`: see [IconToggleButton]. Off is glass tinted with the
+ * surface variant, as Material's filled toggle is. */
+@Composable
+fun FilledIconToggleButton(
+    checked: Boolean,
+    onCheckedChange: (Boolean) -> Unit,
+    modifier: Modifier = Modifier,
+    enabled: Boolean = true,
+    shape: Shape = CircleShape,
+    glass: Glass = GlassMaterialDefaults.forContainer(MaterialTheme.colorScheme.surfaceContainerHighest),
+    checkedGlass: Glass = GlassMaterialDefaults.prominent(),
+    interactionSource: MutableInteractionSource? = null,
+    content: @Composable () -> Unit,
+) = IconToggleButton(checked, onCheckedChange, modifier, enabled, glass, checkedGlass,
+    MaterialTheme.colorScheme.primary, MaterialTheme.colorScheme.onPrimary, shape, interactionSource, content)
+
+/** Material 3's `FilledTonalIconToggleButton`: see [IconToggleButton]. On is glass tinted with the
+ * secondary container colour. */
+@Composable
+fun FilledTonalIconToggleButton(
+    checked: Boolean,
+    onCheckedChange: (Boolean) -> Unit,
+    modifier: Modifier = Modifier,
+    enabled: Boolean = true,
+    shape: Shape = CircleShape,
+    glass: Glass = GlassMaterialDefaults.regular,
+    checkedGlass: Glass = GlassMaterialDefaults.forContainer(MaterialTheme.colorScheme.secondaryContainer),
+    interactionSource: MutableInteractionSource? = null,
+    content: @Composable () -> Unit,
+) = IconToggleButton(checked, onCheckedChange, modifier, enabled, glass, checkedGlass,
+    MaterialTheme.colorScheme.onSurfaceVariant, MaterialTheme.colorScheme.onSecondaryContainer, shape, interactionSource, content)
+
+/** Material 3's `OutlinedIconToggleButton`: see [IconToggleButton]. */
+@Composable
+fun OutlinedIconToggleButton(
+    checked: Boolean,
+    onCheckedChange: (Boolean) -> Unit,
+    modifier: Modifier = Modifier,
+    enabled: Boolean = true,
+    shape: Shape = CircleShape,
+    glass: Glass = GlassMaterialDefaults.regular,
+    checkedGlass: Glass = GlassMaterialDefaults.forContainer(MaterialTheme.colorScheme.inverseSurface),
+    interactionSource: MutableInteractionSource? = null,
+    content: @Composable () -> Unit,
+) = IconToggleButton(checked, onCheckedChange, modifier, enabled, glass, checkedGlass,
+    MaterialTheme.colorScheme.onSurfaceVariant, MaterialTheme.colorScheme.inverseOnSurface, shape, interactionSource, content)
 
 // ---- Floating action buttons ----------------------------------------------------------------------
 

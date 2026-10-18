@@ -50,6 +50,11 @@ abstract class AdoptTask : DefaultTask() {
             "SegmentedButton", "SegmentedButtonDefaults", "PrimaryTabRow", "SecondaryTabRow", "TabRow", "ScrollableTabRow",
             "Tab", "SearchBar", "DockedSearchBar", "AlertDialog", "BasicAlertDialog", "ModalBottomSheet",
             "rememberModalBottomSheetState", "SheetState", "DropdownMenu", "DropdownMenuItem", "Snackbar",
+            "IconToggleButton", "FilledIconToggleButton", "FilledTonalIconToggleButton", "OutlinedIconToggleButton",
+            "ElevatedAssistChip", "ElevatedFilterChip", "ElevatedSuggestionChip", "RangeSlider", "Surface",
+            "TooltipBox", "TooltipScope", "PlainTooltip", "RichTooltip", "ModalDrawerSheet", "DismissibleDrawerSheet",
+            "PermanentDrawerSheet", "NavigationDrawerItem", "DatePicker", "DateRangePicker", "DatePickerDialog",
+            "TimePickerDialog", "LeadingIconTab", "PrimaryScrollableTabRow", "SecondaryScrollableTabRow",
         )
         private const val FROM = "androidx.compose.material3."
         private const val TO = "com.wexpa.liquidglass.material3."

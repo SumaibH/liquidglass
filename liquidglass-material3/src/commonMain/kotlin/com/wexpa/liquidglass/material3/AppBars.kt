@@ -40,7 +40,7 @@ private fun clearBarColors(colors: TopAppBarColors): TopAppBarColors = colors.co
 
 /** The navigation icon in a round glass button. */
 private fun glassNavigation(icon: @Composable () -> Unit): @Composable () -> Unit = {
-    Box(Modifier.padding(start = 8.dp).size(GlassButtonHeight).glassEffect(Glass.Regular.interactive(), CircleShape),
+    Box(Modifier.padding(start = 8.dp).size(GlassButtonHeight).glassEffect(GlassMaterialDefaults.regular.interactive(), CircleShape),
         contentAlignment = Alignment.Center) {
         CompositionLocalProvider(LocalInGlassGroup provides true) { icon() }
     }
@@ -48,14 +48,14 @@ private fun glassNavigation(icon: @Composable () -> Unit): @Composable () -> Uni
 
 /** The actions grouped on one glass capsule, as iOS groups bar buttons. */
 private fun glassActions(actions: @Composable RowScope.() -> Unit): @Composable RowScope.() -> Unit = {
-    Row(Modifier.padding(end = 8.dp).heightIn(min = GlassButtonHeight).glassEffect(Glass.Regular, CapsuleShape)
+    Row(Modifier.padding(end = 8.dp).heightIn(min = GlassButtonHeight).glassEffect(GlassMaterialDefaults.regular, CapsuleShape)
         .padding(horizontal = 4.dp), verticalAlignment = Alignment.CenterVertically) {
         CompositionLocalProvider(LocalInGlassGroup provides true) { actions() }
     }
 }
 
 private fun barModifier(modifier: Modifier, layout: GlassLayout) =
-    if (layout == GlassLayout.Material) modifier.glassEffect(Glass.Toolbar, RectangleShape) else modifier
+    if (layout == GlassLayout.Material) modifier.glassEffect(GlassMaterialDefaults.toolbar, RectangleShape) else modifier
 
 /**
  * Material 3's `TopAppBar`, iOS 26 style: no container; the navigation icon in a round glass button and
@@ -152,14 +152,14 @@ fun BottomAppBar(
     layout: GlassLayout = GlassLayout.Ios,
 ) {
     if (layout == GlassLayout.Material) {
-        M3BottomAppBar(actions = actions, modifier = modifier.glassEffect(Glass.Toolbar, RectangleShape),
+        M3BottomAppBar(actions = actions, modifier = modifier.glassEffect(GlassMaterialDefaults.toolbar, RectangleShape),
             floatingActionButton = floatingActionButton, containerColor = Color.Transparent, contentColor = contentColor,
             tonalElevation = 0.dp, windowInsets = windowInsets, scrollBehavior = scrollBehavior)
         return
     }
     Row(modifier.fillMaxWidth().windowInsetsPadding(windowInsets).padding(horizontal = 20.dp, vertical = 8.dp),
         verticalAlignment = Alignment.CenterVertically) {
-        Row(Modifier.heightIn(min = 52.dp).glassEffect(Glass.Toolbar, CapsuleShape).padding(horizontal = 6.dp),
+        Row(Modifier.heightIn(min = 52.dp).glassEffect(GlassMaterialDefaults.toolbar, CapsuleShape).padding(horizontal = 6.dp),
             verticalAlignment = Alignment.CenterVertically) {
             CompositionLocalProvider(LocalInGlassGroup provides true, LocalContentColor provides contentColor) { actions() }
         }
@@ -178,7 +178,7 @@ fun BottomAppBar(
     content: @Composable RowScope.() -> Unit,
 ) {
     Row(modifier.fillMaxWidth().windowInsetsPadding(windowInsets).padding(horizontal = 20.dp, vertical = 8.dp)
-        .heightIn(min = 52.dp).glassEffect(Glass.Toolbar, CapsuleShape).padding(contentPadding),
+        .heightIn(min = 52.dp).glassEffect(GlassMaterialDefaults.toolbar, CapsuleShape).padding(contentPadding),
         verticalAlignment = Alignment.CenterVertically) {
         CompositionLocalProvider(LocalInGlassGroup provides true, LocalContentColor provides contentColor) { content() }
     }

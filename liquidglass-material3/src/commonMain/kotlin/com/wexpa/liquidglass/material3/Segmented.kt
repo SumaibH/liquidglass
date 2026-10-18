@@ -14,6 +14,11 @@ import androidx.compose.material3.SegmentedButtonColors
 import androidx.compose.material3.TabIndicatorScope
 import androidx.compose.material3.TabPosition
 import androidx.compose.runtime.*
+import androidx.compose.foundation.ScrollState
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.material3.TabRowDefaults
+import androidx.compose.material3.TabRowDefaults.tabIndicatorOffset
+import androidx.compose.material3.PrimaryScrollableTabRow as M3PrimaryScrollableTabRow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -135,7 +140,7 @@ fun MultiChoiceSegmentedButtonRow(
     modifier: Modifier = Modifier,
     space: Dp = 4.dp,
     content: @Composable MultiChoiceSegmentedButtonRowScope.() -> Unit,
-) = Row(modifier.heightIn(min = 40.dp).glassEffect(Glass.Regular, CapsuleShape).padding(4.dp),
+) = Row(modifier.heightIn(min = 40.dp).glassEffect(GlassMaterialDefaults.regular, CapsuleShape).padding(4.dp),
     horizontalArrangement = Arrangement.spacedBy(space), verticalAlignment = Alignment.CenterVertically) {
     SegmentedScope(this).content()
 }
@@ -241,9 +246,64 @@ fun ScrollableTabRow(
     edgePadding: Dp = 12.dp,
     tabs: @Composable () -> Unit,
 ) = M3ScrollableTabRow(selectedTabIndex = selectedTabIndex,
-    modifier = modifier.padding(horizontal = 16.dp, vertical = 6.dp).glassEffect(Glass.Regular, CapsuleShape),
+    modifier = modifier.padding(horizontal = 16.dp, vertical = 6.dp).glassEffect(GlassMaterialDefaults.regular, CapsuleShape),
     containerColor = Color.Transparent, contentColor = contentColor, edgePadding = edgePadding, divider = {},
     tabs = { CompositionLocalProvider(LocalTabsScrollable provides true) { tabs() } })
+
+/** Material 3's `LeadingIconTab`: a segment of a glass tab row with its icon before its text. */
+@Composable
+fun LeadingIconTab(
+    selected: Boolean,
+    onClick: () -> Unit,
+    text: @Composable () -> Unit,
+    icon: @Composable () -> Unit,
+    modifier: Modifier = Modifier,
+    enabled: Boolean = true,
+    selectedContentColor: Color = MaterialTheme.colorScheme.primary,
+    unselectedContentColor: Color = MaterialTheme.colorScheme.onSurface,
+    interactionSource: MutableInteractionSource? = null,
+) = Tab(selected, onClick, modifier, enabled,
+    text = { Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(6.dp)) { icon(); text() } },
+    icon = null, selectedContentColor = selectedContentColor, unselectedContentColor = unselectedContentColor,
+    interactionSource = interactionSource)
+
+/**
+ * Material 3's `PrimaryScrollableTabRow`: Material's tabs scrolling inside a glass capsule, as
+ * [ScrollableTabRow]. The indicator and divider are accepted for source compatibility; the glass
+ * capsule replaces both.
+ */
+@Composable
+fun PrimaryScrollableTabRow(
+    selectedTabIndex: Int,
+    modifier: Modifier = Modifier,
+    scrollState: ScrollState = rememberScrollState(),
+    containerColor: Color = Color.Transparent,
+    contentColor: Color = MaterialTheme.colorScheme.onSurface,
+    edgePadding: Dp = 12.dp,
+    indicator: @Composable TabIndicatorScope.() -> Unit = {},
+    divider: @Composable () -> Unit = {},
+    tabs: @Composable () -> Unit,
+) = M3PrimaryScrollableTabRow(selectedTabIndex = selectedTabIndex,
+    modifier = modifier.padding(horizontal = 16.dp, vertical = 6.dp).glassEffect(GlassMaterialDefaults.regular, CapsuleShape),
+    scrollState = scrollState, containerColor = Color.Transparent, contentColor = contentColor, edgePadding = edgePadding,
+    indicator = {
+        TabRowDefaults.PrimaryIndicator(Modifier.tabIndicatorOffset(selectedTabIndex, matchContentSize = true), width = Dp.Unspecified)
+    },
+    divider = {}, tabs = { CompositionLocalProvider(LocalTabsScrollable provides true) { tabs() } })
+
+/** Material 3's `SecondaryScrollableTabRow`: see [PrimaryScrollableTabRow]. */
+@Composable
+fun SecondaryScrollableTabRow(
+    selectedTabIndex: Int,
+    modifier: Modifier = Modifier,
+    scrollState: ScrollState = rememberScrollState(),
+    containerColor: Color = Color.Transparent,
+    contentColor: Color = MaterialTheme.colorScheme.onSurface,
+    edgePadding: Dp = 12.dp,
+    indicator: @Composable TabIndicatorScope.() -> Unit = {},
+    divider: @Composable () -> Unit = {},
+    tabs: @Composable () -> Unit,
+) = PrimaryScrollableTabRow(selectedTabIndex, modifier, scrollState, containerColor, contentColor, edgePadding, indicator, divider, tabs)
 
 /** Material 3's `Tab`: a segment of a glass tab row. */
 @Composable
