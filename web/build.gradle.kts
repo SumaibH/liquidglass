@@ -6,8 +6,8 @@ plugins {
     alias(libs.plugins.composeCompiler)
 }
 
-// Atlas Studio in the browser: the same Loupe screen as the desktop and Android apps, compiled to
-// WebAssembly and drawn by the library's production shaders through Compose for Web.
+// The live demo: Atlas Studio (the same Loupe screen as the desktop and Android apps) and, at #material3,
+// a Material 3 app built from liquidglass-material3. WebAssembly, drawn by the production shaders.
 kotlin {
     @OptIn(ExperimentalWasmDsl::class)
     wasmJs {
@@ -21,6 +21,8 @@ kotlin {
         val wasmJsMain by getting {
             dependencies {
                 implementation(project(":liquidglass"))
+                implementation(project(":liquidglass-material3"))
+                implementation("org.jetbrains.compose.material:material-icons-core:1.7.3")
                 implementation(libs.compose.runtime)
                 implementation(libs.compose.foundation)
                 implementation(libs.compose.ui)

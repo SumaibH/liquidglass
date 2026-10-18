@@ -10,7 +10,7 @@ shapes and motion in its own colour scheme.
 </p>
 <p align="center"><sub>Rendered by the library (desktop Skia, 390 × 844 dp at density 2) from Material's default dark and light schemes; only the imports differ from a Material 3 app. <a href="https://github.com/shayann07/liquidglass/blob/main/review/atlas/material3-2026-10-18/README.md">Evidence and limits</a>.</sub></p>
 
-The change is the imports:
+[Try it in your browser](demo.md#material-3). The change is the imports:
 
 ```kotlin
 // before

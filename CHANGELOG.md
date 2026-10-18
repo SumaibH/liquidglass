@@ -20,6 +20,12 @@ This file records user-visible development changes. Published artifacts are iden
 - `liquidglass-bom` (new): one version for every artifact. Gradle plugin `dev.shayxo.liquidglass`
   (new): adds the artifacts, and `./gradlew liquidGlassAdopt` switches an app's Material 3 imports to
   the glass versions once (`--dry-run` to preview). Not published yet.
+- Live demo: `#material3` shows a Material 3 app built from `liquidglass-material3` beside Atlas Studio.
+
+### Changed (18 October)
+
+- `liquidglass-material3` depends on Material 3 `1.9.0`, the stable release Compose Multiplatform
+  1.12.1 pairs with, so it never pulls an alpha Compose into an app (the sample keeps its 1.13 alpha).
 
 ### Fixed (18 October)
 

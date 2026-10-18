@@ -29,11 +29,13 @@ kotlin {
     sourceSets {
         commonMain.dependencies {
             api(project(":liquidglass"))
-            api(libs.compose.material3)
+            api(libs.compose.material3.library)
             implementation(libs.compose.runtime)
             implementation(libs.compose.foundation)
             implementation(libs.compose.ui)
         }
+        // The tests use Material 3's own experimental components (TopAppBar), as apps do.
+        jvmTest.get().languageSettings.optIn("androidx.compose.material3.ExperimentalMaterial3Api")
         jvmTest.dependencies {
             implementation(libs.kotlin.test)
             implementation(compose.desktop.currentOs)
@@ -55,5 +57,5 @@ mavenPublishing {
 tasks.matching { it.name == "checkComposeUiTestConfigurationForWasmJs" }.configureEach { enabled = false }
 
 // runDesktopComposeUiTest (Compose 1.12.1) wraps the test in runTest with the default 60 s timeout and
-// ignores its own testTimeout; phone-sized glass renders need longer.
-tasks.withType<Test>().configureEach { systemProperty("kotlinx.coroutines.test.default_timeout", "5m") }
+// ignores its own testTimeout; phone-sized glass renders need longer (CI runners about 3x local).
+tasks.withType<Test>().configureEach { systemProperty("kotlinx.coroutines.test.default_timeout", "15m") }

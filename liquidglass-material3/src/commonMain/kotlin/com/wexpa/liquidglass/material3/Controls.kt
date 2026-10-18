@@ -103,13 +103,13 @@ fun Slider(
     val source = interactionSource ?: remember { MutableInteractionSource() }
     val pressed by source.collectIsPressedAsState()
     val dragged by source.collectIsDraggedAsState()
-    val state = remember(steps, valueRange) { SliderState(value, steps, valueRange) }
-    if (state.value != value) state.value = value
+    // The value overload with custom thumb and track: the same call on Material 3 1.9 and later.
     M3Slider(
-        state = state, modifier = modifier, enabled = enabled, onValueChange = onValueChange,
-        onValueChangeFinished = onValueChangeFinished, colors = colors, interactionSource = source,
+        value = value, onValueChange = onValueChange, modifier = modifier, enabled = enabled,
+        onValueChangeFinished = onValueChangeFinished, colors = colors, interactionSource = source, steps = steps,
         thumb = { GlassThumb(pressed || dragged, enabled) },
         track = { GlassSliderTrack(it, valueRange, colors, enabled) },
+        valueRange = valueRange,
     )
 }
 
