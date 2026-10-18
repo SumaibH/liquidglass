@@ -64,13 +64,13 @@ fun AlertDialog(
     title: @Composable (() -> Unit)? = null,
     text: @Composable (() -> Unit)? = null,
     shape: Shape = RoundedCornerShape(34.dp),
-    glass: Glass = GlassMaterialDefaults.regular,
+    glass: Glass = GlassMaterialDefaults.panel,
     iconContentColor: Color = MaterialTheme.colorScheme.secondary,
     titleContentColor: Color = MaterialTheme.colorScheme.onSurface,
     textContentColor: Color = MaterialTheme.colorScheme.onSurfaceVariant,
     properties: DialogProperties = DialogProperties(),
 ) = BasicAlertDialog(onDismissRequest, modifier, properties) {
-    Column(Modifier.widthIn(min = 270.dp, max = 400.dp).glassEffect(glass, shape).padding(24.dp)) {
+    Column(Modifier.widthIn(min = 270.dp, max = 400.dp).glassEffect(glass, shape).padding(24.dp)) { OnGlassPanel {
         icon?.let {
             CompositionLocalProvider(LocalContentColor provides iconContentColor) {
                 Box(Modifier.align(Alignment.CenterHorizontally).padding(bottom = 16.dp)) { it() }
@@ -92,7 +92,7 @@ fun AlertDialog(
             dismissButton?.invoke()
             confirmButton()
         }
-    }
+    } }
 }
 
 /** Material 3's `BasicAlertDialog`: [content] centred over a light scrim, in the app's window. */
@@ -160,7 +160,7 @@ fun ModalBottomSheet(
     sheetState: SheetState = rememberModalBottomSheetState(),
     sheetMaxWidth: Dp = 640.dp,
     shape: Shape = RoundedCornerShape(38.dp),
-    glass: Glass = GlassMaterialDefaults.regular,
+    glass: Glass = GlassMaterialDefaults.panel,
     contentColor: Color = MaterialTheme.colorScheme.onSurface,
     scrimColor: Color = Scrim,
     dragHandle: @Composable (() -> Unit)? = { DragHandle() },
@@ -194,7 +194,7 @@ fun ModalBottomSheet(
                 .padding(bottom = 16.dp),
         ) {
             dragHandle?.let { Box(Modifier.align(Alignment.CenterHorizontally)) { it() } }
-            CompositionLocalProvider(LocalContentColor provides contentColor) { content() }
+            OnGlassPanel { CompositionLocalProvider(LocalContentColor provides contentColor) { content() } }
         }
     }
 }
@@ -217,7 +217,7 @@ fun DropdownMenu(
     modifier: Modifier = Modifier,
     offset: DpOffset = DpOffset(0.dp, 4.dp),
     shape: Shape = RoundedCornerShape(24.dp),
-    glass: Glass = GlassMaterialDefaults.regular,
+    glass: Glass = GlassMaterialDefaults.panel,
     content: @Composable ColumnScope.() -> Unit,
 ) {
     var anchor by remember { mutableStateOf(androidx.compose.ui.geometry.Rect.Zero) }
@@ -242,8 +242,7 @@ fun DropdownMenu(
                 .clickable(interactionSource = remember { MutableInteractionSource() }, indication = null) {}
                 .padding(vertical = 8.dp)
                 .verticalScroll(rememberScrollState()),
-            content = content,
-        )
+        ) { OnGlassPanel { content() } }
     }
 }
 

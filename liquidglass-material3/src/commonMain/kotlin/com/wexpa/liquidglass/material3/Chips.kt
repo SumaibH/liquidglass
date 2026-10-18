@@ -138,7 +138,7 @@ fun Snackbar(
     dismissAction: @Composable (() -> Unit)? = null,
     actionOnNewLine: Boolean = false,
     shape: Shape = SnackbarDefaults.shape,
-    glass: Glass = GlassMaterialDefaults.regular,
+    glass: Glass = GlassMaterialDefaults.panel,
     contentColor: Color = MaterialTheme.colorScheme.onSurface,
     actionContentColor: Color = MaterialTheme.colorScheme.primary,
     dismissActionContentColor: Color = MaterialTheme.colorScheme.onSurfaceVariant,
@@ -159,12 +159,14 @@ fun Snackbar(
     }
     val box = modifier.widthIn(max = 600.dp).fillMaxWidth().heightIn(min = 48.dp).glassEffect(glass, shape)
         .padding(start = 16.dp, end = 8.dp)
-    if (actionOnNewLine) Column(box) {
-        message()
-        Row(Modifier.align(Alignment.End).padding(bottom = 4.dp), verticalAlignment = Alignment.CenterVertically) { actions() }
-    } else Row(box, verticalAlignment = Alignment.CenterVertically) {
-        Box(Modifier.weight(1f)) { message() }
-        actions()
+    OnGlassPanel {
+        if (actionOnNewLine) Column(box) {
+            message()
+            Row(Modifier.align(Alignment.End).padding(bottom = 4.dp), verticalAlignment = Alignment.CenterVertically) { actions() }
+        } else Row(box, verticalAlignment = Alignment.CenterVertically) {
+            Box(Modifier.weight(1f)) { message() }
+            actions()
+        }
     }
 }
 
@@ -175,7 +177,7 @@ fun Snackbar(
     modifier: Modifier = Modifier,
     actionOnNewLine: Boolean = false,
     shape: Shape = SnackbarDefaults.shape,
-    glass: Glass = GlassMaterialDefaults.regular,
+    glass: Glass = GlassMaterialDefaults.panel,
     contentColor: Color = MaterialTheme.colorScheme.onSurface,
     actionColor: Color = MaterialTheme.colorScheme.primary,
     actionContentColor: Color = MaterialTheme.colorScheme.primary,

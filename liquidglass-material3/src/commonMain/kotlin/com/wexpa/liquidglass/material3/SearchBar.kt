@@ -39,6 +39,8 @@ fun SearchBar(
     trailingIcon: (@Composable () -> Unit)? = null,
     shape: Shape = CapsuleShape,
     glass: Glass = GlassMaterialDefaults.regular,
+    /** The results panel below the field: frosted, as a sheet is. */
+    panelGlass: Glass = GlassMaterialDefaults.panel,
     content: @Composable ColumnScope.() -> Unit = {},
 ) {
     val ink = MaterialTheme.colorScheme.onSurface
@@ -69,8 +71,8 @@ fun SearchBar(
         }
         if (active) {
             Spacer(Modifier.height(8.dp))
-            Column(Modifier.fillMaxWidth().glassEffect(glass, RoundedCornerShape(26.dp)).padding(vertical = 8.dp)) {
-                CompositionLocalProvider(LocalContentColor provides ink) { content() }
+            Column(Modifier.fillMaxWidth().glassEffect(panelGlass, RoundedCornerShape(26.dp)).padding(vertical = 8.dp)) {
+                OnGlassPanel { CompositionLocalProvider(LocalContentColor provides ink) { content() } }
             }
         }
     }
@@ -91,6 +93,7 @@ fun DockedSearchBar(
     trailingIcon: (@Composable () -> Unit)? = null,
     shape: Shape = CapsuleShape,
     glass: Glass = GlassMaterialDefaults.regular,
+    panelGlass: Glass = GlassMaterialDefaults.panel,
     content: @Composable ColumnScope.() -> Unit = {},
 ) = SearchBar(query, onQueryChange, onSearch, active, onActiveChange, modifier, enabled, placeholder, leadingIcon,
-    trailingIcon, shape, glass, content)
+    trailingIcon, shape, glass, panelGlass, content)

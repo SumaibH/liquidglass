@@ -5,6 +5,18 @@ This file records user-visible development changes. Published artifacts are iden
 
 ## Unreleased — Atlas stabilization
 
+### Changed — Material 3 panels are frosted; a new showcase (18 October)
+
+- `GlassMaterialDefaults.panel` (new): cards, dialogs, sheets, menus, snackbars and the search results
+  panel draw `regular` glass over a backdrop blurred at the measured system-backdrop sigma (7.7 dp).
+  Using it for in-app panels is authored. Without the frost, a panel's wide rim compressed the text
+  beside it into a smeared copy along the edge. Controls keep unblurred `regular`, except on a panel,
+  where `regular` and `prominent()` take the panel's frost. `SearchBar` and
+  `DockedSearchBar` take `panelGlass` for the results panel.
+- The Material 3 showcase (Android sample, desktop, web demo) is a music library over a mesh
+  wallpaper with detailed album covers, so there is something for the glass to bend.
+  `MaterialShowcaseRenderTest` renders it on desktop.
+
 ### Added — NuGet packages (18 October, Phase 6)
 
 - The .NET port is packaged as `LiquidGlass` (the SkiaSharp painter, .NET 8) and `LiquidGlass.WinForms`
