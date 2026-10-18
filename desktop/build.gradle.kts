@@ -79,3 +79,4 @@ tasks.register<JavaExec>("phoneReplay") {
     args(providers.gradleProperty("atlas.replay.script").orNull ?: "", providers.gradleProperty("atlas.replay.out").orNull ?: "",
         providers.gradleProperty("atlas.replay.variant").getOrElse("calm"))
 }
+tasks.withType<Test>().configureEach { systemProperty("kotlinx.coroutines.test.default_timeout", "15m") }

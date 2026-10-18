@@ -58,6 +58,17 @@ Open: the CanvasKit painter binds the light as (0, -1) where `Glass.Regular` use
   emulator ([evidence](https://github.com/shayann07/liquidglass/blob/main/review/atlas/android-material3-2026-10-18/README.md)).
   The browser build runs (live demo, `#material3`).
 
+## Glass quality pass (18 October)
+
+- Material 3 panels (cards, dialogs, sheets, menus, snackbars, the search results panel) are frosted
+  with the measured system-backdrop sigma, 7.7 dp (`GlassMaterialDefaults.panel`). Using it for
+  in-app panels is authored. Controls are unchanged. No measured constant changed and the core
+  library is untouched.
+- The showcase is redesigned (music library, mesh wallpaper, detailed covers).
+- Evidence: [glass quality renders](https://github.com/shayann07/liquidglass/blob/main/review/atlas/glass-quality-2026-10-18/README.md),
+  on a Pixel 7 and on desktop. They are not a calibrated comparison against iOS. Rim and specular
+  work toward iOS is next. It will be opt-in.
+
 ## Atlas and the current material
 
 ![Native Windows Atlas grid scene](https://raw.githubusercontent.com/shayann07/liquidglass/b46207d665725a0aa841102bfbdcbe74aaf4ac3c/review/atlas/wide-input-2026-10-11/static.png)

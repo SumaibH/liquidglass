@@ -257,14 +257,14 @@ fun ExtendedFloatingActionButton(
 fun Card(
     modifier: Modifier = Modifier,
     shape: Shape = CardDefaults.shape,
-    glass: Glass = GlassMaterialDefaults.regular,
+    glass: Glass = GlassMaterialDefaults.panel,
     contentColor: Color = MaterialTheme.colorScheme.onSurface,
     border: BorderStroke? = null,
     content: @Composable ColumnScope.() -> Unit,
 ) = GlassComponent {
     M3Card(modifier.glassEffect(glass, shape), shape,
         CardDefaults.cardColors(containerColor = Color.Transparent, contentColor = contentColor),
-        CardDefaults.cardElevation(0.dp), border, content)
+        CardDefaults.cardElevation(0.dp), border) { OnGlassPanel { content() } }
 }
 
 /** Material 3's clickable `Card` as an interactive glass panel. */
@@ -274,7 +274,7 @@ fun Card(
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
     shape: Shape = CardDefaults.shape,
-    glass: Glass = GlassMaterialDefaults.regular,
+    glass: Glass = GlassMaterialDefaults.panel,
     contentColor: Color = MaterialTheme.colorScheme.onSurface,
     border: BorderStroke? = null,
     interactionSource: MutableInteractionSource? = null,
@@ -282,7 +282,7 @@ fun Card(
 ) = GlassComponent {
     M3Card(onClick, modifier.glassEffect(if (enabled) glass.interactive() else glass, shape), enabled, shape,
         CardDefaults.cardColors(containerColor = Color.Transparent, contentColor = contentColor),
-        CardDefaults.cardElevation(0.dp), border, interactionSource, content)
+        CardDefaults.cardElevation(0.dp), border, interactionSource) { OnGlassPanel { content() } }
 }
 
 /** Material 3's `ElevatedCard` as a glass panel; glass carries its own depth, so there is no shadow. */
@@ -290,7 +290,7 @@ fun Card(
 fun ElevatedCard(
     modifier: Modifier = Modifier,
     shape: Shape = CardDefaults.elevatedShape,
-    glass: Glass = GlassMaterialDefaults.regular,
+    glass: Glass = GlassMaterialDefaults.panel,
     contentColor: Color = MaterialTheme.colorScheme.onSurface,
     content: @Composable ColumnScope.() -> Unit,
 ) = Card(modifier, shape, glass, contentColor, null, content)
@@ -300,7 +300,7 @@ fun ElevatedCard(
 fun OutlinedCard(
     modifier: Modifier = Modifier,
     shape: Shape = CardDefaults.outlinedShape,
-    glass: Glass = GlassMaterialDefaults.regular,
+    glass: Glass = GlassMaterialDefaults.panel,
     contentColor: Color = MaterialTheme.colorScheme.onSurface,
     border: BorderStroke? = null,
     content: @Composable ColumnScope.() -> Unit,

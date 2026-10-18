@@ -5,10 +5,10 @@ names and parameters. An app that uses Material 3 changes its imports and gets i
 shapes and motion in its own colour scheme.
 
 <p align="center">
-  <img src="assets/material3-dark.png" width="300" alt="A Material 3 screen in glass, dark scheme: top bar, segmented control, buttons, chips, a card with a switch and a slider, and the tab bar with a search button, over album covers">
-  <img src="assets/material3-light.png" width="300" alt="The same screen in the light scheme">
+  <img src="assets/material3-light.png" width="300" alt="A Material 3 music app in glass, light scheme: top bar, segmented control, buttons, chips, a frosted mini player with a switch and a slider, and the tab bar with a search button, over album art">
+  <img src="assets/material3-dark.png" width="300" alt="The same app in the dark scheme">
 </p>
-<p align="center"><sub>Rendered by the library (desktop Skia, 390 × 844 dp at density 2) from Material's default dark and light schemes; only the imports differ from a Material 3 app. <a href="https://github.com/shayann07/liquidglass/blob/main/review/atlas/material3-2026-10-18/README.md">Evidence and limits</a>.</sub></p>
+<p align="center"><sub>Rendered by the library (desktop Skia, 390 × 844 dp at density 3, scaled down) from Material's default light and dark schemes; only the imports differ from a Material 3 app. The same screen runs on Android and in the browser. <a href="https://github.com/shayann07/liquidglass/blob/main/review/atlas/glass-quality-2026-10-18/README.md">Evidence and limits</a>, including a Pixel 7 capture.</sub></p>
 
 [Try it in your browser](demo.md#material-3). The change is the imports:
 
@@ -56,7 +56,7 @@ The glass `Scaffold` is the root: it records the screen once and every glass com
   <img src="assets/material3-catalogue-controls.png" width="300" alt="Glass buttons, icon buttons, floating action buttons, chips, switches, a slider and cards over diagonal colour bands, dark scheme">
   <img src="assets/material3-catalogue-navigation.png" width="300" alt="Glass top app bars, a tab row, multi-choice segmented buttons, an open search bar, a snackbar and a bottom app bar, light scheme">
 </p>
-<p align="center"><sub>Every component over diagonal colour bands, so each glass edge crosses a boundary and shows its refraction. Rendered by the library (desktop Skia, 390 × 844 dp at density 2) by <code>GlassMaterialCatalogueTest</code>. <a href="https://github.com/shayann07/liquidglass/blob/main/review/atlas/material3-2026-10-18/README.md">All renders</a>.</sub></p>
+<p align="center"><sub>Every component over diagonal colour bands, so each glass edge crosses a boundary and shows its refraction. Rendered by the library (desktop Skia, 390 × 844 dp at density 2) by <code>GlassMaterialCatalogueTest</code>. <a href="https://github.com/shayann07/liquidglass/blob/main/review/atlas/glass-quality-2026-10-18/README.md">All renders</a>.</sub></p>
 
 | Material 3 | Glass version (iOS 26 look, your colours) |
 | :-- | :-- |
@@ -71,7 +71,7 @@ The glass `Scaffold` is the root: it records the screen once and every glass com
 | `TextButton` | no glass, as an iOS borderless button; pass `glass` to add it |
 | `IconButton`, `FilledIconButton`, `FilledTonalIconButton`, `OutlinedIconButton` | round glass buttons; inside a bar's capsule they draw no glass of their own |
 | `FloatingActionButton`, `SmallFloatingActionButton`, `LargeFloatingActionButton`, `ExtendedFloatingActionButton` | prominent glass tinted with `containerColor` |
-| `Card` (both), `ElevatedCard`, `OutlinedCard` | glass panels; a clickable card is interactive glass |
+| `Card` (both), `ElevatedCard`, `OutlinedCard` | frosted glass panels; a clickable card is interactive glass |
 | `AssistChip`, `FilterChip`, `InputChip`, `SuggestionChip` | glass capsules; a selected chip is prominent glass |
 | `Switch` | an iOS switch: the thumb turns into a glass lens while pressed |
 | `Slider` | iOS's thin continuous track in the primary colour; the thumb turns into a glass lens while dragged |
@@ -86,7 +86,11 @@ The glass `Scaffold` is the root: it records the screen once and every glass com
 | `Snackbar` (both) | a glass capsule |
 
 Every component takes a `glass` parameter (`Glass.Regular`, `Glass.Clear`, a tint, or
-`Glass(GlassStyle(...))`) for full control. The bars and the navigation bar take
+`Glass(GlassStyle(...))`) for full control. Large surfaces (cards, dialogs, sheets, menus, snackbars
+and the search results panel; `SearchBar` takes it as `panelGlass`) default to
+`GlassMaterialDefaults.panel`: the same glass over a frosted backdrop, as iOS draws its sheets and
+alerts, so text behind a panel does not smear along its edge. Controls default to unblurred glass;
+on a panel they take the panel's frost, because glass on glass samples the page under the panel. The bars and the navigation bar take
 `layout = GlassLayout.Material` to keep Material's own full-width layout, made of glass.
 
 ## Behaviour and limits
