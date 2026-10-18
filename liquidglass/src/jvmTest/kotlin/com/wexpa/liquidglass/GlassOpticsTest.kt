@@ -340,4 +340,33 @@ class GlassOpticsTest {
                 "was $meanDifference",
         )
     }
+
+    @Test
+    fun testTheOuterContourSitsOutsideTheOutlineAndOnlyWhereTheRimIsUnlit() {
+        // iOS 27's contour (ios27-measurements-raw.md, "The dark contour"), on its subject: a
+        // 132 px circle (44 pt at 3x) over white, lit from straight above. It darkens the white
+        // outside the outline at the sides, leaves the poles alone, and never touches the body.
+        val pad = 8
+        val size = 132
+        val white = { _: Int, _: Int -> 0xFFFFFF }
+        fun shot(contour: Float) = GlassRender.render(width = size, height = size, pad = pad, refractBand = 0f,
+            outerContour = contour, backdrop = white)
+        val lw = size + pad * 2
+        // Composite the premultiplied layer over the white page, as the host does.
+        fun over(px: Int): Double {
+            val a = ((px ushr 24) and 0xFF) / 255.0
+            return GlassRender.luma(px) + 255.0 * (1.0 - a)
+        }
+        val off = shot(0f)
+        val on = shot(0.61f)
+        val c = pad + size / 2
+        val side = c * lw + pad + size // the first pixel wholly outside the right edge (d = 0.5)
+        val pole = pad * lw - lw + c  // the first pixel wholly outside the top edge
+        val inside = c * lw + pad + size - 2 // two pixels inside the right edge
+        assertTrue(abs(over(off[side]) - 255.0) < 1.0, "off by default; read ${over(off[side])}")
+        // Band 2/3 deep at d = 0.5 times 0.61: about 0.41 of the white removed.
+        assertTrue(over(on[side]) in 140.0..160.0, "the side contour must darken the page; read ${over(on[side])}")
+        assertTrue(abs(over(on[pole]) - 255.0) < 2.0, "nothing at the lit pole; read ${over(on[pole])}")
+        assertTrue(abs(over(on[inside]) - over(off[inside])) < 1.0, "the body is untouched")
+    }
 }

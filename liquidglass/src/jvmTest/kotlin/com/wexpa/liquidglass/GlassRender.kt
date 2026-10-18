@@ -59,6 +59,9 @@ internal object GlassRender {
         highlightChroma: Float = 0f,
         innerShadow: Float = 0f,
         edgeShadow: Float = 0f,
+        /** [GlassStyle.outerContour] and [GlassStyle.outerContourFloor]. */
+        outerContour: Float = 0f,
+        outerContourFloor: Float = 0f,
         rimSoft: Float = 0f,
         tintAbsorb: Float = 0f,
         tintAlpha: Float = 0f,
@@ -180,6 +183,7 @@ internal object GlassRender {
         b.uniform("uEdgeLight", edgeLight)
         b.uniform("uBevelPeak", 0f)
         b.uniform("uEdgeShadow", edgeShadow)
+        b.uniform("uOuterContour", outerContour, outerContourFloor)
         b.uniform("uRimSoft", rimSoft)
         b.uniform("uTintAbsorb", tintAbsorb)
         b.uniform("uFresnel", fresnel)

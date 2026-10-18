@@ -315,6 +315,31 @@ data class GlassStyle(
      */
     val capEdgeShadow: Float = 0f,
     /**
+     * A dark contour drawn **outside** the outline, strongest where the rim is unlit, as iOS 27
+     * draws it. It is what keeps a control distinct over bright content. 0, the default, draws none.
+     *
+     * Measured on iOS 27's 44 pt navigation buttons over a white page
+     * (`docs/research/ios27-measurements-raw.md`, "The dark contour"). The contour lies entirely
+     * outside the outline: the outermost wholly covered pixel matches the body. It is about 1.5 px
+     * wide, centred 0.25 px outside. It darkens what is behind it by 0.61 (dark appearance) or 0.31
+     * (light appearance) at the sides, and falls to zero at the lit poles: 5.7% of the side value at
+     * 20 degrees off the light, 20.5% at 40, 36.2% at 60 and 37.4% at 120 (dark appearance). Here
+     * the angular law is `(1 - |cos|)^0.75` of the angle to the light ([GlassLight]). It fits the
+     * dark appearance's nine angles within 0.04 of the side value.
+     * Whether iOS darkens multiplicatively or additively is not determinable from the captures
+     * (over black both are invisible). This draws black at this opacity over the backdrop,
+     * which is multiplicative. It is drawn by `glassEffect`'s shader, not by containers or the tab bar.
+     */
+    val outerContour: Float = 0f,
+    /**
+     * The share of [outerContour] that remains at the lit poles. The light appearance keeps about
+     * 8-9% of the backdrop there (about a quarter of its 31% side value). The dark appearance goes to
+     * zero. The light appearance's profile is flatter than the law above between the pole and 60
+     * degrees (it reads 8.1% at 20 and 11.3% at 40), so a floor of 0.25 overshoots it there by up to
+     * 0.15 of the side value.
+     */
+    val outerContourFloor: Float = 0f,
+    /**
      * How far the compressed rim image is smeared along the surface normal.
      *
      * Where the rim compresses a hard boundary it lands as a single bright line, which reads as
