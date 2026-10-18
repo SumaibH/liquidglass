@@ -5,6 +5,12 @@ This file records user-visible development changes. Published artifacts are iden
 
 ## Unreleased — Atlas stabilization
 
+### Added — NuGet packages (18 October, Phase 6)
+
+- The .NET port is packaged as `LiquidGlass` (the SkiaSharp painter, .NET 8) and `LiquidGlass.WinForms`
+  (.NET 10), at the library's version, with Source Link and symbols. CI packs both and checks their
+  contents on Linux and Windows. Not published.
+
 ### Added — `liquidglass-material3` (18 October, Phase 3)
 
 - A new artifact with Liquid Glass versions of the Material 3 components, with the same names and

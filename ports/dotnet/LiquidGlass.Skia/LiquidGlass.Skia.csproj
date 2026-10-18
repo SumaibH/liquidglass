@@ -1,11 +1,13 @@
 <Project Sdk="Microsoft.NET.Sdk">
+  <Import Project="../Package.props" />
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-    <IsPackable>false</IsPackable>
     <RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
+    <PackageId>LiquidGlass</PackageId>
+    <Description>The production LiquidGlass shaders on a SkiaSharp SKCanvas: iOS 26-style refracting glass, its measured material, the tab bar selector and its motion. No Compose, browser or JavaScript.</Description>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="SkiaSharp" Version="4.153.1" />
