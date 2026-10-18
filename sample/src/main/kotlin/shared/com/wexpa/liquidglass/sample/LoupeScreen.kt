@@ -175,7 +175,7 @@ fun LoupeScreen(reduceMotion: Boolean = false, modifier: Modifier = Modifier,
                 style = barStyle, motionEnabled = moving,
                 trailingAccessory = GlassTabBarAccessory(BarHeight, gap = gap, yieldsToLens = true)) { index, selected ->
                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                    Label(listOf("✦", "Aa", "▦")[index], 18, if (selected) Accent else Ink)
+                    SceneGlyph(index, if (selected) Accent else Ink)
                     Label(Scenes[index], 10, if (selected) Accent else Muted, FontWeight.SemiBold)
                 }
             }
@@ -304,6 +304,32 @@ private fun DrawScope.lines(t: Float, pan: Offset) {
             if (tag == "zoom-out") contentDescription = "Decrease magnification"
         }.padding(horizontal = 14.dp), contentAlignment = Alignment.Center) {
         Label(text, 14, if (selected) Accent else Ink)
+    }
+}
+
+/** The scene's tab glyph. Drawn, not typed: the browser build's bundled font has no ✦ or ▦. */
+@Composable private fun SceneGlyph(index: Int, color: Color) {
+    if (index == 1) { Label("Aa", 18, color); return }
+    val line = with(LocalDensity.current) { (18 * 1.4f).sp.toDp() }
+    Canvas(Modifier.size(width = 18.dp, height = line)) {
+        val c = Offset(size.width / 2f, size.height / 2f)
+        val r = 7.dp.toPx()
+        if (index == 0) {
+            // A four-pointed star.
+            val waist = r * .28f
+            val path = androidx.compose.ui.graphics.Path().apply {
+                moveTo(c.x, c.y - r); lineTo(c.x + waist, c.y - waist); lineTo(c.x + r, c.y)
+                lineTo(c.x + waist, c.y + waist); lineTo(c.x, c.y + r); lineTo(c.x - waist, c.y + waist)
+                lineTo(c.x - r, c.y); lineTo(c.x - waist, c.y - waist); close()
+            }
+            drawPath(path, color)
+        } else {
+            // A grid of three by three squares.
+            val cell = r * 2f / 3f
+            val gap = cell * .22f
+            for (i in 0 until 3) for (j in 0 until 3) drawRect(color,
+                Offset(c.x - r + i * cell + gap / 2f, c.y - r + j * cell + gap / 2f), Size(cell - gap, cell - gap))
+        }
     }
 }
 

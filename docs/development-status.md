@@ -19,6 +19,7 @@ backend comparison. [GPU evidence](https://github.com/shayann07/liquidglass/blob
 | Use case | Entry point | Responsibility and scope |
 | --- | --- | --- |
 | Compose app | `GlassScene` and scoped `Modifier.glass` | Shared recorded backdrop; host keeps layout, actions and semantics |
+| Compose for Web | the same Compose APIs, `wasmJs` target | Same Skia actuals as desktop (`skikoMain`); `:web` runs Atlas in the browser ([record](https://github.com/shayann07/liquidglass/blob/main/review/atlas/web-2026-10-18/README.md)) |
 | Explicit Compose control | `rememberLiquidGlassState`, `liquidGlassSource`, `Modifier.liquidGlass` | Existing API and historical presets retained |
 | Free magnifier | `GlassStyle.clearLens` / native `DrawLens` | Continuous mapping; distinct from a held navigation selector |
 | Calm navigation | `GlassTabBarStyle.Calm()` | Tap/held travel, landing recovery, whole-bar off-axis strain and separate appearance |

@@ -17,7 +17,7 @@ import org.jetbrains.skia.Surface
 /**
  * Renders the panel shader off-device, so optics can be asserted numerically.
  *
- * Everything here mirrors what `LiquidGlass.jvm.kt` does at runtime: the same shader text, the
+ * Everything here mirrors what `LiquidGlass.skiko.kt` does at runtime: the same shader text, the
  * same uniform names, a padded backdrop bound as `content`, and the panel inset by [pad] inside
  * it. What it adds is that the result comes back as pixels a test can read, which is the only
  * way to check a claim like "the refraction is continuous across the medial axis" without a

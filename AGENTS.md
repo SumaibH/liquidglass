@@ -18,7 +18,7 @@ keep historical records as provenance and follow the single canonical workflow.
 
 | Path | What it is | Tracked? |
 | :-- | :-- | :-- |
-| `liquidglass/` | **the library module.** `src/commonMain` (Kotlin + SkSL shader sources), `src/androidMain` / `src/jvmMain` (the platform actuals), `src/jvmTest` (the render and behaviour suite) | yes |
+| `liquidglass/` | **the library module.** `src/commonMain` (Kotlin + SkSL shader sources), `src/androidMain` / `src/skikoMain` (the platform actuals; `skikoMain` is shared by desktop JVM and web Wasm), `src/jvmTest` (the render and behaviour suite) | yes |
 | `sample/` | the Android sample app, including the deterministic device fixtures | yes |
 | `build.gradle.kts`, `settings.gradle.kts`, `gradle.properties`, `gradle/`, `gradlew*` | **build and dependencies.** Versions are declared in `gradle/libs.versions.toml`; coordinates and POM in `gradle.properties` (`GROUP`, `VERSION_NAME`) | yes |
 | `.github/` | CI: build, docs publish, and the tag-driven Maven Central release | yes |

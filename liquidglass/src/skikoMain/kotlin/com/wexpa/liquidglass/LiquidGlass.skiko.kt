@@ -331,7 +331,7 @@ internal fun glassEndpointInputFilter(builder: RuntimeShaderBuilder, inkStrip: F
         // RuntimeShader's zero-radius overload only promises same-coordinate sampling.
         // Declare the ink translation in the filter graph, where Skia can propagate bounds.
         // Sampling the strip with a shader offset drops offscreen ink on the native GPU.
-        return ImageFilter.makeOffset(0f, -inkStrip, null, null).use { shiftedInk ->
+        return ImageFilter.makeOffset(0f, -inkStrip, null, null).closing { shiftedInk ->
             ImageFilter.makeRuntimeShader(builder, arrayOf("endpoint", "ink"), arrayOf(null, shiftedInk))
         }
     }
