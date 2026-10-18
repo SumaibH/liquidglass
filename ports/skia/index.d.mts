@@ -27,6 +27,9 @@ export interface GlassMaterial {
   reducedTransparency?: number; increasedContrast?: number;
   /** Navigation bars only: GlassTabBarStyle.CalmClear's clearer bar (WhatsApp's and the App Store's). */
   clear?: boolean;
+  /** Surfaces only: Compose's `Glass.tint(color)`. Replaces the tint colour and opacity ([r, g, b, a],
+   * sRGB 0..1, quantized to 8 bits as Compose's Color is); the dark appearance keeps its lift. */
+  tint?: readonly [number, number, number, number] | null;
 }
 export interface GlassFeedback {
   matrix: [number, number, number, number]; offset: [number, number];

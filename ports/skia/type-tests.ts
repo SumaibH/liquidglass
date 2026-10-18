@@ -15,6 +15,9 @@ const nextFrame: boolean = scene.draw(canvas, .3);
 scene.resize({pixelRatio: 1}, .3); scene.setReducedMotion(true, .3);
 const painter = createGlassPainter(kit); painter.setSource(image);
 painter.drawSurface(canvas, card.bounds, {density: 2}); painter.drawLens(canvas, lens.bounds);
+painter.drawSurface(canvas, card.bounds, {dark: true, tint: [0.04, 0.52, 1, 0.5]});
+// @ts-expect-error A tint is four sRGB components.
+painter.drawSurface(canvas, card.bounds, {tint: [1, 1, 1]});
 const controller = createCalmInteraction({width: 100, height: 50});
 controller.press(0); controller.resize({width: 120}, .1); controller.sample(.3);
 subpathScene(kit, {width: 10, height: 10}).dispose();
