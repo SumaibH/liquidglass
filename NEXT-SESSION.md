@@ -72,6 +72,23 @@ Phases, one PR each, suite and ports green each time, the owner reviews between 
      `web-component`; docs/web-component.md; evidence review/web-component-2026-10-18. Open: Safari and
      device checks, Firefox/WebKit headless builds render no backdrop blur, CanvasKit painter light (0,-1)
      vs GlassLight.Default. NuGet not started.
+   - 18-19 Oct status:
+     - Merged: #30 (Material 3, BOM, plugin), #31 (NuGet packaging), #32 (Android sample plus the
+       overlay draw order), #33 (web component; a flaky reduced-motion race fixed in element.mjs).
+     - Owner: "not impressed by the visual quality" (murky, flat, smears, no shine).
+     - PR #34 (claude/glass-quality): frosted Material panels (`GlassMaterialDefaults.panel`, sigma
+       7.7 dp), controls on a panel take its frost (glass on glass showed a sharp copy of what the
+       panel hides), and a redesigned showcase. Pixel 7 capture in review/atlas/glass-quality-2026-10-18.
+     - PR #35 (claude/ios-rim, stacked on #34): opt-in `GlassStyle.outerContour`, iOS 27's measured
+       dark contour outside the outline (ios27-measurements-raw.md item 7). Material adopts it with the
+       measured overhead light and zero dispersion. Core suite 411/412; the one failure was the uniform
+       list, now fixed. Pixel 7 confirms the contour on Android.
+     - Next for quality: the contour in GlassContainerShaderSource and the tab bar (Calm, Ios27);
+       broaden and dim the specular per item 8 (opt-in); then compare against the private CC/stills
+       locally.
+     - Do not run two Gradle builds in one worktree at once: the renders and XML results clobber each
+       other (UncompletedCoroutinesError, stale XML). A test that passes alone may fail when run in
+       parallel.
 
 ## Parity plan (15 Oct 2026, owner-approved; parity work accepted 18 Oct)
 
