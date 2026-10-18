@@ -5,6 +5,28 @@ This file records user-visible development changes. Published artifacts are iden
 
 ## Unreleased — Atlas stabilization
 
+### Added — `liquidglass-material3` (18 October, Phase 3)
+
+- A new artifact with Liquid Glass versions of the Material 3 components, with the same names and
+  parameters, iOS 26 shapes and motion, and the app's colour scheme: `Scaffold`, `NavigationBar` and
+  `NavigationBarItem` (iOS's floating tab bar with its lens, and an optional fused search button), the
+  top and bottom app bars, `NavigationRail`, every button, icon button and FAB, cards, chips, `Switch`
+  and `Slider` (thumbs that turn into glass lenses), segmented buttons and tab rows (iOS's segmented
+  control), `SearchBar`, `AlertDialog`, `ModalBottomSheet`, `DropdownMenu` and `Snackbar`. Every
+  component takes a `glass` parameter; the bars take `layout = GlassLayout.Material`.
+- `GlassOverlay { }` (new, core): composes content above everything under the theme, in the same
+  window, where glass draws in place. Dialogs, sheets and menus use it.
+- `GlassTabBarTestTag` (new, core): the tab bar's gesture node, for UI tests.
+- `liquidglass-bom` (new): one version for every artifact. Gradle plugin `dev.shayxo.liquidglass`
+  (new): adds the artifacts, and `./gradlew liquidGlassAdopt` switches an app's Material 3 imports to
+  the glass versions once (`--dry-run` to preview). Not published yet.
+
+### Fixed (18 October)
+
+- A tab bar's linked accessory (the search button) drew its glass but not its icon under
+  `LiquidGlassTheme`: the overlay drew it before the bar's portal. Linked accessories now draw after
+  portals, as `GlassTabBarAccessory` documents.
+
 ### Changed — new public API (18 October, Phase 2)
 
 Breaking: the library now has one way in, named after SwiftUI's Liquid Glass API.

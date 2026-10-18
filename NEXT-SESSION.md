@@ -12,8 +12,9 @@ iOS recordings; never claim "first" (Kyant0 Backdrop has ~4.2k stars). Never shi
 or NuGet publish until the owner says. Use AskUserQuestion before design decisions, comparing the options first.
 
 Layers, all maintained, all fully customisable, iOS-measured defaults:
-1. Gradle plugin `dev.shayxo.liquidglass`: one-line entry. It adds the dependencies and can auto-adopt
-   Material 3 apps (a compiler plugin redirects Material calls to the glass versions). A BOM and plain
+1. Gradle plugin `dev.shayxo.liquidglass`: one-line entry. It adds the dependencies and adopts
+   Material 3 apps with the `liquidGlassAdopt` import codemod (decided 18 Oct over a compiler plugin,
+   which would break on every Kotlin release and hide the running code from the IDE). A BOM and plain
    artifacts are also published.
 2. Glass versions of EVERY Material 3 component: same names, one import swap. Default iOS 26 look in
    the app's colours; `layout = GlassLayout.Material` for Material proportions.
@@ -44,6 +45,13 @@ Phases, one PR each, suite and ports green each time, the owner reviews between 
   released foreground layer (GlassOverlayEntry.disposed / isReleased).
   Result: clean rerun 20:16, BUILD SUCCESSFUL in 21m58s, 410 tests, 0 failures, 27 skipped (incl.
   GlassThemeComponentsTest 2/2). Auto-adopt decision (owner delegated): the liquidGlassAdopt codemod, no compiler plugin.
+- 18 Oct 21:30 Phase 3/4 status (branch claude/material3, worktree .local/wt-m3): PR #29 (Phase 2) merged
+  e4cf496. Material 3 tests 4/4 pass (phone window via runDesktopComposeUiTest; default_timeout 5m
+  because 1.12.1 ignores testTimeout). Gradle plugin 7/7 (TestKit). Android + wasm compile. Fixed: linked
+  accessory icon hidden under the bar portal (overlay draws linked entries after portals); iOS slider
+  track. Showcase renders inspected and copied to review/atlas/material3-2026-10-18 and docs/assets.
+  CI: new jobs material3 and gradle-plugin. Next: core suite on this branch, then commit + PR; catalogue
+  renders (GlassMaterialCatalogueTest, not yet compiled); NavigationRail render still missing.
    Follow-up (hybrid, desktop/web): glassEffect on skikoMain draws in place with
    `Canvas.saveLayer(SaveLayerRec(paddedRect, null, backdrop = graph))`, where graph =
    makeRuntimeShader(builder, ["content","wideContent"], [ground+shadow merged over the backdrop (null
@@ -51,7 +59,7 @@ Phases, one PR each, suite and ports green each time, the owner reviews between 
    as the overlay path. Verify against overlay renders (same optics where both apply), then switch
    skiko to it and keep the overlay on Android.
 3. Material 3 glass components (all).
-4. Gradle plugin + compiler plugin + BOM.
+4. Gradle plugin (with the liquidGlassAdopt codemod) + BOM.
 5. Docs/README rewrite, live web demo on the docs site, visuals for every component.
 6. npm web component, NuGet; then release on the owner's word.
 

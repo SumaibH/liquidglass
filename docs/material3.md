@@ -1,0 +1,98 @@
+# Material 3, in Liquid Glass
+
+`liquidglass-material3` has a Liquid Glass version of the Material 3 components, with the same
+names and parameters. An app that uses Material 3 changes its imports and gets iOS 26's glass,
+shapes and motion in its own colour scheme.
+
+<p align="center">
+  <img src="assets/material3-dark.png" width="300" alt="A Material 3 screen in glass, dark scheme: top bar, segmented control, buttons, chips, a card with a switch and a slider, and the tab bar with a search button, over album covers">
+  <img src="assets/material3-light.png" width="300" alt="The same screen in the light scheme">
+</p>
+<p align="center"><sub>Rendered by the library (desktop Skia, 390 × 844 dp at density 2) from Material's default dark and light schemes; only the imports differ from a Material 3 app. <a href="https://github.com/shayann07/liquidglass/blob/main/review/atlas/material3-2026-10-18/README.md">Evidence and limits</a>.</sub></p>
+
+The change is the imports:
+
+```kotlin
+// before
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.NavigationBar
+import androidx.compose.material3.NavigationBarItem
+// after
+import com.wexpa.liquidglass.material3.Scaffold
+import com.wexpa.liquidglass.material3.NavigationBar
+import com.wexpa.liquidglass.material3.NavigationBarItem
+```
+
+Use explicit imports for the glass components. They take precedence over a
+`import androidx.compose.material3.*` star import, so `Text`, `Icon`, `MaterialTheme` and everything
+else keep coming from Material.
+
+```kotlin
+MaterialTheme(colorScheme = darkColorScheme()) {
+    Scaffold(
+        topBar = { TopAppBar(title = { Text("Inbox") }, actions = { IconButton(onClick = {}) { Icon(Icons.Default.Edit, null) } }) },
+        bottomBar = {
+            NavigationBar(accessory = { Icon(Icons.Default.Search, null) }, onAccessoryClick = { /* search */ }) {
+                tabs.forEachIndexed { i, tab ->
+                    NavigationBarItem(selected = i == selected, onClick = { selected = i },
+                        icon = { Icon(tab.icon, null) }, label = { Text(tab.label) })
+                }
+            }
+        },
+        floatingActionButton = { FloatingActionButton(onClick = {}) { Icon(Icons.Default.Add, null) } },
+    ) { padding ->
+        LazyColumn(contentPadding = padding) { /* the list scrolls under the glass */ }
+    }
+}
+```
+
+The glass `Scaffold` is the root: it records the screen once and every glass component and
+`Modifier.glassEffect` below it refracts it. Without the glass `Scaffold`, wrap the screen in
+`LiquidGlassTheme { }`.
+
+## What each component becomes
+
+| Material 3 | Glass version (iOS 26 look, your colours) |
+| :-- | :-- |
+| `Scaffold` | records the screen for everything glass in it; content runs under the bars |
+| `NavigationBar`, `NavigationBarItem` | iOS's floating tab bar: a glass capsule with a lens you can tap, hold, drag and throw. `accessory` adds the round search button that the bar fuses with |
+| `TopAppBar`, `CenterAlignedTopAppBar`, `MediumTopAppBar`, `LargeTopAppBar` | no container; the navigation icon in a round glass button, the actions grouped on one glass capsule |
+| `BottomAppBar` | the actions on a floating glass capsule (iOS's toolbar), the FAB beside it |
+| `NavigationRail`, `NavigationRailItem` | a floating glass panel |
+| `Button` | prominent glass (SwiftUI's `.glassProminent`), tinted with the primary colour |
+| `FilledTonalButton` | glass tinted with the secondary container colour |
+| `ElevatedButton`, `OutlinedButton` | plain glass (SwiftUI's `.glass`) |
+| `TextButton` | no glass, as an iOS borderless button; pass `glass` to add it |
+| `IconButton`, `FilledIconButton`, `FilledTonalIconButton`, `OutlinedIconButton` | round glass buttons; inside a bar's capsule they draw no glass of their own |
+| `FloatingActionButton`, `SmallFloatingActionButton`, `LargeFloatingActionButton`, `ExtendedFloatingActionButton` | prominent glass tinted with `containerColor` |
+| `Card` (both), `ElevatedCard`, `OutlinedCard` | glass panels; a clickable card is interactive glass |
+| `AssistChip`, `FilterChip`, `InputChip`, `SuggestionChip` | glass capsules; a selected chip is prominent glass |
+| `Switch` | an iOS switch: the thumb turns into a glass lens while pressed |
+| `Slider` | iOS's thin continuous track in the primary colour; the thumb turns into a glass lens while dragged |
+| `SingleChoiceSegmentedButtonRow`, `SegmentedButton` | iOS's segmented control: a glass capsule with a lens selection |
+| `MultiChoiceSegmentedButtonRow`, `SegmentedButton(checked)` | a glass capsule; checked segments are prominent glass |
+| `PrimaryTabRow`, `SecondaryTabRow`, `TabRow`, `Tab` | the same segmented control |
+| `ScrollableTabRow` | Material's tabs scrolling inside a glass capsule |
+| `SearchBar`, `DockedSearchBar` | a glass capsule field and, while active, a glass results panel (the classic `query`/`active` parameters) |
+| `AlertDialog`, `BasicAlertDialog` | an iOS alert: a glass panel over a light scrim |
+| `ModalBottomSheet`, `rememberModalBottomSheetState` | an iOS sheet: a floating glass panel; drag down or tap outside to dismiss |
+| `DropdownMenu`, `DropdownMenuItem` | an iOS menu: a glass panel under its anchor |
+| `Snackbar` (both) | a glass capsule |
+
+Every component takes a `glass` parameter (`Glass.Regular`, `Glass.Clear`, a tint, or
+`Glass(GlassStyle(...))`) for full control. The bars and the navigation bar take
+`layout = GlassLayout.Material` to keep Material's own full-width layout, made of glass.
+
+## Behaviour and limits
+
+- Dialogs, sheets and menus are drawn in the app's window, in `GlassOverlay`, not in a separate
+  window. That is what lets their glass refract the screen behind them. Back-button dismissal is
+  the host's to wire for now.
+- `SheetState` here supports `show()`, `hide()`, `expand()`, `partialExpand()`, `isVisible`,
+  `currentValue` and `targetValue`. A partially expanded stop is not implemented.
+- The navigation bar draws each item's icon and label twice (on the bar and inside the lens), so
+  keep them the same shape and let the colours change.
+- The limits of glass apply: glass draws above other content, and fading a parent does not fade it
+  ([limitations](limitations.md)).
+
+Evidence: [review/atlas/material3-2026-10-18](https://github.com/shayann07/liquidglass/blob/main/review/atlas/material3-2026-10-18/README.md).

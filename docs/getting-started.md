@@ -2,6 +2,32 @@
 
 ## Install
 
+Three ways, from least to most control. The plugin, the BOM and `liquidglass-material3` are new and
+**unreleased**; the published `0.1.0` has only the core artifact with its earlier API.
+
+**The Gradle plugin**, one line. It adds `liquidglass` to `commonMain` (or `implementation`), and
+`liquidglass-material3` too when the module already uses Material 3:
+
+```kotlin
+// build.gradle.kts
+plugins {
+    id("dev.shayxo.liquidglass") version "<version>"
+}
+```
+
+`./gradlew liquidGlassAdopt` then switches an existing app's Material 3 imports to the glass versions,
+once (`--dry-run` lists the changes first). `liquidGlass { material3.set(false) }` keeps Material out.
+
+**The BOM**, the convention Compose and Firebase use:
+
+```kotlin
+implementation(platform("dev.shayxo.liquidglass:liquidglass-bom:<version>"))
+implementation("dev.shayxo.liquidglass:liquidglass")
+implementation("dev.shayxo.liquidglass:liquidglass-material3")   // Material 3 apps
+```
+
+**Plain artifacts**:
+
 ```kotlin
 // your module's build.gradle.kts — commonMain for a multiplatform module
 implementation("dev.shayxo.liquidglass:liquidglass:0.1.0")

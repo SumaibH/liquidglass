@@ -13,7 +13,7 @@ jobs:
   site:
     name: docs-site
     runs-on: ubuntu-24.04
-    timeout-minutes: 10
+    timeout-minutes: 30
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
       - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7
@@ -25,6 +25,22 @@ jobs:
       - name: Check repository links
         run: python .github/scripts/check_repo_links.py
       - run: mkdocs build --strict
+      # The live demo: Atlas Studio compiled to WebAssembly (Compose for Web), served at /demo/.
+      - uses: actions/setup-java@b843ebf9b913146b38da2eaa7aeddf76074ae1ad # v6
+        if: github.event_name != 'pull_request'
+        with:
+          distribution: temurin
+          java-version: 21
+      - uses: gradle/actions/setup-gradle@3f5f9adaf7d9fecd50b5935e54106014257a94e6 # v6
+        if: github.event_name != 'pull_request'
+        with:
+          cache-read-only: true
+      - name: Build the live demo
+        if: github.event_name != 'pull_request'
+        run: |
+          ./gradlew :web:wasmJsBrowserDistribution --stacktrace
+          mkdir -p site/demo
+          cp -r web/build/dist/wasmJs/productionExecutable/* site/demo/
       - uses: actions/upload-pages-artifact@fc324d3547104276b827a68afc52ff2a11cc49c9 # v5
         if: github.event_name != 'pull_request'
         with:

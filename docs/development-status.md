@@ -24,6 +24,19 @@ click reaches the element under interactive glass; that `Glass.Identity` draws n
 stand-in without a theme; merging in a container; and a `glassEffectID` morph. These are desktop
 JVM renders, not a physical-device record; this page links no device record for the new API yet.
 
+## Material 3, the plugin and the BOM (18 October)
+
+- `liquidglass-material3` (new artifact): glass versions of the Material 3 components with the same
+  names and parameters ([guide](material3.md)). Default look: iOS 26 shapes and motion in the app's
+  colour scheme; bars take `layout = GlassLayout.Material`. Dialogs, sheets and menus are drawn in the
+  app's window (`GlassOverlay`), so their glass refracts the app behind them. The tab bar, segmented
+  controls and tab rows use the measured Calm tab bar; the other components' looks are authored, not
+  measured against iOS.
+- `liquidglass-bom` (new) and the Gradle plugin `dev.shayxo.liquidglass` (new): one line adds the right
+  artifacts; `liquidGlassAdopt` switches an app's Material 3 imports once. Not published.
+- Evidence: [Material 3 renders](https://github.com/shayann07/liquidglass/blob/main/review/atlas/material3-2026-10-18/README.md).
+  Not checked on Android devices or in the browser yet.
+
 ## Atlas and the current material
 
 ![Native Windows Atlas grid scene](https://raw.githubusercontent.com/shayann07/liquidglass/b46207d665725a0aa841102bfbdcbe74aaf4ac3c/review/atlas/wide-input-2026-10-11/static.png)

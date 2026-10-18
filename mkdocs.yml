@@ -99,9 +99,11 @@ extra:
 
 nav:
   - Home: README.md
+  - Live demo: demo.md
   - Development & visuals: development-status.md
   - Using it:
       - Getting started: getting-started.md
+      - Material 3, in glass: material3.md
       - How it works: how-it-works.md
       - Shapes: shapes.md
       - Interaction: interaction.md
