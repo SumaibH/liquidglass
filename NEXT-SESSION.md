@@ -87,12 +87,25 @@ Phases, one PR each, suite and ports green each time, the owner reviews between 
        list, now fixed; final head 413/0. Pixel 7 confirms the contour on Android. Containers draw it
        too. The first CI run hit the build job's 55 min limit because MaterialShowcaseRenderTest ran
        there; it now has its own `showcase` job (`-Patlas.skipShowcase=true` in build).
-     - 19 Oct night (owner, going to sleep: "complete everything", decide without asking; never
-       publish without the owner's word): next is Material 3 coverage on branch claude/m3-coverage
-       (.local/wt-cov), then the remaining limits (back dismissal, partial sheet, ports' light).
-     - Next for quality: the contour in GlassContainerShaderSource and the tab bar (Calm, Ios27);
-       broaden and dim the specular per item 8 (opt-in); then compare against the private CC/stills
-       locally.
+     - 19 Oct night. The owner went to sleep with: "complete everything", decide without asking, never
+       publish without their word. Done that night:
+       - #35 merged: the iOS 27 rim, including containers and the chamfered lobe.
+       - #36 merged: every remaining Material 3 component with a container; back dismissal; the
+         partial sheet stop; the ports' surface light option (`GlassLight.Default` by default); the
+         `fused_closed` fixture fuses again.
+       - #37 open: `LiquidGlass.Wpf` and WpfDemo `--capture`, run in CI.
+       - #38 open:
+         - Android tall frosted glass lost its backdrop. A chained blur is evaluated only inside the
+           window, so a nested frost layer now does the blur (`backdropBlurInRecording`).
+         - The showcase can start scrolled and with its sheet open. The README hero now shows the
+           scrolled view, and the star button has a glass tooltip.
+         - A tooltip's long press no longer clicks its anchor.
+         - The glass menu stays inside the window.
+       - Avalonia is blocked: Avalonia 11 is on SkiaSharp 2.88, the painter on 4. Documented.
+       - The neck "crease": a density-2 probe found no crease, only a small kink at the waist. Left.
+     - Next for quality: compare against the private CC/stills locally; the tab bar's Ios27 style
+       (unmeasured numbers) could take the measured rim; web Escape routing depends on the host's
+       navigation-event dispatcher (documented).
      - Do not run two Gradle builds in one worktree at once: the renders and XML results clobber each
        other (UncompletedCoroutinesError, stale XML). A test that passes alone may fail when run in
        parallel.
