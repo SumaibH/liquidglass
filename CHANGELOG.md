@@ -7,6 +7,10 @@ This file records user-visible development changes. Published artifacts are iden
 
 ### Changed (18 October, the owner's device check)
 
+- Landing timing (18 October, measurement): WhatsApp's motion paths agree within one frame of the 60 fps
+  recording (best shift -17 ms, was -42; path rms 62.7 px, was 79.9). A sweep of the inferred lift does
+  not move it further.
+
 - Owner acceptance (18 October): the owner checked the build by finger on a Pixel 7 and accepted all six
   points of their device check. Device cost with the dark lens's wider raw blur: GPU p90 +2 ms (15), p50
   and janky share unchanged.
