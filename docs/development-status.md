@@ -156,6 +156,11 @@ navigation selector (motion, gestures and the Compose material) is also ported. 
 frameworks, high-level portable refracted foreground, ported selected ink and universal widget
 capture remain incomplete. No NuGet package was published.
 
+Packaging (18 October): the painter is packed as `LiquidGlass` and the Windows Forms host as
+`LiquidGlass.WinForms`, at the library's version, with Source Link and symbols. CI packs both on Linux
+and Windows and checks each package's readme, NOTICE, licence, version, assembly and embedded shaders.
+Publishing waits for the owner.
+
 ## Verification and performance
 
 | Evidence | What it proves | What it does not prove |
