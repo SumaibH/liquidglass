@@ -79,4 +79,11 @@ tasks.register<JavaExec>("phoneReplay") {
     args(providers.gradleProperty("atlas.replay.script").orNull ?: "", providers.gradleProperty("atlas.replay.out").orNull ?: "",
         providers.gradleProperty("atlas.replay.variant").getOrElse("calm"))
 }
-tasks.withType<Test>().configureEach { systemProperty("kotlinx.coroutines.test.default_timeout", "15m") }
+tasks.withType<Test>().configureEach {
+    systemProperty("kotlinx.coroutines.test.default_timeout", "15m")
+    // The showcase renders (two phone screens at density 3) run in CI's own showcase job;
+    // -Patlas.skipShowcase=true leaves them out of the main build.
+    if (providers.gradleProperty("atlas.skipShowcase").getOrElse("false").toBoolean()) {
+        filter { excludeTestsMatching("*MaterialShowcaseRenderTest") }
+    }
+}
