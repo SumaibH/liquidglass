@@ -75,9 +75,9 @@ and bottom. A screenshot of a still frame.*
 - `GlassEffectTest.theOuterContourDrawsOutsideTheOutlineAloneAndInAContainer` checks the white page
   just outside a circle's side through both shaders: 255 with the contour off, and 187 both for a
   lone element and for a container's merged body.
-- The core suite (`:liquidglass:jvmTest --rerun`): 411 of 412 passed, 27 skipped. The failure was
-  `GlassShaderTest`'s list of the uniforms the host sets, which did not yet name `uOuterContour`;
-  with it added, that class passes. The Material 3 renders, the Skia port (44 tests), the npm
+- The core suite (`:liquidglass:jvmTest --rerun`) on the final head: 413 tests, 0 failures, 27
+  skipped. An earlier run failed one test, `GlassShaderTest`'s list of the uniforms the host sets,
+  which did not yet name `uOuterContour`. The Material 3 renders, the Skia port (44 tests), the npm
   package (27 unit and 7 browser tests) and the .NET checks (16) pass with the new shader.
 
 ## Limits

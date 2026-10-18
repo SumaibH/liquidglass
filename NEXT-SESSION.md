@@ -82,7 +82,12 @@ Phases, one PR each, suite and ports green each time, the owner reviews between 
      - PR #35 (claude/ios-rim, stacked on #34): opt-in `GlassStyle.outerContour`, iOS 27's measured
        dark contour outside the outline (ios27-measurements-raw.md item 7). Material adopts it with the
        measured overhead light and zero dispersion. Core suite 411/412; the one failure was the uniform
-       list, now fixed. Pixel 7 confirms the contour on Android.
+       list, now fixed; final head 413/0. Pixel 7 confirms the contour on Android. Containers draw it
+       too. The first CI run hit the build job's 55 min limit because MaterialShowcaseRenderTest ran
+       there; it now has its own `showcase` job (`-Patlas.skipShowcase=true` in build).
+     - 19 Oct night (owner, going to sleep: "complete everything", decide without asking; never
+       publish without the owner's word): next is Material 3 coverage on branch claude/m3-coverage
+       (.local/wt-cov), then the remaining limits (back dismissal, partial sheet, ports' light).
      - Next for quality: the contour in GlassContainerShaderSource and the tab bar (Calm, Ios27);
        broaden and dim the specular per item 8 (opt-in); then compare against the private CC/stills
        locally.
