@@ -11,6 +11,9 @@ This file records user-visible development changes. Published artifacts are iden
   glass. The README and docs show it that way, and the star button has a glass tooltip.
 - A long press that shows a glass tooltip no longer also clicks its anchor; the release is consumed,
   as in Material.
+- The glass `DropdownMenu` stays inside the window, as Material's does. Where there's no room after
+  its anchor it ends at the anchor's end, and where there's no room below it opens above. Before, a
+  menu under an action at the right edge ran off the screen.
 
 ### Fixed — Android: tall frosted glass lost its backdrop (19 October)
 
