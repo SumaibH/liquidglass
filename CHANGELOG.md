@@ -5,6 +5,21 @@ This file records user-visible development changes. Published artifacts are iden
 
 ## Unreleased — Atlas stabilization
 
+### Changed — the showcase scrolls under its glass; tooltip fix (19 October)
+
+- `MaterialShowcase(startScroll = …)` starts scrolled, so the album art passes under the top bar's
+  glass. The README and docs show it that way, and the star button has a glass tooltip.
+- A long press that shows a glass tooltip no longer also clicks its anchor; the release is consumed,
+  as in Material.
+
+### Fixed — Android: tall frosted glass lost its backdrop (19 October)
+
+- On Android, a tall frosted panel near the bottom of the screen showed the page only in a band at its
+  top. A Material sheet is one example. The frost blur was chained ahead of the shader and evaluated
+  only inside the window, while the shader also samples a strip recorded below the element. Android
+  now blurs the backdrop in a nested layer instead; desktop and the web are unchanged. Evidence:
+  `review/atlas/android-frost-2026-10-19`.
+
 ### Added — the rest of Material 3 in glass (19 October)
 
 - Glass versions of the remaining Material 3 components that have a container:

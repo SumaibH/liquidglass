@@ -214,6 +214,8 @@ class GlassMaterialComponentsTest {
         onNodeWithTag("anchor").performTouchInput { longClick() }
         waitUntil(timeoutMillis = 10_000) { tip.isVisible }
         onNodeWithTag("tip", useUnmergedTree = true).assertExists()
+        waitForIdle()
+        assertEquals(1, clicks, "a long press for the tooltip must not also click its anchor")
     }
 
     @Test fun backDismissesOverlaysAndATallSheetStopsHalfway() = runDesktopComposeUiTest(390, 700, testTimeout = 4.minutes) {

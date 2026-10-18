@@ -79,8 +79,14 @@ fun TooltipBox(
                 val up = waitForUpOrCancellation(PointerEventPass.Initial)
                 if (!shown) {
                     timer.cancel()
-                    if (up != null && up.uptimeMillis - down.uptimeMillis >= longPress) scope.launch { state.show() }
+                    if (up != null && up.uptimeMillis - down.uptimeMillis >= longPress) {
+                        shown = true
+                        scope.launch { state.show() }
+                    }
                 }
+                // A long press shows the tooltip and nothing else: as Material's TooltipBox, the
+                // release is consumed so the anchor does not also click.
+                if (shown) up?.consume()
             }
         }
         .pointerInput(state) {

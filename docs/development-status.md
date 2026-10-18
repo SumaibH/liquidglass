@@ -58,6 +58,13 @@ The ports' surfaces bind `Glass.Regular`'s light, `GlassLight.Default` (-0.35, -
   emulator ([evidence](https://github.com/shayann07/liquidglass/blob/main/review/atlas/android-material3-2026-10-18/README.md)).
   The browser build runs (live demo, `#material3`).
 
+## Android frost fix (19 October)
+
+- Tall frosted glass on Android (a sheet at the bottom of the screen) showed the page only in a band at
+  its top. Fixed by blurring the backdrop in a nested layer on Android; desktop and web unchanged.
+  [Evidence](https://github.com/shayann07/liquidglass/blob/main/review/atlas/android-frost-2026-10-19/README.md),
+  on a Pixel 7.
+
 ## Material 3 coverage (19 October)
 
 - Every Material 3 component with a container now has a glass version. New this pass: icon toggle

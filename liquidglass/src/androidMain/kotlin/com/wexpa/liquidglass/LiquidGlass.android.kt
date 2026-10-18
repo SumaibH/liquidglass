@@ -25,6 +25,8 @@ actual object LiquidGlassSupport {
 
 // Java RenderEffect exposes only one dynamic RuntimeShader input. Keep the verified composed
 // endpoint until a multi-input backend exists; never enable offscreen strip reads speculatively.
+internal actual val backdropBlurInRecording: Boolean = true
+
 internal actual val supportsGlassEndpointInputs: Boolean = false
 
 /**
