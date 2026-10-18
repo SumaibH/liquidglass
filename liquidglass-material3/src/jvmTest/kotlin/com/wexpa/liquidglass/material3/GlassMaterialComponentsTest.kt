@@ -216,6 +216,61 @@ class GlassMaterialComponentsTest {
         onNodeWithTag("tip", useUnmergedTree = true).assertExists()
     }
 
+    @Test fun backDismissesOverlaysAndATallSheetStopsHalfway() = runDesktopComposeUiTest(390, 700, testTimeout = 4.minutes) {
+        val dispatcher = androidx.navigationevent.NavigationEventDispatcher()
+        val back = androidx.navigationevent.DirectNavigationEventInput()
+        dispatcher.addInput(back)
+        val owner = object : androidx.navigationevent.NavigationEventDispatcherOwner {
+            override val navigationEventDispatcher = dispatcher
+        }
+        var dialog by mutableStateOf(false)
+        var menu by mutableStateOf(false)
+        var sheet by mutableStateOf(false)
+        lateinit var sheetState: SheetState
+        setContent {
+            CompositionLocalProvider(LocalDensity provides Density(1f),
+                androidx.navigationevent.compose.LocalNavigationEventDispatcherOwner provides owner) {
+                MaterialTheme(colorScheme = lightColorScheme()) {
+                    Scaffold(Modifier.size(390.dp, 700.dp)) { _ ->
+                        Box(Modifier.fillMaxSize()) {
+                            Page()
+                            Box {
+                                Text("anchor")
+                                DropdownMenu(expanded = menu, onDismissRequest = { menu = false }) {
+                                    DropdownMenuItem(text = { Text("First") }, onClick = { menu = false })
+                                }
+                            }
+                            if (dialog) AlertDialog(onDismissRequest = { dialog = false }, confirmButton = {
+                                TextButton(onClick = { dialog = false }) { Text("OK") }
+                            }, title = { Text("Title") })
+                            sheetState = rememberModalBottomSheetState()
+                            if (sheet) ModalBottomSheet(onDismissRequest = { sheet = false }, sheetState = sheetState) {
+                                // Taller than half the 700 px window, so the sheet has a partial stop.
+                                Box(Modifier.fillMaxWidth().height(560.dp).testTag("tall"))
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        waitForIdle()
+        dialog = true; waitForIdle()
+        back.backCompleted(); waitForIdle()
+        assertTrue(!dialog, "back did not dismiss the dialog")
+        menu = true; waitForIdle()
+        back.backCompleted(); waitForIdle()
+        assertTrue(!menu, "back did not dismiss the menu")
+
+        sheet = true
+        waitUntil(timeoutMillis = 20_000) { sheetState.targetValue != androidx.compose.material3.SheetValue.Hidden && !sheetState.progress.isRunning }
+        assertEquals(androidx.compose.material3.SheetValue.PartiallyExpanded, sheetState.currentValue,
+            "a sheet taller than half the window must open at its partial stop")
+        val top = onNodeWithTag("tall", useUnmergedTree = true).fetchSemanticsNode().boundsInRoot.top
+        assertTrue(top in 300f..400f, "the partial stop shows half the window; the sheet's top is at $top")
+        back.backCompleted()
+        waitUntil(timeoutMillis = 20_000) { !sheet }
+    }
+
     @Test fun buttonsClickAndOverlaysOpenAndDismiss() = runDesktopComposeUiTest(390, 700, testTimeout = 4.minutes) {
         var clicks by mutableIntStateOf(0)
         var dialog by mutableStateOf(false)

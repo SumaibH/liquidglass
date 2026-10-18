@@ -45,6 +45,18 @@ persistent state for the render.*
 - a tooltip's anchor still gets its click (the tooltip observes input and never consumes it);
 - a long press shows the tooltip.
 
+## Two limits closed
+
+- **Back.** The platform's back gesture dismisses the glass dialogs, sheets, menus and tooltips. They
+  live in the app's window, so they register with Compose's navigation-event dispatcher themselves.
+  An Android `ComponentActivity` provides the dispatcher; without one, back does nothing.
+- **Partially expanded sheets.** A sheet taller than half the window opens at a stop showing half of
+  it, iOS's medium detent. Dragging settles at the nearest stop.
+
+`GlassMaterialComponentsTest.backDismissesOverlaysAndATallSheetStopsHalfway` checks both:
+- a back event dismisses a dialog, a menu and a sheet;
+- a 560 dp sheet in a 700 dp window opens partially expanded, with its top between 300 and 400 dp.
+
 ## Limits
 
 - `TooltipBox` takes Material's `focusable` and `hasAction` and ignores them. Its caret is not drawn.

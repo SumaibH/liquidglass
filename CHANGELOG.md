@@ -19,6 +19,10 @@ This file records user-visible development changes. Published artifacts are iden
   They take Material's parameters, and `liquidGlassAdopt` switches their imports.
 - The top app bar's buttons, the toolbars, the rail and the segmented capsules draw
   `GlassMaterialDefaults` glass (new `toolbar`), so they carry the iOS 27 rim like the rest.
+- Back dismisses glass dialogs, sheets, menus and tooltips (Compose's navigation-event dispatcher,
+  as Android's `ComponentActivity` provides).
+- `ModalBottomSheet` has a partially expanded stop: a sheet taller than half the window opens there
+  (iOS's medium detent). Dragging settles at the nearest stop, and `hasPartiallyExpandedState` is new.
 
 ### Added — iOS 27's rim (19 October)
 

@@ -115,10 +115,14 @@ on a panel they take the panel's frost, because glass on glass samples the page 
 ## Behaviour and limits
 
 - Dialogs, sheets and menus are drawn in the app's window, in `GlassOverlay`, not in a separate
-  window. That is what lets their glass refract the screen behind them. Back-button dismissal is
-  the host's to wire for now.
-- `SheetState` here supports `show()`, `hide()`, `expand()`, `partialExpand()`, `isVisible`,
-  `currentValue` and `targetValue`. A partially expanded stop is not implemented.
+  window. That is what lets their glass refract the screen behind them. The platform's back gesture
+  dismisses them (and tooltips) through Compose's navigation-event dispatcher. An Android
+  `ComponentActivity` provides one; on desktop and the web, provide `LocalNavigationEventDispatcherOwner`
+  to route Escape or the browser's back. Without one, back does nothing.
+- `SheetState` supports `show()`, `hide()`, `expand()`, `partialExpand()`, `isVisible`,
+  `currentValue`, `targetValue` and `hasPartiallyExpandedState`. A sheet taller than half the window
+  opens at a partially expanded stop showing half of it (iOS's medium detent), unless
+  `skipPartiallyExpanded`. Dragging settles at the nearest stop, and a fast flick moves one stop.
 - The navigation bar draws each item's icon and label twice (on the bar and inside the lens), so
   keep them the same shape and let the colours change.
 - The limits of glass apply: glass draws above other content, and fading a parent does not fade it

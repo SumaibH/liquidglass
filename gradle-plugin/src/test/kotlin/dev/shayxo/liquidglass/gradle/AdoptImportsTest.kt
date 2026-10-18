@@ -39,7 +39,7 @@ class AdoptImportsTest {
         val r = AdoptTask.adoptImports("""
             package app
             import androidx.compose.material3.*
-            @Composable fun Card(content: @Composable () -> Unit) = Surface { content() }
+            @Composable fun Card(content: @Composable () -> Unit) = Box { content() }
             fun f() { Card { Text("A Switch in a string") }; Button(onClick = {}) {} }
         """.trimIndent())
         assertEquals(1, r.changes, r.text)

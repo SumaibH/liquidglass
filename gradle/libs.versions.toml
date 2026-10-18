@@ -24,6 +24,8 @@ compose-ui = { module = "org.jetbrains.compose.ui:ui", version.ref = "composeMul
 compose-material3 = { module = "org.jetbrains.compose.material3:material3", version.ref = "material3" }
 compose-material3-library = { module = "org.jetbrains.compose.material3:material3", version.ref = "material3Library" }
 # Icons for the demos and the Material renders (the last published material-icons-core).
+# The back-gesture API Compose Multiplatform 1.12.1 already brings at runtime (it replaces BackHandler).
+navigationevent-compose = { module = "org.jetbrains.androidx.navigationevent:navigationevent-compose", version = "1.1.0" }
 compose-material-icons-core = { module = "org.jetbrains.compose.material:material-icons-core", version = "1.7.3" }
 androidx-activity-compose = { module = "androidx.activity:activity-compose", version.ref = "androidx-activity" }
 

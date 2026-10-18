@@ -114,6 +114,7 @@ fun TooltipBox(
     var window by remember { mutableStateOf(IntSize.Zero) }
     var size by remember { mutableStateOf(IntSize.Zero) }
     GlassOverlay {
+        DismissOnBack { state.dismiss(); onDismissRequest?.invoke() }
         Box(Modifier.fillMaxSize().onGloballyPositioned {
             val p = it.positionInRoot()
             origin = IntOffset(p.x.roundToInt(), p.y.roundToInt())
