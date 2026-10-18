@@ -72,6 +72,9 @@ and bottom. A screenshot of a still frame.*
 - `GlassOpticsTest.testTheOuterContourSitsOutsideTheOutlineAndOnlyWhereTheRimIsUnlit` renders the
   measurement's subject, a 132 px circle over white lit from above. The contour darkens the page at
   the side, not at the pole, and never the body, and it is off by default.
+- `GlassEffectTest.theOuterContourDrawsOutsideTheOutlineAloneAndInAContainer` checks the white page
+  just outside a circle's side through both shaders: 255 with the contour off, and 187 both for a
+  lone element and for a container's merged body.
 - The core suite (`:liquidglass:jvmTest --rerun`): 411 of 412 passed, 27 skipped. The failure was
   `GlassShaderTest`'s list of the uniforms the host sets, which did not yet name `uOuterContour`;
   with it added, that class passes. The Material 3 renders, the Skia port (44 tests), the npm
@@ -79,8 +82,7 @@ and bottom. A screenshot of a still frame.*
 
 ## Limits
 
-- `GlassEffectContainer`'s merged shapes have their own shader and do not draw the contour yet.
-  The tab bar uses the glass shader and could carry it. Its measured `Calm` styles leave it off,
+- The tab bar uses the glass shader and could carry the contour. Its measured `Calm` styles leave it off,
   because they already carry a measured cap contour (`capEdgeShadow`, fitted to iOS's light bar
   ends), and adding a second would double it.
 - The light appearance's profile is flatter than the law between the pole and 60 degrees. iOS

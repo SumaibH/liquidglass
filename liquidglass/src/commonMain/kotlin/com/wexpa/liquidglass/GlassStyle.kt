@@ -328,8 +328,8 @@ data class GlassStyle(
      * dark appearance's nine angles within 0.04 of the side value.
      * Whether iOS darkens multiplicatively or additively is not determinable from the captures
      * (over black both are invisible). This draws black at this opacity over the backdrop,
-     * which is multiplicative. Every element drawn by the glass shader can carry it, the tab bar
-     * included. `GlassEffectContainer`'s merged shapes use their own shader and do not draw it yet.
+     * which is multiplicative. Lone elements, the tab bar and `GlassEffectContainer`'s merged
+     * shapes all draw it.
      */
     val outerContour: Float = 0f,
     /**

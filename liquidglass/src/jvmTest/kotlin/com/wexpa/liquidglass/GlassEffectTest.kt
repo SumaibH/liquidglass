@@ -167,6 +167,33 @@ class GlassEffectTest {
         assertTrue(kotlin.math.abs(merged - 128) > 6, "no neck between merged pieces: $merged")
     }
 
+    private fun outsideSide(container: Boolean, contour: Float): Int {
+        val glass = Glass(GlassStyle.inApp(dark = false).copy(outerContour = contour))
+        val piece = @Composable { Box(Modifier.offset(60.dp, 70.dp).size(60.dp).glassEffect(glass, CircleShape)) }
+        val img = capture("contour-$container-$contour") {
+            LiquidGlassTheme(dark = false) {
+                Box(Modifier.size(300.dp, 200.dp).background(Color.White)) {
+                    if (container) GlassEffectContainer(Modifier.fillMaxSize(), glass = glass) { Box(Modifier.fillMaxSize()) { piece() } }
+                    else piece()
+                }
+            }
+        }
+        // The first pixel wholly outside the circle's right edge, level with its centre.
+        return img.getRGB(120, 100) shr 8 and 0xFF
+    }
+
+    @Test fun theOuterContourDrawsOutsideTheOutlineAloneAndInAContainer() {
+        // GlassStyle.outerContour, off by default; on, it darkens the white page just outside the
+        // circle's unlit side, through both shaders (a lone element and a container's merged body).
+        val off = outsideSide(container = false, contour = 0f)
+        val alone = outsideSide(container = false, contour = 0.61f)
+        val merged = outsideSide(container = true, contour = 0.61f)
+        println("GLASS_OUTER_CONTOUR outside the side: off=$off alone=$alone container=$merged (page 255)")
+        assertTrue(off >= 250, "no contour by default: $off")
+        assertTrue(alone < 215, "a lone element draws the contour: $alone")
+        assertTrue(merged < 215, "a container draws the contour: $merged")
+    }
+
     @Test fun anIdThatReappearsMorphsFromWhereItWas() = runComposeUiTest(testTimeout = 4.minutes) {
         var right by mutableStateOf(false)
         setContent {

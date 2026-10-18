@@ -192,6 +192,8 @@ internal fun LiquidGlassContainer(
                             backdropBlur = style.backdropBlur.toPx(),
                             counterLight = style.counterLight,
                             edgeShadow = style.edgeShadow,
+                            outerContour = style.outerContour,
+                            outerContourFloor = style.outerContourFloor,
                             rimSoft = style.rimSoftness.toPx(),
                             tintAbsorb = style.tintAbsorption,
                             edgeLight = style.edgeLight,
@@ -264,6 +266,9 @@ internal class GlassContainerUniforms(
     val edgeLight: Float,
     val bevelPeak: Float,
     val edgeShadow: Float,
+    /** [GlassStyle.outerContour] and [GlassStyle.outerContourFloor]. */
+    val outerContour: Float = 0f,
+    val outerContourFloor: Float = 0f,
     val rimSoft: Float,
     val tintAbsorb: Float,
     /** 0 the legacy Snell bevel, 1 the measured fold lens. */

@@ -49,6 +49,7 @@ uniform float   uCounterLight;
 uniform float   uEdgeLight;
 uniform float   uBevelPeak;
 uniform float   uEdgeShadow;   // dark separating contour at the outermost pixel, 0..1
+uniform float2  uOuterContour;  // the contour outside the outline: side strength, share at the poles (GlassStyle.outerContour)
 uniform float   uRimSoft;      // px the compressed rim image is smeared along the normal
 uniform float   uTintAbsorb;   // 0 tint as a blend, 1 tint as an absorbing medium
 uniform float4  uTint;
@@ -298,13 +299,24 @@ half3 toneMappedTint(half3 tint, float bgLuma, float adapt) {
     return clamp(shifted * half(value), half3(0.0), half3(1.0));
 }
 
+// See GlassShaderSource: the outer contour's opacity for an outline normal [n] at [band].
+float outerContourAlpha(float2 n, float band) {
+    float side = pow(max(1.0 - abs(dot(n, uLight)), 0.0), 0.75);
+    return clamp(band * uOuterContour.x * mix(uOuterContour.y, 1.0, side), 0.0, 1.0);
+}
+
 half4 main(float2 coord) {
     float2 local = coord - float2(uPad);
     float d = fieldAt(local);
 
     float coverage = 1.0 - smoothstep(-0.75, 0.75, d);
+    // The contour outside the merged outline (GlassStyle.outerContour), as in GlassShaderSource.
+    float outerBand = (uOuterContour.x > 0.0) ? clamp(1.0 - abs(d - 0.25) / 0.75, 0.0, 1.0) : 0.0;
     if (coverage <= 0.0) {
-        return half4(0.0);
+        if (outerBand <= 0.0) return half4(0.0);
+        float2 og = float2(fieldAt(local + float2(1.0, 0.0)) - fieldAt(local - float2(1.0, 0.0)),
+            fieldAt(local + float2(0.0, 1.0)) - fieldAt(local - float2(0.0, 1.0)));
+        return half4(0.0, 0.0, 0.0, half(outerContourAlpha(og / max(length(og), 1e-5), outerBand)));
     }
 
     // Normal from the gradient of the *merged* field, so the bevel follows the fused outline
@@ -425,6 +437,8 @@ half4 main(float2 coord) {
     float rimDark = clamp(1.0 - abs(depth - 1.5) / 1.5, 0.0, 1.0);
     col -= half3(half(rimDark * uEdgeShadow));
 
-    return half4(clamp(col, half3(0.0), half3(1.0)), 1.0) * half(coverage);
+    half4 result = half4(clamp(col, half3(0.0), half3(1.0)), 1.0) * half(coverage);
+    if (outerBand > 0.0) result.a += half(outerContourAlpha(n, outerBand) * (1.0 - coverage));
+    return result;
 }
 """

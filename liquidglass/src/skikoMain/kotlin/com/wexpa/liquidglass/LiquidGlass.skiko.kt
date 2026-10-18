@@ -406,6 +406,7 @@ internal actual fun createGlassContainerRenderEffect(
     builder.uniform("uSpecularPow", uniforms.specularPower)
     builder.uniform("uCounterLight", uniforms.counterLight)
     builder.uniform("uEdgeShadow", uniforms.edgeShadow)
+    builder.uniform("uOuterContour", uniforms.outerContour, uniforms.outerContourFloor)
     builder.uniform("uRimSoft", uniforms.rimSoft)
     builder.uniform("uTintAbsorb", uniforms.tintAbsorb)
     builder.uniform("uEdgeLight", uniforms.edgeLight)

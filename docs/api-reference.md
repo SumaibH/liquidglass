@@ -544,9 +544,9 @@ wide, and it is strongest where the rim is unlit and zero at the lit poles. Meas
 as black at that opacity, so it shows over light content and vanishes over black. It is off (0)
 on every core preset. `GlassMaterialDefaults` in `liquidglass-material3` turns it on with the
 measured values, with the light straight overhead (`GlassLight(0f, -1f)`, measured at 0.0
-degrees) and no dispersion. `GlassEffectContainer`'s merged shapes do not draw it yet. The tab
-bar's measured `Calm` styles leave it off, because they carry their own measured cap contour
-(`capEdgeShadow`).
+degrees) and no dispersion. Lone elements and `GlassEffectContainer`'s merged shapes both draw
+it. The tab bar's measured `Calm` styles leave it off, because they carry their own measured cap
+contour (`capEdgeShadow`).
 
 `highlightChroma` decides how the rim highlight is composited. At 0 it is added to the colour, which desaturates: adding white to a saturated backdrop pulls it toward grey, so a lit rim over deep blue reads as a milky smear. At 1 it is applied in Oklab instead, raising lightness and chroma together, so the rim brightens and keeps the hue of what is behind it. Measured on a device, the lit top edge of a panel over a blue ground moves from 0.38 saturation to 0.45. It is 0 on `DarkChrome`, which was measured with the additive highlight and keeps it until there is a capture that says otherwise.
 
