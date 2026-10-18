@@ -132,7 +132,7 @@
           "SkiaSharp": "4.153.1"
         }
       },
-      "liquidglass.skia": {
+      "liquidglass": {
         "type": "Project",
         "dependencies": {
           "SkiaSharp": "[4.153.1, )"
@@ -141,7 +141,7 @@
       "liquidglass.winforms": {
         "type": "Project",
         "dependencies": {
-          "LiquidGlass.Skia": "[1.0.0, )"
+          "LiquidGlass": "[0.2.0-atlas.1-SNAPSHOT, )"
         }
       }
     }

@@ -1,0 +1,36 @@
+<!--
+  NuGet metadata shared by the packable projects (LiquidGlass, LiquidGlass.WinForms). Imported by their
+  .csproj files. The version is the library's own, read from the root gradle.properties (VERSION_NAME),
+  so every artifact of a release carries one number. Packing is verified in CI; nothing is published
+  until the owner says so. The lock files name the package (`liquidglass`) and WinFormsDemo's pins its
+  version: after changing VERSION_NAME, force-evaluate a dotnet restore of the .NET projects (the restore option of that name).
+-->
+<Project>
+  <PropertyGroup>
+    <Version>$([System.Text.RegularExpressions.Regex]::Match($([System.IO.File]::ReadAllText('$(MSBuildThisFileDirectory)../../gradle.properties')), 'VERSION_NAME=([^\r\n]+)').Groups[1].Value.Trim())</Version>
+    <IsPackable>true</IsPackable>
+    <Authors>shayann07</Authors>
+    <Copyright>Copyright the LiquidGlass authors</Copyright>
+    <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
+    <PackageProjectUrl>https://liquidglass.shayxo.dev/</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/shayann07/liquidglass</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageReadmeFile>PACKAGE.md</PackageReadmeFile>
+    <PackageTags>liquid-glass;glass;skia;skiasharp;shader;refraction;ui;ios26</PackageTags>
+    <!-- Source Link ships with the .NET 8 SDK: debuggers step into the exact sources on GitHub. -->
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
+    <EmbedUntrackedSources>true</EmbedUntrackedSources>
+    <IncludeSymbols>true</IncludeSymbols>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+    <Deterministic>true</Deterministic>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <!-- Public members without XML docs are not an error here; the README carries the guide. -->
+    <NoWarn>$(NoWarn);CS1591</NoWarn>
+    <!-- A malformed doc comment must not fail a pack under TreatWarningsAsErrors. -->
+    <WarningsNotAsErrors>$(WarningsNotAsErrors);CS1570;CS1571;CS1572;CS1573;CS1574;CS1580;CS1584;CS1587;CS1658;CS1723</WarningsNotAsErrors>
+  </PropertyGroup>
+  <ItemGroup>
+    <None Include="$(MSBuildThisFileDirectory)PACKAGE.md" Pack="true" PackagePath="/" />
+    <None Include="$(MSBuildThisFileDirectory)../../NOTICE" Pack="true" PackagePath="/" />
+  </ItemGroup>
+</Project>
