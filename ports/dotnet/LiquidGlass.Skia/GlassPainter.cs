@@ -151,7 +151,7 @@ public sealed class GlassPainter : IDisposable
     /// source holding the backdrop with the bar's glass drawn over it, and a share of the raw backdrop is added
     /// on top; without it the lens sees the backdrop alone. <c>options.TintAmount</c> is not used.</summary>
     public void DrawSelector(SKCanvas canvas, SKRect bar, CalmSelectorPose pose, float formation = 0, GlassSurfaceOptions? options = null,
-        float transit = 0, float heldTravel = 0, SKImage? through = null)
+        float transit = 0, float heldTravel = 0, SKImage? through = null, float[]? fuse = null, bool shadow = true)
     {
         Ready(canvas, bar);
         if (!float.IsFinite(formation) || !float.IsFinite(transit) || !float.IsFinite(heldTravel))
@@ -162,20 +162,45 @@ public sealed class GlassPainter : IDisposable
             throw new ArgumentException("The through image must be the size of the source", nameof(through));
         options ??= new(Dark: true);
         if (!float.IsFinite(options.Density) || options.Density <= 0) throw new ArgumentOutOfRangeException(nameof(options));
+        if (fuse is not null && (fuse.Length != 6 || !fuse.All(float.IsFinite)))
+            throw new ArgumentOutOfRangeException(nameof(fuse), "Six finite numbers required (AccessoryFuse.LensFuse)");
         // The body may stand proud of the bar while held and protrude past its ends in transit.
         float mx = bar.Height * .6f, my = bar.Height * .4f;
         var node = SKRect.Create(bar.Left - mx, bar.Top - my, bar.Width + 2 * mx, bar.Height + 2 * my);
+        // A neck to a free button (AccessoryFuse.LensFuse) reaches past the node: draw over it, and its bow beyond.
+        var fusing = fuse is not null && fuse[5] > 0;
+        var pad = fusing
+            ? MathF.Ceiling(Math.Max(2, Math.Max(Math.Abs(fuse![0]) + fuse[2] - node.Width / 2, Math.Abs(fuse[1]) + fuse[3] - node.Height / 2)) + fuse[5] / 4 + 2)
+            : 2;
         var calm = CalmSelectorMaterial.Selector(options.Dark, formation, transit, heldTravel);
-        var v = ClearUniforms(material, node.Width, node.Height, 2, 1);
+        var v = ClearUniforms(material, node.Width, node.Height, pad, 1);
         Apply(v, calm, options);
         Set(v, "uFormation", calm.Formation);
         Set(v, "uBodyKind", 2); Set(v, "uPoseA", pose.A); Set(v, "uPoseAInv", pose.AInv); Set(v, "uPoseD", pose.D);
         Set(v, "uPoseC", pose.C[0] - bar.Width / 2, pose.C[1] - bar.Height / 2, pose.C[2], pose.C[3]);
-        Set(v, "uRefractBand", pose.D[3]);
+        // GlassStyle.bodyBandScale: the lens refracts over this share of the body's own band.
+        Set(v, "uRefractBand", pose.D[3] * BandScale(calm));
         Set(v, "uRadii", Enumerable.Repeat(Math.Min(node.Width, node.Height) / 2, 4).ToArray());
-        Set(v, "uScale", Math.Clamp((Math.Min(node.Width, node.Height) / options.Density - 56) / 264, 0, 1));
-        var origin = new SKPoint(node.Left - 2, node.Top - 2);
-        using var view = through is null ? null : ComposeThrough(through, calm.RawShare, calm.RawBlur * options.Density);
+        var size = Math.Clamp((Math.Min(node.Width, node.Height) / options.Density - 56) / 264, 0, 1);
+        Set(v, "uScale", size);
+        if (fusing) { Set(v, "uFuse", fuse![0], fuse[1], fuse[2], fuse[3]); Set(v, "uFuseShape", fuse[4], fuse[5]); }
+        // GlassStyle.contactShadow on the lens: cast by its body, 0.14 strong (glassShadow), on the page under it
+        // and, at its inside share, in what it looks through (light Calm's held lens).
+        Shadow? cast = null;
+        var castAlpha = shadow ? .14f * Math.Clamp(Host(calm, "contactShadow", 0), 0, 1) : 0;
+        if (castAlpha > 0)
+        {
+            float hx = pose.D[0] + pose.D[1] * pose.D[2], hy = pose.D[1];
+            float ex = Math.Abs(pose.A[0]) * hx + Math.Abs(pose.A[1]) * hy, ey = Math.Abs(pose.A[2]) * hx + Math.Abs(pose.A[3]) * hy;
+            var blur = Host(calm, "contactShadowBlur", -1); var offset = Host(calm, "contactShadowOffset", -1);
+            cast = new Shadow(SKRect.Create(bar.Left + pose.C[0] - ex, bar.Top + pose.C[1] - ey, 2 * ex, 2 * ey), Math.Min(ex, ey),
+                castAlpha, Math.Clamp(Host(calm, "contactShadowInside", 1), 0, 1),
+                (blur >= 0 ? blur : 18 * (.6f + .6f * size)) * options.Density,
+                (offset >= 0 ? offset : 4 * (.5f + .9f * size)) * options.Density, bar);
+            DrawShadow(canvas, cast, castAlpha);
+        }
+        var origin = new SKPoint(node.Left - pad, node.Top - pad);
+        using var view = through is null && cast is null ? null : ComposeThrough(through, calm.RawShare, calm.RawBlur * options.Density, cast);
         using var shader = Backdrop(origin, v["uWideKernel"][0], out var strip, view);
         Set(v, "uWideStrip", v["uWideKernel"][0] >= 1 ? strip : 0);
         Draw(canvas, v, shader, origin);
@@ -203,7 +228,7 @@ public sealed class GlassPainter : IDisposable
         Set(m, "uFormation", calm.Formation);
         Set(m, "uBodyKind", 2); Set(m, "uPoseA", pose.A); Set(m, "uPoseAInv", pose.AInv); Set(m, "uPoseD", pose.D);
         Set(m, "uPoseC", pose.C[0] - bar.Width / 2, pose.C[1] - bar.Height / 2, pose.C[2], pose.C[3]);
-        Set(m, "uRefractBand", pose.D[3]);
+        Set(m, "uRefractBand", pose.D[3] * BandScale(calm));
         Set(m, "uRadii", Enumerable.Repeat(Math.Min(node.Width, node.Height) / 2, 4).ToArray());
         Set(m, "uScale", Math.Clamp((Math.Min(node.Width, node.Height) / options.Density - 56) / 264, 0, 1));
         // The content pass shares the material's geometry and optics; it emits the ink premultiplied and
@@ -231,17 +256,46 @@ public sealed class GlassPainter : IDisposable
         Set(v, "uMaterialize", o.Materialize); Set(v, "uFrost", o.ReducedTransparency); Set(v, "uContrast", o.IncreasedContrast);
     }
 
+    private sealed record Shadow(SKRect Rect, float Radius, float Alpha, float Inside, float Blur, float Offset, SKRect Bar);
+
+    private static float Host(CalmMaterial calm, string key, float fallback) =>
+        calm.Values.TryGetValue(key, out var v) && v.Length > 0 ? v[0] : fallback;
+    private static float BandScale(CalmMaterial calm) => Math.Clamp(Host(calm, "bodyBandScale", 1), .25f, 4);
+
+    // Compose's BlurEffect takes a radius; Skia's blur a sigma (Compose's convertRadiusToSigma).
+    private static float Sigma(float radius) => radius > 0 ? .57735f * radius + .5f : 0;
+
+    // A contact shadow: the caster's rounded rect in black at `alpha`, blurred and moved down (device px).
+    private static void DrawShadow(SKCanvas target, Shadow s, float alpha, bool outsideBar = false)
+    {
+        if (!(alpha > 0)) return;
+        using var blur = s.Blur > .01f ? SKImageFilter.CreateBlur(Sigma(s.Blur), Sigma(s.Blur), SKShaderTileMode.Decal) : null;
+        using var paint = new SKPaint { Color = new SKColor(0, 0, 0, (byte)Math.Round(Math.Clamp(alpha, 0, 1) * 255)), IsAntialias = true, ImageFilter = blur };
+        target.Save();
+        if (outsideBar)
+        {
+            using var bar = new SKRoundRect(s.Bar, s.Bar.Height / 2, s.Bar.Height / 2);
+            target.ClipRoundRect(bar, SKClipOperation.Difference, true);
+        }
+        var r = s.Rect; r.Offset(0, s.Offset);
+        using var body = new SKRoundRect(r, s.Radius, s.Radius);
+        target.DrawRoundRect(body, paint);
+        target.Restore();
+    }
+
     // The backdrop with the glass the lens looks through over it, plus rawShare of the raw page,
-    // blurred by rawBlur (device px) as Compose's GlassStyle.rawBlur.
-    private SKImage ComposeThrough(SKImage through, float rawShare, float rawBlur = 0)
+    // blurred by rawBlur (a Compose radius, device px) as Compose's GlassStyle.rawBlur. With a shadow,
+    // the lens's own contact shadow at its inside share, where the bar does not cover it.
+    private SKImage ComposeThrough(SKImage? through, float rawShare, float rawBlur = 0, Shadow? shadow = null)
     {
         using var surface = SKSurface.Create(new SKImageInfo(source!.Width, source.Height, SKColorType.Rgba8888, SKAlphaType.Premul))
             ?? throw new InvalidOperationException("Cannot allocate the selector backdrop");
         surface.Canvas.Clear(SKColors.Black);
-        surface.Canvas.DrawImage(through, 0, 0, Sampling);
-        if (rawShare > .001f)
+        surface.Canvas.DrawImage(through ?? source, 0, 0, Sampling);
+        if (shadow is not null) DrawShadow(surface.Canvas, shadow, shadow.Alpha * shadow.Inside, true);
+        if (through is not null && rawShare > .001f)
         {
-            using var blur = rawBlur > .01f ? SKImageFilter.CreateBlur(rawBlur, rawBlur, SKShaderTileMode.Clamp) : null;
+            using var blur = rawBlur > .01f ? SKImageFilter.CreateBlur(Sigma(rawBlur), Sigma(rawBlur), SKShaderTileMode.Clamp) : null;
             using var add = new SKPaint { BlendMode = SKBlendMode.Plus, Color = SKColors.White.WithAlpha((byte)Math.Round(rawShare * 255)), ImageFilter = blur };
             surface.Canvas.DrawImage(source, 0, 0, Sampling, add);
         }

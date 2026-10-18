@@ -120,8 +120,17 @@ as Compose's `GlassTabBarStyle.slotWidth` does: the end tabs close up until thei
 `clear: true` on the bar material (`calmBarMaterial({clear})`, `painter.drawCalmBar(..., {clear})`,
 or `material: {clear: true}` on `addNavigation`) draws Compose's `GlassTabBarStyle.CalmClear()` bar:
 the clearer glass of WhatsApp's and the App Store's dark iOS bars (black at 0.10 instead of 0.41,
-same lift, legibility 2 and a 7 dp blur; light appearance unchanged). The ports draw no contact shadows: light
-Calm's held lens casts one in Compose (`contactShadow` 0.5), which a host draws under the lens itself. Pass the same bar as `through` so the lens follows it.
+same lift, legibility 2 and a 7 dp blur; light appearance unchanged). Pass the same bar as `through` so the lens follows it.
+
+`drawSelector` follows Compose's held lens fully (18 October): its rim band is the material's
+`bodyBandScale` share of the body's own (0.3 in Calm, so the bar's outline does not show inside it as a
+second capsule), and light Calm's lens casts its contact shadow (tight, 5 dp down: on the page under it
+and, at half strength, where it overhangs the page); `shadow: false` skips it. `lensFuse({bar, button,
+formation, lensFusion})` gives `drawSelector(..., {fuse})` a held lens's own neck to the free button
+(Compose's `GlassTabBarAccessory.lensFusion`; the sample uses 12 dp), null until the lens has formed.
+`navigation.state().itemFollow` is how much of a press transform the host applies to the bar its items
+should share: 0 on a tap, 1 once a hold has formed the lens, as Compose's `itemsFollowBarPress = false`.
+Blurs follow Compose's radius-to-sigma conversion (`0.577 r + 0.5`).
 
 A free button beside the bar (Compose's `GlassTabBarAccessory.link`, the Phone search button) fuses
 with it: `accessoryFuse({bar: {width, height, pressX, pressY}, button: {x, y, width, height},

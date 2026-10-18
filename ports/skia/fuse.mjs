@@ -66,3 +66,20 @@ export function accessoryYield(formation, endEdge, barWidth, barHeight) {
   const reach = clamp((endEdge - (barWidth - span)) / (2 * span), 0, 1);
   return clamp(formation, 0, 1) * reach * reach * (3 - 2 * reach);
 }
+
+/**
+ * Compose's GlassTabBarAccessory.lensFusion: a held lens at the bar's end joins the free button
+ * beside it through a neck of its own. `bar` {width, height} and `button` {x, y, width, height}
+ * in bar-local device px; `formation` the navigation's; `lensFusion` the neck's strength in device
+ * px (Compose's sample: 12 dp). Returns drawSelector's `fuse` (relative to the bar's centre), or
+ * null when the lens is not formed enough to take the neck (formation below 0.5).
+ */
+export function lensFuse({bar, button, formation, lensFusion}) {
+  if (!bar || !button || ![bar.width, bar.height, button.x, button.y, button.width, button.height, formation, lensFusion]
+    .every(Number.isFinite)) throw new RangeError('lensFuse requires finite bar, button, formation and lensFusion');
+  const f = Math.min(Math.max((formation - .5) / .5, 0), 1), taken = f * f * (3 - 2 * f);
+  if (lensFusion <= 0 || taken <= .01) return null;
+  const r = Math.min(button.width, button.height) / 2;
+  return [button.x + button.width / 2 - bar.width / 2, button.y + button.height / 2 - bar.height / 2,
+    button.width / 2, button.height / 2, r, lensFusion * taken];
+}

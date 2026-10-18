@@ -235,3 +235,95 @@ test('set slots (GlassTabBarStyle.slotWidth): WhatsApp measured centres, taps an
   assert.equal(selected[selected.length - 1], 4);
   assert.ok(Math.abs(nav.state().centreX - 915) < .5, `drag landed at ${nav.state().centreX}`);
 });
+
+// ---- 18 October: the owner's device check, ported (lens neck, lens shadow, icons on a hold)
+import {lensFuse} from './fuse.mjs';
+
+function heldLens(barW, tab, t = .8) {
+  const c = new CalmSelectorController(); const b = calmSelectorBar({width: barW, height: 62, count: 3});
+  c.attach(b); c.snapToRest(tab);
+  c.pointerDown(centreOf(b, tab), 31, 0, true);
+  for (let s = 0; s <= t; s += 1 / 60) c.advanceFrameTo(s);
+  return c;
+}
+
+test('lensFuse: a held lens takes a neck to the button; a resting or tapped one does not', () => {
+  const bar = {width: 300, height: 62}, button = {x: 308, y: 0, width: 62, height: 62};
+  assert.equal(lensFuse({bar, button, formation: .3, lensFusion: 36}), null);
+  assert.equal(lensFuse({bar, button, formation: 1, lensFusion: 0}), null);
+  const f = lensFuse({bar, button, formation: 1, lensFusion: 36});
+  assert.deepEqual(f, [308 + 31 - 150, 0, 31, 31, 31, 36]);
+  assert.ok(lensFuse({bar, button, formation: .75, lensFusion: 36})[5] < 36, 'the neck grows with formation');
+  assert.throws(() => lensFuse({bar, button: {...button, x: NaN}, formation: 1, lensFusion: 36}), RangeError);
+});
+
+test('light held lens: its shadow lies below it, none above', async () => {
+  const kit = await CanvasKitInit();
+  const w = 420, h = 200, surface = kit.MakeSurface(w, h), canvas = surface.getCanvas();
+  const page = new Uint8Array(w * h * 4).fill(255);
+  const image = kit.MakeImage({width: w, height: h, alphaType: kit.AlphaType.Unpremul, colorType: kit.ColorType.RGBA_8888,
+    colorSpace: kit.ColorSpace.SRGB}, page, w * 4);
+  const painter = createGlassPainter(kit);
+  const c = heldLens(300, 2);
+  assert.ok(c.formation > .9, `the hold formed the lens (${c.formation})`);
+  const rect = {x: 20, y: 70, width: 300, height: 62};
+  const read = () => canvas.readPixels(0, 0, {width: w, height: h, colorType: kit.ColorType.RGBA_8888,
+    alphaType: kit.AlphaType.Premul, colorSpace: kit.ColorSpace.SRGB});
+  const lum = (p, x, y) => { const i = (y * w + x) * 4; return (p[i] + p[i + 1] + p[i + 2]) / 3; };
+  const draw = options => {
+    canvas.clear(kit.WHITE); canvas.drawImage(image, 0, 0);
+    painter.drawCalmBar(canvas, rect, {dark: false});
+    const through = surface.makeImageSnapshot();
+    try { painter.drawSelector(canvas, rect, {pose: c.render(), formation: c.formation}, {dark: false, through, ...options}); }
+    finally { through.delete(); }
+    return read();
+  };
+  try {
+    painter.setSource(image);
+    const lit = draw({}), plain = draw({shadow: false});
+    const e = c.extents(), x = Math.round(rect.x + (e.left + e.right) / 2);
+    const below = Math.round(rect.y + e.bottom + 2), above = Math.round(rect.y + e.top - 6);
+    assert.ok(lum(lit, x, below) < lum(plain, x, below) - 5, `no shadow below the lens: ${lum(lit, x, below)} / ${lum(plain, x, below)}`);
+    assert.ok(Math.abs(lum(lit, x, above) - lum(plain, x, above)) <= 1, 'the shadow reached above the lens');
+    assert.throws(() => draw({fuse: [1, 2, 3]}), RangeError);
+  } finally { painter.dispose(); image.delete(); surface.delete(); }
+});
+
+test('dark held lens at the end: its neck fills the gap to the button', async () => {
+  const kit = await CanvasKitInit();
+  const w = 420, h = 200, surface = kit.MakeSurface(w, h), canvas = surface.getCanvas();
+  const page = new Uint8Array(w * h * 4); for (let i = 0; i < page.length; i += 4) page.set([20, 20, 20, 255], i);
+  const image = kit.MakeImage({width: w, height: h, alphaType: kit.AlphaType.Unpremul, colorType: kit.ColorType.RGBA_8888,
+    colorSpace: kit.ColorSpace.SRGB}, page, w * 4);
+  const painter = createGlassPainter(kit);
+  const c = heldLens(300, 2), rect = {x: 20, y: 70, width: 300, height: 62};
+  const read = () => canvas.readPixels(0, 0, {width: w, height: h, colorType: kit.ColorType.RGBA_8888,
+    alphaType: kit.AlphaType.Premul, colorSpace: kit.ColorSpace.SRGB});
+  const lum = (p, x, y) => { const i = (y * w + x) * 4; return p[i] + p[i + 1] + p[i + 2]; };
+  const draw = fuse => {
+    canvas.clear(kit.BLACK); canvas.drawImage(image, 0, 0); painter.drawCalmBar(canvas, rect, {dark: true});
+    const through = surface.makeImageSnapshot();
+    try { painter.drawSelector(canvas, rect, {pose: c.render(), formation: c.formation}, {dark: true, through, fuse}); }
+    finally { through.delete(); }
+    return read();
+  };
+  try {
+    painter.setSource(image);
+    const fuse = lensFuse({bar: rect, button: {x: rect.width + 8, y: 0, width: 62, height: 62}, formation: c.formation, lensFusion: 36});
+    const plain = draw(null), fused = draw(fuse);
+    for (const dx of [8, 12]) {
+      const x = rect.x + rect.width + dx, y = rect.y + 31;
+      assert.ok(lum(fused, x, y) > lum(plain, x, y) + 12, `no neck at ${x}: ${lum(fused, x, y)} / ${lum(plain, x, y)}`);
+    }
+  } finally { painter.dispose(); image.delete(); surface.delete(); }
+});
+
+test('navigation: items share the bar press only on a hold (itemFollow)', () => {
+  const b = calmSelectorBar({width: 300, height: 62, count: 3});
+  const nav = createCalmNavigation({bar: b, selected: 0});
+  nav.down(centreOf(b, 1), 31, 0); nav.frame(.05); nav.up(centreOf(b, 1), 31, .1); nav.frame(.15);
+  assert.equal(nav.state().itemFollow, 0, 'a tap moved the items');
+  nav.down(centreOf(b, 1), 31, 2);
+  for (let t = 2; t <= 2.9; t += 1 / 60) { nav.move(centreOf(b, 1), 31, t); nav.frame(t); }
+  assert.ok(nav.state().itemFollow > .9, `a hold did not carry the items (${nav.state().itemFollow})`);
+});

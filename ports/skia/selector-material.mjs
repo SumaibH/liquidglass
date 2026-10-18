@@ -5,6 +5,10 @@ import {CALM_SELECTOR_MATERIAL_DATA as DATA} from './selector-material-data.mjs'
 
 /** Decisions, not quantities: they snap at the midpoint (lerpGlassStyle). */
 const SNAP = new Set(['uProfile', 'uRestMap', 'uHeldInk']);
+/** Lengths that may be unset (-1): an unset end snaps at the midpoint (GlassMorph `d`). */
+const OPTIONAL_DP = new Set(['contactShadowBlur', 'contactShadowOffset']);
+/** Host terms, not shader uniforms. */
+const HOST = new Set(['rawShare', 'rawBlur', 'bodyBandScale', 'contactShadow', 'contactShadowInside', 'contactShadowBlur', 'contactShadowOffset']);
 const clamp = (x, lo, hi) => Math.min(Math.max(x, lo), hi);
 // Compose's sRGB Color stores 8 bits per channel.
 const q8 = x => Math.floor(clamp(x, 0, 1) * 255 + .5) / 255;
@@ -23,7 +27,7 @@ function lerpStyle(style, t) {
   const a = style.pill, b = style.lens, out = {};
   for (const key of Object.keys(a)) {
     if (key === 'uTint') out.uTint = lerpTint(a.uTint, b.uTint, t);
-    else if (SNAP.has(key)) out[key] = t < .5 ? a[key] : b[key];
+    else if (SNAP.has(key) || (OPTIONAL_DP.has(key) && (a[key] < 0 || b[key] < 0))) out[key] = t < .5 ? a[key] : b[key];
     else out[key] = t <= 0 ? a[key] : t >= 1 ? b[key] : a[key] + (b[key] - a[key]) * t;
   }
   // An ink split that follows dispersion snaps with the identity (GlassMorph `s`).
@@ -86,7 +90,7 @@ export function calmBarMaterial({dark = true, formation = 0, touch = 0, clear = 
 export function calmMaterialUniforms(values, density = 1) {
   const out = {};
   for (const [key, value] of Object.entries(values)) {
-    if (key === 'rawShare' || key === 'rawBlur') continue;
+    if (HOST.has(key)) continue;
     out[key] = DATA.dpFields.includes(key) ? value * density : value;
   }
   return out;
