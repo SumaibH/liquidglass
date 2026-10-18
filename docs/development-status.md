@@ -24,6 +24,24 @@ click reaches the element under interactive glass; that `Glass.Identity` draws n
 stand-in without a theme; merging in a container; and a `glassEffectID` morph. These are desktop
 JVM renders, not a physical-device record; this page links no device record for the new API yet.
 
+## Web component (18 October)
+
+`<liquid-glass>` (`ports/npm`, npm package `liquidglass`, **unpublished**) brings the material to any
+web page or framework as a custom element; its content stays ordinary HTML. `engine="html"` refracts
+the live page with `backdrop-filter`: an SVG displacement map computed from the shader's own geometry in
+Chromium, a frosted blur in Firefox and Safari. It is a CSS approximation of the material, with
+inherited numbers checked against the Kotlin sources and the CSS-only values labelled authored.
+`engine="canvas"` draws the production shaders through the CanvasKit painter over a source the page
+supplies. [Guide](web-component.md).
+
+Evidence: 27 Node unit tests and 7 Playwright tests in Chromium 156 (headless shell), and captures of
+both engines in light and dark
+([record](https://github.com/shayann07/liquidglass/blob/main/review/web-component-2026-10-18/README.md)).
+Firefox 157 and WebKit 27.2 (Playwright, headless) upgrade the element, select the frosted path and
+run the canvas engine, but their headless builds render no `backdrop-filter` blur at all, so the frosted
+look there is unverified. Not checked: Safari, mobile browsers, a physical device, comparison with iOS.
+Open: the CanvasKit painter binds the light as (0, -1) where `Glass.Regular` uses (-0.35, -0.94).
+
 ## Material 3, the plugin and the BOM (18 October)
 
 - `liquidglass-material3` (new artifact): glass versions of the Material 3 components with the same
@@ -57,6 +75,7 @@ backend comparison. [GPU evidence](https://github.com/shayann07/liquidglass/blob
 | Free magnifier | `GlassStyle.clearLens` / native `DrawLens` | Continuous mapping; distinct from a held navigation selector |
 | Calm navigation | `GlassTabBarStyle.Calm()` | Tap/held travel, landing recovery, whole-bar off-axis strain and separate appearance |
 | Portable production renderer | CanvasKit `createGlassScene` / `createGlassPainter` | Production shaders, explicit source, density, lifecycle and input |
+| Any web page or framework | `<liquid-glass>` (`ports/npm`, unpublished) | HTML engine: the live page, a CSS approximation (refraction in Chromium only); canvas engine: production shaders over a supplied source |
 | Lightweight browser lens | `ports/web` | Dependency-free lens preview; not the full material |
 | Native .NET | `GlassPainter`, `CalmInteraction`, `GlassFeedback` | SkiaSharp material and whole-surface input; host schedules redraws |
 | Existing WinForms controls | `ControlBackdrop.Capture` | Owned control subtree only, explicit invalidation/lifetime and supported-type limits |

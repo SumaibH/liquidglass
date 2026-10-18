@@ -47,6 +47,20 @@ test('in-app surface parameters agree with the actual Kotlin factory across both
   } finally {effects.dispose();}
 });
 
+test('tint replaces the in-app tint as Compose Glass.tint does, keeping the dark lift', () => {
+  const effects=compileGlassEffects(kit,sources);
+  try {
+    const base=inAppMaterialUniforms(effects,{width:240,height:80,dark:true});
+    const tinted=inAppMaterialUniforms(effects,{width:240,height:80,dark:true,tint:[0.04,0.52,1,0.5]});
+    assert.deepEqual(tinted.uTint,[10/255,133/255,1,128/255]);
+    assert.equal(tinted.uLift,base.uLift);
+    for(const key of Object.keys(base))if(key!=='uTint')assert.deepEqual(tinted[key],base[key],key);
+    assert.deepEqual(inAppMaterialUniforms(effects,{width:240,height:80,dark:true,tint:null}),base);
+    assert.throws(()=>inAppMaterialUniforms(effects,{width:240,height:80,tint:[1,1,1]}),RangeError);
+    assert.throws(()=>inAppMaterialUniforms(effects,{width:240,height:80,tint:[1,1,1,2]}),RangeError);
+  } finally {effects.dispose();}
+});
+
 test('wide-tone samples preserve global page coordinates outside a panels local origin', () => {
   const w=240,h=180,info={width:w,height:h,colorType:kit.ColorType.RGBA_8888,
     alphaType:kit.AlphaType.Premul,colorSpace:kit.ColorSpace.SRGB};

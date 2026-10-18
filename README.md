@@ -105,7 +105,7 @@ list only what their own READMEs and docs state (checked 18 October 2026).
 | Android below 13 | Tinted fallback with rim lighting; no refraction |
 | Desktop JVM | Full shader (Skia). Windows and Linux tested; macOS untested |
 | Web, Compose (Wasm) | Full shader (Skia), the same code as desktop ([live demo](https://liquidglass.shayxo.dev/demo/)) |
-| Web, any framework | [CanvasKit port](ports/skia/README.md) with the production shaders and the tab bar's motion |
+| Web, any framework | [`<liquid-glass>` web component](ports/npm/README.md) (npm `liquidglass`, unpublished): refracts live HTML in Chromium and frosts elsewhere, or draws the production shaders over a source you give it ([evidence](review/web-component-2026-10-18/README.md)); [CanvasKit port](ports/skia/README.md) with the production shaders, scene API, Calm navigation selector and input controller; [small WebGL lens preview](ports/web/README.md) |
 | .NET | [SkiaSharp painter, tab bar and WinForms adapter](ports/dotnet/README.md) |
 | iOS | Not planned: iOS 26 draws Liquid Glass natively |
 

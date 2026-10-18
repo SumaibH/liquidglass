@@ -110,6 +110,7 @@ nav:
       - Generic interaction: generic-interaction.md
       - Atlas Studio: atlas-studio.md
       - Other UI stacks: porting.md
+      - Web component: web-component.md
       - Native .NET & WinForms: native-dotnet.md
       - Adaptation: adaptation.md
       - Tab bar: tab-bar.md

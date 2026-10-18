@@ -64,6 +64,13 @@ Phases, one PR each, suite and ports green each time, the owner reviews between 
 4. Gradle plugin (with the liquidGlassAdopt codemod) + BOM.
 5. Docs/README rewrite, live web demo on the docs site, visuals for every component.
 6. npm web component, NuGet; then release on the owner's word.
+   - 18 Oct, branch claude/web-component (uncommitted, for the lead's review): `ports/npm` `<liquid-glass>`,
+     package `liquidglass`, `"private": true`. HTML engine (backdrop-filter; SVG lensing in Chromium, frost
+     elsewhere) and canvas engine (production shaders via the vendored ports/skia painter). Node 27/27,
+     Playwright Chromium 7/7 (+ capture test), ports/skia 45/45 with the new opt-in `tint`; CI job
+     `web-component`; docs/web-component.md; evidence review/web-component-2026-10-18. Open: Safari and
+     device checks, Firefox/WebKit headless builds render no backdrop blur, CanvasKit painter light (0,-1)
+     vs GlassLight.Default. NuGet not started.
 
 ## Parity plan (15 Oct 2026, owner-approved; parity work accepted 18 Oct)
 
