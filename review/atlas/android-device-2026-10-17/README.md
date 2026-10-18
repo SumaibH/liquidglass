@@ -54,6 +54,12 @@ janky share is 2-3%. Rendering the glass at reduced resolution barely changes it
 runs each): frame p50 17-18 / 17 / 16-17 ms and GPU p50 9 / 9 / 8 ms at `renderScale` 1.0 / 0.7 / 0.5.
 On this device the glass is not GPU-bound at this size; the larger share is the UI thread's work.
 
+**18 October.** The same gesture script on the build with the owner's device-check changes and the dark
+lens's wider raw blur (`rawShare` 0.5 at `rawBlur` 50 dp), `dumpsys gfxinfo`, full resolution, runs 2-3
+after a warm-up run: frame time p50 17-18 ms, p90 26 ms, p99 42-44 ms; GPU p50 9 ms, p90 15 ms (13 ms on
+17 October); janky 1.9-2.0% (1.8-2.1%). The owner then checked the build by finger and accepted the six
+points of their device check.
+
 **Limits.** The input is `adb shell input`, not a finger: a stationary hold sends no movement, and
 swipes are straight lines at constant speed. This check shows the behaviour runs correctly on the
 device; parity is measured on the desktop replay against the iOS recordings. The recordings stay local

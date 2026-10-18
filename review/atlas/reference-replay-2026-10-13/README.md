@@ -1055,7 +1055,8 @@ before (left) and with `capFold` 1 (right).*
   narrowing), two keep the previous pill law (see the calibration conflict above) and the Calm
   material reference now checks the new 53 held level. `GlassContinuousReplayTest` covers the new
   behaviour.
-- Tests check behaviour and stated envelopes; owner visual acceptance is separate and pending.
+- Tests check behaviour and stated envelopes. Owner acceptance: the Calm tab bar was accepted on the
+  device by finger on 18 October, after the six-point check above.
 
 ## Files
 

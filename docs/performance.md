@@ -138,6 +138,9 @@ On a Pixel 7 at 90 Hz (17 October; the Phone comparison scene, a bar, its select
 button) the glass is not the bottleneck: per frame the UI thread takes 6.9 ms, the RenderThread 1.9 ms
 and the GPU 8.5 ms at p50, all under the 11.1 ms budget, and `renderScale` 0.5 lowers GPU time only from
 9 to 8 ms ([device record](https://github.com/shayann07/liquidglass/blob/main/review/atlas/android-device-2026-10-17/README.md)).
+On 18 October the same gesture script on the build with the dark lens's wider raw blur (0.5 at 50 dp)
+read frame time p50 17-18 ms, p90 26 ms, GPU p50 9 ms and p90 15 ms (13 before), 1.9-2.0% janky (two
+runs after a warm-up run).
 The scrolling Material screen above is the expensive arrangement; there, resolution matters.
 
 So the default is 1, and it should stay 1 unless a screen is actually missing frames. If it is,
