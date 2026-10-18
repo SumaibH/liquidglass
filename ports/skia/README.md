@@ -231,7 +231,10 @@ This follows `GlassStyle.inApp`: the production measured profile, fine detail ke
 kernel, per-appearance tint and edge lighting. `radius` is one pixel value or four values in
 top-left, top-right, bottom-right, bottom-left order. Each is limited to the shape's inradius.
 Options are `dark` (default false), `tintAmount` (0–100, default 50), `density` (positive, default 1),
-`materialize`, `reducedTransparency` and `increasedContrast` (each 0–1; defaults 1, 0, 0).
+`materialize`, `reducedTransparency` and `increasedContrast` (each 0–1; defaults 1, 0, 0), and
+`tint` ([r, g, b, a], sRGB 0–1; default none): Compose's `Glass.tint(color)`, which replaces the tint
+colour and opacity (quantized to 8 bits, as Compose's Color is) and keeps the dark lift. The
+`<liquid-glass>` web component's canvas engine uses it ([ports/npm](../npm/README.md)).
 Geometry remains in device pixels; density scales the material's dp constants. Feed accessibility
 preferences from the host. Ordinary text stays outside the material draw, as in the browser example.
 

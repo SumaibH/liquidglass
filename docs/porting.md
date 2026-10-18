@@ -10,7 +10,7 @@ Separate the material, motion and host integration instead of duplicating a samp
 | --- | --- | --- |
 | Android Compose / Compose Desktop / Compose for Web | `LiquidGlassTheme` at the root and `Modifier.glassEffect` | Main implementation; shader and interaction suites |
 | Android Views | Place a ComposeView over a Compose-recorded backdrop, or supply an independent renderer | Bridge work required for a View-owned backdrop; no transparent capture of arbitrary Views |
-| React, Vue, Svelte, Angular, vanilla HTML | ES module with a supplied canvas/image/video texture | Continuous lens preview in `ports/web`; not the full measured material |
+| React, Vue, Svelte, Angular, vanilla HTML | The [`<liquid-glass>` web component](web-component.md) (`ports/npm`): live HTML through `backdrop-filter`, or the production shaders over a supplied source through CanvasKit; or the ES module in `ports/web` with a supplied canvas/image/video texture | Web component unpublished; its HTML engine is an approximation (refraction in Chromium only), its canvas engine draws the production shaders. `ports/web` is the continuous lens preview, not the full measured material |
 | CanvasKit / another Skia RuntimeEffect host | Generated production material, content and aperture shaders in `ports/skia` | CanvasKit software rendering verified against JVM pixels; host capture/input remain explicit |
 | .NET / SkiaSharp | `GlassPainter`, `CalmInteraction`, `CalmNavigation` / `CalmSelectorController`, optional feedback and WinForms `ControlBackdrop` | CPU fixtures, input, the Calm selector against Kotlin trajectories and standard-control capture verified; other hosts remain open |
 | Electron, Tauri, browser WebViews | Same web module, where WebGL and origin-clean textures are available | Host lifecycle/permissions must be tested |
@@ -184,6 +184,8 @@ renderer.dispose();
 Coordinates are CSS pixels; `pixelRatio` controls the backing buffer (1–4). Supply a matching source
 aspect ratio. Keep DOM text/buttons above the canvas for accessibility. For arbitrary DOM content,
 CSS `backdrop-filter` is an available visual fallback; it does not implement this refractive source map.
+The [web component](web-component.md) packages that fallback with the material's tint, kernels and
+edge light, and, in Chromium, an SVG displacement map baked from the measured resting-corner map.
 Do not scrape screenshots of the user's browser or claim this fallback is the measured material.
 
 React can create/dispose the renderer in `useEffect`; Vue in `onMounted`/`onUnmounted`; Svelte in `onMount`

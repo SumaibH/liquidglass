@@ -1,0 +1,138 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>liquid-glass example</title>
+<style>
+:root{--page:#f3efe8;--ink:#14161b;--muted:#4c5260;--on-glass:#101216;color-scheme:light}
+:root[data-scheme=dark]{--page:#0a0e19;--ink:#eef1f6;--muted:#a8b0c0;--on-glass:#f7f8fa;color-scheme:dark}
+@media (prefers-color-scheme: dark){:root:not([data-scheme=light]){--page:#0a0e19;--ink:#eef1f6;--muted:#a8b0c0;--on-glass:#f7f8fa;color-scheme:dark}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--page);color:var(--ink);font:16px/1.5 system-ui,-apple-system,"Segoe UI",sans-serif}
+main{max-width:1000px;margin:0 auto;padding:24px 16px 48px}
+h1{font-size:28px;margin:0 0 4px;font-weight:650}
+h2{font-size:18px;margin:32px 0 8px;font-weight:600}
+p.lede{margin:0 0 16px;color:var(--muted);max-width:70ch}
+.controls{display:flex;flex-wrap:wrap;gap:8px 16px;align-items:center;margin:0 0 16px}
+.controls button,.controls label{font:inherit;font-size:14px}
+.controls button{padding:6px 14px;border-radius:999px;border:1px solid color-mix(in srgb,var(--ink) 25%,transparent);
+  background:transparent;color:var(--ink);cursor:pointer}
+.controls button[aria-pressed=true]{background:var(--ink);color:var(--page)}
+#status{font:13px/1.4 ui-monospace,Consolas,monospace;color:var(--muted);min-height:2.8em;white-space:pre-wrap}
+
+/* The page behind the glass: colour, type and fine detail, all drawn by CSS. */
+.stage{position:relative;height:520px;border-radius:24px;overflow:hidden;isolation:isolate;
+  background:
+    radial-gradient(circle at 18% 28%,#ff8a3d 0 70px,transparent 71px),
+    radial-gradient(circle at 78% 72%,#2bd4a4 0 90px,transparent 91px),
+    conic-gradient(from 30deg at 62% 30%,#ff3d7f,#ffd23d,#3dd6ff,#7a3dff,#ff3d7f) 62% 30%/180px 180px no-repeat,
+    repeating-linear-gradient(90deg,#1b1f2a 0 2px,transparent 2px 16px) 0 440px/100% 80px no-repeat,
+    linear-gradient(135deg,#5b8cff 0%,#b05bff 40%,#ff6b8b 70%,#ffc26b 100%)}
+.stage::before{content:"";position:absolute;inset:0;background:transparent;pointer-events:none}
+:root[data-scheme=dark] .stage::before{background:rgb(5 8 20 / .45)}
+@media (prefers-color-scheme: dark){:root:not([data-scheme=light]) .stage::before{background:rgb(5 8 20 / .45)}}
+.stage .headline{position:absolute;left:40px;top:150px;margin:0;font:800 76px/0.95 system-ui,sans-serif;
+  letter-spacing:-2px;color:#fff;text-shadow:0 2px 0 rgba(0,0,0,.25);max-width:13ch;pointer-events:none}
+.stage .fine{position:absolute;left:40px;top:370px;width:520px;margin:0;font:14px/1.45 Georgia,serif;color:#121520}
+.stage .checks{position:absolute;right:40px;top:40px;width:200px;height:120px;border-radius:12px;
+  background:conic-gradient(#fff 25%,#111 0 50%,#fff 0 75%,#111 0) 0 0/24px 24px}
+
+liquid-glass{color:var(--on-glass)}
+.stage liquid-glass,.canvas-stage liquid-glass{position:absolute}
+.toolbar{left:50%;bottom:28px;transform:translateX(-50%);padding:6px}
+.toolbar .row{display:flex;gap:2px}
+.glass-button{display:inline-flex;align-items:center;gap:8px;padding:10px 16px;border:0;border-radius:999px;
+  background:transparent;color:inherit;font:600 15px/1 system-ui,sans-serif;cursor:pointer}
+.glass-button:hover{background:color-mix(in srgb,currentColor 10%,transparent)}
+.glass-button:focus-visible{outline:2px solid currentColor;outline-offset:2px}
+.glass-button svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.card{left:56%;top:110px;width:300px;padding:20px 22px}
+.card h3{margin:0 0 6px;font-size:18px}
+.card p{margin:0 0 14px;font-size:14px;line-height:1.45}
+.card .glass-button{padding:8px 14px;background:color-mix(in srgb,currentColor 12%,transparent)}
+.clear-pill{left:48px;top:452px;padding:12px 22px;font-weight:600}
+.tinted{left:40px;top:40px}
+.tinted .glass-button{color:#fff}
+
+.canvas-stage{position:relative;height:360px;border-radius:24px;overflow:hidden}
+.canvas-stage canvas#photo{position:absolute;inset:0;width:100%;height:100%;display:block}
+.c-toolbar{left:24px;bottom:24px;padding:6px}
+.c-card{right:24px;top:24px;width:280px;padding:18px 20px}
+.c-card h3{margin:0 0 6px;font-size:17px}
+.c-card p{margin:0;font-size:14px}
+@media (max-width:720px){
+  .stage{height:760px}
+  .stage .headline{font-size:44px;left:20px;top:110px}
+  .stage .checks{right:20px;top:24px;width:120px;height:72px}
+  .stage .fine{left:20px;right:20px;width:auto;top:540px}
+  .tinted{left:20px;top:28px}
+  .card{left:16px;right:16px;top:236px;width:auto}
+  .clear-pill{left:20px;top:458px}
+  .c-card{left:16px;right:16px;width:auto}
+}
+</style>
+</head>
+<body>
+<main>
+  <h1>&lt;liquid-glass&gt;</h1>
+  <p class="lede">A standard custom element. Everything inside it stays ordinary, accessible HTML; the glass
+    is drawn behind it. The first panel refracts this live page (SVG lensing in Chromium, frosted
+    elsewhere). The second draws the production shaders through CanvasKit over a canvas the page provides.</p>
+  <div class="controls" role="group" aria-label="Example options">
+    <span>Scheme</span>
+    <button type="button" data-scheme-choice="auto" aria-pressed="true">Auto</button>
+    <button type="button" data-scheme-choice="light" aria-pressed="false">Light</button>
+    <button type="button" data-scheme-choice="dark" aria-pressed="false">Dark</button>
+    <label><input type="checkbox" id="frost"> Frost only (lensing off)</label>
+  </div>
+
+  <h2>engine="html" over live HTML</h2>
+  <section class="stage" id="html-stage" aria-label="Live HTML behind glass">
+    <div class="checks" aria-hidden="true"></div>
+    <p class="headline" aria-hidden="true">Look through the page.</p>
+    <p class="fine" aria-hidden="true">Fine print sits under the glass so you can see what the material does to
+      detail: Regular keeps a third of it over a ten-pixel tone blur; Clear keeps it crisp at the rim.</p>
+
+    <liquid-glass variant="clear" interactive class="clear-pill" id="clear-pill">Clear</liquid-glass>
+    <liquid-glass tint="rgb(10 132 255 / 0.55)" interactive class="tinted" id="tinted">
+      <button type="button" class="glass-button" id="primary">Primary action</button>
+    </liquid-glass>
+
+    <liquid-glass shape="rect" radius="28" class="card" id="card">
+      <h3>Regular glass</h3>
+      <p>Tint, lift and edge light come from the library's measured in-app material. Text here is
+        plain HTML: selectable, focusable and read by assistive technology.</p>
+      <button type="button" class="glass-button" id="details">Details</button>
+    </liquid-glass>
+
+    <liquid-glass interactive class="toolbar" id="toolbar">
+      <nav class="row" aria-label="Toolbar">
+        <button type="button" class="glass-button" id="back"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 18l-6-6 6-6"/></svg>Back</button>
+        <button type="button" class="glass-button" id="share"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12M7 8l5-5 5 5M5 14v6h14v-6"/></svg>Share</button>
+        <button type="button" class="glass-button" id="edit"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20h4L19 9l-4-4L4 16v4z"/></svg>Edit</button>
+      </nav>
+    </liquid-glass>
+  </section>
+
+  <h2>engine="canvas" over a source canvas</h2>
+  <section class="canvas-stage" aria-label="Canvas source behind glass">
+    <canvas id="photo" width="960" height="360" aria-hidden="true"></canvas>
+    <liquid-glass engine="canvas" interactive class="c-toolbar" id="c-toolbar">
+      <div class="row" style="display:flex;gap:2px">
+        <button type="button" class="glass-button">Library</button>
+        <button type="button" class="glass-button">For you</button>
+        <button type="button" class="glass-button">Search</button>
+      </div>
+    </liquid-glass>
+    <liquid-glass engine="canvas" shape="rect" radius="24" class="c-card" id="c-card">
+      <h3>Production shaders</h3>
+      <p>GlassStyle.inApp through CanvasKit, refracting the canvas behind it.</p>
+    </liquid-glass>
+  </section>
+  <p id="status" role="status" aria-live="polite"></p>
+</main>
+<script src="./node_modules/canvaskit-wasm/bin/canvaskit.js"></script>
+<script type="module" src="./example.mjs"></script>
+</body>
+</html>
