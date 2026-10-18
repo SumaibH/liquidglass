@@ -24,8 +24,23 @@ REMOVE every old public API (GlassScene, LiquidGlassScene, LiquidGlassState / li
 liquidGlass); the engine becomes internal.
 
 Phases, one PR each, suite and ports green each time, the owner reviews between phases:
-1. Web target (wasmJs + skikoMain + `:web` Atlas): branch claude/web-target. DONE pending suite and CI.
-2. Engine API: SwiftUI vocabulary + theme; remove the old APIs.
+1. Web target (wasmJs + skikoMain + `:web` Atlas): PR #28 (branch claude/web-target), suite 401/0.
+2. Engine API, branch claude/glass-api: LiquidGlassTheme (root records; nested = defaults and
+   accessibility, via GlassRegion.stateFor views sharing the recording), Modifier.glassEffect (draws
+   nothing in place; the root overlay draws the glass via the production engine, plus the content as a
+   foreground layer; a non-consuming pointer observer feeds a GlassPressSource), Glass variants,
+   GlassEffectContainer (a GlassPortal composes LiquidGlassContainer in the overlay), glassEffectID
+   (MorphTracker via the ModifierLocal GlassIdNode), GlassTabBar without state (portal). Old public
+   APIs removed/internal; sample/desktop/web migrated. GlassEffectTest 7/7. Backdrop decision: Hybrid
+   (overlay everywhere now; Skia backdrop saveLayer for desktop/web is a follow-up, spikes in
+   review/atlas/backdrop-spikes-2026-10-18, worktree .local/wt-spike). Known: the merged neck shows a
+   faint crease; the calibration "fused_closed" fixture no longer fuses.
+   Follow-up (hybrid, desktop/web): glassEffect on skikoMain draws in place with
+   `Canvas.saveLayer(SaveLayerRec(paddedRect, null, backdrop = graph))`, where graph =
+   makeRuntimeShader(builder, ["content","wideContent"], [ground+shadow merged over the backdrop (null
+   input), glassWideInputFilter-style blurred quarter-scale backdrop]). This is the same shader and uniforms
+   as the overlay path. Verify against overlay renders (same optics where both apply), then switch
+   skiko to it and keep the overlay on Android.
 3. Material 3 glass components (all).
 4. Gradle plugin + compiler plugin + BOM.
 5. Docs/README rewrite, live web demo on the docs site, visuals for every component.

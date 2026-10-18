@@ -1,5 +1,8 @@
 package com.wexpa.liquidglass.sample
 
+import com.wexpa.liquidglass.LiquidGlassTheme
+import com.wexpa.liquidglass.Glass
+import com.wexpa.liquidglass.glassEffect
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -22,9 +25,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.wexpa.liquidglass.GlassStyle
-import com.wexpa.liquidglass.LiquidGlassScene
-import com.wexpa.liquidglass.liquidGlass
-import com.wexpa.liquidglass.liquidGlassSource
 
 /**
  * The three improvements, each shown off and on against the same backdrop.
@@ -40,8 +40,9 @@ class ImprovementsActivity : ComponentActivity() {
 
 @Composable
 private fun Improvements() {
-    LiquidGlassScene(background = Color(0xFF0B0E1A), modifier = Modifier.fillMaxSize()) {
-        HardEdgedBackdrop(Modifier.fillMaxSize().liquidGlassSource())
+    LiquidGlassTheme(dark = true, background = Color(0xFF0B0E1A)) {
+    Box(Modifier.fillMaxSize()) {
+        HardEdgedBackdrop(Modifier.fillMaxSize())
 
         Column(
             modifier = Modifier.fillMaxSize().padding(horizontal = 14.dp),
@@ -52,48 +53,33 @@ private fun Improvements() {
             Label("Rim softening  ·  left OFF, right ON")
             Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
                 Panel(
-                    Modifier.weight(1f).height(120.dp).liquidGlass(
-                        RoundedCornerShape(percent = 50),
-                        GlassStyle.Clear.copy(rimSoftness = 0.dp),
-                    ),
+                    Modifier.weight(1f).height(120.dp).glassEffect(Glass(GlassStyle.Clear.copy(rimSoftness = 0.dp)), RoundedCornerShape(percent = 50)),
                 )
                 Panel(
-                    Modifier.weight(1f).height(120.dp).liquidGlass(
-                        RoundedCornerShape(percent = 50),
-                        GlassStyle.Clear.copy(rimSoftness = 7.dp),
-                    ),
+                    Modifier.weight(1f).height(120.dp).glassEffect(Glass(GlassStyle.Clear.copy(rimSoftness = 7.dp)), RoundedCornerShape(percent = 50)),
                 )
             }
 
             Label("Tint  ·  left BLEND, right MEDIUM")
             Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
                 Panel(
-                    Modifier.weight(1f).height(120.dp).liquidGlass(
-                        RoundedCornerShape(26.dp),
-                        GlassStyle.Regular.copy(
+                    Modifier.weight(1f).height(120.dp).glassEffect(Glass(GlassStyle.Regular.copy(
                             tint = Color(0xFF2E7BFF).copy(alpha = 0.55f),
                             tintAbsorption = 0f,
-                        ),
-                    ),
+                        )), RoundedCornerShape(26.dp)),
                 )
                 Panel(
-                    Modifier.weight(1f).height(120.dp).liquidGlass(
-                        RoundedCornerShape(26.dp),
-                        GlassStyle.Regular.copy(
+                    Modifier.weight(1f).height(120.dp).glassEffect(Glass(GlassStyle.Regular.copy(
                             tint = Color(0xFF2E7BFF).copy(alpha = 0.55f),
                             tintAbsorption = 1f,
-                        ),
-                    ),
+                        )), RoundedCornerShape(26.dp)),
                 )
             }
 
             Label("Dome field  ·  a wide pill whose band reaches its own centre")
             Panel(
-                Modifier.fillMaxWidth().height(86.dp).liquidGlass(
-                    RoundedCornerShape(percent = 50),
-                    // Band equal to the inradius: without the dome the middle stops bending.
-                    GlassStyle.Clear.copy(refractionBand = 43.dp, refractionDepth = 20.dp),
-                ),
+                Modifier.fillMaxWidth().height(86.dp).glassEffect(Glass(// Band equal to the inradius: without the dome the middle stops bending.
+                    GlassStyle.Clear.copy(refractionBand = 43.dp, refractionDepth = 20.dp)), RoundedCornerShape(percent = 50)),
             )
 
             Label("Stock Material 3 Text, converted with the same modifier")
@@ -104,10 +90,11 @@ private fun Improvements() {
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(66.dp)
-                    .liquidGlass(RoundedCornerShape(20.dp), GlassStyle.Chrome)
+                    .glassEffect(Glass(GlassStyle.Chrome), RoundedCornerShape(20.dp))
                     .padding(20.dp),
             )
         }
+    }
     }
 }
 

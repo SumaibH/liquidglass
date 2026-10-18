@@ -57,7 +57,7 @@ import androidx.compose.ui.unit.isSpecified
  * panel samples the region beneath itself out of that single recording.
  */
 @Stable
-class LiquidGlassState internal constructor(
+internal class LiquidGlassState(
     /**
      * The opaque colour behind the recorded backdrop.
      *
@@ -117,7 +117,7 @@ class LiquidGlassState internal constructor(
 }
 
 @Composable
-fun rememberLiquidGlassState(
+internal fun rememberLiquidGlassState(
     background: Color = Color.Black,
     inversion: Float = 0f,
     frost: Float = 0f,
@@ -134,16 +134,23 @@ fun rememberLiquidGlassState(
  * read many times. Put this on the thing the glass floats over — usually the scrolling body —
  * and not on an ancestor that also contains the glass, or the panel would sample itself.
  */
-fun Modifier.liquidGlassSource(state: LiquidGlassState): Modifier = composed {
+internal fun Modifier.liquidGlassSource(
+    state: LiquidGlassState,
+    /** Other states that read this same recording (a [GlassRegion]'s per-setting views). */
+    mirrors: () -> Iterable<LiquidGlassState> = { emptyList() },
+): Modifier = composed {
     val layer = rememberGraphicsLayer()
     this
         .onGloballyPositioned { coords ->
+            val size = Size(coords.size.width.toFloat(), coords.size.height.toFloat())
             state.sourceCoordinates = coords
-            state.sourceSize = Size(coords.size.width.toFloat(), coords.size.height.toFloat())
+            state.sourceSize = size
+            for (m in mirrors()) { m.sourceCoordinates = coords; m.sourceSize = size }
         }
         .drawWithContent {
             layer.record { this@drawWithContent.drawContent() }
             state.layer = layer
+            for (m in mirrors()) m.layer = layer
             drawLayer(layer)
         }
 }
@@ -159,7 +166,7 @@ fun Modifier.liquidGlassSource(state: LiquidGlassState): Modifier = composed {
 // Reads LiquidGlassDiagnostics, which is off by default: with no rig running, debugCoverage is 0 and the
 // pad is the style's own, so this path is exactly the production one.
 @OptIn(LiquidGlassDiagnosticApi::class)
-fun Modifier.liquidGlass(
+internal fun Modifier.liquidGlass(
     state: LiquidGlassState,
     shape: Shape = RectangleShape,
     style: GlassStyle = GlassStyle.Regular,

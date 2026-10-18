@@ -98,31 +98,28 @@ fun LoupeScreen(reduceMotion: Boolean = false, modifier: Modifier = Modifier,
     val diameter = with(density) { minOf(200.dp.toPx(), (minOf(viewport.width, viewport.height) * .42f).coerceAtLeast(0f)) }
     val margin = with(density) { 12.dp.toPx() }
     val centre = boundedLens(Offset(normalized.x * viewport.width, normalized.y * viewport.height), viewport, diameter / 2, margin)
-    val lensPress = rememberGlassPressSource()
     val barStyle = GlassTabBarStyle.Calm().copy(height = BarHeight)
 
-    GlassScene(background = Ground, modifier = modifier.fillMaxSize().testTag("atlas-canvas").onSizeChanged { viewport = it },
-        backdrop = {
-            AtlasBackdrop(scene, clock, pan, Modifier.fillMaxSize().pointerInput(Unit) {
-                // Drag the page itself: content moves under the glass by hand as well as by drift.
-                detectDragGestures { change, amount -> change.consume(); pan += amount }
-            })
-        }) {
-        val glassState = state
+    LiquidGlassTheme(dark = true, background = Ground) {
+    Box(modifier.fillMaxSize().testTag("atlas-canvas").onSizeChanged { viewport = it }) {
+        AtlasBackdrop(scene, clock, pan, Modifier.fillMaxSize().pointerInput(Unit) {
+            // Drag the page itself: content moves under the glass by hand as well as by drift.
+            detectDragGestures { change, amount -> change.consume(); pan += amount }
+        })
         val wide = with(density) { viewport.width.toDp() } >= 720.dp
         val compact = with(density) { viewport.width.toDp() } < 480.dp
 
         // Top: title and controls, each on its own glass.
         Row(Modifier.align(Alignment.TopCenter).fillMaxWidth().statusBarsPadding().padding(16.dp),
             verticalAlignment = Alignment.CenterVertically) {
-            Row(Modifier.liquidGlass(glassState, RoundedCornerShape(26.dp), GlassStyle.DarkChrome, interaction = null)
+            Row(Modifier.glassEffect(Glass(GlassStyle.DarkChrome), RoundedCornerShape(26.dp))
                 .heightIn(min = 52.dp).padding(horizontal = 18.dp, vertical = 8.dp),
                 verticalAlignment = Alignment.CenterVertically) {
                 Label("ATLAS", 15, weight = FontWeight.Bold)
                 if (!compact) Label("  Studio · LiquidGlass", 13, Muted)
             }
             Spacer(Modifier.weight(1f))
-            Row(Modifier.liquidGlass(glassState, RoundedCornerShape(26.dp), GlassStyle.DarkChrome, interaction = null)
+            Row(Modifier.glassEffect(Glass(GlassStyle.DarkChrome), RoundedCornerShape(26.dp))
                 .padding(horizontal = 4.dp), verticalAlignment = Alignment.CenterVertically) {
                 Action("−", "zoom-out", onClick = { magnification = (magnification - .1f).coerceAtLeast(1f) })
                 Label("${(magnification * 100).roundToInt()}%", 13, Accent, FontWeight.Medium)
@@ -132,12 +129,12 @@ fun LoupeScreen(reduceMotion: Boolean = false, modifier: Modifier = Modifier,
             }
         }
         if (compact) Box(Modifier.align(Alignment.TopEnd).statusBarsPadding().padding(top = 76.dp, end = 16.dp)
-            .liquidGlass(glassState, RoundedCornerShape(22.dp), GlassStyle.DarkChrome, interaction = null)) {
+            .glassEffect(Glass(GlassStyle.DarkChrome), RoundedCornerShape(22.dp))) {
             Action(if (moving) "Motion on" else "Motion reduced", "motion", selected = !moving, onClick = { motion = !motion })
         }
 
         if (wide) Column(Modifier.align(Alignment.BottomStart).navigationBarsPadding().padding(24.dp).widthIn(max = 360.dp)
-            .liquidGlass(glassState, RoundedCornerShape(24.dp), GlassStyle.DarkChrome, interaction = interaction)
+            .glassEffect(Glass(GlassStyle.DarkChrome).interactive(response = interaction), RoundedCornerShape(24.dp))
             .testTag("glass-note").padding(20.dp)) {
             Label(listOf("Find your perspective.", "Clarity, up close.", "Follow the curve.")[scene], 18, weight = FontWeight.Medium)
             Label("Hold and pull this card: its surface answers,\nits words and its place stay put.", 12, Ink.copy(alpha = .78f),
@@ -148,17 +145,15 @@ fun LoupeScreen(reduceMotion: Boolean = false, modifier: Modifier = Modifier,
             Box(Modifier.offset { IntOffset((centre.x - diameter / 2).roundToInt(), (centre.y - diameter / 2).roundToInt()) }
                 .size(with(density) { diameter.toDp() }).testTag("atlas-lens")
                 .semantics { contentDescription = "Magnifier, ${(magnification * 100).roundToInt()} percent" }
-                .liquidGlass(glassState, CircleShape, loupeStyle.copy(heldMagnification = 1f - 1f / magnification),
-                    interaction = if (moving) LensDrag else null, pressSource = lensPress)
+                .glassEffect(Glass(loupeStyle.copy(heldMagnification = 1f - 1f / magnification))
+                    .let { if (moving) it.interactive(response = LensDrag) else it }, CircleShape)
                 .pointerInput(viewport, diameter) {
-                    detectDragGestures(onDragStart = { lensPress.press(it) }, onDragEnd = lensPress::release,
-                        onDragCancel = lensPress::release) { change, amount ->
+                    detectDragGestures { change, amount ->
                         change.consume()
                         // Read state on each event; no remembered screen-space offsets.
                         val current = Offset(normalized.x * viewport.width, normalized.y * viewport.height)
                         val next = boundedLens(current + amount, viewport, diameter / 2, margin)
                         normalized = Offset(next.x / viewport.width.coerceAtLeast(1), next.y / viewport.height.coerceAtLeast(1))
-                        lensPress.press(Offset(diameter / 2, diameter / 2))
                     }
                 })
         }
@@ -170,7 +165,7 @@ fun LoupeScreen(reduceMotion: Boolean = false, modifier: Modifier = Modifier,
         val barWidth = minOf(300.dp, maxBar).coerceAtLeast(180.dp)
         Row(Modifier.align(Alignment.BottomCenter).navigationBarsPadding().padding(bottom = 24.dp),
             verticalAlignment = Alignment.CenterVertically) {
-            GlassTabBar(glassState, Scenes.size, scene, selectScene,
+            GlassTabBar(Scenes.size, scene, selectScene,
                 modifier = Modifier.width(barWidth).testTag("atlas-navigation").onGloballyPositioned { onNavigationLayout?.invoke(it.boundsInRoot()) },
                 style = barStyle, motionEnabled = moving,
                 trailingAccessory = GlassTabBarAccessory(BarHeight, gap = gap, yieldsToLens = true)) { index, selected ->
@@ -181,7 +176,7 @@ fun LoupeScreen(reduceMotion: Boolean = false, modifier: Modifier = Modifier,
             }
             Spacer(Modifier.width(gap))
             Box(Modifier.size(BarHeight).testTag("lens-toggle")
-                .liquidGlass(glassState, CircleShape, barStyle.bar, light = barStyle.light)
+                .glassEffect(Glass(barStyle.bar, light = barStyle.light), CircleShape)
                 .clip(CircleShape).clickable(role = Role.Switch) { lensVisible = !lensVisible }
                 .semantics { contentDescription = if (lensVisible) "Hide magnifier" else "Show magnifier" },
                 contentAlignment = Alignment.Center) {
@@ -194,6 +189,7 @@ fun LoupeScreen(reduceMotion: Boolean = false, modifier: Modifier = Modifier,
                 }
             }
         }
+    }
     }
 }
 

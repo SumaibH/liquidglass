@@ -52,19 +52,10 @@ import kotlin.math.sin
  */
 @Composable
 fun GlassGallery(modifier: Modifier = Modifier) {
-    val glass = rememberLiquidGlassState(background = Color(0xFF1B2A6B))
-
-    // The backdrop lives *inside* the scroll, with the panels, so the two share one frame.
-    //
-    // The other way round does not work, and the reason is worth knowing: Compose applies a
-    // scroll offset when it draws rather than when it lays out, so a panel inside a scroll
-    // cannot discover its offset from a backdrop outside it — every layout API reports its
-    // unscrolled position. Chrome floating over a scrolling list is the arrangement the
-    // material is actually for, and it works because the glass is outside the scroll; this
-    // gallery is the other supported case, where everything is inside it together.
-    Box(modifier = modifier.fillMaxSize()) {
-        Box(modifier = Modifier.fillMaxSize().verticalScroll(rememberScrollState())) {
-            GalleryBackdrop(Modifier.matchParentSize().liquidGlassSource(glass))
+    // Everything, backdrop and glass, scrolls together; the glass follows its place on every frame.
+    LiquidGlassTheme(dark = false, background = Color(0xFF1B2A6B)) {
+        Box(modifier = modifier.fillMaxSize().verticalScroll(rememberScrollState())) {
+            GalleryBackdrop(Modifier.matchParentSize())
 
             Column(
                 modifier = Modifier
@@ -74,48 +65,43 @@ fun GlassGallery(modifier: Modifier = Modifier) {
             ) {
                 Spacer(Modifier.height(24.dp))
 
-                GlassPanel(glass, "Clear · capsule", GlassStyle.Clear, CircleShape, 64.dp)
-                GlassPanel(glass, "Regular · card", GlassStyle.Regular, RoundedCornerShape(28.dp), 96.dp)
-                GlassPanel(glass, "Thick · sheet", GlassStyle.Thick, RoundedCornerShape(32.dp), 150.dp)
+                GlassPanel("Clear · capsule", Glass.Clear, CircleShape, 64.dp)
+                GlassPanel("Regular · card", Glass(GlassStyle.Regular), RoundedCornerShape(28.dp), 96.dp)
+                GlassPanel("Thick · sheet", Glass(GlassStyle.Thick), RoundedCornerShape(32.dp), 150.dp)
 
                 // Apple's actual corner geometry, with the material's field matching the clip.
-                GlassPanel(
-                    glass,
-                    "Squircle · n=4",
-                    GlassStyle.Regular,
-                    GlassSquircleShape(cornerRadius = 34.dp, power = 4f),
-                    110.dp,
-                )
+                GlassPanel("Squircle · n=4", Glass(GlassStyle.Regular),
+                    GlassSquircleShape(cornerRadius = 34.dp, power = 4f), 110.dp)
 
                 // No closed form: the host measures this one and the shader reads the measurement.
-                GlassPanel(glass, "Path · star", GlassStyle.Regular, StarShape, 190.dp)
+                GlassPanel("Path · star", Glass(GlassStyle.Regular), StarShape, 190.dp)
 
                 Label("Press it - scale, glow, magnifier", size = 13)
-                GlassPanel(
-                    glass,
-                    "Interactive",
-                    GlassStyle.Regular,
-                    RoundedCornerShape(30.dp),
-                    92.dp,
-                    interaction = GlassInteraction.Default,
-                )
+                GlassPanel("Interactive", Glass(GlassStyle.Regular).interactive(response = GlassInteraction.Default),
+                    RoundedCornerShape(30.dp), 92.dp)
 
                 Spacer(Modifier.height(4.dp))
                 Label("Container - members fusing", size = 13)
-                LiquidGlassContainer(
-                    state = glass,
-                    modifier = Modifier.fillMaxWidth().height(110.dp),
-                    style = GlassStyle.Regular,
-                    mergeDistance = 40.dp,
-                ) {
+                GlassEffectContainer(Modifier.fillMaxWidth().height(110.dp), spacing = 40.dp, glass = Glass(GlassStyle.Regular)) {
                     Row(
                         modifier = Modifier.fillMaxSize(),
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.spacedBy(10.dp),
                     ) {
-                        Box(Modifier.size(96.dp).glassMember(CircleShape))
-                        Box(Modifier.size(96.dp).glassMember(CircleShape))
-                        Box(Modifier.width(120.dp).height(84.dp).glassMember(RoundedCornerShape(28.dp)))
+                        Box(Modifier.size(96.dp).glassEffect(shape = CircleShape))
+                        Box(Modifier.size(96.dp).glassEffect(shape = CircleShape))
+                        Box(Modifier.width(120.dp).height(84.dp).glassEffect(shape = RoundedCornerShape(28.dp)))
+                    }
+                }
+
+                Spacer(Modifier.height(4.dp))
+                Label("Reduce Transparency · Increase Contrast", size = 13)
+                Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
+                    LiquidGlassTheme(dark = false, reduceTransparency = 1f) {
+                        GlassPanel("Frosted", Glass(GlassStyle.Regular), RoundedCornerShape(24.dp), 84.dp, Modifier.weight(1f))
+                    }
+                    LiquidGlassTheme(dark = false, increaseContrast = 1f) {
+                        GlassPanel("Contrast", Glass(GlassStyle.Regular), RoundedCornerShape(24.dp), 84.dp, Modifier.weight(1f))
                     }
                 }
 
@@ -125,50 +111,18 @@ fun GlassGallery(modifier: Modifier = Modifier) {
     }
 }
 
-/**
- * Frost and contrast are properties of the environment rather than of one panel — the app
- * decides and every piece of glass in it agrees — so showing both at once means two states over
- * two backdrops rather than two styles over one.
- */
-@Composable
-private fun AccessibilityPanel(
-    label: String,
-    frost: Float,
-    contrast: Float,
-    modifier: Modifier = Modifier,
-) {
-    val state = rememberLiquidGlassState(
-        background = Color(0xFF1B2A6B),
-        frost = frost,
-        contrast = contrast,
-    )
-    Box(modifier = modifier.height(84.dp)) {
-        GalleryBackdrop(Modifier.fillMaxSize().liquidGlassSource(state))
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .liquidGlass(state, RoundedCornerShape(24.dp), GlassStyle.Regular),
-            contentAlignment = Alignment.Center,
-        ) {
-            Label(label, size = 14)
-        }
-    }
-}
-
 @Composable
 private fun GlassPanel(
-    state: LiquidGlassState,
     label: String,
-    style: GlassStyle,
+    glass: Glass,
     shape: Shape,
     height: Dp,
-    interaction: GlassInteraction? = null,
+    modifier: Modifier = Modifier.fillMaxWidth(),
 ) {
     Box(
-        modifier = Modifier
-            .fillMaxWidth()
+        modifier = modifier
             .height(height)
-            .liquidGlass(state, shape, style, interaction = interaction),
+            .glassEffect(glass, shape),
         contentAlignment = Alignment.Center,
     ) {
         Label(label)

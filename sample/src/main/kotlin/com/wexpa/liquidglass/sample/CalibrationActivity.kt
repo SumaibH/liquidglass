@@ -1,5 +1,8 @@
 package com.wexpa.liquidglass.sample
 
+import com.wexpa.liquidglass.LiquidGlassTheme
+import com.wexpa.liquidglass.Glass
+import com.wexpa.liquidglass.glassEffect
 import android.graphics.Color as AndroidColor
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -45,17 +48,12 @@ import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.DpRect
 import androidx.compose.ui.unit.LayoutDirection
-import com.wexpa.liquidglass.GlassFuse
 import com.wexpa.liquidglass.GlassMaterial
 import com.wexpa.liquidglass.GlassProfile
 import com.wexpa.liquidglass.GlassRestMap
 import com.wexpa.liquidglass.GlassStyle
 import com.wexpa.liquidglass.LiquidGlassDiagnosticApi
 import com.wexpa.liquidglass.LiquidGlassDiagnostics
-import com.wexpa.liquidglass.LiquidGlassScene
-import com.wexpa.liquidglass.LocalLiquidGlassState
-import com.wexpa.liquidglass.liquidGlass
-import com.wexpa.liquidglass.liquidGlassSource
 
 /**
  * The calibration scene: the same test image the iOS 27 captures were made through, with the
@@ -160,7 +158,8 @@ private fun Calibration(tint0: Int, dark0: Boolean, target0: String, wide0: Bool
     val toolbar = GlassStyle.toolbar(dark = dark, tintAmount = tint.toFloat()).wideSwitch().calibrated()
         .copy(restMap = if (restMap0) GlassRestMap.Measured else GlassRestMap.Legacy)
 
-    LiquidGlassScene(background = Color.Black, modifier = Modifier.fillMaxSize().background(Color.Black)) {
+    LiquidGlassTheme(dark = true, background = Color.Black) {
+    Box(Modifier.fillMaxSize().background(Color.Black)) {
         Image(
             painter = painterResource(
                 if (target == "light") R.drawable.calibration_target_light else R.drawable.calibration_target_dark,
@@ -169,14 +168,14 @@ private fun Calibration(tint0: Int, dark0: Boolean, target0: String, wide0: Bool
             contentScale = ContentScale.FillWidth,
             // wrapContentSize(unbounded) lets the 1170 px image exceed a narrower screen at 1:1 instead
             // of being coerced to the parent constraints (which would rescale it under the panels).
-            modifier = Modifier.wrapContentSize(Alignment.TopStart, unbounded = true).offset(0.dp, px(offsetY0)).size(px(1170), px(2532)).liquidGlassSource(),
+            modifier = Modifier.wrapContentSize(Alignment.TopStart, unbounded = true).offset(0.dp, px(offsetY0)).size(px(1170), px(2532)),
         )
         for ((i, p) in panels.withIndex()) {
             Box(
                 modifier = Modifier
                     .offset(px(p.x0), px(p.y0 + offsetY0))
                     .size(px(p.x1 - p.x0), px(p.y1 - p.y0))
-                    .liquidGlass(shape = RoundedCornerShape(px(p.r)), style = if (i == 3) toolbar else style),
+                    .glassEffect(Glass(if (i == 3) toolbar else style), RoundedCornerShape(px(p.r))),
             )
         }
         // Corner controls, outside the measured boxes.
@@ -191,6 +190,7 @@ private fun Calibration(tint0: Int, dark0: Boolean, target0: String, wide0: Bool
                 style = TextStyle(color = Color(0xFFFF00FF), fontSize = 10.sp),
             )
         }
+    }
     }
 }
 
@@ -222,26 +222,24 @@ private fun PathFixture(renderScale: Float, padPx: Float, target0: String) {
         wideKernel = 0.dp, fineShare = 1f, blurRadius = with(density) { padPx.toDp() }, bevel = with(density) { (2f * 3f).toDp() },
     )
     val held = base.copy(profile = GlassProfile.Held)
-    LiquidGlassScene(background = Color.Black, renderScale = renderScale, modifier = Modifier.fillMaxSize().background(Color.Black)) {
+    LiquidGlassTheme(dark = true, background = Color.Black, renderScale = renderScale) {
+    Box(Modifier.fillMaxSize().background(Color.Black)) {
         Image(
             painter = painterResource(if (target0 == "light") R.drawable.calibration_target_light else R.drawable.calibration_target_dark),
             contentDescription = null, contentScale = ContentScale.FillWidth,
-            modifier = Modifier.wrapContentSize(Alignment.TopStart, unbounded = true).size(px(1170), px(2532)).liquidGlassSource(),
+            modifier = Modifier.wrapContentSize(Alignment.TopStart, unbounded = true).size(px(1170), px(2532)),
         )
         for ((kind, x0, y0) in fixtureBoxes) {
             val w = if (kind == "fused_closed") FIXTURE_FUSED_W else FIXTURE_W
             val shape: Shape = if (kind == "closed" || kind == "fused_closed") RoundedCornerShape(px(FIXTURE_H / 2)) else PathCapsule()
-            val fuse = if (kind == "fused_closed") GlassFuse(
-                // A sibling 20 px to the right of the fused capsule (screen x 470..530), inside the screen and over black,
-                // so the whole fused union and its measurement windows are visible.
-                bounds = DpRect(left = px(w + FIXTURE_FUSE_GAP), top = px(0), right = px(w + FIXTURE_FUSE_GAP + FIXTURE_FUSE_SIB_W), bottom = px(FIXTURE_H)),
-                cornerRadius = px(20), smoothing = px(16),
-            ) else null
+            // "fused_closed" no longer fuses: the raw GlassFuse left the public API with the explicit
+            // state (18 October); the tab bar fuses itself. It renders as a plain closed capsule.
             Box(
                 modifier = Modifier.offset(px(x0), px(y0)).size(px(w), px(FIXTURE_H))
-                    .liquidGlass(state = LocalLiquidGlassState.current!!, shape = shape, style = if (kind == "held_path") held else base, fuse = fuse),
+                    .glassEffect(Glass(if (kind == "held_path") held else base), shape),
             )
         }
         BasicText("fixture path rs=%.2f pad=%.1f override=%s coverage=%s".format(renderScale, padPx, LiquidGlassDiagnostics.recordPadOverridePx?.toString() ?: "-", LiquidGlassDiagnostics.coverageOnly), Modifier.align(Alignment.BottomEnd).padding(px(8)), style = TextStyle(color = Color(0xFFFF00FF), fontSize = 10.sp))
+    }
     }
 }

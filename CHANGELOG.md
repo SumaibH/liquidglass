@@ -5,6 +5,32 @@ This file records user-visible development changes. Published artifacts are iden
 
 ## Unreleased — Atlas stabilization
 
+### Changed — new public API (18 October, Phase 2)
+
+Breaking: the library now has one way in, named after SwiftUI's Liquid Glass API.
+
+- `LiquidGlassTheme { App() }` (new): wrap the app once, as `MaterialTheme` is. It records the screen;
+  every glass below it refracts what is behind it, and nothing has to be marked as a backdrop. Nested
+  themes change the defaults, appearance and accessibility settings (`reduceTransparency`,
+  `increaseContrast`) for their subtree.
+- `Modifier.glassEffect(glass, shape = CapsuleShape)` (new): any composable becomes glass, at any depth:
+  inside scrolled lists and under layers, its content on top, its clicks its own. Without a theme it
+  draws a frosted stand-in and warns once.
+- `Glass` (new): `Glass.Regular`, `Glass.Clear`, `Glass.Identity`, and the measured `Glass.Lens(m)`,
+  `Glass.TabBar` and `Glass.Toolbar`, refined with `.tint(color)` and `.interactive()`. `Glass(style)` takes
+  every optical parameter.
+- `GlassEffectContainer(spacing)` (new): glass inside merges with a liquid neck when close.
+  `Modifier.glassEffectID(id, namespace)` with `rememberGlassNamespace()`: a piece that reappears morphs
+  from where it was.
+- `GlassTabBar` takes no state.
+- Removed: `GlassScene`, `LiquidGlassScene`, `ProvideLiquidGlassState`, `LocalLiquidGlassState`,
+  `currentLiquidGlassState`, `LiquidGlassState`, `rememberLiquidGlassState`, `Modifier.liquidGlassSource`,
+  `Modifier.liquidGlass`, `LiquidGlassContainer`/`glassMember` and `rememberBackdropInversion` (internal now).
+- How glass gets its backdrop: on every platform it draws over the root's recording with its content on
+  top, so it never samples itself. Limits: glass draws above other content, and an ancestor's alpha does
+  not fade it. Skia's own backdrop (desktop and web) is the planned replacement there; the spikes are in
+  [review/atlas/backdrop-spikes-2026-10-18](review/atlas/backdrop-spikes-2026-10-18/README.md).
+
 ### Added (18 October, Compose for Web)
 
 - A `wasmJs` target: the library runs on Compose for Web with the full shader. Web draws through
