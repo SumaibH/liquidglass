@@ -35,6 +35,15 @@ Phases, one PR each, suite and ports green each time, the owner reviews between 
    (overlay everywhere now; Skia backdrop saveLayer for desktop/web is a follow-up, spikes in
    review/atlas/backdrop-spikes-2026-10-18, worktree .local/wt-spike). Known: the merged neck shows a
    faint crease; the calibration "fused_closed" fixture no longer fuses.
+- 18 Oct evening: full-suite hangs. Three full runs on claude/glass-api and one on the pre-Phase-2 baseline
+  (6121bb7, which passed at 18:43) hung inside tab bar tests (GlassTabBarGestureTest, GlassTabBarTouchFrameTest).
+  The AWT thread spun in Skiko RenderNode_nDrawInto or in composition apply for minutes. Run alone or in
+  small groups, those classes pass (gesture class 2m20s). Since the baseline hangs too, it is
+  environmental, not Phase 2: three stale Gradle/Kotlin daemons and two Wasm previews were running. Clean
+  rerun after stopping them. Defensive fix kept anyway: the overlay never draws a departed element's
+  released foreground layer (GlassOverlayEntry.disposed / isReleased).
+  Result: clean rerun 20:16, BUILD SUCCESSFUL in 21m58s, 410 tests, 0 failures, 27 skipped (incl.
+  GlassThemeComponentsTest 2/2). Auto-adopt decision (owner delegated): the liquidGlassAdopt codemod, no compiler plugin.
    Follow-up (hybrid, desktop/web): glassEffect on skikoMain draws in place with
    `Canvas.saveLayer(SaveLayerRec(paddedRect, null, backdrop = graph))`, where graph =
    makeRuntimeShader(builder, ["content","wideContent"], [ground+shadow merged over the backdrop (null

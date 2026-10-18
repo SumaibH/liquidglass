@@ -137,8 +137,9 @@ fun Modifier.glassEffect(glass: Glass? = null, shape: Shape = CapsuleShape, link
     entry.state = region.stateFor(defaults)
     entry.link = link
     DisposableEffect(region, entry) {
+        entry.disposed = false
         region.entries += entry
-        onDispose { region.entries -= entry }
+        onDispose { entry.disposed = true; region.entries -= entry }
     }
     var modifier = withMorph.onGloballyPositioned { entry.place(region.root, it) }
     if (resolved.isInteractive) modifier = modifier.pointerInput(entry) { observePress(entry.press) }
@@ -189,6 +190,8 @@ internal class GlassOverlayEntry(
     var state: LiquidGlassState? by mutableStateOf(null)
     var link: GlassAccessoryLink? by mutableStateOf(null)
     val press = GlassPressSource()
+    /** The element left composition: its layers may already be released. */
+    var disposed = false
     var morph: GlassMorphHandle? = null
     private var root: LayoutCoordinates? = null
 
@@ -231,7 +234,7 @@ private fun OverlayGlass(region: GlassRegion, entry: GlassOverlayEntry) {
             .drawWithContent {
                 val b = entry.drawn
                 val v = if (b == entry.bounds) entry.visible else b
-                if (b.width <= 0f || v.isEmpty) return@drawWithContent
+                if (entry.disposed || b.width <= 0f || v.isEmpty) return@drawWithContent
                 // Clip only where an ancestor cuts the element (a scrolled list): the glass's own
                 // shadow reaches past its bounds and must not be cut elsewhere.
                 if (v.left > b.left + .5f || v.top > b.top + .5f || v.right < b.right - .5f || v.bottom < b.bottom - .5f) {
@@ -240,7 +243,9 @@ private fun OverlayGlass(region: GlassRegion, entry: GlassOverlayEntry) {
             }
             .liquidGlass(entry.state ?: region.state, entry.shape, entry.style, entry.light, interaction = entry.interaction,
                 pressSource = entry.press, link = entry.link)
-            .drawWithContent { drawContent(); drawLayer(entry.foreground) },
+            // A released layer is recycled for other content: drawing it could draw anything, even
+            // the recording this overlay sits over, so a departed element's layer is never drawn.
+            .drawWithContent { drawContent(); if (!entry.disposed && !entry.foreground.isReleased) drawLayer(entry.foreground) },
     )
 }
 
