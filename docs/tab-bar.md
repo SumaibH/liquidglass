@@ -399,16 +399,21 @@ deformation trails the movement.
 
 ## The 2026 material
 
-`GlassTabBarStyle.Ios27` is `Dark` with a darker contour and a brighter highlight. Apple's 2026
-revision rebuilt the material around readability: it diffuses busy content behind it more
-effectively, and it gains a darkened edge and brighter speculars so an element stays distinct
-over that content.
+`GlassTabBarStyle.Ios27` is `Dark` with iOS 27's rim, measured on iOS 27's 44 pt navigation buttons
+([the record](research/ios27-measurements-raw.md)):
 
-**Neither number in that preset is measured.** Everything in `Dark` is read off native
-screenshots; `Ios27` is a starting point, because the captures this library was tuned against
-predate the revision. The same release also replaces the earlier two-position transparency
-toggle with a continuous slider whose default is its midpoint, so there is no longer a single
-correct opacity to match and `tint` is the host's call.
+- a dark contour outside the outline (`outerContour` 0.61), strongest at the unlit sides and zero
+  at the lit poles;
+- the bar's lit edge scaled to iOS 27's peak (0.256 against `Dark`'s 0.213) and half-depth
+  (2.37 px against 1.8);
+- no dispersion.
+
+The light was already straight overhead. The lens keeps `Dark`'s measured held optics. These
+measured values replaced the preset's earlier guesses on 19 October.
+
+The same release also replaces the earlier two-position transparency toggle with a continuous
+slider whose default is its midpoint, so there is no longer a single correct opacity to match and
+`tint` is the host's call.
 
 ## Where the shader is unavailable
 

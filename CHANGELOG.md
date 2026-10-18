@@ -5,6 +5,11 @@ This file records user-visible development changes. Published artifacts are iden
 
 ## Unreleased — Atlas stabilization
 
+### Changed — `GlassTabBarStyle.Ios27` is measured (19 October)
+
+- The preset's guessed numbers are replaced with iOS 27's measured rim: the outer contour (0.61), the
+  bar's lit edge scaled to iOS 27's peak and half-depth, and no dispersion. `Dark` is unchanged.
+
 ### Added — the rest of Material 3 in glass (19 October)
 
 - Glass versions of the remaining Material 3 components that have a container:

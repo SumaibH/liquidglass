@@ -2104,23 +2104,31 @@ data class GlassTabBarStyle(
         }
 
         /**
-         * [Dark], with the separating contour and brighter highlight Apple's 2026 revision
-         * added.
+         * [Dark] with iOS 27's rim, measured (`docs/research/ios27-measurements-raw.md`, 4.5 and
+         * section 5, on iOS 27's 44 pt navigation buttons at 3x):
+         * - the dark contour outside the outline ([GlassStyle.outerContour]): 0.61 of the backdrop at
+         *   the unlit sides in a dark appearance, zero at the lit poles;
+         * - the lit edge: [Dark]'s bar ([GlassStyle.DarkChrome]) evaluates to a peak of 0.213 in the
+         *   outermost pixel and halves 1.8 px in, where iOS 27 measures 0.256 and 2.34-2.41 px, so the
+         *   bar's specular and bevel are scaled by those ratios;
+         * - no dispersion (iOS 27's glass measures none to 0.002 px).
          *
-         * The 2026 material was rebuilt around readability: it diffuses busy content behind it
-         * more effectively, and it gains a darkened edge and brighter speculars so an element
-         * stays distinct over that content. Both changes are stated by Apple; **neither number
-         * here is measured**, because the reference captures this library was tuned against
-         * predate the revision. They are a starting point, not a parity claim — everything in
-         * [Dark] is measured and this is not.
+         * The light was already straight overhead ([light]), as measured. The lens keeps [Dark]'s
+         * measured held optics and takes the contour and the zero dispersion. Until 19 October this
+         * preset held guessed numbers; these replace them.
          *
          * Note also that the 2026 release replaces the earlier Clear/Tinted toggle with a
          * continuous transparency slider whose default is its midpoint, so there is no longer
          * one correct opacity to match. Treat [GlassStyle.tint] as the host's to set.
          */
         val Ios27: GlassTabBarStyle = Dark.copy(
-            bar = Dark.bar.copy(edgeShadow = 0.06f, specular = 0.09f),
-            lens = Dark.lens.copy(edgeShadow = 0.16f, specular = 0.09f),
+            bar = Dark.bar.copy(
+                specular = Dark.bar.specular * (0.256f / 0.213f),
+                bevel = Dark.bar.bevel * (2.37f / 1.8f),
+                outerContour = 0.61f,
+                dispersion = 0f,
+            ),
+            lens = Dark.lens.copy(outerContour = 0.61f, dispersion = 0f),
         )
     }
 }

@@ -152,9 +152,9 @@ Three specific captures would settle open questions:
 2. **A glass element overhanging a hard-edged boundary**, photographed on a device known to be
    on the 2026 release. That is the experiment that discriminates sampling direction, and it is
    the claim on which we differ from every other implementation.
-3. **The 2026 edge treatment**, to replace the guessed numbers in the `Ios27` preset with
-   measured ones. Right now that preset is the only thing in the library tagged as ours rather
-   than measured.
+3. **The 2026 edge treatment.** Done on 19 October: the `Ios27` preset's guessed numbers were
+   replaced with iOS 27's measured rim (the outer contour, the lit edge's peak and half-depth, no
+   dispersion).
 
 ---
 
