@@ -1,30 +1,25 @@
 # Generic interactive glass
 
-Press and pull feedback lives in the shared `liquidGlass` modifier. Your application supplies
-layout, content and click actions; no per-component shader or gesture copy is needed.
-For new integrations use `GlassInteraction.Calm` or the scoped `GlassScene` API. `Pullable`
+Press and pull feedback lives in the shared glass modifier: `Modifier.glassEffect` with an
+`interactive()` `Glass`. Your application supplies layout, content and click actions; no
+per-component shader or gesture copy is needed.
+For new integrations use `GlassInteraction.Calm`, which `interactive()` uses by default. `Pullable`
 preserves the older, more expressive response for comparisons.
 It is opt-in: `Default` retains its Legacy press behavior, and `ReducedMotion` disables elasticity.
 
-## One backdrop, many controls
+## One theme, many controls
 
 ```kotlin
+// Inside the app's LiquidGlassTheme { … }
 @Composable
 fun GlassActions(onSettings: () -> Unit) {
-    val background = MaterialTheme.colorScheme.background
-    val glass = rememberLiquidGlassState(background = background)
     Box {
-        AppContent(Modifier.liquidGlassSource(glass))
+        AppContent()
         Box(
             modifier = Modifier
                 .align(Alignment.TopEnd)
                 .size(56.dp)
-                .liquidGlass(
-                    state = glass,
-                    shape = CircleShape,
-                    style = GlassStyle.DarkChrome,
-                    interaction = GlassInteraction.Calm,
-                )
+                .glassEffect(Glass(GlassStyle.DarkChrome).interactive(), CircleShape)
                 .clickable(onClick = onSettings),
             contentAlignment = Alignment.Center,
         ) {
@@ -35,17 +30,19 @@ fun GlassActions(onSettings: () -> Unit) {
 ```
 
 `AppContent` stands for your own composable. The example uses Compose foundation layout/clickable,
-Material icons and the `com.wexpa.liquidglass` API. Record the backdrop separately from the controls;
-recording glass into its own source creates feedback. Reuse the state for other panels over that backdrop.
-For a wide pill, change the layout and shape to `RoundedCornerShape(22.dp)`; the interaction is identical.
-When the app or system requests reduced motion, pass `GlassInteraction.ReducedMotion`.
+Material icons and the `com.wexpa.liquidglass` API. The theme records the screen without the
+glass, so no glass samples itself; every other glass element under the same theme refracts the
+same recording. For a wide pill, change the layout and shape to `RoundedCornerShape(22.dp)`; the
+interaction is identical. When the app or system requests reduced motion, pass
+`interactive(response = GlassInteraction.ReducedMotion)`.
 
 ## What stays anchored
 
 For generic controls/cards, the layout centre, normal foreground labels/icons and pointer coordinate frame stay fixed.
 Press expansion and pull stretch affect material drawing only. The draw transform is restored
-before ordinary foreground is drawn. Refracted content is an explicit exception:
-`refractContent = true` sends content through the optical path because it is viewed through the lens.
+before ordinary foreground is drawn. Refracted content is an explicit exception: the tab bar's
+lens sends its content through the optical path because it is viewed through the lens (the
+`refractContent` option, internal since 18 October).
 
 `GlassTabBarStyle.Calm()` is a navigation-specific exception for visible ink. Its
 `deformItemsWithBar = true` draws both ordinary and selected items with the same bounded bar
@@ -165,7 +162,8 @@ adding the generic control lift a second time. Touch illumination remains active
 The selector's shape responds to along-bar travel; perpendicular swipes do not apply the
 free-button squeeze model to it. Navigation intent still follows the finger and commits once on release.
 
-If your component already owns a drag, send local coordinates and cumulative displacement to
-`GlassPressSource.press(point, pullOffset)` and pass that source to `liquidGlass`. Always release on
-up, cancellation, disposal or gesture handoff. The source only supplies input; the shared modifier
+A component that already owns a drag sends local coordinates and cumulative displacement to
+`GlassPressSource.press(point, pullOffset)`, as `GlassTabBar` does for its lens. The parameter that
+hands the source to the glass is internal since 18 October, so this path is not public at present.
+Always release on up, cancellation, disposal or gesture handoff. The source only supplies input; the shared modifier
 still owns resistance, springs, size attenuation and viewport containment.

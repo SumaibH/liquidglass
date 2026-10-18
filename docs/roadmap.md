@@ -98,14 +98,15 @@ we should do the same. Not testable on this device, which is on Android 16.
 
 **A slider and a toggle were built here, and both were deleted.** They are the reason this
 section is now titled the way it is. The direction that removed them: the point of the library
-was never a catalogue of glass widgets, it is that `Modifier.liquidGlass()` on *any* composable
-turns it into the material — a stock Material 3 `Card` with a transparent container and one
+was never a catalogue of glass widgets, it is that one modifier on *any* composable
+(`Modifier.glassEffect()` since 18 October, `Modifier.liquidGlass()` before) turns it into the material — a stock Material 3 `Card` with a transparent container and one
 modifier — and then every component comes for free. A catalogue competes on breadth, which is a
 race, and it dates the moment a host wants a control the catalogue does not have.
 
-What replaced them is the ambient state — `LiquidGlassScene`, `ProvideLiquidGlassState`, and
-overloads of `liquidGlass()` and `liquidGlassSource()` that take no state — and
-`MaterialConversionActivity` in the sample as the standing proof. So the API reference has no
+What replaced them was the ambient state — `LiquidGlassScene`, `ProvideLiquidGlassState`, and
+overloads of `liquidGlass()` and `liquidGlassSource()` that take no state (all since removed) —
+and, since 18 October, `LiquidGlassTheme` at the root with `Modifier.glassEffect`, which needs no
+state at all; `MaterialConversionActivity` in the sample is the standing proof. So the API reference has no
 slider in it, and should not.
 
 A component earns its place here only when the modifier alone cannot express it, which means it
@@ -114,7 +115,7 @@ carries behaviour rather than appearance. Two do:
 - **`GlassTabBar`**, because a selection lens that stands proud of its bar, looks *through* it,
   is dragged 1:1 and commits on release is behaviour, not a style. Every default in it is a
   measurement.
-- **`LiquidGlassContainer`**, because fusing panels is a change to the distance field shared by
+- **`GlassEffectContainer`** (`LiquidGlassContainer` before 18 October), because fusing panels is a change to the distance field shared by
   all of them, which no per-element modifier can reach.
 
 By that test the open candidates are a bottom sheet, a navigation bar and a search field, each

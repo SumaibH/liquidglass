@@ -40,7 +40,7 @@ import kotlinx.coroutines.Dispatchers
  * and no duration; these are ours, and the shape of the mechanism is what matters.
  */
 @Composable
-fun rememberBackdropInversion(
+internal fun rememberBackdropInversion(
     state: LiquidGlassState,
     /** The region to judge, in the backdrop's own coordinates. Null means the whole backdrop. */
     region: Rect? = null,

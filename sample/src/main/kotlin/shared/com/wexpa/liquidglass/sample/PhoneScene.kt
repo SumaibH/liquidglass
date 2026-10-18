@@ -101,14 +101,14 @@ fun PhoneScene(
     // The search button presses and pulls off its place as iOS's does (GlassInteraction.Pullable is
     // fitted on this button's own episodes in IMG_6756); null keeps it passive, as before 15 October.
     search: GlassInteraction? = GlassInteraction.Pullable.copy(pullShape = GlassPullShape.Free, pullLiftShare = 0.65f),
-    // LiquidGlassState.renderScale: the glass layers recorded at this fraction of full resolution.
+    // LiquidGlassTheme.renderScale: the glass layers recorded at this fraction of full resolution.
     renderScale: Float = 1f,
     // GlassTabBarAccessory.lensFusion: a held lens at the search end reaches the button through a neck.
     lensFusion: androidx.compose.ui.unit.Dp = 12.dp,
 ) {
-    val state = rememberLiquidGlassState(palette.page, renderScale = renderScale)
+    LiquidGlassTheme(background = palette.page, renderScale = renderScale) {
     Box(modifier.size(PhoneGeometry.width, PhoneGeometry.height).background(palette.page)) {
-        Box(Modifier.fillMaxSize().liquidGlassSource(state)) {
+        Box(Modifier.fillMaxSize()) {
             when (selected) {
                 2 -> Keypad(palette)
                 else -> CallList(palette, contacts = selected == 1, scroll = scroll)
@@ -118,7 +118,7 @@ fun PhoneScene(
         // The bar's outline follows the search button as it is pressed and pulled away.
         val searchLink = if (search != null) rememberGlassAccessoryLink() else null
         GlassTabBar(
-            state, 3, selected, onSelected,
+            3, selected, onSelected,
             Modifier.offset(PhoneGeometry.barLeft, barTop).width(PhoneGeometry.barWidth).testTag("phone-bar"),
             style = style,
             // The search button is separate glass the bar fuses with while pressed.
@@ -128,11 +128,13 @@ fun PhoneScene(
         ) { index, isSelected -> PhoneTab(index, if (isSelected) palette.accent else palette.ink) }
         Box(
             Modifier.offset(PhoneGeometry.searchLeft, barTop).size(PhoneGeometry.barHeight)
-                .liquidGlass(state, CircleShape, style.bar, light = style.light, interaction = search, link = searchLink),
+                .glassEffect(Glass(style.bar, light = style.light).let { if (search != null) it.interactive(response = search) else it },
+                    CircleShape, link = searchLink),
             contentAlignment = Alignment.Center,
         ) {
             Canvas(Modifier.size(26.dp)) { searchGlyph(palette.ink) }
         }
+    }
     }
 }
 

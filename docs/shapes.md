@@ -10,13 +10,15 @@ are two answers.
 Evaluated directly in the shader, exactly, at no extra cost.
 
 ```kotlin
-Modifier.liquidGlass(glass, RoundedCornerShape(28.dp), GlassStyle.Regular)
-Modifier.liquidGlass(glass, CircleShape, GlassStyle.Clear)          // capsule or circle
-Modifier.liquidGlass(glass, RectangleShape, GlassStyle.Thick)
+Modifier.glassEffect(Glass.Regular, RoundedCornerShape(28.dp))
+Modifier.glassEffect(Glass.Clear, CircleShape)                     // capsule or circle
+Modifier.glassEffect(Glass(GlassStyle.Thick), RectangleShape)
+Modifier.glassEffect()                                             // CapsuleShape by default
 ```
 
 `CircleShape` needs no special handling — it is `RoundedCornerShape(50%)`, so a circle and a
 capsule are both just rounded rectangles whose radius happens to reach the short edge.
+`CapsuleShape`, `glassEffect`'s default as in SwiftUI, is the same `RoundedCornerShape(percent = 50)`.
 
 ## Squircles
 
@@ -32,11 +34,11 @@ val shape = GlassSquircleShape(cornerRadius = 28.dp, power = 4f)
 Box(
     Modifier
         .clip(shape)                                    // the clip
-        .liquidGlass(glass, shape, GlassStyle.Regular)  // and the material agree
+        .glassEffect(Glass.Regular, shape)              // and the material agree
 )
 ```
 
-Passing the shape to `liquidGlass` is enough — the material reads the exponent off it, so the
+Passing the shape to `glassEffect` is enough — the material reads the exponent off it, so the
 distance field and the clip describe the same outline. `power = 2` is identical to
 `RoundedCornerShape`; `power = 4` is Apple's squircle; higher goes toward a rectangle with
 rounded nubs.
@@ -54,7 +56,7 @@ Anything else — a star, a blob, a hand-drawn `GenericShape` — has no closed-
 The library measures it rather than refusing it.
 
 ```kotlin
-Modifier.liquidGlass(glass, MyStarShape, GlassStyle.Regular)
+Modifier.glassEffect(Glass.Regular, MyStarShape)
 ```
 
 Nothing else is required; the shape being a path is detected and handled. What happens under it:

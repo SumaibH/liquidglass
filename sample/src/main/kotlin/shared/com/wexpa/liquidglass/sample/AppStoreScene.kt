@@ -72,9 +72,9 @@ fun AppStoreScene(
 ) {
     val page = if (light) Color.White else Color.Black
     val ink = if (light) Color.Black else Color.White
-    val state = rememberLiquidGlassState(page)
+    LiquidGlassTheme(dark = !light, background = page) {
     Box(modifier.size(PhoneGeometry.width, PhoneGeometry.height).background(page)) {
-        Box(Modifier.fillMaxSize().liquidGlassSource(state)) {
+        Box(Modifier.fillMaxSize()) {
             // The card: x 57-1112 px, its header at rows ~430-455 and a two-line headline behind the bar.
             Box(Modifier.offset(19.dp, 120.dp).size(352.dp, 200.dp)
                 .background(if (light) Color(0xFFF2F2F7) else Color(0xFF1C1C1E), RoundedCornerShape(18.dp)))
@@ -90,10 +90,11 @@ fun AppStoreScene(
         }
         val barTop = PhoneGeometry.barCentreY - PhoneGeometry.barHeight / 2
         GlassTabBar(
-            state, 5, selected, onSelected,
+            5, selected, onSelected,
             Modifier.offset(AppStoreGeometry.barLeft, barTop).width(AppStoreGeometry.barWidth).testTag("appstore-bar"),
             style = style,
         ) { index, isSelected -> AppStoreTab(index, if (isSelected) accent else ink) }
+    }
     }
 }
 

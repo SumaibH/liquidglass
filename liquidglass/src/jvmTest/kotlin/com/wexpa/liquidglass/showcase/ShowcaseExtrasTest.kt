@@ -28,7 +28,9 @@ import com.wexpa.liquidglass.GlassScrollEdge
 import com.wexpa.liquidglass.GlassScrollEdgeStyle
 import com.wexpa.liquidglass.GlassStyle
 import com.wexpa.liquidglass.LiquidGlassCoverSheet
-import com.wexpa.liquidglass.LiquidGlassScene
+import com.wexpa.liquidglass.LiquidGlassTheme
+import com.wexpa.liquidglass.Glass
+import com.wexpa.liquidglass.glassEffect
 import com.wexpa.liquidglass.liquidGlass
 import com.wexpa.liquidglass.liquidGlassSource
 import com.wexpa.liquidglass.rememberLiquidGlassState
@@ -99,14 +101,16 @@ class ShowcaseExtrasTest {
         shoot(Showcase.dir("extras").resolve("scroll-edge.png"))
     }
 
-    /** The same panel through the implicit-state API: no state passed anywhere. */
+    /** The same panel through the root API: no state passed anywhere. */
     @Test fun implicitScene() = showcaseScene(360, 240, density = 2f) {
         setContent {
-            LiquidGlassScene(background = Color.Black, modifier = Modifier.fillMaxSize()) {
-                PhotoBackdrop(Modifier.fillMaxSize().liquidGlassSource())
+            LiquidGlassTheme(dark = false, background = Color.Black) {
+                Box(Modifier.fillMaxSize()) {
+                PhotoBackdrop(Modifier.fillMaxSize())
                 Box(Modifier.align(Alignment.Center).size(220.dp, 110.dp)
-                    .liquidGlass(RoundedCornerShape(30.dp), GlassStyle.Regular), contentAlignment = Alignment.Center) {
-                    BasicText("LiquidGlassScene", style = TextStyle(color = Color.White, fontSize = 16.sp, fontWeight = FontWeight.SemiBold))
+                    .glassEffect(Glass(GlassStyle.Regular), RoundedCornerShape(30.dp)), contentAlignment = Alignment.Center) {
+                    BasicText("LiquidGlassTheme", style = TextStyle(color = Color.White, fontSize = 16.sp, fontWeight = FontWeight.SemiBold))
+                }
                 }
             }
         }

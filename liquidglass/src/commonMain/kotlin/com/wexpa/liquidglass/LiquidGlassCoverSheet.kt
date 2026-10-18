@@ -36,7 +36,7 @@ import androidx.compose.ui.unit.dp
  * minus [pull], so at `pull = 0` it is entirely above the top edge and at `pull = height` it
  * covers the screen. [content] is the sheet's own surface — a wallpaper, a list — and is what
  * the edge refracts; it is recorded as a backdrop of its own, so the lens sees the sheet and not
- * the app. Put the app beneath this composable in the same [LiquidGlassScene] or outside it;
+ * the app. Put the app beneath this composable under the same [LiquidGlassTheme] or outside it;
  * the sheet neither samples nor needs the app's backdrop.
  *
  * Drive [pull] from a drag; [GlassMaterial.coverSheetDim] and [GlassMaterial.lensFormation] are

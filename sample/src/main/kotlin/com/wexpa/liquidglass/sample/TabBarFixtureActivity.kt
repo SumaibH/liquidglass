@@ -35,8 +35,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.wexpa.liquidglass.GlassTabBar
 import com.wexpa.liquidglass.GlassTabBarStyle
-import com.wexpa.liquidglass.liquidGlassSource
-import com.wexpa.liquidglass.rememberLiquidGlassState
+import com.wexpa.liquidglass.LiquidGlassTheme
 
 /**
  * The deterministic tab-bar fixture of `V3-MODEL.md` section 15.3, on a device.
@@ -71,19 +70,17 @@ private fun TabBarFixture(v3: Boolean, phone: Boolean, compact: Boolean) {
     // Android glyph/font shapes still differ; this fixture is a geometry/optics comparison,
     // not a whole-image pixel parity gate.
     val labels = if (phone) listOf("Calls", "Contacts", "Keypad") else Labels
-    val state = rememberLiquidGlassState(background = Color.Black)
     var selected by remember { mutableIntStateOf(2) }
+    LiquidGlassTheme(dark = true, background = Color.Black) {
     Box(Modifier.fillMaxSize().background(Color.Black)) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .liquidGlassSource(state)
                 .verticalScroll(rememberScrollState()),
         ) {
             if (!phone) repeat(24) { row -> PageRow(row) }
         }
         GlassTabBar(
-            state = state,
             itemCount = labels.size,
             selectedIndex = selected,
             onSelected = { selected = it },
@@ -106,6 +103,7 @@ private fun TabBarFixture(v3: Boolean, phone: Boolean, compact: Boolean) {
         ) { index, isSelected ->
             FixtureTab(labels[index], isSelected)
         }
+    }
     }
 }
 

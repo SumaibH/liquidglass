@@ -34,15 +34,14 @@ them cannot reach them. So a per-pixel `smoothstep` on backdrop luminance is the
 answer no matter how it is tuned: the glass would flip and the label on it would not. Only a
 single scalar that the app hands to *both* keeps them in step.
 
-```kotlin
-val inversion by rememberBackdropInversion(glass)
-val state = rememberLiquidGlassState(background = ground, inversion = inversion)
+> **Not public at present.** The backdrop-driven inversion described here
+> (`rememberBackdropInversion`, and the `inversion` it fed to the state) became internal on
+> 18 October with the rest of the state API, and has no public replacement yet. Today the app
+> chooses the appearance with `LiquidGlassTheme(dark = …)`, which every glass variant and
+> `GlassTabBar`'s default style follow, and colours the content on the glass from the same value.
+> The rest of this section describes the mechanism as it exists internally.
 
-// and the same number decides the content's colours
-Text(color = lerp(darkInk, lightInk, inversion))
-```
-
-`rememberBackdropInversion` reads a sparse grid — thirty samples, off the main thread, ten times
+The detector reads a sparse grid — thirty samples, off the main thread, ten times
 a second — and applies hysteresis: it enters the flip above 0.60 and leaves below 0.44. The band
 is not decoration. A single threshold flickers every time a headline scrolls past, because
 luminance crosses it repeatedly within one gesture. The result crossfades over 180ms.
@@ -54,8 +53,8 @@ Gate it by size with `GlassStyle.invertsWithBackdrop`: Apple flips small chrome 
 and lets large surfaces adapt without flipping, because a flip across that much area is
 distracting. `Thick` and `Clear` never flip.
 
-> **If your app is permanently dark or permanently light, leave `inversion` at 0.** The
-> machinery costs a bitmap read ten times a second and buys nothing.
+For a permanently dark or permanently light app the detector buys nothing: it costs a bitmap
+read ten times a second.
 
 ## Shadows deepen with size and with busy content
 
@@ -80,8 +79,8 @@ either without the other.
 
 ```kotlin
 Box(Modifier.align(Alignment.BottomCenter)) {
-    GlassScrollEdge(ground = MyTheme.ground, fromBottom = true, inverted = inversion > 0.5f)
-    NavBar(Modifier.liquidGlass(glass, CircleShape, GlassStyle.Chrome))
+    GlassScrollEdge(ground = MyTheme.ground, fromBottom = true, inverted = darkContentBehind)
+    NavBar(Modifier.glassEffect(Glass(GlassStyle.Chrome), CircleShape))
 }
 ```
 
@@ -90,8 +89,8 @@ chrome with a hard edge where a gradient reads as a smudge.
 
 `inverted` matters: Apple swaps the fade for a dimming when dark content pushes the glass into
 its dark style, because a fade to the ground colour over dark content does nothing visible — the
-effect would silently stop working exactly when it is needed. Drive it from the same signal as
-`inversion` so the two cannot drift.
+effect would silently stop working exactly when it is needed. Drive it from the same decision
+that picks the glass's appearance (the theme's `dark`) so the two cannot drift.
 
 It samples nothing and has no backdrop of its own. It costs a gradient.
 
@@ -103,5 +102,6 @@ cards — ignores the Light/Dark setting entirely and takes its tone from the wa
 in-app glass — a navigation pill, buttons, a toolbar — follows the app's colour scheme
 strongly (light: a constant 241/255 tint at 0.43-0.73 opacity; dark: black at that opacity plus
 a 35/255 lift). Filled shell panels such as Spotlight shift their base colour with appearance
-but keep their blur. So `inversion` is an input to in-app material tone, and the shell-role
+but keep their blur. So the light/dark decision (the theme's `dark`) is an input to in-app
+material tone, and the shell-role
 factories (`shellIcon`, `dock`, `systemBackdrop`) set `invertsWithBackdrop = false`.

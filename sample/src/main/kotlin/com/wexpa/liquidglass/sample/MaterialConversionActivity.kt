@@ -1,5 +1,8 @@
 package com.wexpa.liquidglass.sample
 
+import com.wexpa.liquidglass.LiquidGlassTheme
+import com.wexpa.liquidglass.Glass
+import com.wexpa.liquidglass.glassEffect
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -32,9 +35,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.wexpa.liquidglass.GlassStyle
-import com.wexpa.liquidglass.LiquidGlassScene
-import com.wexpa.liquidglass.liquidGlass
-import com.wexpa.liquidglass.liquidGlassSource
 
 /**
  * Proof that stock Material 3 components convert, with no bespoke glass component involved.
@@ -42,7 +42,7 @@ import com.wexpa.liquidglass.liquidGlassSource
  *     adb shell am start -n com.wexpa.liquidglass.sample/.MaterialConversionActivity
  *
  * Every glass element here is an ordinary Material composable with two changes: its container
- * colour set to transparent, and `Modifier.liquidGlass(shape)` added. No state is threaded
+ * colour set to transparent, and `Modifier.glassEffect(Glass(GlassStyle.Regular), shape)` added. No state is threaded
  * anywhere; the scene provides it.
  */
 class MaterialConversionActivity : ComponentActivity() {
@@ -54,12 +54,10 @@ class MaterialConversionActivity : ComponentActivity() {
 
 @Composable
 private fun MaterialConversion() {
-    LiquidGlassScene(
-        background = Color(0xFF101427),
-        modifier = Modifier.fillMaxSize(),
-    ) {
+    LiquidGlassTheme(dark = true, background = Color(0xFF101427)) {
+    Box(Modifier.fillMaxSize()) {
         // The backdrop: the one thing that has to be marked.
-        Backdrop(Modifier.fillMaxSize().liquidGlassSource())
+        Backdrop(Modifier.fillMaxSize())
 
         // Deliberately a scrolling column over a backdrop that does NOT scroll: the arrangement
         // a real app has, and the one the gallery's comment says cannot resolve its offset.
@@ -92,7 +90,7 @@ private fun MaterialConversion() {
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(140.dp)
-                    .liquidGlass(RoundedCornerShape(28.dp), GlassStyle.Regular),
+                    .glassEffect(Glass(GlassStyle.Regular), RoundedCornerShape(28.dp)),
             ) {
                 Column(Modifier.padding(20.dp)) {
                     Text("Card $index", color = Color.White, fontSize = 18.sp, fontWeight = FontWeight.Medium)
@@ -115,12 +113,13 @@ private fun MaterialConversion() {
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(56.dp)
-                    .liquidGlass(RoundedCornerShape(percent = 50), GlassStyle.Chrome),
+                    .glassEffect(Glass(GlassStyle.Chrome), RoundedCornerShape(percent = 50)),
             ) {
                 Text("Button", color = Color.White, fontSize = 16.sp)
             }
             }
         }
+    }
     }
 }
 

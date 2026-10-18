@@ -22,6 +22,7 @@ import androidx.compose.ui.graphics.layer.drawLayer
 import androidx.compose.ui.graphics.rememberGraphicsLayer
 import androidx.compose.ui.layout.LayoutCoordinates
 import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.layout.positionInRoot
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.unit.Dp
@@ -31,15 +32,20 @@ import androidx.compose.ui.unit.isSpecified
 
 /** One panel taking part in a container's merged field. */
 @Stable
-class GlassMember internal constructor() {
+internal class GlassMember internal constructor() {
     internal var bounds: Rect by mutableStateOf(Rect.Zero)
     internal var radius: Float by mutableStateOf(0f)
+    /** Set by [glassEffectID]: while it runs, the member is drawn at the morph's bounds. */
+    internal var morph: GlassMorphHandle? = null
+
+    /** The bounds to draw in the container's coordinates, [container] being where it is in the root. */
+    internal fun drawn(container: Offset): Rect = morph?.tracker?.shown?.translate(-container) ?: bounds
 }
 
 /** Marks children that should be fused into the container's single body of glass. */
-interface LiquidGlassContainerScope {
+internal interface LiquidGlassContainerScope {
     /** Registers this element's bounds with the container. It draws no material of its own. */
-    fun Modifier.glassMember(shape: Shape): Modifier
+    fun Modifier.glassMember(shape: Shape, morph: GlassMorphHandle? = null): Modifier
 }
 
 /**
@@ -55,7 +61,7 @@ interface LiquidGlassContainerScope {
  * back to its own plain surface, which does not fuse.
  */
 @Composable
-fun LiquidGlassContainer(
+internal fun LiquidGlassContainer(
     state: LiquidGlassState,
     modifier: Modifier = Modifier,
     style: GlassStyle = GlassStyle.Regular,
@@ -71,8 +77,9 @@ fun LiquidGlassContainer(
 
     val scope = remember(members) {
         object : LiquidGlassContainerScope {
-            override fun Modifier.glassMember(shape: Shape): Modifier = composed {
+            override fun Modifier.glassMember(shape: Shape, morph: GlassMorphHandle?): Modifier = composed {
                 val member = remember { GlassMember().also { members += it } }
+                member.morph = morph
                 // A member that leaves composition takes its body with it; otherwise its last
                 // bounds stay fused into the container and every re-entry adds another slot.
                 DisposableEffect(member) { onDispose { members -= member } }
@@ -100,7 +107,8 @@ fun LiquidGlassContainer(
             .onGloballyPositioned { coordinates = it }
             .drawWithContent {
                 val source = state.layer
-                val active = members.filter { !it.bounds.isEmpty }
+                val origin = coordinates?.takeIf { it.isAttached }?.positionInRoot() ?: Offset.Zero
+                val active = members.filter { !it.bounds.isEmpty }.map { m -> m.drawn(origin) to m.radius }
 
                 val delta = panelOffsetInSource(state.sourceCoordinates, coordinates)
 
@@ -140,23 +148,23 @@ fun LiquidGlassContainer(
                             backdrop = bounds,
                             background = state.background,
                             rects = FloatArray(MAX_GLASS_MEMBERS * 4).also { out ->
-                                active.take(MAX_GLASS_MEMBERS).forEachIndexed { i, m ->
-                                    out[i * 4] = m.bounds.left
-                                    out[i * 4 + 1] = m.bounds.top
-                                    out[i * 4 + 2] = m.bounds.width
-                                    out[i * 4 + 3] = m.bounds.height
+                                active.take(MAX_GLASS_MEMBERS).forEachIndexed { i, (b, _) ->
+                                    out[i * 4] = b.left
+                                    out[i * 4 + 1] = b.top
+                                    out[i * 4 + 2] = b.width
+                                    out[i * 4 + 3] = b.height
                                 }
                             },
                             radii = FloatArray(MAX_GLASS_MEMBERS).also { out ->
-                                active.take(MAX_GLASS_MEMBERS).forEachIndexed { i, m ->
-                                    out[i] = m.radius
+                                active.take(MAX_GLASS_MEMBERS).forEachIndexed { i, (_, r) ->
+                                    out[i] = r
                                 }
                             },
                             count = active.size.coerceAtMost(MAX_GLASS_MEMBERS).toFloat(),
                             merge = mergeDistance.toPx(),
                             // A derived band follows the measured rule from the largest member.
                             refractBand = if (style.refractionBand.isSpecified) style.refractionBand.toPx()
-                                else GlassMaterial.BEVEL_RATIO * (active.maxOfOrNull { it.radius } ?: 0f),
+                                else GlassMaterial.BEVEL_RATIO * (active.maxOfOrNull { it.second } ?: 0f),
                             profile = minOf(style.profile.uniform, 1f),
                             restMap = style.restMap.uniform,
                             wideKernel = wideKernelPx,

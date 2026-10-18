@@ -7,13 +7,11 @@ The bar and tab anchors stay fixed while selection moves through the lens. See
 remaining distinction between the pose renderer and standalone controls.
 
 ```kotlin
-val glass = rememberLiquidGlassState(background = MyTheme.ground)
-
+// Anywhere inside the app's LiquidGlassTheme { … }
 Box {
-    Content(Modifier.liquidGlassSource(glass))
+    Content()
 
     GlassTabBar(
-        state = glass,
         itemCount = tabs.size,
         selectedIndex = selected,
         onSelected = { selected = it },
@@ -33,6 +31,10 @@ change **only colour** between `selected = false` and `selected = true`, and do 
 click handling on it (the bar owns the gesture and calls `onSelected`).
 
 Put the shadow on the bar's `modifier` with `clip = false`. The held lens is taller than the bar.
+
+The bar needs a `LiquidGlassTheme` above it, which supplies what it refracts; it takes no state
+(the `state` parameter was removed on 18 October). Without a theme it draws its fallback and logs
+one warning. Its default style is `GlassTabBarStyle.Calm(dark)` in the theme's appearance.
 
 ## Current Calm selector
 
@@ -115,7 +117,7 @@ where the Phone material gives 46, while over black both read 32. `CalmClear()` 
 that bar; its resting pill and held lens look through the bar, so they follow it.
 
 ```kotlin
-GlassTabBar(state = glass, itemCount = 5, selectedIndex = selected, onSelected = { selected = it },
+GlassTabBar(itemCount = 5, selectedIndex = selected, onSelected = { selected = it },
     style = GlassTabBarStyle.CalmClear().copy(slotWidth = 71.5.dp, pillWidth = 78.dp, pillInset = 4.dp),
     modifier = Modifier.width(348.dp)) { index, isSelected -> Tab(index, isSelected) }
 ```
@@ -191,7 +193,7 @@ where their pill fits. `slotWidth` reproduces this:
 
 ```kotlin
 GlassTabBar(
-    state = glass, itemCount = 5, selectedIndex = selected, onSelected = { selected = it },
+    itemCount = 5, selectedIndex = selected, onSelected = { selected = it },
     style = GlassTabBarStyle.Calm().copy(slotWidth = 71.5.dp, pillWidth = 78.dp, pillInset = 4.dp),
     modifier = Modifier.width(348.dp),
 ) { index, isSelected -> Tab(index, isSelected) }
@@ -218,12 +220,12 @@ reads 53.*
 iOS 26 places a separate round search button beside the Phone tab bar. It is its own glass, but
 while the bar is held, the bar's growth closes the 8 pt gap and the two join through a liquid
 neck that parts again on release. Describe the neighbour with `trailingAccessory` and lay it out
-yourself, after the bar so its glass draws on top:
+yourself beside the bar:
 
 ```kotlin
 Box {
     GlassTabBar(
-        state = glass, itemCount = 3, selectedIndex = selected, onSelected = { selected = it },
+        itemCount = 3, selectedIndex = selected, onSelected = { selected = it },
         style = GlassTabBarStyle.Calm(),
         trailingAccessory = GlassTabBarAccessory(size = 62.dp, gap = 8.dp),
         modifier = Modifier.offset(x = 21.dp).width(278.dp),
@@ -232,7 +234,7 @@ Box {
     // 21 + 278 + 8 dp: the gap beyond the bar's trailing end, vertically centred on it.
     Box(
         Modifier.offset(x = 307.dp).size(62.dp)
-            .liquidGlass(glass, CircleShape, GlassTabBarStyle.Calm().bar)
+            .glassEffect(Glass.TabBar, CircleShape)
             .clickable(onClick = openSearch),
         contentAlignment = Alignment.Center,
     ) { SearchIcon() }
@@ -249,9 +251,11 @@ against its resting edge and rebounds:
 val link = rememberGlassAccessoryLink()
 GlassTabBar(..., trailingAccessory = GlassTabBarAccessory(size = 62.dp, gap = 8.dp, link = link))
 Box(
-    Modifier.offset(x = 307.dp).size(62.dp).liquidGlass(
-        glass, CircleShape, GlassTabBarStyle.Calm().bar,
-        interaction = GlassInteraction.Pullable.copy(pullShape = GlassPullShape.Free, pullLiftShare = 0.65f),
+    Modifier.offset(x = 307.dp).size(62.dp).glassEffect(
+        Glass.TabBar.interactive(
+            response = GlassInteraction.Pullable.copy(pullShape = GlassPullShape.Free, pullLiftShare = 0.65f),
+        ),
+        CircleShape,
         link = link,
     ),
     contentAlignment = Alignment.Center,
@@ -362,8 +366,10 @@ both keep their size under the finger.
 ### The lens looks through the bar
 
 On iOS the lens sits above the bar, so what reaches the eye has already been through the bar's
-frost. The component records the bar — plate and items — with `liquidGlassSource` into a second
-state and hands it to the lens as `through`. Three measured facts follow from that and only that:
+frost. The component records the bar — plate and items — into a second layer and composites it
+over the backdrop before the lens's shader runs (an internal `through` input; it was a public
+parameter of the since-removed `Modifier.liquidGlass`). Three measured facts follow from that and
+only that:
 
 - the lens's interior reads as the bar does (52 against a bar of 47 beside it, the difference a
   faint centre glow), not as the un-frosted content behind;
@@ -371,7 +377,7 @@ state and hands it to the lens as `through`. Three measured facts follow from th
   refraction, and the dark gap around the bar becomes a dark band inside the lens's edge;
 - the content behind the bar is no more visible through the lens than through the bar.
 
-Without `through` the lens samples the app's content directly and punches a clear hole through
+Without that layer the lens samples the app's content directly and punches a clear hole through
 the bar, which is the one thing the reference never does.
 
 ### The tabs change colour because you look at them through it

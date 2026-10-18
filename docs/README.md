@@ -11,8 +11,9 @@ change the optics, read [How it works](how-it-works.md) and then
 [the research](research/README.md). If you are here to decide whether it fits your app, read
 [Limitations](limitations.md) first — it is deliberately the most detailed document here.
 
-The current development snapshot adds a simpler scene API, a continuous free magnifier and a calm
-navigation preset. Explore them in [Atlas Studio](atlas-studio.md), or read the
+The current development snapshot replaces the public API with `LiquidGlassTheme` at the root and
+`Modifier.glassEffect` on any element (named after SwiftUI's), and adds a continuous free magnifier
+and a calm navigation preset. Explore them in [Atlas Studio](atlas-studio.md), or read the
 [porting contract](porting.md) for other UI stacks. These are authored additions, not a new claim of
 full Apple parity.
 
@@ -20,10 +21,10 @@ full Apple parity.
 
 | | |
 | :--- | :--- |
-| [Getting started](getting-started.md) | The three-line version, and the one rule about where the backdrop goes. |
+| [Getting started](getting-started.md) | Wrap the app once, make any element glass, and pick a variant. |
 | [Shapes](shapes.md) | Rounded rects, capsules, squircles, and arbitrary paths. |
 | [Generic interaction](generic-interaction.md) | Shared anchored press/pull, custom controls and gesture ownership. |
-| [Interaction](interaction.md) | Press, materialize, and morphing between styles. |
+| [Interaction](interaction.md) | Press, materialize, morphing between styles, merging. |
 | [Tab bar](tab-bar.md) | `GlassTabBar`: the measured selection lens, and what each number in it comes from. |
 | [Roadmap](roadmap.md) | What is planned, what the competitive audit changed, and what is deliberately not being done. |
 | [Adaptation](adaptation.md) | Light/dark inversion, legibility, shadows, the scroll edge effect. |

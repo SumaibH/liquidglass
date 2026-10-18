@@ -31,91 +31,109 @@ dependencyResolutionManagement {
 }
 ```
 
-## The scene API (development snapshot)
+## Which API you get
 
-For new integrations, `GlassScene(background, backdrop)` owns the recording and exposes
-`Modifier.glass()` for each surface. See the [README example](https://github.com/shayann07/liquidglass/blob/main/README.md)
-and [API contract](api-reference.md#scene-continuous-lens-and-calm-response-development).
-Use `GlassStyle.clearLens()` for magnifiers and `GlassTabBarStyle.Calm()` for navigation.
-The published `0.1.0` artifact does not contain these additions: use the `VERSION_NAME` from
-`gradle.properties` after building the current source.
+The published `0.1.0` artifact has the earlier state-and-modifier API
+(`rememberLiquidGlassState`, `Modifier.liquidGlassSource`, `Modifier.liquidGlass`). The current
+source replaced it on 18 October with the API below, which is **not** in `0.1.0`: to use it,
+build the current source as above and depend on the `VERSION_NAME` from `gradle.properties`. The
+[API reference](api-reference.md#removed-18-october) maps each removed name to its replacement.
 
-## The explicit state version
+## Set up once, at the root
 
 ```kotlin
-val glass = rememberLiquidGlassState(background = MyTheme.ground)
+setContent {
+    LiquidGlassTheme(background = MyTheme.ground) {
+        App()
+    }
+}
+```
 
+`LiquidGlassTheme` is to Liquid Glass what `MaterialTheme` is to Material: wrap the app in it
+once. It records what the app draws below it once per frame, and every glass element below it
+refracts what is behind that element. Nothing has to be marked as a backdrop.
+
+## Make something glass
+
+```kotlin
 Box {
-    MyScrollingContent(Modifier.liquidGlassSource(glass))   // what gets refracted
+    MyScrollingContent()
 
     Row(
         Modifier
             .align(Alignment.BottomCenter)
-            .liquidGlass(glass, CircleShape, GlassStyle.Chrome)
-    ) { /* tab bar */ }
+            .glassEffect(Glass.Regular, CircleShape)
+    ) { /* toolbar items */ }
 }
 ```
 
-Three things are happening:
+`Modifier.glassEffect(glass, shape)` draws the element as glass: the screen behind it, refracted
+through `shape`, with the element's own content on top. It works at any depth in the tree, in a
+scrolled list or under a `graphicsLayer`. The element keeps its own layout, hit targets, clicks
+and semantics; `glassEffect` does not make anything clickable. Without a `LiquidGlassTheme` above
+it, it draws a frosted, rim-lit stand-in and logs one warning rather than failing.
 
-- **`rememberLiquidGlassState(background)`** links a backdrop to the panels that refract it. The
-  `background` is your app's opaque ground colour, and it is not decoration — see below.
-- **`Modifier.liquidGlassSource`** marks what gets refracted. The content is recorded into a
-  layer once per frame and read by every panel.
-- **`Modifier.liquidGlass`** turns an element into an optical object over that backdrop.
-
-## The one rule: where the backdrop goes
-
-**Put `liquidGlassSource` on the content, and the glass outside it.**
-
-That is not an arbitrary preference. Glass is chrome floating over content — that is what the
-material is for and how Apple describes it — and it is also the only arrangement that always
-works. A glass element *inside* a scrolling container whose source is *outside* it cannot find
-its own offset, because Compose applies a scroll when it draws rather than when it lays out and
-no layout API reports it. See [Limitations](limitations.md#glass-inside-a-scroll).
-
-Both of these are fine:
+For a control that acts on a tap, make the glass respond to touch:
 
 ```kotlin
-// Chrome over a list. The usual case.
-Box {
-    LazyColumn(Modifier.liquidGlassSource(glass)) { … }
-    NavBar(Modifier.align(BottomCenter).liquidGlass(glass, CircleShape, GlassStyle.Chrome))
-}
-
-// Everything inside one scroll, sharing a frame.
-Box(Modifier.verticalScroll(state)) {
-    Backdrop(Modifier.matchParentSize().liquidGlassSource(glass))
-    Column { Card(Modifier.liquidGlass(glass, shape, GlassStyle.Regular)) }
-}
+Icon(Icons.Default.Edit, "Edit",
+    Modifier.size(44.dp).clickable(onClick = edit).glassEffect(Glass.Regular.interactive(), CircleShape))
 ```
+
+Two limits of the current renderer: glass is drawn above content that is not glass, and an
+ancestor's alpha does not fade it. See [Limitations](limitations.md#glass-draws-above-content-that-is-not-glass).
 
 ## Why `background` matters
 
-A backdrop layer is transparent wherever your app painted nothing — the ground is usually
-painted by an ancestor, not by the recorded subtree — and the shader needs to know what shows
-through there. Get it wrong and panels grow a halo of the wrong colour.
+The recording is transparent wherever your app painted nothing — the window background, for
+instance, is not part of it — and the shader needs to know what shows through there. Get it wrong
+and panels grow a halo of the wrong colour.
 
 Pass the colour that is actually behind your content. For a dark app that is your near-black
-ground; for a light one, your near-white.
+ground; for a light one, your near-white. The default is black when `dark` is true and white
+otherwise.
 
-## Picking a style
+## Picking a glass
 
-| Preset | For |
+| Variant | For |
 | :--- | :--- |
-| `GlassStyle.Regular` | The workhorse. Cards and controls. |
-| `GlassStyle.Chrome` | Tab bars, toolbars, accessory pills floating over your own content. |
-| `GlassStyle.Clear` | Chrome that should mostly disappear. Requires its dimming layer. |
-| `GlassStyle.Thick` | A sheet or dialog holding a lot of content. |
+| `Glass.Regular` | The workhorse: the measured in-app material, for buttons, pills and panels. Follows the theme's `dark`. |
+| `Glass.Clear` | Glass that should mostly disappear. Needs content behind it dimmed or calm enough to stay legible. |
+| `Glass.Toolbar` | A toolbar: the pill's material, more opaque. |
+| `Glass.TabBar` | iOS 26's tab bar material, for a control that sits beside a `GlassTabBar`. |
+| `Glass.Lens(magnification)` | A clear magnifier. |
+| `Glass.Identity` | No glass, the content only: to switch glass off without changing the layout. |
+| `Glass(GlassStyle.Chrome)` | Any `GlassStyle` preset or your own: every optical parameter. |
+
+Refine a variant with `.tint(color)` for a tint that carries meaning, and `.interactive()` for
+touch response. `LiquidGlassTheme(glass = …)` sets what `glassEffect()` draws when it is given no
+`Glass`.
 
 If your glass floats over your app's own ground rather than over photos or saturated colour,
-**start with `Chrome`.** The others assume a backdrop worth refracting; over a plain dark ground
-with sparse text they read as absent, and the little that does come through arrives smeared
-along the rim and sitting under your labels. `Chrome` trades the signature edge for legibility
-deliberately.
+consider **`Glass(GlassStyle.Chrome)`**. The other presets assume a backdrop worth refracting; over
+a plain dark ground with sparse text they read as absent, and the little that does come through
+arrives smeared along the rim and sitting under your labels. `Chrome` trades the signature edge
+for legibility deliberately.
 
-Every field is a `data class` parameter, so `GlassStyle.Regular.copy(tint = …)` is the intended
-way to adjust one.
+Every `GlassStyle` field is a `data class` parameter, so `Glass(GlassStyle.Regular.copy(tint = …))`
+is the intended way to adjust one.
+
+## Merging and morphing
+
+`GlassEffectContainer` makes the glass inside it one body: pieces within `spacing` of each other
+join through a liquid neck. `Modifier.glassEffectID` with `rememberGlassNamespace()` lets a piece
+that appears where another left grow out of it. Both are optional; see the
+[API reference](api-reference.md#glasseffectcontainer).
+
+## Navigation
+
+```kotlin
+GlassTabBar(itemCount = 3, selectedIndex = selected, onSelected = { selected = it }) { index, isSelected ->
+    Tab(index, tint = if (isSelected) Accent else Ink)
+}
+```
+
+It needs the `LiquidGlassTheme` above it and takes no state. See the [tab bar guide](tab-bar.md).
 
 ## Below Android 13
 
@@ -125,7 +143,7 @@ degrades to a tinted surface with the same rim lighting: plainer, not broken. Su
 unreadable on a third of devices.
 
 ```kotlin
-GlassStyle.Chrome.copy(fallbackSurface = MyTheme.navSurface)
+Modifier.glassEffect(Glass(GlassStyle.Chrome.copy(fallbackSurface = MyTheme.navSurface)), CircleShape)
 ```
 
 Check `LiquidGlassSupport.hasShaders` if you want to change the design rather than the colour.

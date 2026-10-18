@@ -6,13 +6,14 @@ Opt-in, as Apple makes it. The response is strong enough that applying it to eve
 noise.
 
 ```kotlin
-Modifier.liquidGlass(
-    glass,
-    RoundedCornerShape(30.dp),
-    GlassStyle.Regular,
-    interaction = GlassInteraction.Default,
-)
+Modifier.glassEffect(Glass.Regular.interactive(), RoundedCornerShape(30.dp))
+
+// or choose the response explicitly
+Modifier.glassEffect(Glass.Regular.interactive(response = GlassInteraction.Default), RoundedCornerShape(30.dp))
 ```
+
+`interactive()` uses `GlassInteraction.Calm` unless told otherwise. The table below describes
+`GlassInteraction.Default`, the expressive response.
 
 Apple describes an interactive element as one that "scales, bounces and shimmers", where the
 material "illuminates from within" starting under the fingertip and spreading to nearby glass,
@@ -34,7 +35,7 @@ The glow is a Gaussian of σ = the panel's short edge, worth about a sixth of a 
 That number is measured against a device; anything near 0.2 reads as a camera flash rather than
 as glass responding to a touch. It drags a small magnification of the backdrop with it.
 
-`interaction` observes but does not consume the gesture, so an element can be interactive glass
+`interactive()` observes but does not consume the gesture, so an element can be interactive glass
 *and* a normal `clickable` without the two fighting.
 
 ### Press and pull
@@ -62,17 +63,18 @@ cap on surfaces at least 160dp long. See the [size policy](generic-interaction.m
 
 ### When something else owns the gesture
 
-A panel that is also the thing you touch can watch its own pointer, and `interaction` alone is
+A panel that is also the thing you touch can watch its own pointer, and `interactive()` alone is
 enough. A panel that a *parent* manipulates cannot — a selection indicator inside a tab bar sits
 beneath the tab buttons and never sees a touch, so it can be moved but never lights up, which is
 exactly the half-finished feel of an indicator that animates without responding.
 
-Hand it a `GlassPressSource` and drive it from wherever the gesture actually lives:
+The answer is a `GlassPressSource` driven from wherever the gesture actually lives. This is how
+`GlassTabBar` drives its selection lens. Since 18 October the `pressSource` parameter that hands a
+source to a piece of glass is internal, so no public modifier accepts one at present; the pattern
+below is what the bar does inside.
 
 ```kotlin
-val press = rememberGlassPressSource()
-
-Box(Modifier.liquidGlass(glass, shape, style, interaction = …, pressSource = press))
+val press = rememberGlassPressSource()   // handed to the lens's glass inside GlassTabBar
 
 Box(Modifier.fillMaxSize().pointerInput(Unit) {
     awaitEachGesture {
@@ -105,12 +107,16 @@ tabs, and a tab looks selected because you are seeing it through the lens — sl
 halfway across a symbol and the symbol is half one colour and half the other, with the rim
 compressing and colour-splitting its edges as it passes.
 
-`refractContent = true` does that. The content gets its **own pass** through the same distance
+The `refractContent` option of the lens's glass does that (internal since 18 October;
+`GlassTabBar` uses it). The content gets its **own pass** through the same distance
 field, bevel and Snell deviation the backdrop goes through, and is drawn over the material: bent
 at the rim, split into colour fringes, clipped to the shape. It is deliberately *not* recorded
 into the backdrop, which would also tint and dim it — glass dims what is behind it, not what is
 printed inside it. So a lens can carry a copy of a whole row and show only the part it is over,
 in full colour:
+
+The arrangement, as `GlassTabBar` builds it (the `Modifier.liquidGlass` call is the since-removed
+public form, shown for the shape of the layout):
 
 ```kotlin
 // The lens moves; the row inside it is pinned to the bar's origin so it does not.
@@ -134,9 +140,8 @@ half-covered by the lens will not line up with itself.
 
 **A lens that sits on other glass looks *through* it.** On iOS the lens is above the bar, so
 what reaches the eye has already been through the bar's frost: the lens's interior reads as the
-bar does, and its rim bends the bar's own hairline. Record the bar with `liquidGlassSource` into
-a second state and pass it as `through`; the lens composites it over the backdrop before its
-shader runs. Without it the lens samples the app's content directly and punches a clear hole
+bar does, and its rim bends the bar's own hairline. `GlassTabBar` records the bar into a second
+layer and composites it over the backdrop before the lens's shader runs. Without it the lens samples the app's content directly and punches a clear hole
 through the bar, which is the one thing the reference never does.
 
 **And the element must be able to outgrow its parent.** A held lens is taller than the bar it
@@ -150,9 +155,10 @@ on the lens to colour its content should colour it directly on that path instead
 
 ### Spill onto neighbours
 
-Inside a `LiquidGlassContainer` the falloff is evaluated in the **container's** space, so a press
-on one member lights its neighbours too — Apple's "spreads onto any Liquid Glass elements
-nearby" — with no extra term and no extra cost. It falls out of the geometry.
+Apple's glow "spreads onto any Liquid Glass elements nearby". Earlier versions of this page said
+a container did this; it does not. Pieces inside a `GlassEffectContainer` are drawn by the
+container with one `Glass`, and their own `interactive()` is ignored, so a container does not
+respond to touch at present.
 
 ### Reduce Motion
 
@@ -161,7 +167,9 @@ elastic properties". `GlassInteraction.ReducedMotion` does exactly that: no scal
 gel, and the glow at half strength. The feedback survives; the elasticity does not.
 
 ```kotlin
-val interaction = if (reduceMotion) GlassInteraction.ReducedMotion else GlassInteraction.Default
+val glass = Glass.Regular.interactive(
+    response = if (reduceMotion) GlassInteraction.ReducedMotion else GlassInteraction.Calm,
+)
 ```
 
 ## Materialize
@@ -170,7 +178,7 @@ Apple: *"Instead of fading, Liquid Glass objects materialize in and out by gradu
 the light bending and lensing"*, and the UIKit guidance is to **prefer setting the effect over
 setting alpha**.
 
-So drive `materialize` rather than `alpha`:
+`GlassTabBar` takes `materialize` for this; drive it rather than `alpha`:
 
 ```kotlin
 val present by animateFloatAsState(
@@ -178,8 +186,12 @@ val present by animateFloatAsState(
     animationSpec = if (visible) GlassMotion.MaterializeIn else GlassMotion.MaterializeOut,
 )
 
-Modifier.liquidGlass(glass, shape, style, materialize = present)
+GlassTabBar(..., materialize = present)
 ```
+
+`glassEffect` does not take `materialize` at present (the parameter is internal since 18 October).
+`Glass.Identity` switches a piece of glass off without a transition; an ancestor's `alpha` does not
+fade glass at all (see [Limitations](limitations.md#an-ancestors-alpha-does-not-fade-glass)).
 
 One uniform scales displacement, scatter, tint, mirror, specular and inner shadow together. At 0
 the shader returns the backdrop untouched, so the element is gone **without alpha being
@@ -204,7 +216,7 @@ val style = animateGlassStyle(
 
 Modifier
     .size(animatedSize)                       // same clock
-    .liquidGlass(glass, shape, style)
+    .glassEffect(Glass(style), shape)
 ```
 
 Use the same spring for both, so the material cannot desynchronise from the shape it belongs to.
@@ -223,23 +235,39 @@ because a half-inverted element is not a state anything wants to be in.
 
 ## Merging
 
-`LiquidGlassContainer` renders several panels as one body of glass. Their distance fields are
-combined with a smooth minimum, so panels within `mergeDistance` of each other grow a neck and
-fuse, then separate as they move apart.
+`GlassEffectContainer` renders the glass inside it as one body. Their distance fields are
+combined with a smooth minimum, so pieces within `spacing` of each other grow a neck and fuse,
+then separate as they move apart.
 
 ```kotlin
-LiquidGlassContainer(glass, mergeDistance = 40.dp) {
-    Box(Modifier.size(96.dp).glassMember(CircleShape))
-    Box(Modifier.size(96.dp).glassMember(CircleShape))
+GlassEffectContainer(spacing = 20.dp) {
+    Row(horizontalArrangement = Arrangement.spacedBy(24.dp)) {
+        Box(Modifier.size(96.dp).glassEffect(shape = CircleShape))
+        Box(Modifier.size(96.dp).glassEffect(shape = CircleShape))
+    }
 }
 ```
 
 **Nothing animates the merge.** It is a consequence of the geometry, which is why it stays
 correct at any speed, in any direction, under interruption, and at any frame rate — none of
-which is true of an alpha crossfade or a keyframed morph. Move the members with whatever spring
+which is true of an alpha crossfade or a keyframed morph. Move the pieces with whatever spring
 your layout uses and the neck grows and snaps on its own.
 
-Capped at eight members: SkSL needs an unrollable loop, and every member is evaluated at every
+Capped at eight pieces: SkSL needs an unrollable loop, and every piece is evaluated at every
 pixel, which is exactly what lets the fields interact.
 
-Keep `mergeDistance` at or below your layout's own spacing, or members will blend at rest.
+Keep `spacing` at or below your layout's own spacing, or pieces will blend at rest. When it is
+unspecified it is `LiquidGlassTheme`'s `containerSpacing`, 20 dp by default.
+
+Give pieces a `Modifier.glassEffectID(id, namespace)`, after `glassEffect`, and a piece that
+appears where another with the same id was grows out of the old outline instead of popping in:
+
+```kotlin
+val ns = rememberGlassNamespace()
+GlassEffectContainer {
+    Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+        Icon(..., Modifier.size(44.dp).glassEffect().glassEffectID("edit", ns))
+        if (expanded) Icon(..., Modifier.size(44.dp).glassEffect().glassEffectID("share", ns))
+    }
+}
+```

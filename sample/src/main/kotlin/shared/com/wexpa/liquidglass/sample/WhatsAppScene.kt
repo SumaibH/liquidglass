@@ -75,9 +75,9 @@ fun WhatsAppScene(
 ) {
     val page = if (light) Color(0xFFF2F2F7) else Color(0xFF0A0A0A)
     val ink = if (light) Color.Black else Color.White
-    val state = rememberLiquidGlassState(page)
+    LiquidGlassTheme(dark = !light, background = page) {
     Box(modifier.size(PhoneGeometry.width, PhoneGeometry.height).background(page)) {
-        Box(Modifier.fillMaxSize().liquidGlassSource(state)) {
+        Box(Modifier.fillMaxSize()) {
             // A grouped list card, x 48-1122 px (grey 23 on 10), rows on a 50 pt pitch with an
             // outlined glyph at 37 pt and a 17 pt label at 77 pt, one row behind the bar. Without
             // [card], the bare page (10), as under the bar on WhatsApp's chats list.
@@ -96,10 +96,11 @@ fun WhatsAppScene(
         }
         val barTop = PhoneGeometry.barCentreY - PhoneGeometry.barHeight / 2
         GlassTabBar(
-            state, 5, selected, onSelected,
+            5, selected, onSelected,
             Modifier.offset(WhatsAppGeometry.barLeft, barTop).width(WhatsAppGeometry.barWidth).testTag("whatsapp-bar"),
             style = style,
         ) { index, isSelected -> WhatsAppTab(index, isSelected, ink) }
+    }
     }
 }
 

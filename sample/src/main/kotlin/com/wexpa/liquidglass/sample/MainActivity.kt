@@ -1,5 +1,8 @@
 package com.wexpa.liquidglass.sample
 
+import com.wexpa.liquidglass.LiquidGlassTheme
+import com.wexpa.liquidglass.Glass
+import com.wexpa.liquidglass.glassEffect
 import android.app.Activity
 import android.content.Intent
 import android.graphics.Color as AndroidColor
@@ -33,15 +36,12 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.wexpa.liquidglass.GlassInteraction
 import com.wexpa.liquidglass.GlassStyle
-import com.wexpa.liquidglass.LiquidGlassScene
-import com.wexpa.liquidglass.liquidGlass
-import com.wexpa.liquidglass.liquidGlassSource
 import kotlin.reflect.KClass
 
 /**
  * The sample's front door: three screens, each reached through a panel that is itself the
  * material. Nothing here is a bespoke glass component. Every panel is a `Column` with
- * `Modifier.liquidGlass()` on it, and the state comes from the scene.
+ * `Modifier.glassEffect(Glass(GlassStyle.Regular), RectangleShape)` on it, and the state comes from the scene.
  */
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -61,9 +61,10 @@ private val Ground = Color(0xFF0B0E1A)
 
 @Composable
 private fun Home(open: (KClass<out Activity>) -> Unit) {
-    LiquidGlassScene(background = Ground, modifier = Modifier.fillMaxSize()) {
+    LiquidGlassTheme(dark = true, background = Ground) {
+    Box(Modifier.fillMaxSize()) {
         // The one thing an app has to mark: what the glass looks at.
-        Backdrop(Modifier.fillMaxSize().liquidGlassSource())
+        Backdrop(Modifier.fillMaxSize())
 
         Column(
             modifier = Modifier
@@ -76,7 +77,7 @@ private fun Home(open: (KClass<out Activity>) -> Unit) {
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .liquidGlass(shape = RoundedCornerShape(26.dp), style = GlassStyle.Thick)
+                    .glassEffect(Glass(GlassStyle.Thick), RoundedCornerShape(26.dp))
                     .padding(horizontal = 20.dp, vertical = 18.dp),
                 verticalArrangement = Arrangement.spacedBy(8.dp),
             ) {
@@ -86,7 +87,7 @@ private fun Home(open: (KClass<out Activity>) -> Unit) {
                 )
                 BasicText(
                     "A refracting glass material for Compose. Everything on these screens is an " +
-                        "ordinary composable with Modifier.liquidGlass() added.",
+                        "ordinary composable with Modifier.glassEffect(Glass(GlassStyle.Regular), RectangleShape) added.",
                     style = TextStyle(color = Color.White.copy(alpha = 0.85f), fontSize = 14.sp),
                 )
             }
@@ -118,6 +119,7 @@ private fun Home(open: (KClass<out Activity>) -> Unit) {
             ) { open(CalibrationActivity::class) }
         }
     }
+    }
 }
 
 /** A tappable panel. The press response is the library's, not a ripple. */
@@ -127,7 +129,7 @@ private fun Door(title: String, detail: String, style: GlassStyle, onClick: () -
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .liquidGlass(shape = shape, style = style, interaction = GlassInteraction.Default)
+            .glassEffect(Glass(style).interactive(response = GlassInteraction.Default), shape)
             .clickable(
                 interactionSource = remember { MutableInteractionSource() },
                 indication = null,
