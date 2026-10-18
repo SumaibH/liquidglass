@@ -73,8 +73,10 @@ and bottom. A screenshot of a still frame.*
 
 ## Limits
 
-- Containers (`GlassEffectContainer`'s merged shapes) and the tab bar have their own shaders and do
-  not draw the contour yet.
+- `GlassEffectContainer`'s merged shapes have their own shader and do not draw the contour yet.
+  The tab bar uses the glass shader and could carry it. Its measured `Calm` styles leave it off,
+  because they already carry a measured cap contour (`capEdgeShadow`, fitted to iOS's light bar
+  ends), and adding a second would double it.
 - The light appearance's profile is flatter than the law between the pole and 60 degrees. iOS
   removes 8.1% of the backdrop at 20 degrees and 11.3% at 40; the law with its floor removes
   10.7% and 15.8%.

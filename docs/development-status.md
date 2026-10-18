@@ -65,7 +65,8 @@ Open: the CanvasKit painter binds the light as (0, -1) where `Glass.Regular` use
   with the measured overhead light and zero dispersion, which is an authored choice of measured
   values. Core presets are unchanged and the core suite's tolerances still hold.
 - Evidence: [iOS 27 rim renders](https://github.com/shayann07/liquidglass/blob/main/review/atlas/ios27-rim-2026-10-19/README.md).
-  Not yet drawn by containers or the tab bar.
+  `GlassEffectContainer`'s merged shapes do not draw it yet. The tab bar's measured styles keep
+  their own cap contour and are unchanged.
 
 ## Glass quality pass (18 October)
 
