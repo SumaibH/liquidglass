@@ -46,8 +46,8 @@ Scaffold(bottomBar = {
 Or let the Gradle plugin do it: `./gradlew liquidGlassAdopt` switches the imports once.
 
 <p align="center">
-  <img src="review/atlas/glass-quality-2026-10-18/showcase-light.png" width="300" alt="A Material 3 music app in glass, light scheme: glass top bar, segmented control, buttons, chips, a frosted mini player and the floating tab bar over album art">
-  <img src="review/atlas/glass-quality-2026-10-18/showcase-dark.png" width="300" alt="The same app, dark scheme">
+  <img src="review/atlas/ios27-rim-2026-10-19/showcase-light.png" width="300" alt="A Material 3 music app in glass, light scheme: glass top bar, segmented control, buttons, chips, a frosted mini player and the floating tab bar over album art">
+  <img src="review/atlas/ios27-rim-2026-10-19/showcase-dark.png" width="300" alt="The same app, dark scheme">
 </p>
 
 **Any composable: one modifier.** The names are SwiftUI's, so anyone who knows Apple's API knows this one.

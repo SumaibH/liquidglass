@@ -454,6 +454,8 @@ data class GlassStyle(
     val edgeLight: Float = 1f,
     val bevelPeak: Float = 0f,
     val edgeShadow: Float = 0f,
+    val outerContour: Float = 0f,
+    val outerContourFloor: Float = 0f,
     val fresnel: Float = 0.10f,
     val highlightChroma: Float = 0.7f,
     val innerShadow: Float = 0.07f,
@@ -533,6 +535,17 @@ right sides dark, and the reference shows exactly that: a one-pixel dark step, t
 `GlassTabBarStyle.HeldLens` sets it to 0.08, which measures on device as a dip to 21 against an
 interior of 42, against the reference's 24 against 41. `fresnel` is the only omnidirectional
 brightening term.
+
+`outerContour` is iOS 27's version of that line, and it is a different mechanism: it lies
+entirely **outside** the outline (the outermost wholly covered pixel is untouched), about 1.5 px
+wide, and it is strongest where the rim is unlit and zero at the lit poles. Measured on iOS 27's
+44 pt buttons over white, it removes 0.61 of the backdrop at the sides in a dark appearance and
+0.31 in a light one, where about a quarter remains at the poles (`outerContourFloor`). It is drawn
+as black at that opacity, so it shows over light content and vanishes over black. It is off (0)
+on every core preset. `GlassMaterialDefaults` in `liquidglass-material3` turns it on with the
+measured values, with the light straight overhead (`GlassLight(0f, -1f)`, measured at 0.0
+degrees) and no dispersion. It is drawn by `glassEffect`, not yet by `GlassEffectContainer`'s
+merged shapes or the tab bar.
 
 `highlightChroma` decides how the rim highlight is composited. At 0 it is added to the colour, which desaturates: adding white to a saturated backdrop pulls it toward grey, so a lit rim over deep blue reads as a milky smear. At 1 it is applied in Oklab instead, raising lightness and chroma together, so the rim brightens and keeps the hue of what is behind it. Measured on a device, the lit top edge of a panel over a blue ground moves from 0.38 saturation to 0.45. It is 0 on `DarkChrome`, which was measured with the additive highlight and keeps it until there is a capture that says otherwise.
 
