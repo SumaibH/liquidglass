@@ -4,6 +4,15 @@ Updated **18 October 2026**. This describes the unreleased source, not the publi
 Full iOS parity, final owner acceptance and arbitrary-stack support are not established. Historical
 research remains available; this page identifies which later changes supersede its implementation.
 
+## WPF (19 October)
+
+- `LiquidGlass.Wpf` (new): glass over native WPF content. The host's own WPF subtree is captured as
+  the backdrop, and the glass is drawn into a `WriteableBitmap` under ordinary WPF labels.
+  `WpfDemo --capture` renders it offscreen and checks the pixels; it runs in CI on Windows.
+  [Evidence](https://github.com/shayann07/liquidglass/blob/main/review/atlas/wpf-2026-10-19/README.md).
+- Avalonia stays open: Avalonia 11 is built on SkiaSharp 2.88, which cannot share a process with the
+  painter's SkiaSharp 4.
+
 ## Public Compose API (18 October)
 
 The Compose API was replaced on 18 October by one root and one modifier, named after SwiftUI's:

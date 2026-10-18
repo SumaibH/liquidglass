@@ -23,6 +23,14 @@ This file records user-visible development changes. Published artifacts are iden
   now blurs the backdrop in a nested layer instead; desktop and the web are unchanged. Evidence:
   `review/atlas/android-frost-2026-10-19`.
 
+### Added — WPF (19 October)
+
+- `LiquidGlass.Wpf` (new, .NET 10, Windows): `VisualBackdrop.Capture` renders the host's own WPF subtree
+  into the painter's backdrop, and `GlassBitmap` is a `WriteableBitmap` the painter draws glass into,
+  shown with an `Image` under ordinary WPF labels. `WpfDemo` has a glass card and a draggable lens over
+  WPF content; `--capture` renders it offscreen and checks the pixels, in CI on Windows. Packed (not
+  published) with the other NuGet packages.
+
 ### Added — the rest of Material 3 in glass (19 October)
 
 - Glass versions of the remaining Material 3 components that have a container:
