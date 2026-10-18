@@ -7,6 +7,10 @@ This file records user-visible development changes. Published artifacts are iden
 
 ### Changed (18 October, the owner's device check)
 
+- Owner acceptance (18 October): the owner checked the build by finger on a Pixel 7 and accepted all six
+  points of their device check. Device cost with the dark lens's wider raw blur: GPU p90 +2 ms (15), p50
+  and janky share unchanged.
+
 - Dark `Calm()` held lens: the raw page wider and stronger (`rawShare` 0.5 at `rawBlur` 50 dp, was 0.22 at
   20 dp). Scored by region on docs/2 5.75 s and IMG_6756 35.47 s, iOS / ours: top band 64/60 (was 51),
   bottom 75/73, text p90 102/101, p50 82/86, black 47/48; five regions 2.8 rms (6.6).

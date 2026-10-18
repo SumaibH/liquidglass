@@ -148,6 +148,10 @@ Progress:
   the `calm+lens=a,grey,raw` replay variant): no tint/raw-share pair meets both pages (raw share
   saturates at ~75 on docs2; a brighter tint lifts black pages equally). Kept the black-page fit (13 of
   16 held moments); the page gain is a structural residual for a later pass.
+- 18 Oct, claude/acceptance: OWNER ACCEPTED all six device-check points by finger on the Pixel 7 (18 Oct).
+  Device perf on build 38cfe01 (rawBlur 50 dp): frame p50 17-18, p90 26, GPU p50 9 / p90 15 ms (13 before),
+  jank 1.9-2.0% (.local/device/2026-10-18/perf.txt). Landing timing: owner declined a show-taps clip; stays
+  the documented one-frame limit of inferred input.
 - 18 Oct, claude/lens-band: dark Calm lens rawShare .5 / rawBlur 50 dp (hazescore 2.8, top band 60/64; grid
   rw* in .local/sxs/ref/slice); Pullable pullReleaseDampingX .3 (sideways min half-width 83 vs 78; sX*);
   search script re-inferred for follow .2 (searchscript.py FOLLOW env; old script search-script-f35.txt).

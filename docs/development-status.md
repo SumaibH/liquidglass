@@ -179,14 +179,16 @@ trace was produced and no permission changes were made. See [performance](perfor
    The search button presses, pulls and lands as iOS's does since pass 17 (centre 2-3 px rms); the
    CanvasKit and .NET ports have its press, pull and landing (`createFreeButton` / `FreeButton`, checked frame
    by frame against Kotlin) and, since 17 October, the bar's fusion with it (`accessoryFuse` /
-   `AccessoryFuse`). Owner visual acceptance is pending.
+   `AccessoryFuse`). The owner accepted the Calm tab bar on the device on 18 October, by finger, after the
+   six-point check (icons, tap travel, held lens rim, search feel, lens neck, bar ends).
 2. Hardware: the physical-device check ran on 17 October (Pixel 7, dark and light: tap, hold, drag,
    throw, the search button pulled 250 px in eight directions, off-axis bar drags; no artefacts;
    [record](https://github.com/shayann07/liquidglass/blob/main/review/atlas/android-device-2026-10-17/README.md)).
-   Real-finger input on a device remains for the owner (adb input is straight and constant-speed).
+   The owner's own-finger check followed on 18 October and was accepted. Landing timings stay about a
+   frame off: the recordings carry no touch trace, and the owner chose not to record one (18 October).
 3. Performance on a wider range of devices (Pixel 7 at 90 Hz keeps the display rate: UI thread 6.9 ms,
-   GPU 8.5 ms p50 per frame, 2-3% janky; `renderScale` barely changes it) and final wide/narrow Atlas
-   visual acceptance.
+   GPU 8.5 ms p50 per frame, 2-3% janky; `renderScale` barely changes it; the dark lens's wider raw blur
+   of 18 October adds 2 ms at GPU p90 and nothing at p50) and final wide/narrow Atlas visual acceptance.
 4. Additional host integrations, with executable evidence.
 5. No release/tag is authorized.
 
