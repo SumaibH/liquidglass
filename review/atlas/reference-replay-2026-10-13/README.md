@@ -873,6 +873,24 @@ before (left) and with its 0.3 band and 12 dp neck (right). Bottom: the light he
 The App Store bar (dark) now blurs the text under it (7 dp) with `legibility` 2: band p50 / p75 68 / 79
 against iOS's 69 / 80 (was 67 / 98); p90 133 against 207 (the brightest text pixels, softer than iOS's).
 
+### Landing timing (18 October)
+
+WhatsApp's motion re-scored on the 18 October build (the same inferred script, the same white-fill tracker
+on both sides, 49.8-67.0 s, 14 touches): the selection path rms 62.7 px (79.9 on 17 October), p90 109 px
+(140), and the best time shift between the two paths -17 ms (-42 ms): one frame of the 60 fps recording,
+its time resolution. The lift is inferred, so its calibration was swept:
+
+| Lift calibration (`genwa.py` UP_CAL) | path rms | p90 | best shift |
+| :-- | --: | --: | --: |
+| +10 ms | 58.3 px | 106 px | -25 ms |
+| **+27 ms (kept)** | 62.7 px | 109 px | -17 ms |
+| +48 ms | 68.1 px | 121 px | -17 ms |
+
+No lift moves the shift below a frame, so the remaining offset is not the inferred input; at one frame
+it is at the recording's resolution. The per-touch "settle" times (ink within 8 px for 0.1 s) now read
+120-280 ms after the lift against iOS's 129-611 ms: since taps travel with the held lens's optics the ink
+no longer smears, so the tracker sees it settle sooner; this is an ink reading, not motion. Landings 14/14.
+
 ### The dark held lens's top band and the search button's sideways release (18 October)
 
 The dark held lens read ~10 below iOS's over content in its upper half (top band 51 against 64) and
@@ -980,8 +998,8 @@ the impact. The narrowing itself is real and is listed below.
   leaves; our inferred tap presses 16 ms before (finger timing).
 - Held lens over content (18 October, blurred raw share 0.5 / 50 dp): every region within 4 of iOS's
   (top band 60 against 64, text p50 86 against 82), five regions 2.8 rms.
-- WhatsApp motion (17 October): throws' flights reach the far tab ~40 ms before iOS's tracker shows
-  them (p90 140 px); input is inferred and the fill cross-fade lags the tracker.
+- WhatsApp motion (18 October): the paths agree within one recording frame (best shift -17 ms, was -42),
+  path p90 109 px (140); landings 14/14.
 - App Store bar: p50 / p75 68 / 79 against iOS's 69 / 80 since 18 October (7 dp blur, `legibility` 2);
   p90 133 against 207.
 - Light appearance (IMG_7048, 17 October): the held lens casts its shadow since 18 October (profile rms

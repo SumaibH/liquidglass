@@ -147,6 +147,9 @@ Progress:
   the `calm+lens=a,grey,raw` replay variant): no tint/raw-share pair meets both pages (raw share
   saturates at ~75 on docs2; a brighter tint lifts black pages equally). Kept the black-page fit (13 of
   16 held moments); the page gain is a structural residual for a later pass.
+- 18 Oct, claude/landing-timing: WhatsApp re-scored on today's build: path rms 62.7 (79.9), best shift -17 ms
+  (-42) = one 60 fps frame; UP_CAL sweep .010/.027/.048 (genwa.py env UP_CAL) cannot move it below a frame.
+  Landing timing CLOSED at the recording's resolution. Renders .local/sxs/ref/whatsapp/u*.
 - 18 Oct, claude/acceptance: OWNER ACCEPTED all six device-check points by finger on the Pixel 7 (18 Oct).
   Device perf on build 38cfe01 (rawBlur 50 dp): frame p50 17-18, p90 26, GPU p50 9 / p90 15 ms (13 before),
   jank 1.9-2.0% (.local/device/2026-10-18/perf.txt). Landing timing: owner declined a show-taps clip; stays

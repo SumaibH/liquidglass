@@ -184,8 +184,9 @@ trace was produced and no permission changes were made. See [performance](perfor
 2. Hardware: the physical-device check ran on 17 October (Pixel 7, dark and light: tap, hold, drag,
    throw, the search button pulled 250 px in eight directions, off-axis bar drags; no artefacts;
    [record](https://github.com/shayann07/liquidglass/blob/main/review/atlas/android-device-2026-10-17/README.md)).
-   The owner's own-finger check followed on 18 October and was accepted. Landing timings stay about a
-   frame off: the recordings carry no touch trace, and the owner chose not to record one (18 October).
+   The owner's own-finger check followed on 18 October and was accepted. Landing timing is within one
+   frame of the 60 fps recordings (WhatsApp's paths: best shift -17 ms, was -42), its resolution; no
+   calibration of the inferred lift moves it further.
 3. Performance on a wider range of devices (Pixel 7 at 90 Hz keeps the display rate: UI thread 6.9 ms,
    GPU 8.5 ms p50 per frame, 2-3% janky; `renderScale` barely changes it; the dark lens's wider raw blur
    of 18 October adds 2 ms at GPU p90 and nothing at p50) and final wide/narrow Atlas visual acceptance.
