@@ -144,7 +144,7 @@ Phone keypad page, App Store cards, WhatsApp, Threads):
 | :-- | --: | --: |
 | Bar over the page (least squares over seven page levels, 171-245) | 0.58 of the page + 116 | 0.59 + 115 |
 | Bar over white | 255 | 255 |
-| Bar rim, top / bottom / ends | 246 / 242-247 / 179-221 | 246 / 246 / 234 |
+| Bar rim, top / bottom / ends' outermost point | 246 / 242-247 / 178-182 | 246 / 246 / 177-186 |
 | Shadow under the bar | 253 | 251-253 |
 | Resting pill over white: Phone / WhatsApp / App Store | 245 / 236 / 255 | 245 / 236 / 255 (`Calm`, `CalmClear`, App Store scene) |
 
@@ -163,7 +163,14 @@ none above the lens, 242 for ~15 px below it, as iOS's. The bar lifts for any to
 *Our renders only: desktop GPU replay at 3x, a 1.2 s hold on Keypad; top without the lens's shadow, bottom
 with it (branch `claude/residuals`).*
 
-Still different: the bar's ends read lighter than iOS's (234 against 179-221).
+The bar's rounded ends darken toward their outermost point as iOS's do (`GlassStyle.capEdgeShadow` 2,
+18 October; they read 234-241 before): ~214 at 45 degrees, 177-186 at the end against iOS's 178-182.
+
+![Light Calm's bar ends before and with capEdgeShadow](https://raw.githubusercontent.com/shayann07/liquidglass/main/review/atlas/reference-replay-2026-10-13/light-bar-ends.png)
+
+*Our renders only: desktop GPU replay at 3x, the light Keypad scene at rest, branch `claude/fix-rest`; top
+`capEdgeShadow` 0, bottom 2. The search button shares the bar's material, so its sides darken too; that
+is not scored separately.*
 
 In both appearances iOS draws page text under a tab bar as one soft, legible copy (the owner's
 Contacts recording, IMG_7049), which is what `softDetail` gives the Calm presets; the toolbar role's
@@ -244,7 +251,7 @@ GlassTabBar(..., trailingAccessory = GlassTabBarAccessory(size = 62.dp, gap = 8.
 Box(
     Modifier.offset(x = 307.dp).size(62.dp).liquidGlass(
         glass, CircleShape, GlassTabBarStyle.Calm().bar,
-        interaction = GlassInteraction.Pullable.copy(pullShape = GlassPullShape.Free, pullLiftShare = 0.6f),
+        interaction = GlassInteraction.Pullable.copy(pullShape = GlassPullShape.Free, pullLiftShare = 0.65f),
         link = link,
     ),
     contentAlignment = Alignment.Center,
@@ -252,8 +259,8 @@ Box(
 ```
 
 Against iOS 26's own search button (seven presses and pulls in one recording, display colours), its
-centre stays within 2-3 px rms, its height and width within 3-5 px, and its brightness within 8
-grey levels. Layout, hit targets and pointer coordinates stay where the button is laid out.
+centre stays within 2-3 px rms, its height and width within 3-5 px, and its brightness within 7
+grey levels (6.4 rms with the lift share 0.65 of 18 October, which also brings its rise within 1-2 px). Layout, hit targets and pointer coordinates stay where the button is laid out.
 
 The bar never draws or moves the accessory. Its outline is a smooth union with the accessory's
 circle (`fusion`, 6 dp by default), anchored so only the bar's own press growth closes the gap;

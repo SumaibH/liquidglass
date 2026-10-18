@@ -28,6 +28,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.graphics.drawscope.scale
 import com.wexpa.liquidglass.*
 
 /**
@@ -100,17 +101,21 @@ fun AppStoreScene(
 private fun AppStoreTab(index: Int, color: Color) {
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
         Canvas(Modifier.size(26.dp)) {
-            when (index) {
-                0 -> todayGlyph(color)
-                1 -> gamesGlyph(color)
-                2 -> appsGlyph(color)
-                3 -> arcadeGlyph(color)
-                else -> magnifierGlyph(color)
+            // The drawn glyphs are thinner than Apple's symbols: 1.12x about their centre gives the same
+            // white area as the recording's icons (LOLL8185 43.9 s, 18 October), layout unchanged.
+            scale(1.12f) {
+                when (index) {
+                    0 -> todayGlyph(color)
+                    1 -> gamesGlyph(color)
+                    2 -> appsGlyph(color)
+                    3 -> arcadeGlyph(color)
+                    else -> magnifierGlyph(color)
+                }
             }
         }
         Spacer(Modifier.height(3.dp))
         BasicText(AppStoreLabels[index],
-            style = TextStyle(color = color, fontSize = 10.sp, fontWeight = FontWeight.Medium, letterSpacing = 0.7.sp))
+            style = TextStyle(color = color, fontSize = 10.sp, fontWeight = FontWeight.SemiBold, letterSpacing = 0.7.sp))
     }
 }
 

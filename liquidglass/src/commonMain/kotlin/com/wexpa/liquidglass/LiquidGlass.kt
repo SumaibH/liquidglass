@@ -651,6 +651,7 @@ internal fun Modifier.liquidGlassCore(
                         backdropBlur = style.backdropBlur.toPx(),
                         counterLight = style.counterLight,
                         edgeShadow = style.edgeShadow,
+                        capEdgeShadow = style.capEdgeShadow,
                         rimSoft = style.rimSoftness.toPx(),
                         tintAbsorb = style.tintAbsorption,
                         edgeLight = style.edgeLight,
@@ -1331,6 +1332,8 @@ internal data class GlassUniforms(
     val edgeLight: Float,
     val bevelPeak: Float,
     val edgeShadow: Float,
+    /** [GlassStyle.capEdgeShadow]. */
+    val capEdgeShadow: Float = 0f,
     val rimSoft: Float,
     val tintAbsorb: Float,
 ) {
@@ -1358,7 +1361,7 @@ internal data class GlassUniforms(
             adaptivity == other.adaptivity && blurRadius == other.blurRadius &&
             backdropBlur == other.backdropBlur &&
             counterLight == other.counterLight && edgeLight == other.edgeLight &&
-            bevelPeak == other.bevelPeak && edgeShadow == other.edgeShadow &&
+            bevelPeak == other.bevelPeak && edgeShadow == other.edgeShadow && capEdgeShadow == other.capEdgeShadow &&
             rimSoft == other.rimSoft && tintAbsorb == other.tintAbsorb &&
             profile == other.profile && formation == other.formation && heldLens == other.heldLens &&
             heldMagnification == other.heldMagnification && heldGlow == other.heldGlow &&

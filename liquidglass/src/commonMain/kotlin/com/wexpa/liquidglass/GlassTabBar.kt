@@ -1669,7 +1669,10 @@ data class GlassTabBarStyle(
          */
         private fun calmLight(recorded: GlassTabBarStyle): GlassTabBarStyle = recorded.copy(
             bar = recorded.bar.copy(tint = Color.White.copy(alpha = 0.41f), tintLift = 10f / 255f, softDetail = 1f,
-                edgeShadow = 0.12f, specular = 0f, bevelPeak = 0f, contactShadow = 0.2f, capFold = 1f),
+                edgeShadow = 0.12f, specular = 0f, bevelPeak = 0f, contactShadow = 0.2f, capFold = 1f,
+                // Its rounded ends' outline darker than its runs (GlassStyle.capEdgeShadow, 18 October): iOS
+                // 178-182 at the outermost point, ours 177-186 (was 236-241); left end 12 levels rms (45).
+                capEdgeShadow = 2f),
             touchLift = true,
             itemsFollowBarPress = false,
             tapTransitFold = 0f,

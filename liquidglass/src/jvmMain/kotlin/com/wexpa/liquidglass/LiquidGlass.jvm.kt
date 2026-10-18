@@ -124,6 +124,7 @@ internal actual fun createGlassRenderEffect(
     builder.uniform("uSpecularPow", uniforms.specularPower)
     builder.uniform("uCounterLight", uniforms.counterLight)
     builder.uniform("uEdgeShadow", uniforms.edgeShadow)
+    builder.uniform("uCapEdgeShadow", uniforms.capEdgeShadow)
     builder.uniform("uRimSoft", uniforms.rimSoft)
     builder.uniform("uTintAbsorb", uniforms.tintAbsorb)
     builder.uniform("uTintMaskX", uniforms.tintMaskX[0], uniforms.tintMaskX[1], uniforms.tintMaskX[2], uniforms.tintMaskX[3])

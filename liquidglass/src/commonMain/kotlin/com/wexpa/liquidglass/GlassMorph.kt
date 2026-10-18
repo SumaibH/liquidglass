@@ -74,6 +74,7 @@ fun lerpGlassStyle(start: GlassStyle, stop: GlassStyle, fraction: Float): GlassS
         specularPower = f(start.specularPower, stop.specularPower),
         counterLight = f(start.counterLight, stop.counterLight),
         edgeShadow = f(start.edgeShadow, stop.edgeShadow),
+        capEdgeShadow = f(start.capEdgeShadow, stop.capEdgeShadow),
         rimSoftness = d(start.rimSoftness, stop.rimSoftness),
         tintAbsorption = f(start.tintAbsorption, stop.tintAbsorption),
         edgeLight = f(start.edgeLight, stop.edgeLight),

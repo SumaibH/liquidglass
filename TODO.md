@@ -147,6 +147,16 @@ Progress:
   the `calm+lens=a,grey,raw` replay variant): no tint/raw-share pair meets both pages (raw share
   saturates at ~75 on docs2; a brighter tint lifts black pages equally). Kept the black-page fit (13 of
   16 held moments); the page gain is a structural residual for a later pass.
+- 18 Oct, claude/fix-rest (owner: "port everything and fix the rest", no Pixel: desktop app; NO Maven publish
+  until the owner says so): light bar ends GlassStyle.capEdgeShadow 2 (177-186 vs iOS 178-182; left end rms
+  12.1, was 45.4; 5-10 overshoot); CalmWallLanding zeta .33 TRIED AND REJECTED (19 landings' edges slightly
+  better, L 4.16/8.11 R 5.51/13.01 vs 4.33/10.22 5.78/14.90, but the suite's pinned width series worse:
+  rms 3.78/6.80 vs 2.81/5.17; kept .3); search pullLiftShare .65 (scripts re-inferred FOLLOW .2 CAP .99
+  LEAD .05: level rms 6.4, rise within 1-2 px); App Store glyphs 1.12x + SemiBold labels; Atlas
+  -Patlas.windowSize; wide/narrow captures on both GPUs (review/atlas/desktop-2026-10-18). Desktop perf is
+  slower than 11 Oct (NVIDIA ~10 / Intel 21-29 ms p50), but 02f74a4 (14 Oct) times the same (Intel 21.4 vs 21.6)
+  -> not today's work; cause open (older commit or machine). Glow halving rejected: conflicts with video2's
+  measured band (kept 1.5; docs2 moving lens vs video2 still lens).
 - 18 Oct, claude/landing-timing: WhatsApp re-scored on today's build: path rms 62.7 (79.9), best shift -17 ms
   (-42) = one 60 fps frame; UP_CAL sweep .010/.027/.048 (genwa.py env UP_CAL) cannot move it below a frame.
   Landing timing CLOSED at the recording's resolution. Renders .local/sxs/ref/whatsapp/u*.
@@ -404,6 +414,8 @@ Progress:
   cropping its transformed input preserved pixels but did not improve speed and was rejected.
 - [ ] Review final studio at wide/narrow sizes, scene switches, zoom and visibility/accessibility
   controls. Obtain an acceptable visual result; current owner acceptance remains unresolved.
+  18 Oct: wide 1400x900 and narrow 420x880 captured and inspected on NVIDIA and Intel, all three scenes
+  intact, compact layout as designed (review/atlas/desktop-2026-10-18). Owner acceptance still open.
 
 ## P1 — practical integration across stacks
 

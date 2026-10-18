@@ -1,5 +1,15 @@
 # Performance
 
+## Atlas wide and narrow windows — 18 October 2026
+
+Static-scene redraw submission (120 samples after 10 warmups; not presented FPS), three scenes per
+window: NVIDIA RTX 3050 p50 9.8-10.5 ms, p95 13-18 ms; Intel UHD p50 21-29 ms, p95 37-40 ms. The
+420 x 880 dp window costs about what the 1400 x 900 one does, so this is per-frame overhead, not fill.
+Both are slower than the 11 October record below (4.5 / 8.9 ms p50). On the same maximized scene a
+14 October build (`02f74a4`) times as this one does (Intel 21.4 against 21.6 ms p50), so the change
+predates the 18 October work or is the machine's; it is not resolved.
+[Captures and table](https://github.com/shayann07/liquidglass/blob/main/review/atlas/desktop-2026-10-18/README.md).
+
 ## Current Atlas evidence —13 October 2026
 
 Atlas requests a discrete GPU and reports the actual adapter. The tested Windows path selected

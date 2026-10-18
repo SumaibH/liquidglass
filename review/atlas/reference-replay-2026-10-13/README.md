@@ -1001,9 +1001,18 @@ the impact. The narrowing itself is real and is listed below.
 - WhatsApp motion (18 October): the paths agree within one recording frame (best shift -17 ms, was -42),
   path p90 109 px (140); landings 14/14.
 - App Store bar: p50 / p75 68 / 79 against iOS's 69 / 80 since 18 October (7 dp blur, `legibility` 2);
-  p90 133 against 207.
+  p90 133 against 207 until the scene's glyphs were drawn 1.12x larger with SemiBold labels (18 October):
+  p50 / p75 68 / 80, p90 236. The p90 falls on the icons' edges, so it swings with glyph weight; the
+  scene's drawn glyphs are stand-ins for Apple's symbols, not the library.
 - Light appearance (IMG_7048, 17 October): the held lens casts its shadow since 18 October (profile rms
-  2.6); the bar's ends read 234 against 179-221. Resting pills per app since 18 October (245 / 236 / 255).
+  2.6); the bar's ends darken toward their outermost point since 18 October (`capEdgeShadow` 2: 177-186
+  against 178-182; left end 12.1 levels rms along its outline, was 45.4; 5-10 overshoot, rms 58-144).
+
+![Light Calm's bar ends before and with capEdgeShadow](light-bar-ends.png)
+
+*Our renders only: desktop GPU replay at 3x, light Keypad at rest, branch `claude/fix-rest`; top
+`capEdgeShadow` 0, bottom 2. The search button shares the bar's material; its sides are not scored.*
+ Resting pills per app since 18 October (245 / 236 / 255).
 - Text under the bar's rounded ends: lensed since 18 October (`capFold`), judged by eye against IMG_7049;
   not scored by region.
 
@@ -1011,8 +1020,9 @@ the impact. The narrowing itself is real and is listed below.
 
 *Our renders only: desktop GPU replay at 3x, branch `claude/bar-ends`. Dark (top) and light (bottom),
 before (left) and with `capFold` 1 (right).*
-- Search button (pass 17, lift share 0.6 since 17 October, drag gain 0.2 and x release damping 0.3 since
-  18 October): the rise peaks 3-6 px short; brightness 7.1 levels rms; after a sideways release its
+- Search button (pass 17, drag gain 0.2, x release damping 0.3 and lift share 0.65 since 18 October;
+  scripts re-inferred for the new gain): the rise within 1-2 px of iOS's (3-6 short at 0.6); brightness
+  6.4 levels rms (7.1); after a sideways release its
   narrowest is 83 px against iOS's 78. The "min half-width 86 against 78" of sideways pulls is not the pull: it
   falls in the ~100 ms after release, when iOS's body overshoots its rest by 6 px against our 2 and
   squashes deeper against its held edge. Width ratio rescored on 18 October: 1.0 (shipped) half-width
@@ -1020,7 +1030,11 @@ before (left) and with `capFold` 1 (right).*
   (`accessoryFuse` / `AccessoryFuse`, checked against Kotlin).
 - Pass 14's level residuals (58 against 67, 62 against 64) were read on the sRGB-decoded recordings
   and are superseded above.
-- Wall landings (pass 13): rms 6.0 px right / 5.4 px left (pass 10: 5.5 / 4.1); the 9.9 s landing passes its rest by
+- Wall landings (pass 13): rms 6.0 px right / 5.4 px left (pass 10: 5.5 / 4.1). A trailing damping of 0.33 was
+  tried on 18 October and rejected. Over all 19 landings (edge positions, display space, ported controller)
+  it scored slightly better: mean 4.2 / 5.5 px left / right against 4.3 / 5.8, worst 8.1 / 13.0 against
+  10.2 / 14.9. But it widened the two width series the suite pins: rms 3.8 / 6.8 px against 2.8 / 5.2.
+  0.3 is kept; the 9.9 s landing passes its rest by
   36.5 px against 41; the left width series' first frames narrow up to 11.2 px less; the 28.66 s
   landing is an input artefact (source frame gap).
 - Cap swirl (pass 9, fringes pass 11): comparable petals and fringes, judged by eye.

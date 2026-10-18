@@ -51,6 +51,7 @@ uniform float   uCounterLight; // how much of the key light reaches the side fac
 uniform float   uEdgeLight;    // brightness of the outermost line relative to the bevel lobe
 uniform float   uBevelPeak;    // where in the bevel the highlight peaks: 0 at the edge (chamfer), 0.4 inside (bead)
 uniform float   uEdgeShadow;   // dark separating contour at the outermost pixel, 0..1
+uniform float   uCapEdgeShadow; // the contour times 1 + this x nx^2: darker where it faces sideways (GlassStyle.capEdgeShadow)
 uniform float   uRimSoft;      // px the compressed rim image is smeared along the normal
 uniform float   uTintAbsorb;   // 0 tint as a blend, 1 tint as an absorbing medium
 uniform float   uFresnel;      // Schlick rim reflectance gain
@@ -1161,7 +1162,7 @@ half4 main(float2 coord) {
     }
     // On the held lens the step belongs to the sides only; the lit line owns the top and bottom.
     rimDark *= mix(1.0, 1.0 - abs(facing), heldAmt);
-    col -= half3(half(rimDark * uEdgeShadow * mat));
+    col -= half3(half(rimDark * uEdgeShadow * (1.0 + uCapEdgeShadow * n.x * n.x) * mat));
     // The held lens's outline as a line of a fixed grey (GlassStyle.heldEdgeTone): it reads dark
     // over the bar and light over a black page, as the reference's does, never a white ring.
     if (uHeldEdgeTone > 0.0 && heldAmt > 0.0) {

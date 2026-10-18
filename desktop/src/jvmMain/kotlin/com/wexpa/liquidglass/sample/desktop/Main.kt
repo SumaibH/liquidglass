@@ -2,6 +2,7 @@ package com.wexpa.liquidglass.sample.desktop
 
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.WindowPlacement
 import androidx.compose.ui.window.application
@@ -32,7 +33,12 @@ fun main() = application {
     val screenSize = Toolkit.getDefaultToolkit().screenSize
     println(">>> Starting Atlas Studio at native resolution: ${screenSize.width}x${screenSize.height}")
 
-    val windowState = rememberWindowState(
+    // -Patlas.windowSize=WxH (dp) opens a window of that size instead of maximized: the wide and narrow
+    // layouts of the same screen, for captures.
+    val requested = System.getProperty("atlas.windowSize")?.split('x')?.mapNotNull { it.toIntOrNull() }?.takeIf { it.size == 2 }
+    val windowState = if (requested != null) rememberWindowState(
+        size = androidx.compose.ui.unit.DpSize(requested[0].dp, requested[1].dp),
+    ) else rememberWindowState(
         placement = WindowPlacement.Maximized
     )
 
