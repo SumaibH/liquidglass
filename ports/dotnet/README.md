@@ -129,6 +129,32 @@ The second command verifies actual TextBox glyph changes, identity/refraction pi
 source after rejection, thread ownership and resizing, then exits. Windows CI runs it; Linux
 continues to run the framework-independent painter/controller checks. [Native-control evidence](../../review/atlas/dotnet-controls-2026-10-13/README.md).
 
+### Use existing WPF content as the backdrop
+
+Reference `LiquidGlass.Wpf/LiquidGlass.Wpf.csproj` (.NET 10, Windows 10 19041+; package `LiquidGlass.Wpf`
+once released). `VisualBackdrop.Capture` renders your own WPF subtree into an opaque Skia image, and
+`GlassBitmap` is a `WriteableBitmap` the painter draws into. Show it with an `Image` between the
+backdrop and the labels that sit on the glass, so the labels stay ordinary WPF elements:
+
+```csharp
+using LiquidGlass.Skia;
+using LiquidGlass.Wpf;
+
+// backdrop holds ordinary content only; the Image and the labels sit outside it, above it.
+var scale = VisualTreeHelper.GetDpi(window).DpiScaleX;
+var source = VisualBackdrop.Capture(backdrop, Colors.White, scale);
+painter.SetSource(source);                       // keep `source` alive while the painter uses it
+var glass = new GlassBitmap(source.Width, source.Height, scale);
+glassImage.Source = glass.Bitmap;                // <Image Stretch="None"/> over the backdrop
+glass.Render(canvas => painter.DrawSurface(canvas, SKRect.Create(40 * (float)scale, 330 * (float)scale,
+    360 * (float)scale, 120 * (float)scale), 28 * (float)scale, new(Density: (float)scale)));
+```
+
+Capture again after the backdrop's content or layout changes, not when only the glass moves. The
+[WPF host](WpfDemo/Program.cs) shows a page of WPF text, a button and colour bands with a glass card
+and a lens you drag. `--capture DIR` lays it out without a window, renders it, checks the pixels and
+saves `wpf-glass.png`; CI runs that on Windows. [Evidence](../../review/atlas/wpf-2026-10-19/README.md).
+
 ## Navigation: the Calm selector
 
 `CalmNavigation` runs the Compose `GlassTabBar` gesture protocol over `CalmSelectorController`, a
@@ -282,7 +308,10 @@ foreground/path effects. These low-level passes do not construct those layers fo
 Verified locally: Windows CPU rendering, the interactive Windows Forms host, four source profiles,
 shared-source lens/card drawing and lifecycle checks. [Evidence and exact scope](../../review/atlas/dotnet-2026-10-10/README.md).
 Windows/Linux renderer checks and Windows host compilation are in CI. macOS, GPU hosts, Android/iOS
-SkiaSharp views, WPF, Avalonia and MAUI have not received native host verification here. SwiftUI,
+SkiaSharp views and MAUI have not received native host verification here. WPF is verified offscreen
+in CI (`WpfDemo --capture`). Avalonia 11 is built on SkiaSharp 2.88 and cannot load this painter's
+SkiaSharp 4 in the same process; use the web component in a WebView, or render glass in a separate
+process, until Avalonia moves to SkiaSharp 4. SwiftUI,
 Flutter, React Native, Qt and Unity still need their own integration. Whole-surface calm interaction
 is supplied, and so are the Calm navigation-selector dynamics (`CalmSelectorController`,
 `CalmNavigation`, `GlassPainter.DrawSelector`); portable refracted foreground is not supplied by

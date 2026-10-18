@@ -10,6 +10,14 @@ This file records user-visible development changes. Published artifacts are iden
 - The preset's guessed numbers are replaced with iOS 27's measured rim: the outer contour (0.61), the
   bar's lit edge scaled to iOS 27's peak and half-depth, and no dispersion. `Dark` is unchanged.
 
+### Added — WPF (19 October)
+
+- `LiquidGlass.Wpf` (new, .NET 10, Windows): `VisualBackdrop.Capture` renders the host's own WPF subtree
+  into the painter's backdrop, and `GlassBitmap` is a `WriteableBitmap` the painter draws glass into,
+  shown with an `Image` under ordinary WPF labels. `WpfDemo` has a glass card and a draggable lens over
+  WPF content; `--capture` renders it offscreen and checks the pixels, in CI on Windows. Packed (not
+  published) with the other NuGet packages.
+
 ### Added — the rest of Material 3 in glass (19 October)
 
 - Glass versions of the remaining Material 3 components that have a container:
