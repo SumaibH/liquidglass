@@ -58,9 +58,12 @@ This file records user-visible development changes. Published artifacts are iden
 
 ### Fixed (18 October)
 
-- A tab bar's linked accessory (the search button) drew its glass but not its icon under
-  `LiquidGlassTheme`: the overlay drew it before the bar's portal. Linked accessories now draw after
-  portals, as `GlassTabBarAccessory` documents.
+- A glass element composed after a tab bar (Atlas's and the Material bar's search button) drew its
+  glass but not its icon under `LiquidGlassTheme`: the overlay drew every element before every portal.
+  It now draws elements and portals in the order they entered composition, as an ordinary layout would
+  (`GlassThemeComponentsTest.anAccessoryComposedAfterTheBarDrawsOverIt`).
+- Android: the sample opens the Material 3 showcase (shared with desktop and the web demo); first
+  Android run of the new API, on a Pixel 7 and an emulator ([evidence](https://github.com/shayann07/liquidglass/blob/main/review/atlas/android-material3-2026-10-18/README.md)).
 - `liquidglass-material3`: checked multi-choice segments use `onPrimary` text on their tinted glass;
   `Snackbar` is drawn by the library, without Material's surface shadow inside the glass.
 

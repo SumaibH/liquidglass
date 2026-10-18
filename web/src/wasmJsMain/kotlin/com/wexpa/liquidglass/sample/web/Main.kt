@@ -15,6 +15,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.ComposeViewport
 import com.wexpa.liquidglass.sample.LoupeScreen
+import com.wexpa.liquidglass.sample.MaterialShowcase
 import kotlinx.browser.document
 import kotlinx.browser.window
 

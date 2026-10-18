@@ -17,6 +17,9 @@ kotlin {
         val desktopMain by getting {
             dependencies {
                 implementation(project(":liquidglass"))
+                // The Material 3 showcase shared with the web demo and the Android sample.
+                implementation(project(":liquidglass-material3"))
+                implementation(libs.compose.material.icons.core)
                 implementation(compose.desktop.currentOs)
                 // Already supplied at runtime by Compose; needed directly for non-reentrant diagnostics.
                 implementation(libs.kotlinx.coroutines.swing)

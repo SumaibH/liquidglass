@@ -175,8 +175,8 @@ internal fun GlassPortal(modifier: Modifier, content: @Composable (LiquidGlassSt
     entry.locals = currentCompositionLocalContext
     entry.content = content
     DisposableEffect(region, entry) {
-        region.portals += entry
-        onDispose { region.portals -= entry }
+        region.layers += entry
+        onDispose { region.layers -= entry }
     }
     Layout(modifier.onGloballyPositioned { entry.place(region.root, it) }) { _, constraints ->
         entry.constraints = constraints
@@ -248,7 +248,7 @@ fun GlassOverlay(content: @Composable androidx.compose.foundation.layout.BoxScop
     entry.locals = currentCompositionLocalContext
     entry.content = { Box(Modifier.fillMaxSize(), content = content) }
     DisposableEffect(region, entry) {
-        region.portals += entry
-        onDispose { region.portals -= entry }
+        region.layers += entry
+        onDispose { region.layers -= entry }
     }
 }

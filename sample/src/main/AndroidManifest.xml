@@ -29,6 +29,9 @@
             android:name=".MaterialConversionActivity"
             android:exported="true" />
         <activity
+            android:name=".MaterialShowcaseActivity"
+            android:exported="true" />
+        <activity
             android:name=".ImprovementsActivity"
             android:exported="true" />
         <activity

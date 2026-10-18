@@ -22,7 +22,7 @@ kotlin {
             dependencies {
                 implementation(project(":liquidglass"))
                 implementation(project(":liquidglass-material3"))
-                implementation("org.jetbrains.compose.material:material-icons-core:1.7.3")
+                implementation(libs.compose.material.icons.core)
                 implementation(libs.compose.runtime)
                 implementation(libs.compose.foundation)
                 implementation(libs.compose.ui)

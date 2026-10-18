@@ -1,4 +1,4 @@
-package com.wexpa.liquidglass.sample.web
+package com.wexpa.liquidglass.sample
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
