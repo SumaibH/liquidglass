@@ -51,6 +51,9 @@ Phases, one PR each, suite and ports green each time, the owner reviews between 
   track. Showcase renders inspected and copied to review/atlas/material3-2026-10-18 and docs/assets.
   CI: new jobs material3 and gradle-plugin. Next: core suite on this branch, then commit + PR; catalogue
   renders (GlassMaterialCatalogueTest, not yet compiled); NavigationRail render still missing.
+- 18 Oct 22:10 regression: Phone replay (sxs/hold-script.txt, calm, desktop Skia) rendered with this branch
+  (91cc21c) against the pre-Phase-2 baseline 6121bb7 (.local/regress/old vs new): 121 frames compared, max
+  level difference 0 - pixel-identical. Phases 2-5 left the tab bar's motion and material unchanged.
    Follow-up (hybrid, desktop/web): glassEffect on skikoMain draws in place with
    `Canvas.saveLayer(SaveLayerRec(paddedRect, null, backdrop = graph))`, where graph =
    makeRuntimeShader(builder, ["content","wideContent"], [ground+shadow merged over the backdrop (null
