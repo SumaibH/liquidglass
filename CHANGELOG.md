@@ -5,6 +5,18 @@ This file records user-visible development changes. Published artifacts are iden
 
 ## Unreleased — Atlas stabilization
 
+### Added — iOS 27's rim (19 October)
+
+- `GlassStyle.outerContour` and `outerContourFloor` (new, opt-in, 0 by default): iOS 27's dark
+  contour, drawn outside the outline and strongest where the rim is unlit. The values are measured
+  on iOS 27's 44 pt buttons over white: 0.61 of the backdrop at the sides in a dark appearance,
+  0.31 in a light one, and zero at the lit poles (`docs/research/ios27-measurements-raw.md`).
+  Drawn by `glassEffect`; the Skia, .NET and npm ports carry the same shader.
+- Material 3 components use iOS 27's measured rim by default (`GlassMaterialDefaults.control`).
+  That means the contour, light straight overhead instead of 20 degrees left of it, and iOS 27's
+  chamfered edge highlight with its broad lobe (+65 levels in the outermost pixel, power 2.6). It also
+  means no dispersion. The core's `Glass.Regular` is unchanged.
+
 ### Changed — Material 3 panels are frosted; a new showcase (18 October)
 
 - `GlassMaterialDefaults.panel` (new): cards, dialogs, sheets, menus, snackbars and the search results

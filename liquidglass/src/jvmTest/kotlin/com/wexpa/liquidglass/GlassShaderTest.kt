@@ -38,7 +38,7 @@ class GlassShaderTest {
             "uFresnel", "uHiChroma", "uLegibility", "uCornerPower", "uTouch", "uTouchAmt",
             "uMaterialize", "uFrost", "uContrast", "uDebugCoverage", "uShapeKind", "uFieldRange", "uFieldScale", "uRefractDepth", "uBevel",
             "uLight", "uSpecular", "uSpecularPow", "uTint", "uTintMaskX", "uTintMaskY", "uInnerShadow", "uAdaptive",
-            "uPad", "uScale", "uFlip", "uCounterLight", "uEdgeLight", "uBevelPeak", "uEdgeShadow", "uCapEdgeShadow", "uRimSoft", "uTintAbsorb",
+            "uPad", "uScale", "uFlip", "uCounterLight", "uEdgeLight", "uBevelPeak", "uEdgeShadow", "uCapEdgeShadow", "uOuterContour", "uRimSoft", "uTintAbsorb",
             "uProfile", "uFormation", "uHeldLens", "uHeldMagnification", "uHeldGlow", "uRestMap", "uWideStrip", "uWideScale", "uFineShare", "uWideKernel", "uLift", "uLiftAdapt",
             "uFuse", "uFuseShape",
             "uBody", "uBodyY", "uBodyKind", "uPoseA", "uPoseAInv", "uPoseC", "uPoseD", "uEndpointAlpha", "uEdgeFold",
@@ -136,7 +136,7 @@ class GlassContainerShaderTest {
             "uSize", "uPad", "uBackdrop", "uBase", "uRect", "uRadius", "uCount", "uMerge",
             "uRefractBand", "uRefractDepth", "uAberration", "uIor", "uBevelPower", "uBlur",
             "uBevel", "uLight", "uSpecular", "uSpecularPow", "uFresnel", "uHiChroma", "uTint",
-            "uInnerShadow", "uAdaptive", "uCounterLight", "uEdgeLight", "uBevelPeak", "uEdgeShadow", "uRimSoft", "uTintAbsorb",
+            "uInnerShadow", "uAdaptive", "uCounterLight", "uEdgeLight", "uBevelPeak", "uEdgeShadow", "uOuterContour", "uRimSoft", "uTintAbsorb",
             "uProfile", "uFormation", "uHeldLens", "uRestMap", "uWideStrip", "uWideScale", "uFineShare", "uWideKernel", "uLift", "uLiftAdapt",
         )
 

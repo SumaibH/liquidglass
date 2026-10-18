@@ -105,7 +105,8 @@ and there is no line at all; in a dark appearance the same line shows on both si
 dark inner line: the profile decays smoothly into the interior. The in-app factory sets the
 `bevel`, `specular`, `edgeLight` and `highlightChroma` that reproduce that profile; shell roles
 carry their own (a Control Center tile's outermost pixels are *unlifted*, a dark contour, which
-is `edgeShadow`).
+is `edgeShadow`). iOS 27 adds a contour just *outside* the outline, strongest at the unlit sides;
+that is `outerContour`, opt-in, and the Material components use it.
 
 ## 6. Legibility, interaction, accessibility
 

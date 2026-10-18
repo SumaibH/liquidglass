@@ -58,6 +58,16 @@ Open: the CanvasKit painter binds the light as (0, -1) where `Glass.Regular` use
   emulator ([evidence](https://github.com/shayann07/liquidglass/blob/main/review/atlas/android-material3-2026-10-18/README.md)).
   The browser build runs (live demo, `#material3`).
 
+## iOS 27's rim (19 October)
+
+- `GlassStyle.outerContour` (new, opt-in): iOS 27's dark contour outside the outline, strongest at
+  the unlit sides, with measured values (0.61 dark, 0.31 light). The Material 3 components adopt it
+  with the measured overhead light and zero dispersion, which is an authored choice of measured
+  values. Core presets are unchanged and the core suite's tolerances still hold.
+- Evidence: [iOS 27 rim renders](https://github.com/shayann07/liquidglass/blob/main/review/atlas/ios27-rim-2026-10-19/README.md).
+  Lone elements and `GlassEffectContainer`'s merged shapes draw it. The tab bar's measured styles
+  keep their own cap contour and are unchanged.
+
 ## Glass quality pass (18 October)
 
 - Material 3 panels (cards, dialogs, sheets, menus, snackbars, the search results panel) are frosted

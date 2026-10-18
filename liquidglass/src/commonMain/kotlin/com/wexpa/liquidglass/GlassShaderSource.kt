@@ -83,6 +83,7 @@ uniform float   uEdgeLight;    // brightness of the outermost line relative to t
 uniform float   uBevelPeak;    // where in the bevel the highlight peaks: 0 at the edge (chamfer), 0.4 inside (bead)
 uniform float   uEdgeShadow;   // dark separating contour at the outermost pixel, 0..1
 uniform float   uCapEdgeShadow; // the contour times 1 + this x nx^2: darker where it faces sideways (GlassStyle.capEdgeShadow)
+uniform float2  uOuterContour;  // x: the dark contour outside the outline at the unlit sides, y: its share at the lit poles (GlassStyle.outerContour)
 uniform float   uRimSoft;      // px the compressed rim image is smeared along the normal
 uniform float   uTintAbsorb;   // 0 tint as a blend, 1 tint as an absorbing medium
 uniform float   uFresnel;      // Schlick rim reflectance gain
@@ -358,6 +359,13 @@ half3 toneMappedTint(half3 tint, float bgLuma, float adapt) {
     return clamp(shifted * half(value), half3(0.0), half3(1.0));
 }
 
+// The outer contour's opacity at a pixel [band] deep in its profile, for an outline normal [n]:
+// zero at the lit poles (or uOuterContour.y of the side value), full at the unlit sides.
+float outerContourAlpha(float2 n, float band) {
+    float side = pow(max(1.0 - abs(dot(n, uLight)), 0.0), 0.75);
+    return clamp(band * uOuterContour.x * mix(uOuterContour.y, 1.0, side), 0.0, 1.0);
+}
+
 half4 main(float2 coord) {
     // The panel is inset inside the padded backdrop.
     float2 local = coord - float2(uPad);
@@ -366,8 +374,17 @@ half4 main(float2 coord) {
 
     float d = sdShape(p, halfSize);
     float coverage = 1.0 - smoothstep(-0.75, 0.75, d);
+    // The contour outside the outline (GlassStyle.outerContour): about 1.5 px wide, centred
+    // 0.25 px outside, so the outermost wholly covered pixel is untouched, as measured.
+    float outerBand = (uOuterContour.x > 0.0) ? clamp(1.0 - abs(d - 0.25) / 0.75, 0.0, 1.0) : 0.0;
     if (coverage <= 0.0) {
-        return half4(0.0);
+        if (outerBand <= 0.0) return half4(0.0);
+        // Wholly outside: only the contour. Black at its opacity darkens what is behind it.
+        float oe = 1.0;
+        float2 og = float2(sdShape(p + float2(oe, 0.0), halfSize) - sdShape(p - float2(oe, 0.0), halfSize),
+            sdShape(p + float2(0.0, oe), halfSize) - sdShape(p - float2(0.0, oe), halfSize));
+        float2 on = og / max(length(og), 1e-5);
+        return half4(0.0, 0.0, 0.0, half(outerContourAlpha(on, outerBand)));
     }
     if (uDebugCoverage > 0.5) {
         // Padding/coordinate diagnostic (Astra round 7): the geometry, field, recording and draw-back path
@@ -797,6 +814,12 @@ half4 main(float2 coord) {
     // and the complete endpoint then replaced under one aperture coverage
     // (V3-MODEL section 8). Production mode is unchanged: B1 premultiplied by coverage.
     float outAlpha = (uEndpointAlpha > 0.5) ? 1.0 : coverage;
-    return half4(clamp(col, half3(0.0), half3(1.0)), 1.0) * half(outAlpha);
+    half4 result = half4(clamp(col, half3(0.0), half3(1.0)), 1.0) * half(outAlpha);
+    // Where the outline is partly covered, the contour fills the uncovered share (black, so only
+    // the alpha grows).
+    if (outerBand > 0.0 && uEndpointAlpha <= 0.5) {
+        result.a += half(outerContourAlpha(n, outerBand) * (1.0 - coverage));
+    }
+    return result;
 }
 """
