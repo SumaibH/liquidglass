@@ -13,8 +13,9 @@ This file records user-visible development changes. Published artifacts are iden
   0.31 in a light one, and zero at the lit poles (`docs/research/ios27-measurements-raw.md`).
   Drawn by `glassEffect`; the Skia, .NET and npm ports carry the same shader.
 - Material 3 components use iOS 27's measured rim by default (`GlassMaterialDefaults.control`).
-  That means the contour, light straight overhead instead of 20 degrees left of it, and no
-  dispersion. The core's `Glass.Regular` is unchanged.
+  That means the contour, light straight overhead instead of 20 degrees left of it, and iOS 27's
+  chamfered edge highlight with its broad lobe (+65 levels in the outermost pixel, power 2.6). It also
+  means no dispersion. The core's `Glass.Regular` is unchanged.
 
 ### Changed — Material 3 panels are frosted; a new showcase (18 October)
 

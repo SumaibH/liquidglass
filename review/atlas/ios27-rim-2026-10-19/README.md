@@ -21,6 +21,11 @@ fixes still open.
   - the contour at the measured strengths: 0.61 in a dark appearance, 0.31 in a light one, with a
     quarter of it left at the poles (`outerContourFloor` 0.25);
   - light straight overhead, `GlassLight(0f, -1f)`, measured at 0.0 ± 0.3 degrees;
+  - the edge highlight as iOS 27 measures it: a chamfer brightest in the outermost pixel
+    (`bevelPeak` 0, where the iOS 26 pill fit is a bead at 0.25), +65 levels there, halving 2.34-2.41 px
+    in (`specular` 0.27 over `bevel` 1.6 dp), with a broad lobe (`specularPower` 2.6, within the
+    measured best power of 2.3-2.8; half width about 40 degrees, where power 6 gave 27). The lit rim
+    now wraps further round each shape, as iOS's specular crescents do;
   - no dispersion. iOS 27 measures exactly zero, where `inApp` inherits the default 0.07.
 
   Using iOS 27's values for the Material layer is the authored choice. The values themselves are
@@ -35,7 +40,8 @@ fixes still open.
 (e06a580). Right: this branch. Crop of the + button, enlarged 3x without smoothing. In the
 after image the side contour is the one-pixel grey line; it reads 166 over a 204 backdrop at
 its first outside pixel, 0.19 removed, against the model's 0.21 there. The top and bottom edges
-are lit and the sides are not.*
+are lit and the sides are not. Over this light page the lit rim adds to near-white and clips at
+255, which is what additive white does over light content on iOS too.*
 
 ![Top controls: before (left), after (right)](controls-before-after.png)
 

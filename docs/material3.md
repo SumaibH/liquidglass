@@ -90,8 +90,9 @@ Every component takes a `glass` parameter (`Glass.Regular`, `Glass.Clear`, a tin
 and the search results panel; `SearchBar` takes it as `panelGlass`) default to
 `GlassMaterialDefaults.panel`: the same glass over a frosted backdrop, as iOS draws its sheets and
 alerts, so text behind a panel does not smear along its edge. All of it carries iOS 27's measured
-rim (`GlassMaterialDefaults.control`): a dark contour outside the outline at the unlit sides,
-light from straight above, and no colour fringes. Controls default to unblurred glass;
+rim (`GlassMaterialDefaults.control`): a bright chamfered edge whose highlight wraps round the
+shape from straight above and below, a dark contour outside the outline at the unlit sides, and no
+colour fringes. Controls default to unblurred glass;
 on a panel they take the panel's frost, because glass on glass samples the page under the panel. The bars and the navigation bar take
 `layout = GlassLayout.Material` to keep Material's own full-width layout, made of glass.
 
