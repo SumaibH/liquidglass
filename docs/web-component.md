@@ -93,6 +93,4 @@ the production shader does. The table is in the
 - The HTML engine does not reproduce the legibility term, dispersion, Clear's mirrored echo, inner
   shadow and Oklab highlight, or the press's backdrop swell; its rim is composited over the material
   rather than added.
-- The canvas engine's painter binds the light as (0, -1) where `Glass.Regular` uses (-0.35, -0.94);
-  this comes from the CanvasKit port and is open.
 - No physical-device or Safari check yet.

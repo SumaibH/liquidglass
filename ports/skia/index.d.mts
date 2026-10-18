@@ -30,6 +30,9 @@ export interface GlassMaterial {
   /** Surfaces only: Compose's `Glass.tint(color)`. Replaces the tint colour and opacity ([r, g, b, a],
    * sRGB 0..1, quantized to 8 bits as Compose's Color is); the dark appearance keeps its lift. */
   tint?: readonly [number, number, number, number] | null;
+  /** Toward the light, y up negative. Default Compose's GlassLight.Default [-0.35, -0.94]; [0, -1]
+   * is iOS 27's measured overhead light. */
+  light?: readonly [number, number];
 }
 export interface GlassFeedback {
   matrix: [number, number, number, number]; offset: [number, number];

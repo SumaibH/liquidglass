@@ -21,6 +21,10 @@ This file records user-visible development changes. Published artifacts are iden
   `GlassMaterialDefaults` glass (new `toolbar`), so they carry the iOS 27 rim like the rest.
 - Back dismisses glass dialogs, sheets, menus and tooltips (Compose's navigation-event dispatcher,
   as Android's `ComponentActivity` provides).
+- Ports: a surface binds Compose's `GlassLight.Default` (-0.35, -0.94), as `Glass.Regular` does, where
+  the CanvasKit and .NET painters bound (0, -1). `light` (Skia, npm) and `LightX`/`LightY` (.NET) choose
+  another, for example iOS 27's measured overhead light (0, -1). The canvas engine of `<liquid-glass>`
+  now lights as its HTML engine does.
 - `ModalBottomSheet` has a partially expanded stop: a sheet taller than half the window opens there
   (iOS's medium detent). Dragging settles at the nearest stop, and `hasPartiallyExpandedState` is new.
 

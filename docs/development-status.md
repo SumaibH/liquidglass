@@ -40,7 +40,7 @@ both engines in light and dark
 Firefox 157 and WebKit 27.2 (Playwright, headless) upgrade the element, select the frosted path and
 run the canvas engine, but their headless builds render no `backdrop-filter` blur at all, so the frosted
 look there is unverified. Not checked: Safari, mobile browsers, a physical device, comparison with iOS.
-Open: the CanvasKit painter binds the light as (0, -1) where `Glass.Regular` uses (-0.35, -0.94).
+The ports' surfaces bind `Glass.Regular`'s light, `GlassLight.Default` (-0.35, -0.94), with a `light` option (19 October).
 
 ## Material 3, the plugin and the BOM (18 October)
 
