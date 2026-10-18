@@ -150,7 +150,7 @@ export class LiquidGlassElement extends Base {
     this.#queries = {dark: media('(prefers-color-scheme: dark)'), reduced: media('(prefers-reduced-motion: reduce)'),
       contrast: media('(prefers-contrast: more)'), transparency: media('(prefers-reduced-transparency: reduce)')};
     for (const query of Object.values(this.#queries)) this.#listen(query, 'change', () => {
-      this.#motion?.setReducedMotion(!!this.#queries.reduced?.matches, now());
+      this.#syncReducedMotion();
       this.#schedule();
     });
     this.#listen(globalThis, 'resize', () => this.#schedule(), {passive: true});
@@ -409,7 +409,8 @@ export class LiquidGlassElement extends Base {
   #updateMotion(attrs, width, height, radius) {
     if (!attrs.interactive) { this.#motion = null; return; }
     if (!this.#motion) {
-      this.#motion = createCalmInteraction({width, height, radius, reducedMotion: !!this.#queries?.reduced?.matches});
+      this.#reducedMotion = !!this.#queries?.reduced?.matches;
+      this.#motion = createCalmInteraction({width, height, radius, reducedMotion: this.#reducedMotion});
       this.#motionSize = `${width}|${height}|${radius}`;
     } else if (this.#motionSize !== `${width}|${height}|${radius}`) {
       this.#motionSize = `${width}|${height}|${radius}`;
@@ -422,6 +423,7 @@ export class LiquidGlassElement extends Base {
     if (!this.interactive || this.#gesture || (event.pointerType === 'mouse' && event.button !== 0)) return;
     if (!this.#motion) this.#render();
     if (!this.#motion) return;
+    this.#syncReducedMotion();
     const gesture = {id: event.pointerId, x: event.clientX, y: event.clientY};
     this.#gesture = gesture;
     const move = e => {
@@ -449,6 +451,7 @@ export class LiquidGlassElement extends Base {
       if (event.repeat || this.#gesture) return;
       if (!this.#motion) this.#render();
       if (!this.#motion) return;
+      this.#syncReducedMotion();
       this.#gesture = {id: 'key', off() {}};
       this.#parts.highlight.style.setProperty('--lg-gx', '50%');
       this.#parts.highlight.style.setProperty('--lg-gy', '50%');
@@ -457,6 +460,16 @@ export class LiquidGlassElement extends Base {
       this.#animate();
     } else if (this.#gesture?.id === 'key') this.#endGesture();
   }
+
+  // The media query's change event can arrive after the next input, so a press reads it directly.
+  // Only a real change resets the motion, so a colour-scheme change or a re-press keeps its release.
+  #syncReducedMotion() {
+    const reduced = !!this.#queries?.reduced?.matches;
+    if (!this.#motion || reduced === this.#reducedMotion) return;
+    this.#reducedMotion = reduced;
+    this.#motion.setReducedMotion(reduced, now());
+  }
+  #reducedMotion = false;
 
   #endGesture() {
     if (!this.#gesture) return;
