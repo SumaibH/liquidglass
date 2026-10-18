@@ -7,6 +7,20 @@ This file records user-visible development changes. Published artifacts are iden
 
 ### Changed (18 October, the owner's device check)
 
+- `GlassStyle.capEdgeShadow` (new, default 0): the edge contour darkens by `1 + capEdgeShadow * nx^2`
+  where the outline faces sideways. Light `Calm()`'s bar uses 2: its rounded ends' outermost point reads
+  177-186 against iOS's 178-182 (was 236-241; left end 12 levels rms, was 45; IMG_7048 36.5 s). Ports
+  follow through the exported material.
+- The sample's search button: lift share 0.65 (was 0.6), scored on IMG_6756's search episodes with their
+  scripts re-inferred for the 0.2 drag gain: level 6.4 levels rms (7.1), the rise within 1-2 px of iOS's
+  (3-6 short). The ports' free-button default follows.
+- App Store scene: its drawn glyphs 1.12x about their centre and its labels SemiBold, closer to the
+  recording's icons (LOLL8185 43.9 s); layout unchanged. The band under the bar reads p50 / p75 68 / 80
+  against iOS's 69 / 80; its p90, on the icons' edges, moves from 133 to 236 against 207.
+- Atlas Studio: `-Patlas.windowSize=WxH` (dp) opens a window of that size instead of maximized. Wide
+  (1400 x 900) and narrow (420 x 880) captures on both GPUs are in
+  [review/atlas/desktop-2026-10-18](review/atlas/desktop-2026-10-18/README.md).
+
 - Ports (CanvasKit, .NET): everything from the device check that the ports draw. The held lens's rim band
   (`bodyBandScale`), light Calm's held-lens contact shadow, a held lens's neck to the free button
   (`lensFuse` / `AccessoryFuse.LensFuse`), and `itemFollow` / `ItemFollow` on the navigation state (items

@@ -88,7 +88,7 @@ public sealed class FreeButton
 
     public FreeButton(double size, double density = 1, double pressScale = 1.26, double pressGrowth = 8, double pressLift = .2,
         double pullFollow = .2, double pullElongation = .124, double pullWidthRatio = 1, double pullLimit = .5,
-        double pullLiftShare = .6, double pullReleaseDampingX = .3)
+        double pullLiftShare = .65, double pullReleaseDampingX = .3)
     {
         if (!(size > 0) || !(density > 0)) throw new ArgumentOutOfRangeException(nameof(size), "Positive size and density required");
         (this.size, radius, this.density) = (size, size / 2, density);

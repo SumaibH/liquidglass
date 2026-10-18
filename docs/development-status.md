@@ -189,7 +189,13 @@ trace was produced and no permission changes were made. See [performance](perfor
    calibration of the inferred lift moves it further.
 3. Performance on a wider range of devices (Pixel 7 at 90 Hz keeps the display rate: UI thread 6.9 ms,
    GPU 8.5 ms p50 per frame, 2-3% janky; `renderScale` barely changes it; the dark lens's wider raw blur
-   of 18 October adds 2 ms at GPU p90 and nothing at p50) and final wide/narrow Atlas visual acceptance.
+   of 18 October adds 2 ms at GPU p90 and nothing at p50). Atlas Studio wide (1400 x 900) and narrow
+   (420 x 880) windows were captured and inspected on both GPUs on 18 October
+   ([record](https://github.com/shayann07/liquidglass/blob/main/review/atlas/desktop-2026-10-18/README.md)): every scene intact, the
+   compact layout under 480 dp as designed; static redraw submission ~10 ms p50 on the NVIDIA RTX 3050 and
+   21-29 ms on Intel UHD, slower than the 11 October record (4.5 / 8.9 ms). A 14 October build times the same
+   as this one, so the 18 October changes did not cause it; its cause is not established. Owner visual
+   acceptance of the desktop windows is still open.
 4. Additional host integrations, with executable evidence.
 5. No release/tag is authorized.
 

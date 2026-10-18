@@ -100,7 +100,7 @@ fun PhoneScene(
     scroll: Float = 0f,
     // The search button presses and pulls off its place as iOS's does (GlassInteraction.Pullable is
     // fitted on this button's own episodes in IMG_6756); null keeps it passive, as before 15 October.
-    search: GlassInteraction? = GlassInteraction.Pullable.copy(pullShape = GlassPullShape.Free, pullLiftShare = 0.6f),
+    search: GlassInteraction? = GlassInteraction.Pullable.copy(pullShape = GlassPullShape.Free, pullLiftShare = 0.65f),
     // LiquidGlassState.renderScale: the glass layers recorded at this fraction of full resolution.
     renderScale: Float = 1f,
     // GlassTabBarAccessory.lensFusion: a held lens at the search end reaches the button through a neck.

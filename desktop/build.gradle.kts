@@ -45,6 +45,7 @@ compose.desktop {
             jvmArgs += "-Datlas.capture=$it"
         }
         providers.gradleProperty("atlas.scene").orNull?.let { jvmArgs += "-Datlas.scene=$it" }
+        providers.gradleProperty("atlas.windowSize").orNull?.let { jvmArgs += "-Datlas.windowSize=$it" }
         providers.gradleProperty("atlas.motionCapture").orNull?.let { jvmArgs += "-Datlas.motionCapture=$it" }
         providers.gradleProperty("atlas.motionReadback").orNull?.let { jvmArgs += "-Datlas.motionReadback=$it" }
         providers.gradleProperty("atlas.motionShortTaps").orNull?.let { jvmArgs += "-Datlas.motionShortTaps=$it" }

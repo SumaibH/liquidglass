@@ -55,6 +55,7 @@ class GlassSelectorPortMaterialTest {
         "uBlur" to listOf(s.blurRadius.value),
         "uCounterLight" to listOf(s.counterLight),
         "uEdgeShadow" to listOf(s.edgeShadow),
+        "uCapEdgeShadow" to listOf(s.capEdgeShadow),
         "uRimSoft" to listOf(s.rimSoftness.value),
         "uTintAbsorb" to listOf(s.tintAbsorption),
         "uEdgeLight" to listOf(s.edgeLight),

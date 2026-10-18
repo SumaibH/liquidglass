@@ -307,6 +307,14 @@ data class GlassStyle(
      */
     val edgeShadow: Float = 0f,
     /**
+     * Extra [edgeShadow] where the outline faces sideways: the contour darkens by
+     * `1 + capEdgeShadow * nx^2`, nx the outline normal's horizontal component, so a capsule's rounded
+     * ends read darker than its straight runs. Zero, the default, leaves the contour uniform. Light
+     * `GlassTabBarStyle.Calm()`'s bar uses 2: iOS's light tab bar reads 246 along its top and bottom
+     * and 178-182 at its ends' outermost point (IMG_7048 36.5 s); 2 gives 177-186 there (18 October).
+     */
+    val capEdgeShadow: Float = 0f,
+    /**
      * How far the compressed rim image is smeared along the surface normal.
      *
      * Where the rim compresses a hard boundary it lands as a single bright line, which reads as
