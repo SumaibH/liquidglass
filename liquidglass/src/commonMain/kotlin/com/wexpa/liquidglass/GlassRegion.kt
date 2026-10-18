@@ -118,6 +118,11 @@ fun Modifier.glassEffect(glass: Glass? = null, shape: Shape = CapsuleShape, link
     val withMorph = modifierLocalProvider(ModifierLocalGlassMorph) { morph }
     LocalGlassMembership.current?.let { return@composed withMorph.then(it.member(shape, morph)) }
     val region = LocalGlassRegion.current
+    if (region != null && LocalInGlassOverlay.current) {
+        // In the overlay (a dialog, a sheet, a tab bar's portal) nothing is recorded: draw in place.
+        return@composed withMorph.liquidGlass(region.stateFor(defaults), shape, style, resolved.light(defaults.dark),
+            interaction = if (resolved.isInteractive) resolved.interaction else null, link = link)
+    }
     if (region == null) {
         GlassWarnings.missingRoot()
         val density = LocalDensity.current
@@ -215,8 +220,11 @@ internal class GlassOverlayEntry(
 @Composable
 private fun GlassOverlay(region: GlassRegion, modifier: Modifier) {
     Box(modifier) {
-        for (entry in region.entries) key(entry) { OverlayGlass(region, entry) }
+        for (entry in region.entries) if (entry.link == null) key(entry) { OverlayGlass(region, entry) }
         for (portal in region.portals) key(portal) { PortalContent(region, portal) }
+        // A bar's linked accessory (the search button) draws over the bar's portal, whose neck reaches
+        // under it: drawn first, the bar's fused body would cover the accessory's icon.
+        for (entry in region.entries) if (entry.link != null) key(entry) { OverlayGlass(region, entry) }
     }
 }
 

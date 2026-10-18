@@ -1431,8 +1431,11 @@ internal fun decideDragEnd(
 ): Int? = if (!completed || !terminalUp || handoff) null else geometry.projected(lastIndex, releasedVelocity, flingVelocity)
 
 /** Selector state exposed through semantics, for the component's own tests; nothing reads it otherwise. */
+/** The test tag of a [GlassTabBar]'s gesture node, for UI tests that tap or drag the bar. */
+const val GlassTabBarTestTag: String = "GlassTabBarGestureNode"
+
 internal object GlassTabBarSemantics {
-    const val TAG = "GlassTabBarGestureNode"
+    const val TAG = GlassTabBarTestTag
     val SelectorX = SemanticsPropertyKey<Float>("GlassTabBarSelectorX")
     val Held = SemanticsPropertyKey<Boolean>("GlassTabBarHeld")
     val Dragging = SemanticsPropertyKey<Boolean>("GlassTabBarDragging")
