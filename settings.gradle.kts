@@ -33,6 +33,8 @@ plugins {
 
 // The library, and the app that shows it off. Only the first is published.
 include(":liquidglass")
+include(":liquidglass-material3")
+include(":liquidglass-bom")
 include(":sample")
 include(":desktop")
 include(":web")

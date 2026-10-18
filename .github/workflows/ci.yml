@@ -29,7 +29,8 @@ jobs:
           # forked PRs remain read-only and cannot populate our build cache through this job.
           cache-read-only: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name != github.repository }}
       - name: Build library, Android sample and desktop; run production renderer tests
-        run: ./gradlew build --stacktrace
+        # The Material 3 renders run in their own job (material3), in parallel.
+        run: ./gradlew build -x :liquidglass-material3:jvmTest --stacktrace
       - name: Upload test reports and rendered evidence
         if: always()
         uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7
@@ -41,6 +42,46 @@ jobs:
             **/build/test-results/**/TEST-*.xml
           if-no-files-found: ignore
           retention-days: 14
+  material3:
+    runs-on: ubuntu-24.04
+    # Nine phone-sized glass renders and interaction checks: about 12 min locally, 22 min on the
+    # first hosted run (39147674357).
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+      - uses: actions/setup-java@b843ebf9b913146b38da2eaa7aeddf76074ae1ad # v6
+        with:
+          distribution: temurin
+          java-version: 21
+      - uses: gradle/actions/setup-gradle@3f5f9adaf7d9fecd50b5935e54106014257a94e6 # v6
+        with:
+          cache-read-only: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name != github.repository }}
+      - name: Material 3 glass components (renders and interaction)
+        run: ./gradlew :liquidglass-material3:jvmTest --stacktrace
+      - name: Upload Material 3 renders
+        if: always()
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7
+        with:
+          name: material3-reports
+          path: |
+            liquidglass-material3/build/reports/**
+            liquidglass-material3/build/test-results/**/TEST-*.xml
+          if-no-files-found: ignore
+          retention-days: 14
+  gradle-plugin:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+      - uses: actions/setup-java@b843ebf9b913146b38da2eaa7aeddf76074ae1ad # v6
+        with:
+          distribution: temurin
+          java-version: 21
+      - uses: gradle/actions/setup-gradle@3f5f9adaf7d9fecd50b5935e54106014257a94e6 # v6
+        with:
+          cache-read-only: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name != github.repository }}
+      - name: Gradle plugin (codemod unit tests, TestKit builds)
+        run: ./gradlew -p gradle-plugin test --stacktrace
   dependency-review:
     if: github.event_name == 'pull_request'
     runs-on: ubuntu-24.04

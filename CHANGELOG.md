@@ -11,6 +11,36 @@ This file records user-visible development changes. Published artifacts are iden
   (.NET 10), at the library's version, with Source Link and symbols. CI packs both and checks their
   contents on Linux and Windows. Not published.
 
+### Added — `liquidglass-material3` (18 October, Phase 3)
+
+- A new artifact with Liquid Glass versions of the Material 3 components, with the same names and
+  parameters, iOS 26 shapes and motion, and the app's colour scheme: `Scaffold`, `NavigationBar` and
+  `NavigationBarItem` (iOS's floating tab bar with its lens, and an optional fused search button), the
+  top and bottom app bars, `NavigationRail`, every button, icon button and FAB, cards, chips, `Switch`
+  and `Slider` (thumbs that turn into glass lenses), segmented buttons and tab rows (iOS's segmented
+  control), `SearchBar`, `AlertDialog`, `ModalBottomSheet`, `DropdownMenu` and `Snackbar`. Every
+  component takes a `glass` parameter; the bars take `layout = GlassLayout.Material`.
+- `GlassOverlay { }` (new, core): composes content above everything under the theme, in the same
+  window, where glass draws in place. Dialogs, sheets and menus use it.
+- `GlassTabBarTestTag` (new, core): the tab bar's gesture node, for UI tests.
+- `liquidglass-bom` (new): one version for every artifact. Gradle plugin `dev.shayxo.liquidglass`
+  (new): adds the artifacts, and `./gradlew liquidGlassAdopt` switches an app's Material 3 imports to
+  the glass versions once (`--dry-run` to preview). Not published yet.
+- Live demo: `#material3` shows a Material 3 app built from `liquidglass-material3` beside Atlas Studio.
+
+### Changed (18 October)
+
+- `liquidglass-material3` depends on Material 3 `1.9.0`, the stable release Compose Multiplatform
+  1.12.1 pairs with, so it never pulls an alpha Compose into an app (the sample keeps its 1.13 alpha).
+
+### Fixed (18 October)
+
+- A tab bar's linked accessory (the search button) drew its glass but not its icon under
+  `LiquidGlassTheme`: the overlay drew it before the bar's portal. Linked accessories now draw after
+  portals, as `GlassTabBarAccessory` documents.
+- `liquidglass-material3`: checked multi-choice segments use `onPrimary` text on their tinted glass;
+  `Snackbar` is drawn by the library, without Material's surface shadow inside the glass.
+
 ### Changed — new public API (18 October, Phase 2)
 
 Breaking: the library now has one way in, named after SwiftUI's Liquid Glass API.

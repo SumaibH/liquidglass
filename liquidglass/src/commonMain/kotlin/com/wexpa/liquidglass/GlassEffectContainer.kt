@@ -5,6 +5,7 @@ import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.VectorConverter
 import androidx.compose.animation.core.spring
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalContext
 import androidx.compose.runtime.CompositionLocalProvider
@@ -192,6 +193,8 @@ internal class GlassPortalEntry {
     var locals: CompositionLocalContext? by mutableStateOf(null)
     var state: LiquidGlassState? by mutableStateOf(null)
     var content: @Composable (LiquidGlassState) -> Unit by mutableStateOf({})
+    /** Fill the theme's root instead of taking the call site's place (dialogs, sheets, menus). */
+    var fillRoot = false
 
     fun place(root: LayoutCoordinates?, coordinates: LayoutCoordinates) {
         if (root == null || !root.isAttached || !coordinates.isAttached) return
@@ -205,8 +208,14 @@ internal class GlassPortalEntry {
 internal fun PortalContent(region: GlassRegion, entry: GlassPortalEntry) {
     val locals = entry.locals ?: return
     CompositionLocalProvider(locals) {
+      // The overlay is not recorded, so glass composed here draws in place (see glassEffect).
+      CompositionLocalProvider(LocalInGlassOverlay provides true) {
         // Laid out over the whole overlay and placed where the call site is, so that touches reach it.
         Layout(content = { entry.content(entry.state ?: region.state) }) { measurables, overlay ->
+            if (entry.fillRoot) {
+                val all = measurables.map { it.measure(Constraints.fixed(overlay.maxWidth, overlay.maxHeight)) }
+                return@Layout layout(overlay.maxWidth, overlay.maxHeight) { all.forEach { it.place(0, 0) } }
+            }
             val placeables = measurables.map { it.measure(entry.constraints) }
             val w = placeables.maxOfOrNull { it.width } ?: 0
             val h = placeables.maxOfOrNull { it.height } ?: 0
@@ -214,5 +223,32 @@ internal fun PortalContent(region: GlassRegion, entry: GlassPortalEntry) {
             val p = entry.position
             layout(overlay.maxWidth, overlay.maxHeight) { placeables.forEach { it.place(p.x, p.y) } }
         }
+      }
+    }
+}
+
+/** Inside the theme's overlay: glass draws in place there, since nothing there is recorded. */
+internal val LocalInGlassOverlay = staticCompositionLocalOf { false }
+
+/**
+ * Composes [content] above everything under the [LiquidGlassTheme], filling its root: the place for a
+ * dialog, a sheet or a menu. Glass in it refracts the screen behind, in the same window, and stacks
+ * as it is composed (a scrim, then a glass panel, then its text). Without a theme the content is
+ * composed in place.
+ */
+@Composable
+fun GlassOverlay(content: @Composable androidx.compose.foundation.layout.BoxScope.() -> Unit) {
+    val region = LocalGlassRegion.current
+    if (region == null) {
+        Box(Modifier.fillMaxSize(), content = content)
+        return
+    }
+    val entry = remember(region) { GlassPortalEntry().also { it.fillRoot = true } }
+    entry.state = region.stateFor(LocalGlassDefaults.current)
+    entry.locals = currentCompositionLocalContext
+    entry.content = { Box(Modifier.fillMaxSize(), content = content) }
+    DisposableEffect(region, entry) {
+        region.portals += entry
+        onDispose { region.portals -= entry }
     }
 }
