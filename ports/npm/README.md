@@ -248,9 +248,6 @@ optional tint, and the shader does the rest.
 
 ## Open issues
 
-- **Canvas engine light direction.** The CanvasKit painter binds the light as (0, -1); Compose's
-  `Glass.Regular` uses `GlassLight.Default` (-0.35, -0.94). The painter's Kotlin parameter fixture does
-  not cover `uLight`. This is in `ports/skia`, unchanged here; the canvas engine inherits it.
 - No physical-device check; no Safari check; Firefox and WebKit as recorded in the review folder only.
 - The HTML engine re-renders the displacement map on resize (tens of milliseconds for a large card
   on first use); it does not animate shape changes smoothly.

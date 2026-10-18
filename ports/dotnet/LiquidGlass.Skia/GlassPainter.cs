@@ -3,8 +3,12 @@ using SkiaSharp;
 
 namespace LiquidGlass.Skia;
 
+/// <summary>A surface's options. <c>LightX</c>/<c>LightY</c> point toward the light (y up is negative):
+/// the default is Compose's <c>GlassLight.Default</c>, as <c>Glass.Regular</c> binds it; (0, -1) is
+/// iOS 27's measured overhead light.</summary>
 public sealed record GlassSurfaceOptions(bool Dark = false, float TintAmount = 50, float Density = 1,
-    float Materialize = 1, float ReducedTransparency = 0, float IncreasedContrast = 0);
+    float Materialize = 1, float ReducedTransparency = 0, float IncreasedContrast = 0,
+    float LightX = -.35f, float LightY = -.94f);
 
 /// <summary>Draw multiple glass surfaces over one borrowed opaque sRGB image on an SKCanvas.
 /// Coordinates are device pixels. The host owns input, layout, semantics and frame scheduling.</summary>
@@ -93,7 +97,8 @@ public sealed class GlassPainter : IDisposable
     private Dictionary<string, float[]> SurfaceUniforms(SKRect bounds, IReadOnlyList<float> radii, GlassSurfaceOptions o)
     {
         if (!float.IsFinite(o.Density) || o.Density <= 0 || !float.IsFinite(o.TintAmount) || o.TintAmount is < 0 or > 100 ||
-            new[] { o.Materialize, o.ReducedTransparency, o.IncreasedContrast }.Any(v => !float.IsFinite(v) || v is < 0 or > 1))
+            new[] { o.Materialize, o.ReducedTransparency, o.IncreasedContrast }.Any(v => !float.IsFinite(v) || v is < 0 or > 1) ||
+            !float.IsFinite(o.LightX) || !float.IsFinite(o.LightY))
             throw new ArgumentOutOfRangeException(nameof(o));
         var v = ClearUniforms(material, bounds.Width, bounds.Height, 2, 1);
         var r = radii.Select(x => Math.Min(x, Math.Min(bounds.Width, bounds.Height) / 2)).ToArray();
@@ -106,6 +111,7 @@ public sealed class GlassPainter : IDisposable
         Set(v, "uTint", tint, tint, tint, MathF.Round(Interpolate(o.Dark ? DarkOpacity : LightOpacity, o.TintAmount) * 255) / 255);
         Set(v, "uLift", o.Dark ? 35f / 255 : 0); Set(v, "uBevel", 1.33f * o.Density); Set(v, "uBevelPeak", .25f);
         Set(v, "uSpecular", .25f); Set(v, "uSpecularPow", 6); Set(v, "uEdgeLight", 0); Set(v, "uLegibility", .6f);
+        Set(v, "uLight", o.LightX, o.LightY);
         Set(v, "uScale", Math.Clamp((Math.Min(bounds.Width, bounds.Height) / o.Density - 56) / 264, 0, 1));
         Set(v, "uMaterialize", o.Materialize); Set(v, "uFrost", o.ReducedTransparency); Set(v, "uContrast", o.IncreasedContrast);
         return v;

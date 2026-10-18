@@ -40,7 +40,7 @@ both engines in light and dark
 Firefox 157 and WebKit 27.2 (Playwright, headless) upgrade the element, select the frosted path and
 run the canvas engine, but their headless builds render no `backdrop-filter` blur at all, so the frosted
 look there is unverified. Not checked: Safari, mobile browsers, a physical device, comparison with iOS.
-Open: the CanvasKit painter binds the light as (0, -1) where `Glass.Regular` uses (-0.35, -0.94).
+The ports' surfaces bind `Glass.Regular`'s light, `GlassLight.Default` (-0.35, -0.94), with a `light` option (19 October).
 
 ## Material 3, the plugin and the BOM (18 October)
 
@@ -57,6 +57,18 @@ Open: the CanvasKit painter binds the light as (0, -1) where `Glass.Regular` use
   content, at the same frame rate as the pre-Phase-2 build in a paired run, and on the Android 37.1
   emulator ([evidence](https://github.com/shayann07/liquidglass/blob/main/review/atlas/android-material3-2026-10-18/README.md)).
   The browser build runs (live demo, `#material3`).
+
+## Material 3 coverage (19 October)
+
+- Every Material 3 component with a container now has a glass version. New this pass: icon toggle
+  buttons, elevated chips, `RangeSlider`, `Surface`, tooltips, drawer sheets and items, the date and
+  time picker dialogs, and the leading-icon and scrollable tab rows. The codemod knows them all.
+- Two limits closed:
+  - Back dismisses the glass dialogs, sheets, menus and tooltips.
+  - `ModalBottomSheet` has its partially expanded stop (half the window).
+  - Both are covered by `GlassMaterialComponentsTest.backDismissesOverlaysAndATallSheetStopsHalfway`.
+- Evidence: [coverage renders](https://github.com/shayann07/liquidglass/blob/main/review/atlas/m3-coverage-2026-10-19/README.md),
+  and an interaction test for the toggle and the tooltip.
 
 ## iOS 27's rim (19 October)
 

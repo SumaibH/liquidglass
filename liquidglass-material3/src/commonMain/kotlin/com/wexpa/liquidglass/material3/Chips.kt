@@ -125,6 +125,51 @@ fun SuggestionChip(
         elevation = null, border = null, interactionSource = interactionSource)
 }
 
+/** Material 3's `ElevatedAssistChip`: glass carries its own depth, so it is [AssistChip]. */
+@Composable
+fun ElevatedAssistChip(
+    onClick: () -> Unit,
+    label: @Composable () -> Unit,
+    modifier: Modifier = Modifier,
+    enabled: Boolean = true,
+    leadingIcon: (@Composable () -> Unit)? = null,
+    trailingIcon: (@Composable () -> Unit)? = null,
+    shape: Shape = CapsuleShape,
+    glass: Glass = GlassMaterialDefaults.regular,
+    labelColor: Color = MaterialTheme.colorScheme.onSurface,
+    interactionSource: MutableInteractionSource? = null,
+) = AssistChip(onClick, label, modifier, enabled, leadingIcon, trailingIcon, shape, glass, labelColor, interactionSource)
+
+/** Material 3's `ElevatedFilterChip`: glass carries its own depth, so it is [FilterChip]. */
+@Composable
+fun ElevatedFilterChip(
+    selected: Boolean,
+    onClick: () -> Unit,
+    label: @Composable () -> Unit,
+    modifier: Modifier = Modifier,
+    enabled: Boolean = true,
+    leadingIcon: (@Composable () -> Unit)? = null,
+    trailingIcon: (@Composable () -> Unit)? = null,
+    shape: Shape = CapsuleShape,
+    glass: Glass = if (selected) GlassMaterialDefaults.prominent() else GlassMaterialDefaults.regular,
+    labelColor: Color = if (selected) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSurface,
+    interactionSource: MutableInteractionSource? = null,
+) = FilterChip(selected, onClick, label, modifier, enabled, leadingIcon, trailingIcon, shape, glass, labelColor, interactionSource)
+
+/** Material 3's `ElevatedSuggestionChip`: glass carries its own depth, so it is [SuggestionChip]. */
+@Composable
+fun ElevatedSuggestionChip(
+    onClick: () -> Unit,
+    label: @Composable () -> Unit,
+    modifier: Modifier = Modifier,
+    enabled: Boolean = true,
+    icon: (@Composable () -> Unit)? = null,
+    shape: Shape = CapsuleShape,
+    glass: Glass = GlassMaterialDefaults.regular,
+    labelColor: Color = MaterialTheme.colorScheme.onSurface,
+    interactionSource: MutableInteractionSource? = null,
+) = SuggestionChip(onClick, label, modifier, enabled, icon, shape, glass, labelColor, interactionSource)
+
 // ---- Snackbar --------------------------------------------------------------------------------------
 
 /**
@@ -214,7 +259,7 @@ private fun CloseGlyph() {
 @Composable
 fun NavigationRail(
     modifier: Modifier = Modifier,
-    glass: Glass = Glass.Toolbar,
+    glass: Glass = GlassMaterialDefaults.toolbar,
     contentColor: Color = MaterialTheme.colorScheme.onSurface,
     header: @Composable (ColumnScope.() -> Unit)? = null,
     windowInsets: WindowInsets = NavigationRailDefaults.windowInsets,

@@ -233,7 +233,9 @@ top-left, top-right, bottom-right, bottom-left order. Each is limited to the sha
 Options are `dark` (default false), `tintAmount` (0–100, default 50), `density` (positive, default 1),
 `materialize`, `reducedTransparency` and `increasedContrast` (each 0–1; defaults 1, 0, 0), and
 `tint` ([r, g, b, a], sRGB 0–1; default none): Compose's `Glass.tint(color)`, which replaces the tint
-colour and opacity (quantized to 8 bits, as Compose's Color is) and keeps the dark lift. The
+colour and opacity (quantized to 8 bits, as Compose's Color is) and keeps the dark lift. `light`
+([x, y], toward the light, y up negative) defaults to Compose's `GlassLight.Default` (-0.35, -0.94),
+as `Glass.Regular` binds it; [0, -1] is iOS 27's measured overhead light. The
 `<liquid-glass>` web component's canvas engine uses it ([ports/npm](../npm/README.md)).
 Geometry remains in device pixels; density scales the material's dp constants. Feed accessibility
 preferences from the host. Ordinary text stays outside the material draw, as in the browser example.

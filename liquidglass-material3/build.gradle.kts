@@ -33,6 +33,7 @@ kotlin {
             implementation(libs.compose.runtime)
             implementation(libs.compose.foundation)
             implementation(libs.compose.ui)
+            implementation(libs.navigationevent.compose)
         }
         // The tests use Material 3's own experimental components (TopAppBar), as apps do.
         jvmTest.get().languageSettings.optIn("androidx.compose.material3.ExperimentalMaterial3Api")
@@ -43,6 +44,7 @@ kotlin {
             implementation(compose.uiTest)
             // Icons for the showcase renders only (the last published material-icons-core).
             implementation(libs.compose.material.icons.core)
+            implementation(libs.navigationevent.compose)
         }
     }
 }

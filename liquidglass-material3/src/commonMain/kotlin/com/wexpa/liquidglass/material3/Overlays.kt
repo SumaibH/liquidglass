@@ -42,6 +42,7 @@ import com.wexpa.liquidglass.CapsuleShape
 import com.wexpa.liquidglass.Glass
 import com.wexpa.liquidglass.GlassOverlay
 import com.wexpa.liquidglass.glassEffect
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlin.math.roundToInt
 import androidx.compose.material3.DropdownMenuItem as M3DropdownMenuItem
@@ -103,6 +104,7 @@ fun BasicAlertDialog(
     properties: DialogProperties = DialogProperties(),
     content: @Composable () -> Unit,
 ) = GlassOverlay {
+    DismissOnBack(properties.dismissOnBackPress) { onDismissRequest() }
     Box(Modifier.fillMaxSize().background(Scrim).clickable(interactionSource = remember { MutableInteractionSource() },
         indication = null) { if (properties.dismissOnClickOutside) onDismissRequest() })
     Box(modifier.align(Alignment.Center).padding(24.dp)
@@ -121,25 +123,66 @@ class SheetState internal constructor(
     internal val skipPartiallyExpanded: Boolean,
     internal val confirmValueChange: (SheetValue) -> Boolean,
 ) {
+    /** 0 hidden, 1 fully expanded; the partially expanded stop lies at [partialProgress]. */
     internal val progress = Animatable(0f)
+
+    /**
+     * Where the partially expanded stop is, as [progress]: the sheet showing half the window, iOS's
+     * medium detent. 1 when the sheet is no taller than that (as in Material, the stop is then the
+     * expanded one). The sheet sets it once it has measured itself and the window.
+     */
+    internal var partialProgress by mutableFloatStateOf(1f)
+
+    /** Whether this sheet has a partially expanded stop distinct from the expanded one. */
+    val hasPartiallyExpandedState: Boolean get() = !skipPartiallyExpanded && partialProgress < .999f
+    val hasExpandedState: Boolean get() = true
+
     var targetValue by mutableStateOf(SheetValue.Hidden); private set
-    val currentValue: SheetValue get() = if (progress.value <= 0f) SheetValue.Hidden else SheetValue.Expanded
+    val currentValue: SheetValue get() = when {
+        progress.value <= 0f -> SheetValue.Hidden
+        hasPartiallyExpandedState && progress.value < (partialProgress + 1f) / 2f -> SheetValue.PartiallyExpanded
+        else -> SheetValue.Expanded
+    }
     val isVisible: Boolean get() = progress.value > 0f || targetValue != SheetValue.Hidden
 
-    suspend fun show() {
-        if (!confirmValueChange(SheetValue.Expanded)) return
-        targetValue = SheetValue.Expanded
-        progress.animateTo(1f, spring(dampingRatio = .85f, stiffness = 380f))
+    private suspend fun settle(value: SheetValue) {
+        if (!confirmValueChange(value)) return
+        targetValue = value
+        val to = when (value) {
+            SheetValue.Hidden -> 0f
+            SheetValue.PartiallyExpanded -> partialProgress
+            SheetValue.Expanded -> 1f
+        }
+        progress.animateTo(to, if (value == SheetValue.Hidden) spring(dampingRatio = 1f, stiffness = 500f)
+        else spring(dampingRatio = .85f, stiffness = 380f))
     }
 
-    suspend fun hide() {
-        if (!confirmValueChange(SheetValue.Hidden)) return
-        targetValue = SheetValue.Hidden
-        progress.animateTo(0f, spring(dampingRatio = 1f, stiffness = 500f))
+    /** Shows the sheet at its partially expanded stop, or expanded when it has none. */
+    suspend fun show() = settle(if (hasPartiallyExpandedState) SheetValue.PartiallyExpanded else SheetValue.Expanded)
+
+    suspend fun hide() = settle(SheetValue.Hidden)
+
+    suspend fun expand() = settle(SheetValue.Expanded)
+
+    /** Moves to the partially expanded stop. As in Material, a sheet that skips it cannot. */
+    suspend fun partialExpand() {
+        check(!skipPartiallyExpanded) { "This sheet skips the partially expanded state" }
+        settle(if (hasPartiallyExpandedState) SheetValue.PartiallyExpanded else SheetValue.Expanded)
     }
 
-    suspend fun expand() = show()
-    suspend fun partialExpand() = show()
+    /** Where a drag released at [velocity] (px/s, positive downward) comes to rest. */
+    internal fun restingValue(velocity: Float): SheetValue {
+        val p = progress.value
+        val partial = hasPartiallyExpandedState
+        return when {
+            velocity > 1200f -> if (partial && p > partialProgress + .02f) SheetValue.PartiallyExpanded else SheetValue.Hidden
+            velocity < -1200f -> SheetValue.Expanded
+            partial && p < partialProgress * .6f -> SheetValue.Hidden
+            !partial && p < .7f -> SheetValue.Hidden
+            partial && p < (partialProgress + 1f) / 2f -> SheetValue.PartiallyExpanded
+            else -> SheetValue.Expanded
+        }
+    }
 }
 
 /** A [SheetState] for a glass [ModalBottomSheet], as Material 3's `rememberModalBottomSheetState`. */
@@ -168,14 +211,27 @@ fun ModalBottomSheet(
     content: @Composable ColumnScope.() -> Unit,
 ) {
     val scope = rememberCoroutineScope()
-    LaunchedEffect(sheetState) { sheetState.show() }
-    var height by remember { mutableIntStateOf(1) }
+    var height by remember { mutableIntStateOf(0) }
+    var window by remember { mutableIntStateOf(0) }
+    // The partial stop shows half the window: the sheet's top at the window's middle. Set as soon
+    // as both are measured, before the sheet is first shown.
+    fun measured() {
+        if (height > 0 && window > 0) {
+            val partialOffset = (height - window / 2f).coerceAtLeast(0f)
+            sheetState.partialProgress = (1f - partialOffset / (height + 64f)).coerceIn(0f, 1f)
+        }
+    }
+    LaunchedEffect(sheetState) {
+        snapshotFlow { height > 0 && window > 0 }.first { it }
+        sheetState.show()
+    }
     val dismiss: () -> Unit = { scope.launch { sheetState.hide(); onDismissRequest() } }
     val drag = rememberDraggableState { delta ->
-        scope.launch { sheetState.progress.snapTo((sheetState.progress.value - delta / height).coerceIn(0f, 1f)) }
+        scope.launch { sheetState.progress.snapTo((sheetState.progress.value - delta / (height + 64f)).coerceIn(0f, 1f)) }
     }
     GlassOverlay {
-        Box(Modifier.fillMaxSize().graphicsLayer { alpha = sheetState.progress.value }.background(scrimColor)
+        DismissOnBack { dismiss() }
+        Box(Modifier.fillMaxSize().onSizeChanged { window = it.height; measured() }.graphicsLayer { alpha = sheetState.progress.value }.background(scrimColor)
             .clickable(interactionSource = remember { MutableInteractionSource() }, indication = null, onClick = dismiss))
         Column(
             modifier
@@ -184,10 +240,14 @@ fun ModalBottomSheet(
                 .fillMaxWidth()
                 .windowInsetsPadding(contentWindowInsets())
                 .padding(8.dp)
-                .onSizeChanged { height = it.height.coerceAtLeast(1) }
+                .onSizeChanged { height = it.height.coerceAtLeast(1); measured() }
                 .offset { IntOffset(0, ((1f - sheetState.progress.value) * (height + 64)).roundToInt()) }
                 .draggable(drag, Orientation.Vertical, onDragStopped = { velocity ->
-                    if (sheetState.progress.value < .7f || velocity > 1200f) dismiss() else sheetState.show()
+                    when (sheetState.restingValue(velocity)) {
+                        SheetValue.Hidden -> dismiss()
+                        SheetValue.PartiallyExpanded -> sheetState.partialExpand()
+                        SheetValue.Expanded -> sheetState.expand()
+                    }
                 })
                 .glassEffect(glass, shape)
                 .clickable(interactionSource = remember { MutableInteractionSource() }, indication = null) {}
@@ -227,6 +287,7 @@ fun DropdownMenu(
     val density = LocalDensity.current
     var origin by remember { mutableStateOf(androidx.compose.ui.geometry.Offset.Zero) }
     GlassOverlay {
+        DismissOnBack { onDismissRequest() }
         Box(Modifier.fillMaxSize().onGloballyPositioned { origin = it.positionInRoot() }
             .clickable(interactionSource = remember { MutableInteractionSource() }, indication = null, onClick = onDismissRequest))
         Column(

@@ -2,6 +2,7 @@ package com.wexpa.liquidglass.sample
 
 import com.wexpa.liquidglass.LiquidGlassTheme
 import com.wexpa.liquidglass.Glass
+import com.wexpa.liquidglass.GlassEffectContainer
 import com.wexpa.liquidglass.glassEffect
 import android.graphics.Color as AndroidColor
 import android.os.Bundle
@@ -232,9 +233,20 @@ private fun PathFixture(renderScale: Float, padPx: Float, target0: String) {
         for ((kind, x0, y0) in fixtureBoxes) {
             val w = if (kind == "fused_closed") FIXTURE_FUSED_W else FIXTURE_W
             val shape: Shape = if (kind == "closed" || kind == "fused_closed") RoundedCornerShape(px(FIXTURE_H / 2)) else PathCapsule()
-            // "fused_closed" no longer fuses: the raw GlassFuse left the public API with the explicit
-            // state (18 October); the tab bar fuses itself. It renders as a plain closed capsule.
-            Box(
+            if (kind == "fused_closed") {
+                // The capsule and its sibling FIXTURE_FUSE_GAP apart, fused by a GlassEffectContainer
+                // (the public route since the raw GlassFuse left the API on 18 October).
+                GlassEffectContainer(
+                    Modifier.offset(px(x0), px(y0)).size(px(FIXTURE_FUSED_W + FIXTURE_FUSE_GAP + FIXTURE_FUSE_SIB_W), px(FIXTURE_H)),
+                    spacing = px(FIXTURE_FUSE_GAP * 2), glass = Glass(base),
+                ) {
+                    Box(Modifier.fillMaxSize()) {
+                        Box(Modifier.size(px(w), px(FIXTURE_H)).glassEffect(Glass(base), shape))
+                        Box(Modifier.offset(px(w + FIXTURE_FUSE_GAP)).size(px(FIXTURE_FUSE_SIB_W), px(FIXTURE_H))
+                            .glassEffect(Glass(base), RoundedCornerShape(px(FIXTURE_H / 2))))
+                    }
+                }
+            } else Box(
                 modifier = Modifier.offset(px(x0), px(y0)).size(px(w), px(FIXTURE_H))
                     .glassEffect(Glass(if (kind == "held_path") held else base), shape),
             )

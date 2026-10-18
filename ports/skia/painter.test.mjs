@@ -47,6 +47,15 @@ test('in-app surface parameters agree with the actual Kotlin factory across both
   } finally {effects.dispose();}
 });
 
+test('a surface binds Compose GlassLight.Default unless given a light', () => {
+  const effects=compileGlassEffects(kit,sources);
+  try {
+    assert.deepEqual(inAppMaterialUniforms(effects,{width:240,height:80}).uLight,[-.35,-.94]);
+    assert.deepEqual(inAppMaterialUniforms(effects,{width:240,height:80,light:[0,-1]}).uLight,[0,-1]);
+    assert.throws(()=>inAppMaterialUniforms(effects,{width:240,height:80,light:[0]}),RangeError);
+  } finally {effects.dispose();}
+});
+
 test('tint replaces the in-app tint as Compose Glass.tint does, keeping the dark lift', () => {
   const effects=compileGlassEffects(kit,sources);
   try {

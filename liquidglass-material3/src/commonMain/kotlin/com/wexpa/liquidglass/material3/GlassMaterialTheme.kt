@@ -62,6 +62,13 @@ object GlassMaterialDefaults {
         else regular.tint(container.copy(alpha = (container.alpha * ProminentAlpha).coerceAtMost(ProminentAlpha)))
 
     /**
+     * A toolbar's or rail's material: the Photos toolbar's measured role ([GlassStyle.toolbar], the
+     * pill's material more opaque) with the same iOS 27 rim as [control].
+     */
+    val toolbar: Glass = Glass(Ios27Rim(GlassStyle.toolbar(dark = false), dark = false),
+        dark = Ios27Rim(GlassStyle.toolbar(dark = true), dark = true), light = Overhead)
+
+    /**
      * The frost under [panel]: 7.7 dp, measured on iOS's system backdrops (Control Center, App
      * Library, the Today view; [GlassStyle.backdropSigma]). Using it for in-app panels is authored.
      */
