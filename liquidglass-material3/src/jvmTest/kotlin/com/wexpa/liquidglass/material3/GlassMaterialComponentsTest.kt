@@ -172,7 +172,9 @@ class GlassMaterialComponentsTest {
         val lowest = bars.fetchSemanticsNodes().withIndex().maxBy { it.value.boundsInRoot.top }.index
         val bar = bars[lowest]
         bar.performTouchInput { val w = width / 3f; down(Offset(w * 2.5f, height / 2f)); advanceEventTime(60); up() }
-        waitForIdle()
+        // Wait for the selection, not for idle: on hosted runners the bar's settling lens kept the
+        // test from ever idling (CI runs 39147674357 and the next, 15 min each).
+        waitUntil(timeoutMillis = 120_000) { tab == 2 }
         assertEquals(2, tab, "a tap on the third tab did not select it")
     }
 
