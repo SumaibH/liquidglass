@@ -15,8 +15,8 @@ This file records user-visible development changes. Published artifacts are iden
 - `.github/scripts/set_version.py` sets the one version everywhere it is written down.
 - Rehearsed end to end on 19 October: a new desktop project applied `id("dev.shayxo.liquidglass")`
   from a local Maven repository, got `liquidglass` and `liquidglass-material3`, `liquidGlassAdopt`
-  switched its `Button` import to the glass one, and it compiled. Nothing has been published; npm and
-  NuGet need their tokens first ([publishing](docs/publishing.md)).
+  switched its `Button` import to the glass one, and it compiled. Nothing has been published. npm needs its token; NuGet uses
+  trusted publishing, with no stored key ([publishing](docs/publishing.md)).
 
 ### Added — Flutter (19 October)
 
