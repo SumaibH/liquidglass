@@ -67,4 +67,4 @@ code. [verification.json](verification.json) records this aggregation and source
 The earlier326-pass motion suite remains historical. No full iOS parity or owner acceptance is claimed.
 
 The remaining goal includes continuous optical agreement, all supplied gesture classes,
-platform integrations, Atlas quality and the other open items in [PROGRESS.md](../../../PROGRESS.md).
+platform integrations, Atlas quality and the other open items in [PROGRESS.md](../../../dev/PROGRESS.md).

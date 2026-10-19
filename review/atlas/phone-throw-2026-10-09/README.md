@@ -98,7 +98,7 @@ is inferred from comparisons with earlier uncontrolled runs. [Verification](veri
 preserves report totals, source hashes, inspection scope and limits.
 
 See [the live log](../../../research/analysis/MOTION-2026-10-08.md) for failed attempts and the
-[progress tracker](../../../PROGRESS.md) for current status. Native phase captures are separate
+[progress tracker](../../../dev/PROGRESS.md) for current status. Native phase captures are separate
 real-input replays; neither snapshots nor forced redraw times establish presented FPS.
 No physical device is available. Android assembly does not establish device parity.
 

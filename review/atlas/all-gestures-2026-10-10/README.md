@@ -30,5 +30,5 @@ and readback costs. Do not interpret them as presented FPS or an accepted input-
 
 [Verification](verification.json) contains test totals, source/frame hashes and limits.
 [Capture metadata](capture.json) identifies backend and initial layout. All 33 individual native
-crops are beside this file. Reproduce with the [workspace diagnostic](../../../WORKSPACE.md#native-motion-diagnostics),
-always using a new output directory. The broader goal stays active in [PROGRESS.md](../../../PROGRESS.md).
+crops are beside this file. Reproduce with the [workspace diagnostic](../../../dev/WORKSPACE.md#native-motion-diagnostics),
+always using a new output directory. The broader goal stays active in [PROGRESS.md](../../../dev/PROGRESS.md).

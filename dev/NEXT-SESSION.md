@@ -37,6 +37,10 @@ issues + Discussions for what this machine cannot verify, launch drafts (do not 
    README rewrite, docs/for/*.md landing pages, docs/overrides/main.html (OG/Twitter), social card
    docs/assets/social-card.png (owner: upload it as the GitHub social preview, Settings > General).
    Pages cert: domain removed 02:51 and re-added 10 min later to force a new ACME order.
+   Repo reorg (owner: "go hard"): apps/{sample,desktop,web} (settings.gradle.kts projectDir; Gradle
+   paths unchanged), dev/{NEXT-SESSION,TODO,PROGRESS,WORKSPACE}.md + dev/archive, tools/launch_desktop.bat.
+   Links rewritten (0 broken before/after); desktop, web and sample compile. Launch drafts:
+   drafts/launch-drafts.md in the session worktree (untracked, git-excluded; never posted).
 
 ## PRODUCT PLAN (18 Oct 2026, owner-approved) — read this first
 

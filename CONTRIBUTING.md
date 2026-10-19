@@ -6,7 +6,7 @@ Discuss broad API or renderer changes in an issue before implementing an incompa
 ## Development
 
 Use JDK 21 and Android SDK 37 (`ANDROID_HOME` or `local.properties`). The checked-in Gradle wrapper
-is the build entry point. On the owner's machine, follow [WORKSPACE.md](WORKSPACE.md) for the private
+is the build entry point. On the owner's machine, follow [WORKSPACE.md](dev/WORKSPACE.md) for the private
 Gradle/Maven directories. Do not commit caches, signing credentials, device identifiers or local paths.
 
 ```sh
@@ -68,8 +68,8 @@ must be obtained. Dependency bots propose changes; they do not approve or merge 
 
 Document changes as they happen, in the same checkpoint as the implementation. For every public
 API/behavior change, update its guide, support matrix, CHANGELOG and
-[development status/evidence map](docs/development-status.md). Keep [PROGRESS](PROGRESS.md),
-[TODO](TODO.md) and [NEXT-SESSION](NEXT-SESSION.md) useful for resuming without repeating work.
+[development status/evidence map](docs/development-status.md). Keep [PROGRESS](dev/PROGRESS.md),
+[TODO](dev/TODO.md) and [NEXT-SESSION](dev/NEXT-SESSION.md) useful for resuming without repeating work.
 
 Visible changes need inspected app-owned screenshots or plots under `review/`, embedded in the
 relevant guide with a short caption: exact revision/backend, input/capture method, what changed,

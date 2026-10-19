@@ -2,7 +2,7 @@
 
 Updated 2026-10-12. **Goal active: full 1:1 iOS parity is not established.**
 Read this first after an interruption. Detailed history lives in the
-[review](review/ATLAS-STABILIZATION.md) and [verification ledger](review/atlas/verification.json).
+[review](../review/ATLAS-STABILIZATION.md) and [verification ledger](../review/atlas/verification.json).
 
 ## Current state
 
@@ -17,7 +17,7 @@ requested a pause once these docs are published. NEXT-SESSION records the exact 
 real Panel/Label/TextBox/CheckBox content for the production painter. Native glyph updates,
 identity/refraction, resize, thread ownership and failed-capture retention pass. Known unsupported
 RichTextBox/ActiveX fail explicitly; custom control/Z-order limits remain. See the
-[native-control packet](review/atlas/dotnet-controls-2026-10-13/README.md). Alltenaf333fa checks
+[native-control packet](../review/atlas/dotnet-controls-2026-10-13/README.md). Alltenaf333fa checks
 pass; currentadapterhosted verification followspublication. This closes a concrete host path,
 not arbitrary-stack support. Return next to the original Video1 shape/optical mismatch.
 
@@ -25,7 +25,7 @@ not arbitrary-stack support. Return next to the original Video1 shape/optical mi
 material-only painter feedback and real WinForms card input now pass144portable trajectory
 states,107520outline points,12native check groups and9native phases. Labels/hit targets stay
 anchored; release/recovery/reduced-motion pixel checks pass. See the
-[native interaction packet](review/atlas/dotnet-calm-2026-10-13/README.md). FullP1 remains open:
+[native interaction packet](../review/atlas/dotnet-calm-2026-10-13/README.md). FullP1 remains open:
 navigation-selector travel, arbitrary-widget capture and additional native hosts are missing.
 Allten04d9016 hosted checks pass; this implementation's ownCI follows publication.
 
@@ -33,7 +33,7 @@ Allten04d9016 hosted checks pass; this implementation's ownCI follows publicatio
 344library passes27optional skips and3Atlas passes. The87ms first-input profile is inconclusive.
 Another natural33-phase replay passes with zero external input/focus changes. Presentation trace
 is unavailable because Windows denied ETW permission; no permission changes made. Renderer is
-unchanged. See the [diagnostic evidence](review/atlas/frame-cost-2026-10-13/README.md). Full A1
+unchanged. See the [diagnostic evidence](../review/atlas/frame-cost-2026-10-13/README.md). Full A1
 and selection reliability remain open; next independent implementation work is native.NET input.
 
 **13October usage-limit handoff:** sample-only performance instrumentation is uncommitted;
@@ -48,7 +48,7 @@ all371library cases (344pass/27optional skips),3Atlas cases andAndroidassembly. 
 native phases inspected; rest/recovery match the preceding wide-input renderer exactly.
 The original remaining-suite run had one V3gesture1minute timeout; same-source isolated retry
 passed27.451s at the unchanged deadline. The failure/retry and exact case inventory are retained.
-All local queues terminal. See the [long-tap proof](review/atlas/long-tap-appearance-2026-10-12/README.md)
+All local queues terminal. See the [long-tap proof](../review/atlas/long-tap-appearance-2026-10-12/README.md)
 and NEXT-SESSION.md. Finite colour agreement is calibrated on allthree episodes, not independent
 full-parity evidence. First-use redraw771ms, static wide-input cost and remaining TODOs stay open.
 The preceding ebc12d3 revision passed allten hosted contexts; newer revisions need their own CI.
@@ -76,13 +76,13 @@ assembled.** The interrupted run supplied322 recovered passes; the exact unfinis
 in a3m15s follow-up. The33-phase native replay and a separate10-phase adjacent-tap replay passed
 and were inspected, along with the static studio. All local queues are terminal. This verifies a
 checkpoint, not full iOS parity or owner acceptance. Read the
-[short-tap evidence and failure history](review/atlas/short-tap-timing-2026-10-10/README.md).
+[short-tap evidence and failure history](../review/atlas/short-tap-timing-2026-10-10/README.md).
 Previously completed full/native results below belong to the preceding runtime.
 
 **Optical defect now measured:** the same tap's selector interior reaches50–52 RGB levels on
 a51-level bar, while current shader probes give20–36 at the sampled formation strengths. The
 visible Contacts icon is79–80px versus a69px rest; the central shader test disk remains69–71px
-at those strengths and reaches78px at full strength. The [tap optical audit](review/atlas/tap-optics-audit-2026-10-11/README.md)
+at those strengths and reaches78px at full strength. The [tap optical audit](../review/atlas/tap-optics-audit-2026-10-11/README.md)
 records raw pixels, current shader output and limits. This establishes another remaining mismatch,
 not an accepted appearance. The separate appearance candidate below addresses part of this mismatch; unknown hidden backdrop prevents
 changing the earlier bar-lift calibration from these values alone.
@@ -90,7 +90,7 @@ changing the earlier bar-lift calibration from these values alone.
 **New local optical candidate:** a separate tap pigment/ink response improves the short sequence
 while retaining held-band strength and whole-bar behavior.36focused checks plus actual79×79px
 ink rendering pass; full local verification has338library passes/27optional skips and Android
-assembly. Three split Atlas checks pass. The [candidate packet](review/atlas/tap-optics-candidate-2026-10-11/README.md)
+assembly. Three split Atlas checks pass. The [candidate packet](../review/atlas/tap-optics-candidate-2026-10-11/README.md)
 also preserves the independent long-tap failure: late opacity still differs by up to23.55 RGB
 levels under nominal input. Native review also found an inherited vertical selector seam.
 The new wide-input correction removes it in native replays; its complete local regression inventory now passes.
@@ -102,9 +102,9 @@ The owner rejected the preceding dark-disc images; that visual sign-off remains 
 The corrected native images preserve the resting inset exactly and remove the dark exterior
 caps on both backgrounds. A thin glass rim remains during recovery.
 
-- [Material correction and rejected/current native images](review/atlas/inset-material-2026-10-10/README.md).
-- [Leading-edge motion calibration and remaining curvature error](review/atlas/phone-edge-2026-10-09/README.md).
-- [Consecutive source measurements in both directions](review/atlas/phone-landing-sequence-2026-10-09/README.md).
+- [Material correction and rejected/current native images](../review/atlas/inset-material-2026-10-10/README.md).
+- [Leading-edge motion calibration and remaining curvature error](../review/atlas/phone-edge-2026-10-09/README.md).
+- [Consecutive source measurements in both directions](../review/atlas/phone-landing-sequence-2026-10-09/README.md).
 - **329 library cases passed, 27 optional skips, zero remaining failures; both Atlas tests passed;
   Android assembled.** The full run initially failed one stale uniform inventory and an Android
   binding overload. Their targeted repair passed in 2m30s; unchanged renderer cases were reused.
@@ -118,10 +118,10 @@ caps on both backgrounds. A thin glass rim remains during recovery.
   **9545506** and font/notice correction **49c217f** are pushed. All ten required checks pass on
   **49c217f**, including all three CodeQL languages. CI build38s /
   Gradle17s, unchanged library and Atlas tests FROM-CACHE; source reports retained separately.
-- [Expanded native replay](review/atlas/all-gestures-2026-10-10/README.md):33 phases cover all eight
+- [Expanded native replay](../review/atlas/all-gestures-2026-10-10/README.md):33 phases cover all eight
   app-window boundaries, held reversals and middle landing/recovery; selection/layout checks and
   both Atlas tests pass. All images inspected. Concurrent capture/tests prohibit performance claims.
-- [Native .NET integration](review/atlas/dotnet-2026-10-10/README.md):painter, owned/borrowed backdrop
+- [Native .NET integration](../review/atlas/dotnet-2026-10-10/README.md):painter, owned/borrowed backdrop
   paths and runnable Windows Forms host. Ten native check groups pass; four JVM profiles match
   exactly. Host builds and app-owned drag/resize captures pass. Both Windows/Linux CI pass on49c217f;
   both artifacts inspected. Linux's initially blank labels are fixed by a font provider and
@@ -145,13 +145,13 @@ review packets and live research log rather than repeated here.
 
 The owner supplied `docs/1.MP4` (tap-only) and `docs/2.MP4` (hold, early/held throws, extremes and
 soft/hard landings). Both hashes and metadata are verified. Raw files stay local and are excluded
-from Git/MkDocs. **Read the [live research log](research/analysis/MOTION-2026-10-08.md) next.**
+from Git/MkDocs. **Read the [live research log](../research/analysis/MOTION-2026-10-08.md) next.**
 Every decoding step, uncertainty, measured episode and model change is to be recorded there as it
 happens. These labelled recordings supersede speculative gesture classification in older captures.
 
 ## Latest findings
 
-**New recordings:** [failing baseline packet](review/atlas/new-motion-2026-10-08/README.md) saved.
+**New recordings:** [failing baseline packet](../review/atlas/new-motion-2026-10-08/README.md) saved.
 Native RGB probes give long-tap396x159 and short-tap329x204 inside186px outer-bar geometry.
 The unchanged controller misses paired shape even across authored40..240ms touch alternatives.
 Tap-only is the owner's class, not a known finger duration. Full contour/timing fit remains open;
@@ -168,19 +168,19 @@ and a failed selection assertion. Static and motion diagnostics now use the plai
 with capture/pointer guards. The earlier122.8ms timing is provisional, not a proven renderer defect.
 Corrected snapshot/control/static runs all passed. Readback perturbs timing; neither submission
 durations nor phase screenshots establish presented FPS or native input latency.
-[Correction, rejected trace and inspected images](review/ATLAS-STABILIZATION.md#native-diagnostic-correction-isolate-redraw-from-playback).
+[Correction, rejected trace and inspected images](../review/ATLAS-STABILIZATION.md#native-diagnostic-correction-isolate-redraw-from-playback).
 
 **Held motion:** current model reaches original326×174 and314×142 paired shapes. Tap allocation is
 independent; all481 resting-tap samples retain the prior curve. Ordinary hold and selector off-axis
 ownership are unchanged. Additional IMG6727/6729 shape pairs pass the existing6px gate without
 retuning; IMG6728 width is unresolved because an icon contaminates the edge. These are spatial
 checks, not recovery of one original trajectory or full contour.
-[Additional original audit](review/ATLAS-STABILIZATION.md#additional-held-shapes-audit-the-frozen-model).
+[Additional original audit](../review/ATLAS-STABILIZATION.md#additional-held-shapes-audit-the-frozen-model).
 
 **Release provenance:** fresh exact-PTS LOLL8185 crops still contain a refracting Calls lens
 where the inherited E7 record labels trailing rest. Its314/367ms release attribution is withdrawn;
 the historical spring's source comment is corrected, without changing its value.
-[Original evidence and rejected assumption](review/ATLAS-STABILIZATION.md#release-attribution-the-assumed-rest-still-contains-a-lens).
+[Original evidence and rejected assumption](../review/ATLAS-STABILIZATION.md#release-attribution-the-assumed-rest-still-contains-a-lens).
 
 ## Requirements still open
 

@@ -13,7 +13,7 @@ timing still left a nearly opaque dark inset and too little selected-ink enlarge
 **Subsequent verification:** the JVM wide-strip correction changes the renderer and passes
 the corrected fail-first deferred-layer test and full native replay. Its complete local regression inventory is now verified (342pass,27optional skips;3Atlas pass).
 The full passes in this packet cover the preceding optical candidate, not that correction. See
-[the current handoff](../../../NEXT-SESSION.md) before reusing these results.
+[the current handoff](../../../dev/NEXT-SESSION.md) before reusing these results.
 
 The candidate gives coupled tap travel a separate appearance channel. Increasing projected area
 fades only the inset pigment and emphasizes selected ink about its own anchor. Held ownership,

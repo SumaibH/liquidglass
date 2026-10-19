@@ -6,11 +6,11 @@ against the evidence that produced it. Read this before moving files or changing
 
 ## Current workflow
 
-After an interruption or usage limit, read [NEXT-SESSION.md](NEXT-SESSION.md) and
-[TODO.md](TODO.md) before starting tests or changing source. They identify the current
+After an interruption or usage limit, read [NEXT-SESSION.md](dev/NEXT-SESSION.md) and
+[TODO.md](dev/TODO.md) before starting tests or changing source. They identify the current
 unverified experiment, completed checks and exact resume action; preserve all dirty work.
 
-Use [WORKSPACE.md](WORKSPACE.md). Atlas Studio lives in `desktop/` and shares the
+Use [WORKSPACE.md](dev/WORKSPACE.md). Atlas Studio lives in `apps/desktop/` and shares the
 Loupe screen with the Android sample. The old independent workspaces are retired;
 keep historical records as provenance and follow the single canonical workflow.
 
@@ -19,7 +19,11 @@ keep historical records as provenance and follow the single canonical workflow.
 | Path | What it is | Tracked? |
 | :-- | :-- | :-- |
 | `liquidglass/` | **the library module.** `src/commonMain` (Kotlin + SkSL shader sources), `src/androidMain` / `src/skikoMain` (the platform actuals; `skikoMain` is shared by desktop JVM and web Wasm), `src/jvmTest` (the render and behaviour suite) | yes |
-| `sample/` | the Android sample app, including the deterministic device fixtures | yes |
+| `liquidglass-material3/`, `liquidglass-bom/`, `gradle-plugin/` | glass Material 3 components, the BOM, the `dev.shayxo.liquidglass` Gradle plugin | yes |
+| `ports/` | the library on other stacks: `npm` (web component), `skia` (CanvasKit), `web`, `react-native`, `flutter`, `dotnet` (SkiaSharp, WinForms, WPF, Avalonia, MAUI) | yes |
+| `apps/` | the apps: `apps/sample` (Android sample, with the deterministic device fixtures), `apps/desktop` (Atlas Studio), `apps/web` (the Wasm demo). Gradle paths stay `:sample`, `:desktop`, `:web` | yes |
+| `dev/` | maintainer working notes: `NEXT-SESSION.md`, `TODO.md`, `PROGRESS.md`, `WORKSPACE.md`, and `archive/` (retired workflows) | yes |
+| `tools/` | maintainer scripts (`workspace.ps1`, `launch_desktop.bat`, probes and comparison tools) | yes |
 | `build.gradle.kts`, `settings.gradle.kts`, `gradle.properties`, `gradle/`, `gradlew*` | **build and dependencies.** Versions are declared in `gradle/libs.versions.toml`; coordinates and POM in `gradle.properties` (`GROUP`, `VERSION_NAME`) | yes |
 | `.github/` | CI: build, docs publish, and the tag-driven Maven Central release | yes |
 | `docs/` | **the published documentation site** (mkdocs, `strict: true`, deployed by CI). `docs/research/` holds the research *write-ups* that are meant to be read on the web | yes |
@@ -36,7 +40,7 @@ Never put capture material, APKs or frame dumps under `docs/` — mkdocs builds 
 
 The owner requires documentation on the go. Every meaningful API/behavior change must update
 its user guide, CHANGELOG, `docs/development-status.md`, and any affected README/support table
-in the same checkpoint. Update PROGRESS/TODO/NEXT-SESSION as work proceeds, including failures.
+in the same checkpoint. Update dev/PROGRESS, dev/TODO and dev/NEXT-SESSION as work proceeds, including failures.
 Do not postpone these until final delivery. This requirement also applies to future goal work.
 
 For visible changes, include inspected app-owned visual evidence under `review/`, with captions

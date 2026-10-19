@@ -3,7 +3,7 @@
 **Current index,13October2026:** [development status with visuals](../docs/development-status.md)
 maps all later corrections, integrations, verification and open limits. This record is chronological;
 an earlier baseline or failed candidate is not the current accepted checkpoint. See
-[PROGRESS](../PROGRESS.md) and [TODO](../TODO.md) for current scope.
+[PROGRESS](../dev/PROGRESS.md) and [TODO](../dev/TODO.md) for current scope.
 
 ## Plan and acceptance gates
 
@@ -898,8 +898,8 @@ through a deferred composition side effect was replaced by observation at the sa
 selection callback; images had already shown selection changing. No library behavior was patched
 to satisfy the playback. The separate desktop/Android regression run is recorded in the ledger.
 
-[Original PNGs, events and metadata](atlas/native-motion-2026-10-08/) are preserved together.
-[Reproduction commands](../WORKSPACE.md#native-motion-diagnostics) use only the private wrapper
+[Original PNGs, events and metadata](atlas/native-motion-2026-10-08) are preserved together.
+[Reproduction commands](../dev/WORKSPACE.md#native-motion-diagnostics) use only the private wrapper
 and application-owned capture mode. The [plotter](../tools/plot_native_motion.py) needs Pillow.
 
 ### Native diagnostic correction: isolate redraw from playback
@@ -934,7 +934,7 @@ is not visible frame time.** These are independent native snapshots, not a prese
 The [corrected static Atlas screenshot](atlas/native-motion-swing-2026-10-08/static.png) was also
 inspected at 1920×1051 Direct3D. Its 120 submissions after ten warmups measured 15.781ms median,
 18.9464ms p95 and 23.9217ms maximum. This verifies the corrected capture path, not interactive FPS.
-CSV, metadata, all images and static timing are kept in the [corrected evidence directory](atlas/native-motion-swing-2026-10-08/).
+CSV, metadata, all images and static timing are kept in the [corrected evidence directory](atlas/native-motion-swing-2026-10-08).
 
 The preceding playback implementation **078357d** passed all seven required hosted checks in
 [run 37812243775](https://github.com/shayann07/liquidglass/actions/runs/37812243775). Library tests

@@ -90,7 +90,7 @@ It is not relabelled as an uninterrupted green run.
 All **three Atlas tests pass**, and **Android assembly succeeds** for the changed source.
 The Atlas/Android completion command took 6m12s. Exact case coverage, source hashes and failure
 provenance are retained in [verification](verification.json) and the local recovery archive.
-The [current handoff](../../../NEXT-SESSION.md) identifies subsequent work; earlier 342-pass
+The [current handoff](../../../dev/NEXT-SESSION.md) identifies subsequent work; earlier 342-pass
 results still belong to the preceding source.
 
 Matching finite interior patches does not prove complete shape, selected glyphs, rim transport,

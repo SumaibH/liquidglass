@@ -263,8 +263,8 @@ tap optics by the change above.
 | Contact shadow inside the backdrop at `renderScale` below 1 (fixed 17 October) | [Performance guide](performance.md#rendering-at-reduced-resolution), `GlassContactShadowScaleTest` |
 
 These links are pinned to a published source checkpoint so the evidence remains reproducible.
-For later status, follow the repository's [progress](https://github.com/shayann07/liquidglass/blob/main/PROGRESS.md)
-and [full checklist](https://github.com/shayann07/liquidglass/blob/main/TODO.md).
+For later status, follow the repository's [progress](https://github.com/shayann07/liquidglass/blob/main/dev/PROGRESS.md)
+and [full checklist](https://github.com/shayann07/liquidglass/blob/main/dev/TODO.md).
 
 ## Native .NET interaction and controls
 

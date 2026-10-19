@@ -5,6 +5,13 @@ A version heading means that version is published; anything above the newest one
 
 ## Unreleased
 
+### Changed — repository layout (20 October)
+
+- The apps moved under `apps/` (`apps/sample`, `apps/desktop`, `apps/web`); their Gradle paths are
+  unchanged (`:sample`, `:desktop`, `:web`). Maintainer notes moved under `dev/` (`NEXT-SESSION.md`,
+  `TODO.md`, `PROGRESS.md`, `WORKSPACE.md`, `archive/`), and `launch_desktop.bat` under `tools/`. Every
+  link was rewritten; records written before this date use the old paths.
+
 ### Documentation — every stack, discoverable (20 October)
 
 - New positioning: **Liquid Glass for every stack, measured against iOS.** The README is rewritten

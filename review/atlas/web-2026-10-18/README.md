@@ -8,7 +8,7 @@ same production shaders. Nothing in the optics changed.
 apps (`sample/src/main/kotlin/shared`).
 
 ```sh
-./gradlew :web:wasmJsBrowserDistribution   # web/build/dist/wasmJs/productionExecutable
+./gradlew :web:wasmJsBrowserDistribution   # apps/web/build/dist/wasmJs/productionExecutable (web/ before 20 Oct 2026)
 ./gradlew :web:wasmJsBrowserDevelopmentRun # dev server
 ```
 

@@ -43,7 +43,7 @@ cases passing and Android assembly successful.330completed cases were recovered 
 interrupted run,4unchanged bounds cases reused, and8required cases completed in a targeted
 follow-up. Original failed/interrupted evidence is retained. The independent long-tap appearance error remains open: this repair does
 not establish full iOS parity.
-See [the live progress](../../../PROGRESS.md) and [resume instructions](../../../NEXT-SESSION.md).
+See [the live progress](../../../dev/PROGRESS.md) and [resume instructions](../../../dev/NEXT-SESSION.md).
 
 ![Full native gesture replay](native-full.png)
 

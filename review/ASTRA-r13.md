@@ -88,8 +88,8 @@ no modifications to competitors' working trees or indexes. Those snapshots were 
 | Approach | Library | Vitals |
 | --- | --- | --- |
 | Astra selected | [main](https://github.com/shayann07/liquidglass/tree/main) | [main](https://github.com/shayann07/Vitals/tree/main) |
-| Fable | [preserved](https://github.com/shayann07/liquidglass/blob/main/archive/retired-workflows/2026-10-03/README.md) | [preserved](https://github.com/shayann07/Vitals/blob/main/archive/retired-workflows/2026-10-03/README.md) |
-| Antigravity | [preserved](https://github.com/shayann07/liquidglass/blob/main/archive/retired-workflows/2026-10-03/README.md) | [preserved](https://github.com/shayann07/Vitals/blob/main/archive/retired-workflows/2026-10-03/README.md) |
+| Fable | [preserved](https://github.com/shayann07/liquidglass/blob/main/dev/archive/retired-workflows/2026-10-03/README.md) | [preserved](https://github.com/shayann07/Vitals/blob/main/archive/retired-workflows/2026-10-03/README.md) |
+| Antigravity | [preserved](https://github.com/shayann07/liquidglass/blob/main/dev/archive/retired-workflows/2026-10-03/README.md) | [preserved](https://github.com/shayann07/Vitals/blob/main/archive/retired-workflows/2026-10-03/README.md) |
 
 Fable's retained directional lighting motivated renewed original-rim checks. Antigravity's signed
 reversal concern was assessed rather than importing its preset wholesale. Sam Asante's MIT web

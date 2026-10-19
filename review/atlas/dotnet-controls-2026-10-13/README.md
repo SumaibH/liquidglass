@@ -41,4 +41,4 @@ content contract; wide-gamut/HDR equivalence is not established.
 CPU bitmap capture is for content/layout updates, not every glass-animation frame. There is no
 GPU/display-latency claim. Other native stacks and navigation-selector motion remain open;
 this does not complete the any-stack or fulliOS-parity goal. See [usage](../../../ports/dotnet/README.md)
-and the complete [TODO](../../../TODO.md).
+and the complete [TODO](../../../dev/TODO.md).

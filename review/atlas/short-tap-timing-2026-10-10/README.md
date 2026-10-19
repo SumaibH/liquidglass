@@ -97,7 +97,7 @@ Requires NumPy/Pillow for measurement, Matplotlib for comparison and SciPy for t
 The baseline belongs to e597b59, before the new rate. Regenerating a trace from newer code produces
 a candidate, not that baseline. These are partial optical edge tracks and controller geometry,
 not matched rendered refraction/colour, a complete gesture, presented-frame performance or a
-physical-device test. Follow [PROGRESS](../../../PROGRESS.md) and the live log for current acceptance.
+physical-device test. Follow [PROGRESS](../../../dev/PROGRESS.md) and the live log for current acceptance.
 
 ## Completed verification and native inspection
 

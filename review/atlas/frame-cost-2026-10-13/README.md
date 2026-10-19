@@ -101,4 +101,4 @@ cases, with Android/desktop build success. This is regression evidence, not full
 
 Next: establish ordinary input/presentation timing and explain the intermittent selection
 failure. The complete motion, optical, integration and visual-acceptance scope remains in
-[TODO.md](../../../TODO.md).
+[TODO.md](../../../dev/TODO.md).

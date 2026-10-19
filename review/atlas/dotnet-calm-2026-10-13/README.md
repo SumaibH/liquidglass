@@ -44,6 +44,6 @@ This adds practical native **whole-surface** interaction. Navigation-selector tr
 native-widget backdrop capture, portable refracted foreground and additional host frameworks
 remain incomplete. Windows Forms uses CPU Skia; these deterministic snapshots do not establish
 GPU performance, presented FPS, owner acceptance or full1:1iOS optics/motion. The complete goal
-remains in [TODO.md](../../../TODO.md).
+remains in [TODO.md](../../../dev/TODO.md).
 
 Reproduce the checks and host capture using [the .NET guide](../../../ports/dotnet/README.md).

@@ -34,9 +34,9 @@ publishing and consuming. Keep Vitals' version catalog aligned with the library'
 
 ## Atlas Studio
 
-`launch_desktop.bat` starts `:desktop:run` through the shared wrapper. Its JVM
+`tools/launch_desktop.bat` starts `:desktop:run` through the shared wrapper. Its JVM
 window calls `LoupeScreen`, shared with Android under
-`sample/src/main/kotlin/shared/`. At 1000dp and wider it adds a composition catalog.
+`apps/sample/src/main/kotlin/shared/`. At 1000dp and wider it adds a composition catalog.
 The canvas demonstrates sky, type and line-grid backdrops with a movable continuous lens,
 anchored note card and calm navigation. Narrower windows reflow the same controls.
 The sky is illustrative; this is a material demo, not a live astronomy instrument.
@@ -47,7 +47,7 @@ per-process adapter preference, without changing Windows-wide graphics settings 
 rendering policy. Startup prints `ATLAS_RENDERER` with the actual selected video card; capture
 metadata records it too. Check that adapter name rather than assuming the requested preference
 was honored. On the owner's hybrid machine, automatic selection used Intel UHD while discrete
-selected the NVIDIA RTX3050Laptop6GB. See [the GPU diagnostic](review/atlas/gpu-2026-10-11/README.md)
+selected the NVIDIA RTX3050Laptop6GB. See [the GPU diagnostic](../review/atlas/gpu-2026-10-11/README.md)
 for the paired static-scene results and their limits.
 
 The library preserves earlier Astra/Claude/Fable work in historical presets and history.
@@ -106,7 +106,7 @@ during gestures and adds `frames.csv` plus an own-component input/focus trace in
 `input-observed.csv`. Initial layout stabilization still redraws before measurements. Callbacks
 measure Compose picture recording, not GPU/display presentation; unchanged input may need no
 new callback. Phase capture rows are markers in this mode. Read `checksPassed` and keep any
-failed trace. See the [frame-cost investigation](review/atlas/frame-cost-2026-10-13/README.md).
+failed trace. See the [frame-cost investigation](../review/atlas/frame-cost-2026-10-13/README.md).
 
 ## Recovery and local evidence
 
