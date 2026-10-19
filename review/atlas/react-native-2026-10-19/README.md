@@ -10,6 +10,25 @@ through a small adapter that lets the CanvasKit painter run on React Native Skia
 is an image drawn in Skia. `GlassLens` (magnification 1.5), and `GlassSurface` light with the overhead
 light and dark with the default light, are the components an app puts in a `<Canvas>`.*
 
+## On Android (emulator)
+
+![Left: the first build on the emulator, the lens only and black inside it; right: after the fix, the lens, a light surface and a dark bar](react-native-emulator.png)
+
+*Our capture: the demo app (React Native 0.87.1, React Native Skia 2.14.0, release build) on the
+Android 17 emulator (`lg_verify_37`, x86_64, 1080 × 2400), `adb exec-out screencap`, scaled to 40%.
+The page is ordinary React Native views captured with `makeImageFromView`; labels are React Native
+`Text` above the canvas. Left: the first build. Right: after the fix.*
+
+![The light surface at full resolution: the colour bands frosted and refracted at the rim](react-native-surface-crop.png)
+
+The first device run found two things the headless checks could not:
+
+- **The surfaces drew nothing.** The painter's offscreen buffer (the wide tone kernel) came from a GPU
+  surface made on the JS thread. A picture replayed on React Native Skia's render thread cannot draw
+  that texture. The adapter now makes raster surfaces.
+- **Black inside the lens.** The captured view was transparent where the page drew nothing, and the
+  painter expects an opaque source. The demo now gives the page a background, and the README says so.
+
 ## Checks (`npm test`)
 
 - Two surfaces and a lens drawn through the adapter equal the same glass drawn by the painter on
@@ -21,7 +40,7 @@ light and dark with the default light, are the components an app puts in a `<Can
 
 ## Limits
 
-- Not yet run on a phone. React Native Skia's native Android implementation takes the same calls, but
-  that is unconfirmed here.
+- An emulator, not a phone. Pixel-level equality with CanvasKit is checked headlessly only; on the
+  emulator the result is inspected by eye.
 - The backdrop is a snapshot (`makeImageFromView`, or an image drawn in the canvas). No live view
   capture and no touch response yet.
