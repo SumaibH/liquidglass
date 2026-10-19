@@ -60,11 +60,12 @@ never its detail.
 - the widget lays out and paints where shader filters are unavailable.
 
 CI runs this on Linux. The example app runs on the Android 17 emulator on Impeller's OpenGL ES
-backend; Vulkan, which most phones use, is not checked yet. See the
+backend, and on a Pixel 7 on Impeller's Vulkan backend, which most phones use. See the
 [evidence](https://github.com/shayann07/liquidglass/blob/main/review/atlas/flutter-2026-10-19/README.md).
 
 ## Limits
 
 - Rounded rectangles only. There is no lens or navigation bar yet, and no touch response.
 - The wide tone kernel is approximated (above).
-- Impeller only, and checked on OpenGL ES (emulator) so far.
+- Impeller only, checked on one phone (Pixel 7, Vulkan) and the emulator (OpenGL ES). Frame timing
+  is not measured yet.

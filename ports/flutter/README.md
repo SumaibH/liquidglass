@@ -68,7 +68,7 @@ loads, glass draws the stand-in.
   - the generated shader compiles with Flutter's shader compiler and loads;
   - the Dart uniforms equal the CanvasKit port's, to 1e-6, for three surfaces;
   - the widget lays out and paints without Impeller.
-- On the Android 17 emulator, the example (`example/`) runs the material on Impeller's OpenGL ES
-  backend; Vulkan is not checked yet. See [the evidence](../../review/atlas/flutter-2026-10-19/README.md).
+- The example (`example/`) runs the material on a Pixel 7 on Impeller's Vulkan backend, and on the
+  Android 17 emulator on its OpenGL ES backend. See [the evidence](../../review/atlas/flutter-2026-10-19/README.md).
 
 Apache-2.0.
