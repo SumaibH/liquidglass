@@ -8,8 +8,8 @@ This file records user-visible development changes. Published artifacts are iden
 ### Added — one tag publishes everything (19 October)
 
 - The release workflow publishes every artifact from one tag: the library, Material 3, the BOM and,
-  new, the Gradle plugin `dev.shayxo.liquidglass` on Maven Central; the `liquidglass` web component on
-  npm (with provenance); the four NuGet packages; and a GitHub release. It refuses before uploading
+  new, the Gradle plugin `dev.shayxo.liquidglass` on Maven Central; the `liquidglass` web component and
+  `liquidglass-react-native` on npm (with provenance); the four NuGet packages; and a GitHub release. It refuses before uploading
   unless the tag matches the version, the commit is on `main` and passed CI, and the release notes
   exist. Pull requests that touch the release files run it as a dry run.
 - `.github/scripts/set_version.py` sets the one version everywhere it is written down.
