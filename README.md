@@ -17,7 +17,7 @@ and the web.
 </p>
 <p align="center"><sub>Rendered by the library (desktop Skia, deterministic 60 fps replay of a tap, a hold and a throw; shown at 30 fps).</sub></p>
 
-> **Status.** `0.2.1` is on Maven Central, npm and NuGet. Motion and material are compared against iOS 26 recordings and are close but **not yet
+> **Status.** `0.2.2` is on Maven Central, npm and NuGet. Motion and material are compared against iOS 26 recordings and are close but **not yet
 > identical**; the [remaining differences](review/atlas/reference-replay-2026-10-13/README.md#remaining-differences)
 > are listed openly.
 
@@ -74,7 +74,7 @@ GlassTabBar(itemCount = 3, selectedIndex = selected, onSelected = { selected = i
 ## Install
 
 ```kotlin
-plugins { id("dev.shayxo.liquidglass") version "0.2.1" }   // adds the right artifacts
+plugins { id("dev.shayxo.liquidglass") version "0.2.2" }   // adds the right artifacts
 ```
 
 or the BOM, or plain artifacts (`dev.shayxo.liquidglass:liquidglass`, `:liquidglass-material3`) —

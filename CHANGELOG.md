@@ -3,6 +3,12 @@
 This file records user-visible development changes. Published artifacts are identified separately;
 A version heading means that version is published; anything above the newest one is on `main` only.
 
+## 0.2.2 (2026-10-20)
+
+0.2.1 with npm on [trusted publishing](https://docs.npmjs.com/trusted-publishers): the npm packages are
+published through the workflow's GitHub identity, and no npm token is stored. The library is
+unchanged. Release notes: [.github/release-notes/v0.2.2.md](.github/release-notes/v0.2.2.md).
+
 ## 0.2.1 (2026-10-20)
 
 0.2.0's code on every registry: Maven Central (`liquidglass`, `liquidglass-material3`,

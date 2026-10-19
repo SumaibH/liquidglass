@@ -1,6 +1,6 @@
 # Development status and visual guide
 
-Updated **20 October 2026**. This describes 0.2.1 (0.2.0's code on every registry) and `main`.
+Updated **20 October 2026**. This describes 0.2.2 (0.2.0's code, on every registry since 0.2.1) and `main`.
 Full iOS parity, final owner acceptance and arbitrary-stack support are not established. Historical
 research remains available; this page identifies which later changes supersede its implementation.
 

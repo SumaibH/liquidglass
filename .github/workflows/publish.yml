@@ -154,12 +154,11 @@ jobs:
           npm pkg delete private
           npm pack --dry-run
       - name: Publish
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
         run: |
           tag=latest; case "$VERSION" in *-*) tag=next;; esac
           if [ "$DRY_RUN" = true ]; then npm publish --dry-run --tag "$tag"; exit 0; fi
-          # Trusted publishing (OIDC) once the package trusts this workflow; NPM_TOKEN until then.
+          # Trusted publishing: npm exchanges the run's OIDC token (id-token: write) for a one-time
+          # credential. The package trusts publish.yml in this repository; no token is stored.
           if npm view "@shayxo.dev/liquidglass@$VERSION" version >/dev/null 2>&1; then echo "already on npm"; exit 0; fi
           npm publish --provenance --access public --tag "$tag"
 
@@ -192,12 +191,11 @@ jobs:
           npm pkg delete private
           npm pack --dry-run
       - name: Publish
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
         run: |
           tag=latest; case "$VERSION" in *-*) tag=next;; esac
           if [ "$DRY_RUN" = true ]; then npm publish --dry-run --tag "$tag"; exit 0; fi
-          # Trusted publishing (OIDC) once the package trusts this workflow; NPM_TOKEN until then.
+          # Trusted publishing: npm exchanges the run's OIDC token (id-token: write) for a one-time
+          # credential. The package trusts publish.yml in this repository; no token is stored.
           if npm view "@shayxo.dev/liquidglass-react-native@$VERSION" version >/dev/null 2>&1; then echo "already on npm"; exit 0; fi
           npm publish --provenance --access public --tag "$tag"
 
