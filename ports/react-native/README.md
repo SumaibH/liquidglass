@@ -12,7 +12,7 @@ for example through `expo-glass-effect`.
 ![Glass rendered by React Native Skia's headless build: a lens bending the lines, a light and a dark surface](../../review/atlas/react-native-2026-10-19/react-native-glass.png)
 
 *Our render: `npm run example`, React Native Skia 2.14.0 headless (its JSI API over CanvasKit 0.41,
-software), 960 × 640 at pixel ratio 2. On Android: the demo app on the Android 17 emulator
+software), 960 × 640 at pixel ratio 2. On Android: the demo app on a Pixel 7 and the Android 17 emulator
 ([evidence](../../review/atlas/react-native-2026-10-19/README.md)).*
 
 ## Use
@@ -82,8 +82,8 @@ by `npm test`.
 
 ## Limits
 
-- **Checked on the Android emulator, not yet on a phone.** The automated checks run React Native
-  Skia's web implementation; the demo app ran on the Android 17 emulator.
+- **Checked on one phone.** The automated checks run React Native Skia's web implementation; the
+  demo app ran on a Pixel 7 and the Android 17 emulator, inspected by eye.
 - **The backdrop is a snapshot.** Glass refracts the image you give it. A page that scrolls under the
   glass needs a new snapshot, or a backdrop drawn in the same Skia canvas.
 - **No touch response yet.** The press and pull motion of the Compose library is in the painter's

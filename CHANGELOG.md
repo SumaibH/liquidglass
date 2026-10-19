@@ -18,11 +18,13 @@ This file records user-visible development changes. Published artifacts are iden
   switched its `Button` import to the glass one, and it compiled. Nothing has been published; npm and
   NuGet need their tokens first ([publishing](docs/publishing.md)).
 
-### Checked — Flutter on a phone (20 October)
+### Checked — Flutter and React Native on a phone (20 October)
 
+- The React Native demo runs on a Pixel 7 (Android 17) as on the emulator: the lens, a light surface
+  and a dark bar. [Evidence](review/atlas/react-native-2026-10-19/README.md#on-a-phone-pixel-7--20-october).
 - The Flutter example runs on a Pixel 7 (Android 17) on Impeller's Vulkan backend, the right way up
   and refracting the list live, as on the emulator's OpenGL ES backend.
-  [Evidence](review/atlas/flutter-2026-10-19/README.md#pixel-7-vulkan-20-october).
+  [Evidence](review/atlas/flutter-2026-10-19/README.md#pixel-7-vulkan--20-october).
 
 ### Added — Flutter (19 October)
 

@@ -21,7 +21,7 @@ React Native Skia `<Canvas>` on Android and React Native Web, with the productio
 adapter runs the CanvasKit painter unchanged on React Native Skia's API. In React Native Skia's headless
 build (CanvasKit, software) the adapter's glass equals CanvasKit's, no channel off by more than 1, and
 the components render in an element tree. The demo app runs on the Android 17 emulator (a first run
-there found surfaces drawing nothing, fixed by raster offscreen surfaces); not yet on a phone. The backdrop
+there found surfaces drawing nothing, fixed by raster offscreen surfaces) and, on 20 October, on a Pixel 7. The backdrop
 is a snapshot.
 [Guide](react-native.md), [evidence](https://github.com/shayann07/liquidglass/blob/main/review/atlas/react-native-2026-10-19/README.md).
 

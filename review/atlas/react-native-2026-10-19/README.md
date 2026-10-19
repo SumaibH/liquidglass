@@ -29,6 +29,17 @@ The first device run found two things the headless checks could not:
 - **Black inside the lens.** The captured view was transparent where the page drew nothing, and the
   painter expects an opaque source. The demo now gives the page a background, and the README says so.
 
+## On a phone: Pixel 7 — 20 October
+
+![The demo on a Pixel 7: the lens bending the lines, a light surface and a dark bar](react-native-pixel7.png)
+
+*Our capture: the same demo release build on a Pixel 7 (Android 17), `adb exec-out screencap`, scaled to
+40%. Its `liquidglass-react-native` files equal `ports/react-native` on `main` (`fdb8114`) apart from line
+endings. The lens, the light surface and the dark bar draw as on the emulator after the fix; nothing
+new was found.*
+
+![The light surface on the Pixel 7 at full resolution](react-native-pixel7-surface-crop.png)
+
 ## Checks (`npm test`)
 
 - Two surfaces and a lens drawn through the adapter equal the same glass drawn by the painter on
@@ -40,7 +51,7 @@ The first device run found two things the headless checks could not:
 
 ## Limits
 
-- An emulator, not a phone. Pixel-level equality with CanvasKit is checked headlessly only; on the
-  emulator the result is inspected by eye.
+- One phone (Pixel 7) and the emulator. Pixel-level equality with CanvasKit is checked headlessly
+  only; on Android the result is inspected by eye.
 - The backdrop is a snapshot (`makeImageFromView`, or an image drawn in the canvas). No live view
   capture and no touch response yet.
