@@ -13,6 +13,12 @@ This file records user-visible development changes. Published artifacts are iden
   runs on the Android 17 emulator (OpenGL ES). The wide tone kernel is approximated with thirteen
   Gaussian taps; Vulkan devices are not checked yet. [Guide](docs/flutter.md).
 
+### Changed — Skia's own backdrop is not planned (19 October)
+
+- Docs: the overlay stays on every platform. Skia's own backdrop would fix the stacking on desktop and
+  web, but the 18 October spike shows glass drawn in place goes blank under any translucent ancestor
+  (every fade animation); the guides had said it would also lift the alpha limit, which it would not.
+
 ### Added — React Native (19 October)
 
 - `liquidglass-react-native` (`ports/react-native`, new, unpublished): `GlassSurface` and `GlassLens`
