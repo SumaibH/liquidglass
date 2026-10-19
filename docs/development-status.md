@@ -4,6 +4,15 @@ Updated **18 October 2026**. This describes the unreleased source, not the publi
 Full iOS parity, final owner acceptance and arbitrary-stack support are not established. Historical
 research remains available; this page identifies which later changes supersede its implementation.
 
+## React Native (19 October)
+
+`liquidglass-react-native` (`ports/react-native`, unpublished) puts `GlassSurface` and `GlassLens` in a
+React Native Skia `<Canvas>` on Android and React Native Web, with the production shaders: a small
+adapter runs the CanvasKit painter unchanged on React Native Skia's API. In React Native Skia's headless
+build (CanvasKit, software) the adapter's glass equals CanvasKit's, no channel off by more than 1, and
+the components render in an element tree. Not yet run on a device; the backdrop is a snapshot.
+[Guide](react-native.md), [evidence](https://github.com/shayann07/liquidglass/blob/main/review/atlas/react-native-2026-10-19/README.md).
+
 ## WPF and Avalonia (19 October)
 
 - `LiquidGlass.Wpf` (new): glass over native WPF content. The host's own WPF subtree is captured as

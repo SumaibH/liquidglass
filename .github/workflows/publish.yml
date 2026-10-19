@@ -2,7 +2,7 @@ name: Publish
 
 # Pushing a tag `vX.Y.Z` publishes that version everywhere at once:
 #   Maven Central  liquidglass, liquidglass-material3, liquidglass-bom, and the Gradle plugin
-#   npm            liquidglass (the <liquid-glass> web component)
+#   npm            liquidglass (the <liquid-glass> web component), liquidglass-react-native
 #   NuGet          LiquidGlass, LiquidGlass.WinForms, LiquidGlass.Wpf, LiquidGlass.Avalonia
 # then creates the GitHub release from .github/release-notes/vX.Y.Z.md.
 #
@@ -25,6 +25,7 @@ on:
       - gradle.properties
       - gradle-plugin/build.gradle.kts
       - ports/npm/package.json
+      - ports/react-native/package.json
       - ports/dotnet/Package.props
 
 permissions:
@@ -162,6 +163,44 @@ jobs:
           if npm view "liquidglass@$VERSION" version >/dev/null 2>&1; then echo "liquidglass@$VERSION is already on npm"; exit 0; fi
           npm publish --provenance --access public --tag "$tag"
 
+  npm-react-native:
+    needs: check
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    permissions:
+      contents: read
+      id-token: write # npm provenance
+    defaults:
+      run:
+        working-directory: ports/react-native
+    env:
+      VERSION: ${{ needs.check.outputs.version }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: 22
+          registry-url: https://registry.npmjs.org
+          cache: npm
+          cache-dependency-path: ports/react-native/package-lock.json
+      - run: npm ci --ignore-scripts
+      - name: Vendored painter, adapter against CanvasKit, components, types
+        run: npm test
+      - name: Stamp the version (the repository keeps the package private and unversioned)
+        run: |
+          npm pkg set version="$VERSION"
+          npm pkg delete private
+          npm pack --dry-run
+      - name: Publish
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: |
+          tag=latest; case "$VERSION" in *-*) tag=next;; esac
+          if [ "$DRY_RUN" = true ]; then npm publish --dry-run --tag "$tag"; exit 0; fi
+          [ -n "$NODE_AUTH_TOKEN" ] || { echo "::error::NPM_TOKEN is missing (docs/publishing.md)"; exit 1; }
+          if npm view "liquidglass-react-native@$VERSION" version >/dev/null 2>&1; then echo "already on npm"; exit 0; fi
+          npm publish --provenance --access public --tag "$tag"
+
   nuget:
     needs: check
     runs-on: windows-2025 # WinForms and WPF pack only on Windows
@@ -204,7 +243,7 @@ jobs:
           retention-days: 14
 
   github-release:
-    needs: [check, maven-library, maven-plugin, npm, nuget]
+    needs: [check, maven-library, maven-plugin, npm, npm-react-native, nuget]
     if: github.event_name == 'push'
     runs-on: ubuntu-24.04
     timeout-minutes: 5
