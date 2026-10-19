@@ -226,16 +226,23 @@ jobs:
       - run: dotnet restore ports/dotnet/Checks/Checks.csproj --locked-mode
       - run: dotnet build ports/dotnet/Checks/Checks.csproj --no-restore
       - run: dotnet ports/dotnet/Checks/bin/Debug/net8.0/Checks.dll ports/dotnet/artifacts
+      - name: Build the Avalonia host and verify its glass headlessly
+        shell: bash
+        run: |
+          dotnet restore ports/dotnet/AvaloniaDemo/AvaloniaDemo.csproj --locked-mode
+          dotnet build ports/dotnet/AvaloniaDemo/AvaloniaDemo.csproj --no-restore
+          dotnet ports/dotnet/AvaloniaDemo/bin/Debug/net8.0/AvaloniaDemo.dll ports/dotnet/artifacts/avalonia
       - name: Pack the NuGet packages (not published) and check their contents
         shell: bash
         run: |
           dotnet pack ports/dotnet/LiquidGlass.Skia/LiquidGlass.Skia.csproj -c Release -o ports/dotnet/artifacts/nuget
+          dotnet pack ports/dotnet/LiquidGlass.Avalonia/LiquidGlass.Avalonia.csproj -c Release -o ports/dotnet/artifacts/nuget
           if [ "$RUNNER_OS" = "Windows" ]; then
             dotnet pack ports/dotnet/LiquidGlass.WinForms/LiquidGlass.WinForms.csproj -c Release -o ports/dotnet/artifacts/nuget
             dotnet pack ports/dotnet/LiquidGlass.Wpf/LiquidGlass.Wpf.csproj -c Release -o ports/dotnet/artifacts/nuget
-            node ports/dotnet/check-packages.mjs ports/dotnet/artifacts/nuget --winforms --wpf
+            node ports/dotnet/check-packages.mjs ports/dotnet/artifacts/nuget --winforms --wpf --avalonia
           else
-            node ports/dotnet/check-packages.mjs ports/dotnet/artifacts/nuget
+            node ports/dotnet/check-packages.mjs ports/dotnet/artifacts/nuget --avalonia
           fi
       - name: Build Windows Forms host
         if: runner.os == 'Windows'

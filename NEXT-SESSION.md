@@ -101,7 +101,8 @@ Phases, one PR each, suite and ports green each time, the owner reviews between 
            scrolled view, and the star button has a glass tooltip.
          - A tooltip's long press no longer clicks its anchor.
          - The glass menu stays inside the window.
-       - Avalonia is blocked: Avalonia 11 is on SkiaSharp 2.88, the painter on 4. Documented.
+       - Avalonia: Avalonia 12 accepts SkiaSharp 4; `LiquidGlass.Avalonia` and a headless demo checked
+         in CI on Linux and Windows (Avalonia 11, on SkiaSharp 2.88, cannot).
        - The neck "crease": a density-2 probe found no crease, only a small kink at the waist. Left.
      - Next for quality: compare against the private CC/stills locally; the tab bar's Ios27 style
        (unmeasured numbers) could take the measured rim; web Escape routing depends on the host's

@@ -1,6 +1,6 @@
 // Checks the packed NuGet packages (CI, after `dotnet pack`): each has its readme, NOTICE, licence
 // expression, the library's version and its assembly; LiquidGlass embeds the production shaders.
-// Usage: node ports/dotnet/check-packages.mjs <directory with .nupkg files> [--winforms] [--wpf]
+// Usage: node ports/dotnet/check-packages.mjs <directory with .nupkg files> [--winforms] [--wpf] [--avalonia]
 import { readFileSync, readdirSync } from 'node:fs';
 import { join } from 'node:path';
 import { inflateRawSync } from 'node:zlib';
@@ -31,6 +31,7 @@ function unzip(buf) {
 const expected = [['LiquidGlass', 'lib/net8.0/LiquidGlass.Skia.dll']];
 if (flags.includes('--winforms')) expected.push(['LiquidGlass.WinForms', 'lib/net10.0-windows10.0.19041/LiquidGlass.WinForms.dll']);
 if (flags.includes('--wpf')) expected.push(['LiquidGlass.Wpf', 'lib/net10.0-windows10.0.19041/LiquidGlass.Wpf.dll']);
+if (flags.includes('--avalonia')) expected.push(['LiquidGlass.Avalonia', 'lib/net8.0/LiquidGlass.Avalonia.dll']);
 let failures = 0;
 const fail = (m) => { console.error('FAIL ' + m); failures++; };
 for (const [id, dll] of expected) {

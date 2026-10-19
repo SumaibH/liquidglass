@@ -27,5 +27,4 @@ it.
   lens) but has not had a scripted check.
 - The glass bitmap is drawn on the CPU. Large windows that redraw the glass every frame cost more than
   a GPU host would.
-- Avalonia is not covered: Avalonia 11 is built on SkiaSharp 2.88 and cannot load this painter's
-  SkiaSharp 4 in the same process.
+- Avalonia has its own adapter since: see [avalonia-2026-10-19](../avalonia-2026-10-19/README.md).

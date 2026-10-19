@@ -7,6 +7,7 @@ and the tab bar selector with its motion. No Compose, browser or JavaScript.
 - `LiquidGlass`: `GlassPainter` and the tab bar selector, for any SkiaSharp host (.NET 8).
 - `LiquidGlass.WinForms`: glass over native Windows Forms controls (.NET 10, Windows 10 19041+).
 - `LiquidGlass.Wpf`: glass over native WPF content, drawn into a `WriteableBitmap` (.NET 10, Windows 10 19041+).
+- `LiquidGlass.Avalonia`: glass over native Avalonia 12 content on Windows, macOS and Linux (.NET 8).
 
 ```csharp
 using LiquidGlass.Skia;
