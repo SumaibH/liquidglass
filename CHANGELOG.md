@@ -5,6 +5,14 @@ This file records user-visible development changes. Published artifacts are iden
 
 ## Unreleased — Atlas stabilization
 
+### Added — React Native (19 October)
+
+- `liquidglass-react-native` (`ports/react-native`, new, unpublished): `GlassSurface` and `GlassLens`
+  for a React Native Skia `<Canvas>`, on Android and React Native Web. A small adapter runs the
+  CanvasKit painter and the production shaders unchanged on React Native Skia's API. In React Native
+  Skia's headless build its glass equals CanvasKit's (no channel off by more than 1). Not yet run on a
+  device; the backdrop is a snapshot (`makeImageFromView`). [Guide](docs/react-native.md).
+
 ### Changed — `GlassTabBarStyle.Ios27` is measured (19 October)
 
 - The preset's guessed numbers are replaced with iOS 27's measured rim: the outer contour (0.61), the

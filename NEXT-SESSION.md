@@ -117,7 +117,17 @@ Phases, one PR each, suite and ports green each time, the owner reviews between 
      - Next:
        - Compare against the private CC/stills locally.
        - MAUI needs the MAUI workload (`SkiaSharp.Views.Maui.Controls` 4.153.1 exists).
-       - Flutter, React Native, Qt and Unity need their own integrations.
+       - Flutter, Qt and Unity need their own integrations (React Native: see 19 Oct day below).
+     - 19 Oct day (owner: "do all of it"):
+       - Skia in-place backdrop (desktop/web) NOT pursued: the 18 Oct spike shows glass drawn in place
+         goes blank under any translucent ancestor (AnimatedVisibility/Crossfade/navigation fades), worse
+         than the overlay's "glass ignores the fade"; and Android cannot use it. The overlay stays.
+       - Lens haze baseline on main (hazescore m0): top band 60/64, bottom 73/75, text p90 101/102,
+         p50 86/82, black interior 48/47, rms 2.8: the dark-lens top-band residual is closed.
+       - React Native: `ports/react-native` (liquidglass-react-native, private): kit.js adapts React
+         Native Skia's API to the CanvasKit painter (Proxy: delete->dispose, enums, matrices, offscreen
+         surfaces); GlassSurface/GlassLens record an SkPicture at device px. Headless tests 3/3 (adapter
+         equals CanvasKit, max channel diff <= 1); tsc types; CI job react-native. Device run pending.
        - The long iOS video-parity rows in TODO.md (M1-M3, O1) remain.
      - Do not run two Gradle builds in one worktree at once: the renders and XML results clobber each
        other (UncompletedCoroutinesError, stale XML). A test that passes alone may fail when run in
