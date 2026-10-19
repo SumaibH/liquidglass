@@ -27,6 +27,13 @@ first, down to 0.1.0.
   from a local Maven repository, got `liquidglass` and `liquidglass-material3`, `liquidGlassAdopt`
   switched its `Button` import to the glass one, and it compiled. Nothing has been published; npm and
   NuGet need their tokens first ([publishing](docs/publishing.md)).
+### Added — React Native (19 October)
+
+- `liquidglass-react-native` (`ports/react-native`, new, on npm): `GlassSurface` and `GlassLens`
+  for a React Native Skia `<Canvas>`, on Android and React Native Web. A small adapter runs the
+  CanvasKit painter and the production shaders unchanged on React Native Skia's API. In React Native
+  Skia's headless build its glass equals CanvasKit's (no channel off by more than 1). Not yet run on a
+  device; the backdrop is a snapshot (`makeImageFromView`). [Guide](docs/react-native.md).
 
 ### Changed — `GlassTabBarStyle.Ios27` is measured (19 October)
 

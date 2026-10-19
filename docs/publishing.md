@@ -7,7 +7,7 @@ One tag publishes one version everywhere:
 | Registry | Packages | Secrets |
 | :-- | :-- | :-- |
 | Maven Central | `liquidglass`, `liquidglass-material3`, `liquidglass-bom`, and the Gradle plugin `dev.shayxo.liquidglass` (artifact `liquidglass-gradle-plugin` plus its plugin marker) | `MAVEN_CENTRAL_USERNAME`, `MAVEN_CENTRAL_PASSWORD`, `SIGNING_KEY`, `SIGNING_KEY_PASSWORD` (set up since 0.1.0) |
-| npm | `liquidglass`, the `<liquid-glass>` web component | `NPM_TOKEN` |
+| npm | `liquidglass`, the `<liquid-glass>` web component; `liquidglass-react-native` | `NPM_TOKEN` |
 | NuGet | `LiquidGlass`, `LiquidGlass.WinForms`, `LiquidGlass.Wpf`, `LiquidGlass.Avalonia` | `NUGET_API_KEY` |
 | GitHub | a release with the notes in `.github/release-notes/vX.Y.Z.md` | none (the workflow's token) |
 
@@ -20,8 +20,8 @@ already do. Listing it on the Plugin Portal as well is optional and not set up.
 
 `VERSION_NAME` in the root `gradle.properties` is the one number. The Gradle builds read it, the
 NuGet packages read it (`ports/dotnet/Package.props`), and the npm job stamps it into `package.json`
-at publish time. The repository keeps `ports/npm/package.json` at `"private": true` and `0.0.0`, so a
-stray `npm publish` from a checkout cannot go out. Change it with the script, which also rewrites the
+at publish time. The repository keeps both npm packages (`ports/npm`, `ports/react-native`) at
+`"private": true` and `0.0.0`, so a stray `npm publish` from a checkout cannot go out. Change it with the script, which also rewrites the
 .NET lock files that record it:
 
 ```bash
@@ -74,7 +74,8 @@ marked as a pre-release on GitHub; NuGet and Maven treat it as a pre-release by 
 ## npm, once
 
 1. An account at [npmjs.com](https://www.npmjs.com) with two-factor authentication.
-2. The name `liquidglass` was free on 19 October 2026; the first publish claims it.
+2. The names `liquidglass` and `liquidglass-react-native` were free on 19 October 2026; the first
+   publish claims them.
 3. A granular access token (Account, Access Tokens, Generate New Token, Granular): read and write
    on packages, with two-factor bypass allowed so CI can publish. Before the first publish the token
    cannot be limited to a package that does not exist yet, so give it all packages and narrow it to

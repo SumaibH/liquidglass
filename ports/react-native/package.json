@@ -1,0 +1,65 @@
+{
+  "name": "liquidglass-react-native",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Liquid Glass for React Native: the liquidglass production shaders drawn by React Native Skia on Android and the web.",
+  "type": "module",
+  "license": "Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/shayann07/liquidglass.git",
+    "directory": "ports/react-native"
+  },
+  "homepage": "https://liquidglass.shayxo.dev/react-native/",
+  "keywords": [
+    "liquid glass",
+    "glass",
+    "react native",
+    "react-native-skia",
+    "skia",
+    "shader",
+    "android"
+  ],
+  "main": "./index.js",
+  "types": "./index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./index.d.ts",
+      "default": "./index.js"
+    },
+    "./core": {
+      "types": "./core.d.ts",
+      "default": "./core.js"
+    },
+    "./package.json": "./package.json"
+  },
+  "sideEffects": false,
+  "files": [
+    "index.js",
+    "index.d.ts",
+    "core.js",
+    "core.d.ts",
+    "kit.js",
+    "vendor/skia/",
+    "LICENSE",
+    "NOTICE",
+    "README.md"
+  ],
+  "scripts": {
+    "vendor": "node vendor-skia.js",
+    "test": "node vendor-skia.js --check && node --test test/*.test.js && npm run test:types",
+    "test:types": "tsc -p tsconfig.types.json",
+    "example": "node example.js"
+  },
+  "peerDependencies": {
+    "@shopify/react-native-skia": ">=2.0.0",
+    "react": ">=19.0",
+    "react-native": ">=0.78"
+  },
+  "devDependencies": {
+    "@shopify/react-native-skia": "2.14.0",
+    "@types/react": "19.1.8",
+    "react": "19.1.0",
+    "typescript": "7.0.2"
+  }
+}
