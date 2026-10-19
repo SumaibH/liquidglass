@@ -52,8 +52,8 @@ measure performance before claiming an improvement.
 
 ## Pull requests
 
-[CodeRabbit](https://www.coderabbit.ai) reviews every pull request to `main` and posts one review with
-line comments; reply to a comment to discuss it, or with `@coderabbitai` to ask it something. Its
+[CodeRabbit](https://www.coderabbit.ai) reviews every pull request to `main` that is not a draft (comment `@coderabbitai review` to
+review a draft) and posts one review with line comments; reply to a comment to discuss it, or with `@coderabbitai` to ask it something. Its
 configuration, `.coderabbit.yaml`, skips generated and vendored files and states the repository's rules
 (provenance of every number, opt-in optics, no "first" claims, iOS never a target).
 
