@@ -1,8 +1,20 @@
 # Development status and visual guide
 
-Updated **20 October 2026**. This describes 0.2.2 (0.2.0's code, on every registry since 0.2.1) and `main`.
-Full iOS parity, final owner acceptance and arbitrary-stack support are not established. Historical
+Updated **20 October 2026**. This describes 1.0.0, the first release with a [compatibility promise](compatibility.md).
+Full iOS parity is not established: the measured differences are open as issues (#70-#73). The owner
+accepted the navigation selector on 20 October. Historical
 research remains available; this page identifies which later changes supersede its implementation.
+
+## 1.0 (20 October)
+
+- **Parity scoreboard.** All five iOS recordings replayed through the 1.0 build and scored in display
+  colours: resting bar 0 on all five, tap pill +0.8 / -2 (was -8.9 / -7.7), held lens -0.1 / +1 on black
+  pages and -5 over content (was -13), tracking unchanged. No region regressed.
+  [Record](https://github.com/shayann07/liquidglass/blob/main/review/atlas/reference-replay-2026-10-13/README.md#remaining-differences).
+- **First use on a Pixel 7.** One 317-370 ms frame on the first tap after installing (GPU shader
+  compilation, cached per install); later cold starts 29-65 ms. A library baseline profile ships; it did not
+  change these numbers measurably. [Evidence](https://github.com/shayann07/liquidglass/blob/main/review/atlas/first-use-2026-10-20/README.md).
+- **API.** Kotlin ABI dumps under `api/`, checked in CI. Nothing was deprecated, so nothing was removed.
 
 ## Qt Quick and Unity (20 October)
 

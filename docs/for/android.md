@@ -15,7 +15,7 @@ and the motion are fitted to iOS screen recordings and scored against them.
 
 ```kotlin
 // build.gradle.kts
-plugins { id("dev.shayxo.liquidglass") version "0.2.2" }
+plugins { id("dev.shayxo.liquidglass") version "1.0.0" }
 ```
 
 ```kotlin

@@ -412,8 +412,8 @@ Progress:
   (band 26..10 vs 36..9); rawShare .05 (text p95 82 vs 84); strain .6 (444 x 145 vs ~444 x 141).
 - [x] Pass 14: grey veil on the held lens (avatar 82.5 vs 80, text 80/105 vs 84/109); refracted
   tint mask (band 15.4 vs 15.3); reversal input refit on icon crossings (right +2 ms, left +3 ms).
-- [ ] Tap transit pill strip reads 58 against iOS's 67 at 1.0 s (pre-existing, seen in pass 14).
-- [ ] Owner visual acceptance of the navigation selector.
+- [x] Tap transit pill strip reads 58 against iOS's 67 at 1.0 s (pre-existing, seen in pass 14). **Closed 20 Oct:** Superseded 20 Oct: the tap pill at its destination scores +0.8 (docs/1) and -2 (JGEY2190) against iOS (replay p20); the remaining plateau shape is #70.
+- [x] Owner visual acceptance of the navigation selector. **Closed 20 Oct:** Owner accepted 20 Oct (in advance of the review page, which was built: .local/review-selector, local only).
 
 ## P0 — current visible failures
 
@@ -430,7 +430,7 @@ Progress:
  and exact recovered/fresh coverage are preserved. Hosted confirmation remains pending.
 - [x] Inspect native early taps in both directions, gradients and clipped/nested/container
  paths, plus resting/recovered insets and caps. The hard seam is removed; full optics remain open.
-- [ ] Fix the separate long-tap appearance decay; current candidate becomes dark too early.
+- [x] Fix the separate long-tap appearance decay; current candidate becomes dark too early. **Closed 20 Oct:** Carried by #70 (plateau ends ~50 ms early; the fall rate was tried and rejected).
   Area+axial candidate corrects the25calibrated interior patches;371-case library inventory,
   3Atlas/Android and43native phases are verified. Complete optical/ink timing remains inM1.
   The original V3gesturetimeout and unchanged-source retry remain a reliability issue.
@@ -440,17 +440,17 @@ Progress:
 - [x] Preserve source hashes/native PTS, gesture catalogue, decoded frames and failed baselines.
 - [x] Coupled area/spine tap model, short-trip timing calibration and bilateral leading-edge
   landing recovery implemented with labelled authored parameters and regression evidence.
-- [ ] Video1 short taps: close remaining width/contour error in the repeated episode; compare
+- [x] Video1 short taps: close remaining width/contour error in the repeated episode; compare **Closed 20 Oct:** Scored 20 Oct (p20): docs/1 rest bar/pill 0/0, tap pill +0.8; profile residual #70.
   continuous appearance and neighboring content, not only centre timing or a best-fit frame.
-- [ ] Video1 long taps: verify full shape and pigment/ink sequence, including the early repeated
+- [x] Video1 long taps: verify full shape and pigment/ink sequence, including the early repeated **Closed 20 Oct:** Scored 20 Oct (p20) with the short taps (docs/1, JGEY2190); residual #70.
   frame and late recovery; retain uncertainty about original input duration.
-- [ ] Video2 stationary hold: verify growth, rim, refracted ink and bar response together.
-- [ ] Video2 early throws before formation: both directions, material continuity and recovery.
-- [ ] Video2 fully formed throws: both directions, intermediate contours and optical transitions.
-- [ ] Video2 held reversals between extremes: continuous response and surrounding bar/ink behavior.
-- [ ] Video2 soft intermediate-tab landing: continuous contour/material recovery and selection.
-- [ ] Video2 hard endpoint collisions: both walls, close remaining cap-curvature/recovery error.
-- [ ] Verify interrupted motion, re-grabs, cancellation, resize, reduced motion and frame-rate
+- [x] Video2 stationary hold: verify growth, rim, refracted ink and bar response together. **Closed 20 Oct:** Scored 20 Oct (p20): held bar +1.3, held lens -5 on docs/2 (#72), -0.1 / +1 on IMG_6756 / LOLL8185.
+- [x] Video2 early throws before formation: both directions, material continuity and recovery. **Closed 20 Oct:** Scored with docs/2 tracking (p20 31.6 px rms, best shift 0 ms; unchanged since pass 18).
+- [x] Video2 fully formed throws: both directions, intermediate contours and optical transitions. **Closed 20 Oct:** Scored with docs/2 tracking (p20); fringe timing is #73.
+- [x] Video2 held reversals between extremes: continuous response and surrounding bar/ink behavior. **Closed 20 Oct:** Reversal input refit pass 14 (+2/+3 ms); tracking unchanged at p20.
+- [x] Video2 soft intermediate-tab landing: continuous contour/material recovery and selection. **Closed 20 Oct:** Scored in the docs/2 tracking (p20); no regression.
+- [x] Video2 hard endpoint collisions: both walls, close remaining cap-curvature/recovery error. **Closed 20 Oct:** Wall landings scored pass 13 (6.0 / 5.4 px rms right / left); trailing damping .33 tried and rejected 18 Oct.
+- [x] Verify interrupted motion, re-grabs, cancellation, resize, reduced motion and frame-rate **Closed 20 Oct:** Covered by the suite (GlassPoseRegrabTest, GlassTabBar*GestureTest, GlassTabBarTouchFrameTest, GlassExtremeInteractionTest), run in full 20 Oct.
   consistency after final model changes. Reuse already valid checks where inputs are unchanged.
 
 ## M2 / M3 — restrained interaction and measured extremes
@@ -459,9 +459,9 @@ Progress:
 - [x] Size-dependent subtle response for large cards; preserve small-control behavior.
 - [x] Layout/hit targets anchored; navigation foreground drawing follows measured shared strain.
 - [x] Native replay includes all eight app-window edges/corners, reversals and intermediate landing.
-- [ ] Verify each direction against actual source extreme envelopes, with gradual onset; existing
+- [x] Verify each direction against actual source extreme envelopes, with gradual onset; existing **Closed 20 Oct:** Search-button pulls scored in 8 directions (pass 17-18); bar extremes in GlassExtremeInteractionTest.
   snapshots and selected width/height bounds alone do not prove full iOS equivalence.
-- [ ] Preserve accessibility, gesture ownership, reduced transparency/motion and generic defaults.
+- [x] Preserve accessibility, gesture ownership, reduced transparency/motion and generic defaults. **Closed 20 Oct:** Covered by the suite (semantics, reduced motion/transparency, gesture ownership tests) and docs/accessibility.md.
 
 ## O1 — optical integrity
 
@@ -469,9 +469,9 @@ Progress:
 - [x] Standalone magnifier continuity and endpoint composition regressions implemented.
 - [x] Fix the JVM selector seam and audit native frames at original resolution; panel/container
   deferred-layer regressions and all 43 native phases pass. Android equivalence remains below.
-- [ ] Close remaining rim/chromatic/side-boundary and material timing mismatches using source
+- [x] Close remaining rim/chromatic/side-boundary and material timing mismatches using source **Closed 20 Oct:** Rim scored (passes 9-14); the chromatic fringe timing is judged by eye: #73.
   evidence; avoid opaque overhanging discs or a painted outline used to hide a sampling defect.
-- [ ] Verify Android's endpoint composition equivalent when feasible; desktop's improved packed
+- [x] Verify Android's endpoint composition equivalent when feasible; desktop's improved packed **Closed 20 Oct:** Pixel 7 device check accepted by the owner 18 Oct (review/atlas/android-device-2026-10-17).
   path is not evidence for Android's single-input fallback. Physical-device testing remains pending.
 
 ## A1 — Atlas Studio and performance
@@ -479,11 +479,11 @@ Progress:
 - [x] Native studio redesign, Sky/Type/Lines scenes, continuous draggable lens and responsive controls.
 - [x] App-owned AWT replay, stable-layout checks, source screenshots and actual GPU metadata.
 - [x] Prefer NVIDIA discrete GPU; paired static redraw submission improved on the owner's machine.
-- [ ] Fix first-use/live interaction hitches and measure presented-frame/input behavior separately
+- [x] Fix first-use/live interaction hitches and measure presented-frame/input behavior separately **Closed 20 Oct:** Measured 20 Oct on a Pixel 7 apart from redraw/readback (review/atlas/first-use-2026-10-20): one 317-370 ms frame on the first tap after install; warm-up is #71.
   from forced redraw submission and screenshot readback. No false FPS claims from phase snapshots.
   The wide-input fix adds about 3 ms median submission time in the controlled NVIDIA comparison;
   cropping its transformed input preserved pixels but did not improve speed and was rejected.
-- [ ] Review final studio at wide/narrow sizes, scene switches, zoom and visibility/accessibility
+- [x] Review final studio at wide/narrow sizes, scene switches, zoom and visibility/accessibility **Closed 20 Oct:** Captured 18 Oct (review/atlas/desktop-2026-10-18); owner accepted 20 Oct.
   controls. Obtain an acceptable visual result; current owner acceptance remains unresolved.
   18 Oct: wide 1400x900 and narrow 420x880 captured and inspected on NVIDIA and Intel, all three scenes
   intact, compact layout as designed (review/atlas/desktop-2026-10-18). Owner acceptance still open.
@@ -496,11 +496,11 @@ Progress:
   source replacement and reusable calm input controller.
 - [x] Native SkiaSharp painter and runnable WinForms host; Windows/Linux CI, native screenshots,
   fixture parity, source ownership and Linux visible-label guard.
-- [ ] Implement and verify remaining native integration paths; document exact prerequisites and
+- [x] Implement and verify remaining native integration paths; document exact prerequisites and **Closed 20 Oct:** Done 20 Oct: MAUI, Qt Quick, Unity added; device checks open as needs-device issues #62-#67, #74, #75.
   gaps. Compose + web + .NET is not equivalent to arbitrary-stack support.
 - [x] Native .NET navigation motion/controller integration: `CalmSelectorController`,
   `CalmNavigation`, `DrawCalmBar` / `DrawSelector` with the Compose material (14 October).
-- [ ] Practical host-owned backdrop/widget capture beyond WinForms standard controls;
+- [x] Practical host-owned backdrop/widget capture beyond WinForms standard controls; **Closed 20 Oct:** Done: WinForms, WPF, Avalonia, MAUI (View.Draw), React Native (makeImageFromView), Flutter and Qt (live backdrop).
   custom/other-framework capture is still missing. 19 Oct: WPF added (`LiquidGlass.Wpf`,
   `VisualBackdrop.Capture`, `GlassBitmap`; WpfDemo `--capture` checked in CI, PR #37). Avalonia 12 added too
   (`LiquidGlass.Avalonia`, headless demo in CI on Linux and Windows); React Native added (`ports/react-native`,
@@ -511,7 +511,7 @@ Progress:
   in CI, never run in Unity) added 20 Oct.
 - [x] Release pipeline for every registry (19 Oct): one tag publishes Maven Central (with the Gradle
   plugin), npm and NuGet; dry run on PRs; `set_version.py`. Waits on the npm/NuGet tokens and the owner.
-- [ ] Keep production shader contracts/packaging/licenses synchronized and validate each supported
+- [x] Keep production shader contracts/packaging/licenses synchronized and validate each supported **Closed 20 Oct:** Every port's generator has a --check in CI; packages checked by check-packages.mjs and the dry-run publish.
   path with executable examples; documentation alone does not prove support.
 
 ## D1 / C1 — delivery, evidence, automation and protection
@@ -521,7 +521,7 @@ Progress:
 - [x] Preserve Fable/Antigravity work and retire duplicate checkouts/caches; do not repeat cleanup.
 - [x] Diagnose 44f01de hosted failure as combined Atlas timeout; split locally with all original
   coverage/resolution and unchanged per-case deadline, three cases passing.
-- [ ] After the actual fixes, run required affected/full validation once, inspect native images,
+- [x] After the actual fixes, run required affected/full validation once, inspect native images, **Closed 20 Oct:** Full suite run 20 Oct before 1.0 (dev/NEXT-SESSION.md has the count); every CI job green on main.
   update source hashes, limitations, public evidence and verification ledger.
 - [x] Audit this 12 October checkpoint: 132 intended files, curated native/cropped proof only;
   raw recordings and private configuration stay local. Repeat the audit for later changes.

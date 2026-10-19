@@ -29,7 +29,6 @@ builder.UseMauiApp<App>().UseLiquidGlass();
 var bar = new GlassSurface { Backdrop = new GlassBackdrop(rows), Dark = true, Radius = 36, Content = tabs };
 ```
 
-`LiquidGlass.Maui` ships from the next release; the others have been on NuGet since 0.2.1. iOS is
-not a target.
+`LiquidGlass.Maui` is on NuGet from 1.0.0; the others since 0.2.1. iOS is not a target.
 
 Next: [the .NET guide](../native-dotnet.md) · [Limitations](../limitations.md)

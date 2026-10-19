@@ -15,7 +15,7 @@ Three ways, from least to most control. The plugin, the BOM and `liquidglass-mat
 ```kotlin
 // build.gradle.kts
 plugins {
-    id("dev.shayxo.liquidglass") version "0.2.2"
+    id("dev.shayxo.liquidglass") version "1.0.0"
 }
 ```
 
@@ -28,7 +28,7 @@ once (`--dry-run` lists the changes first). `liquidGlass { material3.set(false) 
 **The BOM**, the convention Compose and Firebase use:
 
 ```kotlin
-implementation(platform("dev.shayxo.liquidglass:liquidglass-bom:0.2.2"))
+implementation(platform("dev.shayxo.liquidglass:liquidglass-bom:1.0.0"))
 implementation("dev.shayxo.liquidglass:liquidglass")
 implementation("dev.shayxo.liquidglass:liquidglass-material3")   // Material 3 apps
 ```
@@ -37,7 +37,7 @@ implementation("dev.shayxo.liquidglass:liquidglass-material3")   // Material 3 a
 
 ```kotlin
 // your module's build.gradle.kts — commonMain for a multiplatform module
-implementation("dev.shayxo.liquidglass:liquidglass:0.2.2")
+implementation("dev.shayxo.liquidglass:liquidglass:1.0.0")
 ```
 
 It is a Kotlin Multiplatform module with Android, desktop JVM and web (`wasmJs`) variants; Gradle picks the one

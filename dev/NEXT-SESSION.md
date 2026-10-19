@@ -58,8 +58,21 @@ issues + Discussions for what this machine cannot verify, launch drafts (do not 
    GlassMaterial.cs (pure, doubles), GlassSurface.cs, .meta files (tool/write_meta.mjs, md5 GUIDs).
    Checks (net8.0-windows, Vortice 3.8.3): fixture 3/3, FXC ps_5_0, D3D11 WARP render + pixel checks.
    CI job `unity` (windows-2025) passed. Never run in Unity: said so in README/docs.
-5. Parity: p20 replays of all five recordings (rrw.sh with WT=this worktree) -> ref/<name>/p20, then
-   levels.py / trackscore.py / tapprofile.py against p18/p16 to confirm no regression and list residuals.
+5. Parity DONE 20 Oct: p20 replays (rrw.sh, WT=worktree) of all five; scoreboard in
+   review/atlas/reference-replay-2026-10-13/README.md (no regression; tap pill +0.8/-2, held lens -5 docs2).
+   Rejected: tapAppearanceFallOmega 20 (only lengthens the tail). wallscore.py needs a probe.mjs from an old
+   scratchpad (missing). First use on Pixel 7: review/atlas/first-use-2026-10-20 (317-370 ms frame on the first
+   tap after install = shader compile; warm-up deferred, #71). Baseline profile lives in
+   liquidglass/src/androidMain/baselineProfiles/ (the KMP library plugin ignores src/androidMain/baseline-prof.txt).
+   Residual issues #70-#75; all dev/TODO.md rows closed.
+6. Review page: .local/review-selector/index.html in the session worktree (local only, build.py p20).
+   Owner accepted the selector in advance (20 Oct) and authorized merge, tag v1.0.0 and publish.
+7. v1.0.0, branch claude/release-1.0: ABI validation (api/ dumps, checkKotlinAbi in CI build job),
+   docs/compatibility.md, release notes, CHANGELOG 1.0.0, nothing deprecated so nothing removed.
+   Then set_version.py 1.0.0, PR, merge when green, tag v1.0.0 on the merge commit, watch publish.yml.
+   Owner morning actions: pub.dev first upload + automated publishing (docs/publishing.md), Pages HTTPS if
+   still bad_authz, social preview upload (docs/assets/social-card.png), CodeRabbit billing check.
+   Workflow from 20 Oct night: few large PRs, CodeRabbit reviews, merge --admin when green.
 
 ## PRODUCT PLAN (18 Oct 2026, owner-approved) — read this first
 

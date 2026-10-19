@@ -4,3 +4,7 @@ gradlew text eol=lf
 *.bat text eol=crlf
 *.jar binary
 *.png binary
+
+# Kotlin ABI dumps are written by updateKotlinAbi, trailing blank line included; checkKotlinAbi compares them.
+*.api -whitespace
+*.klib.api -whitespace

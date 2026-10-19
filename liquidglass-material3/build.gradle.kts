@@ -14,6 +14,11 @@ plugins {
 // Liquid Glass versions of the Material 3 components: the same names and parameters, so an app swaps
 // `import androidx.compose.material3.*` for `import com.wexpa.liquidglass.material3.*`.
 kotlin {
+    // The 1.0 compatibility promise, checked: the public ABI is dumped to api/ and `checkKotlinAbi`
+    // (part of `check`) fails when it changes without the dump being updated (`updateKotlinAbi`).
+    @OptIn(org.jetbrains.kotlin.gradle.dsl.abi.ExperimentalAbiValidation::class)
+    abiValidation()
+
     jvm()
 
     @OptIn(ExperimentalWasmDsl::class)

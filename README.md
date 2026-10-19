@@ -27,7 +27,7 @@ versions of every Material 3 component.</p>
 
 | Stack | Install | Guide |
 | :-- | :-- | :-- |
-| **Compose Multiplatform** (Android, desktop, web) | `plugins { id("dev.shayxo.liquidglass") version "0.2.2" }` | [Getting started](docs/getting-started.md) |
+| **Compose Multiplatform** (Android, desktop, web) | `plugins { id("dev.shayxo.liquidglass") version "1.0.0" }` | [Getting started](docs/getting-started.md) |
 | **Material 3** (Compose) | change the imports, or `./gradlew liquidGlassAdopt` | [Material 3](docs/material3.md) |
 | **Web**, any framework | `npm install @shayxo.dev/liquidglass` | [`<liquid-glass>`](docs/web-component.md) |
 | **React Native** (Android, web) | `npm install @shayxo.dev/liquidglass-react-native` | [React Native](docs/react-native.md) |

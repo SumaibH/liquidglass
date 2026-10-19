@@ -1,0 +1,646 @@
+public final class com/wexpa/liquidglass/ComposableSingletons$GlassEffectContainerKt {
+	public static final field INSTANCE Lcom/wexpa/liquidglass/ComposableSingletons$GlassEffectContainerKt;
+	public fun <init> ()V
+	public final fun getLambda$-1487004178$liquidglass_liquidglass ()Lkotlin/jvm/functions/Function3;
+}
+
+public final class com/wexpa/liquidglass/ComposableSingletons$GlassGalleryKt {
+	public static final field INSTANCE Lcom/wexpa/liquidglass/ComposableSingletons$GlassGalleryKt;
+	public fun <init> ()V
+	public final fun getLambda$-1838197126$liquidglass_liquidglass ()Lkotlin/jvm/functions/Function2;
+}
+
+public final class com/wexpa/liquidglass/Glass {
+	public static final field $stable I
+	public static final field Companion Lcom/wexpa/liquidglass/Glass$Companion;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun hashCode ()I
+	public final fun interactive (ZLcom/wexpa/liquidglass/GlassInteraction;)Lcom/wexpa/liquidglass/Glass;
+	public static synthetic fun interactive$default (Lcom/wexpa/liquidglass/Glass;ZLcom/wexpa/liquidglass/GlassInteraction;ILjava/lang/Object;)Lcom/wexpa/liquidglass/Glass;
+	public final fun isIdentity ()Z
+	public final fun light (Z)Lcom/wexpa/liquidglass/GlassLight;
+	public final fun style (Z)Lcom/wexpa/liquidglass/GlassStyle;
+	public final fun tint-Y2TPw74 (Landroidx/compose/ui/graphics/Color;)Lcom/wexpa/liquidglass/Glass;
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/wexpa/liquidglass/Glass$Companion {
+	public final fun Lens (F)Lcom/wexpa/liquidglass/Glass;
+	public static synthetic fun Lens$default (Lcom/wexpa/liquidglass/Glass$Companion;FILjava/lang/Object;)Lcom/wexpa/liquidglass/Glass;
+	public final fun getClear ()Lcom/wexpa/liquidglass/Glass;
+	public final fun getIdentity ()Lcom/wexpa/liquidglass/Glass;
+	public final fun getRegular ()Lcom/wexpa/liquidglass/Glass;
+	public final fun getTabBar ()Lcom/wexpa/liquidglass/Glass;
+	public final fun getToolbar ()Lcom/wexpa/liquidglass/Glass;
+	public final fun invoke (Lcom/wexpa/liquidglass/GlassStyle;Lcom/wexpa/liquidglass/GlassStyle;Lcom/wexpa/liquidglass/GlassLight;)Lcom/wexpa/liquidglass/Glass;
+	public static synthetic fun invoke$default (Lcom/wexpa/liquidglass/Glass$Companion;Lcom/wexpa/liquidglass/GlassStyle;Lcom/wexpa/liquidglass/GlassStyle;Lcom/wexpa/liquidglass/GlassLight;ILjava/lang/Object;)Lcom/wexpa/liquidglass/Glass;
+}
+
+public final class com/wexpa/liquidglass/GlassAccessoryLink {
+	public static final field $stable I
+}
+
+public final class com/wexpa/liquidglass/GlassAdaptationKt {
+	public static final fun glassShadowAlpha (F)F
+}
+
+public final class com/wexpa/liquidglass/GlassEffectContainerKt {
+	public static final fun GlassEffectContainer-DzVHIIc (Landroidx/compose/ui/Modifier;FLcom/wexpa/liquidglass/Glass;Lkotlin/jvm/functions/Function2;Landroidx/compose/runtime/Composer;II)V
+	public static final fun GlassOverlay (Lkotlin/jvm/functions/Function3;Landroidx/compose/runtime/Composer;I)V
+	public static final fun glassEffectID (Landroidx/compose/ui/Modifier;Ljava/lang/Object;Lcom/wexpa/liquidglass/GlassNamespace;)Landroidx/compose/ui/Modifier;
+	public static final fun rememberGlassNamespace (Landroidx/compose/runtime/Composer;I)Lcom/wexpa/liquidglass/GlassNamespace;
+}
+
+public final class com/wexpa/liquidglass/GlassFuse {
+	public static final field $stable I
+	public synthetic fun <init> (Landroidx/compose/ui/unit/DpRect;FFZILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public synthetic fun <init> (Landroidx/compose/ui/unit/DpRect;FFZLkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getAnchored ()Z
+	public final fun getBounds ()Landroidx/compose/ui/unit/DpRect;
+	public final fun getCornerRadius-D9Ej5fM ()F
+	public final fun getSmoothing-D9Ej5fM ()F
+	public fun hashCode ()I
+}
+
+public final class com/wexpa/liquidglass/GlassGalleryKt {
+	public static final fun GlassGallery (Landroidx/compose/ui/Modifier;Landroidx/compose/runtime/Composer;II)V
+}
+
+public final class com/wexpa/liquidglass/GlassInteraction {
+	public static final field $stable I
+	public static final field Companion Lcom/wexpa/liquidglass/GlassInteraction$Companion;
+	public fun <init> ()V
+	public synthetic fun <init> (FFZFFZFFFFLcom/wexpa/liquidglass/GlassResponse;Lcom/wexpa/liquidglass/GlassPullShape;FFFFFFILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public synthetic fun <init> (FFZFFZFFFFLcom/wexpa/liquidglass/GlassResponse;Lcom/wexpa/liquidglass/GlassPullShape;FFFFFFLkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun component1 ()F
+	public final fun component10 ()F
+	public final fun component11 ()Lcom/wexpa/liquidglass/GlassResponse;
+	public final fun component12 ()Lcom/wexpa/liquidglass/GlassPullShape;
+	public final fun component13 ()F
+	public final fun component14 ()F
+	public final fun component15 ()F
+	public final fun component16 ()F
+	public final fun component17 ()F
+	public final fun component18 ()F
+	public final fun component2 ()F
+	public final fun component3 ()Z
+	public final fun component4-D9Ej5fM ()F
+	public final fun component5 ()F
+	public final fun component6 ()Z
+	public final fun component7 ()F
+	public final fun component8 ()F
+	public final fun component9 ()F
+	public final fun copy-Jm20sog (FFZFFZFFFFLcom/wexpa/liquidglass/GlassResponse;Lcom/wexpa/liquidglass/GlassPullShape;FFFFFF)Lcom/wexpa/liquidglass/GlassInteraction;
+	public static synthetic fun copy-Jm20sog$default (Lcom/wexpa/liquidglass/GlassInteraction;FFZFFZFFFFLcom/wexpa/liquidglass/GlassResponse;Lcom/wexpa/liquidglass/GlassPullShape;FFFFFFILjava/lang/Object;)Lcom/wexpa/liquidglass/GlassInteraction;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getDragPressShare ()F
+	public final fun getGel ()Z
+	public final fun getIllumination ()F
+	public final fun getPressGrowth-D9Ej5fM ()F
+	public final fun getPressLift ()F
+	public final fun getPressReach ()F
+	public final fun getPressScale ()F
+	public final fun getPull ()Z
+	public final fun getPullElongation ()F
+	public final fun getPullFollow ()F
+	public final fun getPullLiftShare ()F
+	public final fun getPullLimit ()F
+	public final fun getPullReleaseDampingX ()F
+	public final fun getPullShape ()Lcom/wexpa/liquidglass/GlassPullShape;
+	public final fun getPullWidthRatio ()F
+	public final fun getReleaseDamping ()F
+	public final fun getReleaseStiffness ()F
+	public final fun getResponse ()Lcom/wexpa/liquidglass/GlassResponse;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/wexpa/liquidglass/GlassInteraction$Companion {
+	public final fun getCalm ()Lcom/wexpa/liquidglass/GlassInteraction;
+	public final fun getDefault ()Lcom/wexpa/liquidglass/GlassInteraction;
+	public final fun getPullable ()Lcom/wexpa/liquidglass/GlassInteraction;
+	public final fun getReducedMotion ()Lcom/wexpa/liquidglass/GlassInteraction;
+}
+
+public final class com/wexpa/liquidglass/GlassInteractionKt {
+	public static final fun rememberGlassPressSource (Landroidx/compose/runtime/Composer;I)Lcom/wexpa/liquidglass/GlassPressSource;
+}
+
+public final class com/wexpa/liquidglass/GlassKt {
+	public static final fun getCapsuleShape ()Landroidx/compose/foundation/shape/RoundedCornerShape;
+}
+
+public final class com/wexpa/liquidglass/GlassLight {
+	public static final field $stable I
+	public static final field Companion Lcom/wexpa/liquidglass/GlassLight$Companion;
+	public fun <init> ()V
+	public fun <init> (FF)V
+	public synthetic fun <init> (FFILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun component1 ()F
+	public final fun component2 ()F
+	public final fun copy (FF)Lcom/wexpa/liquidglass/GlassLight;
+	public static synthetic fun copy$default (Lcom/wexpa/liquidglass/GlassLight;FFILjava/lang/Object;)Lcom/wexpa/liquidglass/GlassLight;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getX ()F
+	public final fun getY ()F
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/wexpa/liquidglass/GlassLight$Companion {
+	public final fun getDefault ()Lcom/wexpa/liquidglass/GlassLight;
+}
+
+public final class com/wexpa/liquidglass/GlassMaterial {
+	public static final field $stable I
+	public static final field BEVEL_RATIO F
+	public static final field DARK_LIFT F
+	public static final field DEFAULT_TINT_AMOUNT F
+	public static final field INSTANCE Lcom/wexpa/liquidglass/GlassMaterial;
+	public final fun coverSheetDim-0680j_4 (F)F
+	public final fun fineKernel-u2uoSUM (F)F
+	public static synthetic fun fineKernel-u2uoSUM$default (Lcom/wexpa/liquidglass/GlassMaterial;FILjava/lang/Object;)F
+	public final fun fineShare (F)F
+	public static synthetic fun fineShare$default (Lcom/wexpa/liquidglass/GlassMaterial;FILjava/lang/Object;)F
+	public final fun getLightTint-0d7_KjU ()J
+	public final fun getToolbarLightTint-0d7_KjU ()J
+	public final fun getWideKernel-D9Ej5fM ()F
+	public final fun lensFormation-0680j_4 (F)F
+	public final fun opacity (ZF)F
+	public static synthetic fun opacity$default (Lcom/wexpa/liquidglass/GlassMaterial;ZFILjava/lang/Object;)F
+	public final fun systemBackdropSigma-u2uoSUM (F)F
+	public static synthetic fun systemBackdropSigma-u2uoSUM$default (Lcom/wexpa/liquidglass/GlassMaterial;FILjava/lang/Object;)F
+	public final fun toolbarOpacity (ZF)F
+	public static synthetic fun toolbarOpacity$default (Lcom/wexpa/liquidglass/GlassMaterial;ZFILjava/lang/Object;)F
+}
+
+public final class com/wexpa/liquidglass/GlassMaterialDrawingKt {
+	public static final fun rememberGlassAccessoryLink (Landroidx/compose/runtime/Composer;I)Lcom/wexpa/liquidglass/GlassAccessoryLink;
+}
+
+public final class com/wexpa/liquidglass/GlassMorphKt {
+	public static final fun animateGlassStyle (Lcom/wexpa/liquidglass/GlassStyle;Lcom/wexpa/liquidglass/GlassStyle;ZLandroidx/compose/animation/core/AnimationSpec;Landroidx/compose/runtime/Composer;II)Lcom/wexpa/liquidglass/GlassStyle;
+	public static final fun lerpGlassStyle (Lcom/wexpa/liquidglass/GlassStyle;Lcom/wexpa/liquidglass/GlassStyle;F)Lcom/wexpa/liquidglass/GlassStyle;
+}
+
+public final class com/wexpa/liquidglass/GlassNamespace {
+	public static final field $stable I
+}
+
+public final class com/wexpa/liquidglass/GlassPressSource {
+	public static final field $stable I
+	public final fun press-0a9Yr6o (JJ)V
+	public static synthetic fun press-0a9Yr6o$default (Lcom/wexpa/liquidglass/GlassPressSource;JJILjava/lang/Object;)V
+	public final fun release ()V
+}
+
+public final class com/wexpa/liquidglass/GlassProfile : java/lang/Enum {
+	public static final field Held Lcom/wexpa/liquidglass/GlassProfile;
+	public static final field Legacy Lcom/wexpa/liquidglass/GlassProfile;
+	public static final field Lens Lcom/wexpa/liquidglass/GlassProfile;
+	public static final field Measured Lcom/wexpa/liquidglass/GlassProfile;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public static fun valueOf (Ljava/lang/String;)Lcom/wexpa/liquidglass/GlassProfile;
+	public static fun values ()[Lcom/wexpa/liquidglass/GlassProfile;
+}
+
+public final class com/wexpa/liquidglass/GlassPullShape : java/lang/Enum {
+	public static final field Adaptive Lcom/wexpa/liquidglass/GlassPullShape;
+	public static final field AreaPreserving Lcom/wexpa/liquidglass/GlassPullShape;
+	public static final field Free Lcom/wexpa/liquidglass/GlassPullShape;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public static fun valueOf (Ljava/lang/String;)Lcom/wexpa/liquidglass/GlassPullShape;
+	public static fun values ()[Lcom/wexpa/liquidglass/GlassPullShape;
+}
+
+public final class com/wexpa/liquidglass/GlassRegionKt {
+	public static final fun LiquidGlassTheme-M1461ms (ZJLcom/wexpa/liquidglass/Glass;FFFFLkotlin/jvm/functions/Function2;Landroidx/compose/runtime/Composer;II)V
+	public static final fun glassEffect (Landroidx/compose/ui/Modifier;Lcom/wexpa/liquidglass/Glass;Landroidx/compose/ui/graphics/Shape;Lcom/wexpa/liquidglass/GlassAccessoryLink;)Landroidx/compose/ui/Modifier;
+	public static synthetic fun glassEffect$default (Landroidx/compose/ui/Modifier;Lcom/wexpa/liquidglass/Glass;Landroidx/compose/ui/graphics/Shape;Lcom/wexpa/liquidglass/GlassAccessoryLink;ILjava/lang/Object;)Landroidx/compose/ui/Modifier;
+}
+
+public final class com/wexpa/liquidglass/GlassResponse : java/lang/Enum {
+	public static final field Calm Lcom/wexpa/liquidglass/GlassResponse;
+	public static final field Expressive Lcom/wexpa/liquidglass/GlassResponse;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public static fun valueOf (Ljava/lang/String;)Lcom/wexpa/liquidglass/GlassResponse;
+	public static fun values ()[Lcom/wexpa/liquidglass/GlassResponse;
+}
+
+public final class com/wexpa/liquidglass/GlassRestMap : java/lang/Enum {
+	public static final field Legacy Lcom/wexpa/liquidglass/GlassRestMap;
+	public static final field Measured Lcom/wexpa/liquidglass/GlassRestMap;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public static fun valueOf (Ljava/lang/String;)Lcom/wexpa/liquidglass/GlassRestMap;
+	public static fun values ()[Lcom/wexpa/liquidglass/GlassRestMap;
+}
+
+public final class com/wexpa/liquidglass/GlassScrollEdgeKt {
+	public static final fun GlassScrollEdge-tBgoCNw (JLandroidx/compose/ui/Modifier;FLcom/wexpa/liquidglass/GlassScrollEdgeStyle;ZZLandroidx/compose/runtime/Composer;II)V
+	public static final fun glassShadow (FF)Lcom/wexpa/liquidglass/GlassShadow;
+	public static synthetic fun glassShadow$default (FFILjava/lang/Object;)Lcom/wexpa/liquidglass/GlassShadow;
+}
+
+public final class com/wexpa/liquidglass/GlassScrollEdgeStyle : java/lang/Enum {
+	public static final field Hard Lcom/wexpa/liquidglass/GlassScrollEdgeStyle;
+	public static final field Soft Lcom/wexpa/liquidglass/GlassScrollEdgeStyle;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public static fun valueOf (Ljava/lang/String;)Lcom/wexpa/liquidglass/GlassScrollEdgeStyle;
+	public static fun values ()[Lcom/wexpa/liquidglass/GlassScrollEdgeStyle;
+}
+
+public final class com/wexpa/liquidglass/GlassSelectorSpec {
+	public static final field $stable I
+	public fun <init> ()V
+	public fun <init> (FFFFFFFFFFFFFFFFFFFFZLcom/wexpa/liquidglass/GlassResponse;)V
+	public synthetic fun <init> (FFFFFFFFFFFFFFFFFFFFZLcom/wexpa/liquidglass/GlassResponse;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun component1 ()F
+	public final fun component10 ()F
+	public final fun component11 ()F
+	public final fun component12 ()F
+	public final fun component13 ()F
+	public final fun component14 ()F
+	public final fun component15 ()F
+	public final fun component16 ()F
+	public final fun component17 ()F
+	public final fun component18 ()F
+	public final fun component19 ()F
+	public final fun component2 ()F
+	public final fun component20 ()F
+	public final fun component21 ()Z
+	public final fun component22 ()Lcom/wexpa/liquidglass/GlassResponse;
+	public final fun component3 ()F
+	public final fun component4 ()F
+	public final fun component5 ()F
+	public final fun component6 ()F
+	public final fun component7 ()F
+	public final fun component8 ()F
+	public final fun component9 ()F
+	public final fun copy (FFFFFFFFFFFFFFFFFFFFZLcom/wexpa/liquidglass/GlassResponse;)Lcom/wexpa/liquidglass/GlassSelectorSpec;
+	public static synthetic fun copy$default (Lcom/wexpa/liquidglass/GlassSelectorSpec;FFFFFFFFFFFFFFFFFFFFZLcom/wexpa/liquidglass/GlassResponse;ILjava/lang/Object;)Lcom/wexpa/liquidglass/GlassSelectorSpec;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getAdmitInsetDp ()F
+	public final fun getAdmitPaddingDp ()F
+	public final fun getAdmitReleaseDp ()F
+	public final fun getAttachOmega ()F
+	public final fun getCentreOmega ()F
+	public final fun getCentreZeta ()F
+	public final fun getFormOmega ()F
+	public final fun getFormZeta ()F
+	public final fun getHoldThresholdSeconds ()F
+	public final fun getMaxExtraLength ()F
+	public final fun getMaxRadiusDrop ()F
+	public final fun getMaxSkew ()F
+	public final fun getMaxWidthSlots ()F
+	public final fun getMinLengthDp ()F
+	public final fun getMinRadiusDp ()F
+	public final fun getPoseMotion ()Z
+	public final fun getReleaseOmega ()F
+	public final fun getResponse ()Lcom/wexpa/liquidglass/GlassResponse;
+	public final fun getShapeOmega ()F
+	public final fun getShapeZeta ()F
+	public final fun getSizeOmega ()F
+	public final fun getSizeZeta ()F
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/wexpa/liquidglass/GlassShadow {
+	public static final field $stable I
+	public synthetic fun <init> (FFFLkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun component1 ()F
+	public final fun component2-D9Ej5fM ()F
+	public final fun component3-D9Ej5fM ()F
+	public final fun copy-VpY3zN4 (FFF)Lcom/wexpa/liquidglass/GlassShadow;
+	public static synthetic fun copy-VpY3zN4$default (Lcom/wexpa/liquidglass/GlassShadow;FFFILjava/lang/Object;)Lcom/wexpa/liquidglass/GlassShadow;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getAlpha ()F
+	public final fun getBlurRadius-D9Ej5fM ()F
+	public final fun getOffsetY-D9Ej5fM ()F
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/wexpa/liquidglass/GlassSquircleShape : androidx/compose/ui/graphics/Shape {
+	public static final field $stable I
+	public synthetic fun <init> (FFILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public synthetic fun <init> (FFLkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun component1-D9Ej5fM ()F
+	public final fun component2 ()F
+	public final fun copy-D5KLDUw (FF)Lcom/wexpa/liquidglass/GlassSquircleShape;
+	public static synthetic fun copy-D5KLDUw$default (Lcom/wexpa/liquidglass/GlassSquircleShape;FFILjava/lang/Object;)Lcom/wexpa/liquidglass/GlassSquircleShape;
+	public fun createOutline-Pq9zytI (JLandroidx/compose/ui/unit/LayoutDirection;Landroidx/compose/ui/unit/Density;)Landroidx/compose/ui/graphics/Outline;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getCornerRadius-D9Ej5fM ()F
+	public final fun getPower ()F
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/wexpa/liquidglass/GlassSquircleShapeKt {
+	public static final fun getDefaultSquircleRadius ()F
+}
+
+public final class com/wexpa/liquidglass/GlassStyle {
+	public static final field $stable I
+	public static final field Companion Lcom/wexpa/liquidglass/GlassStyle$Companion;
+	public fun <init> ()V
+	public synthetic fun <init> (Lcom/wexpa/liquidglass/GlassProfile;FFFFFFFFFFFFFFFFFFFFFFFJFFFFFFFFFFFFFFFFFFFFFFJZFLcom/wexpa/liquidglass/GlassRestMap;FFZFFFFFIILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public synthetic fun <init> (Lcom/wexpa/liquidglass/GlassProfile;FFFFFFFFFFFFFFFFFFFFFFFJFFFFFFFFFFFFFFFFFFFFFFJZFLcom/wexpa/liquidglass/GlassRestMap;FFZFFFFFLkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun component1 ()Lcom/wexpa/liquidglass/GlassProfile;
+	public final fun component10 ()F
+	public final fun component11 ()F
+	public final fun component12 ()F
+	public final fun component13 ()F
+	public final fun component14 ()F
+	public final fun component15 ()F
+	public final fun component16 ()F
+	public final fun component17-D9Ej5fM ()F
+	public final fun component18 ()F
+	public final fun component19 ()F
+	public final fun component2-D9Ej5fM ()F
+	public final fun component20 ()F
+	public final fun component21 ()F
+	public final fun component22-D9Ej5fM ()F
+	public final fun component23 ()F
+	public final fun component24-D9Ej5fM ()F
+	public final fun component25-0d7_KjU ()J
+	public final fun component26 ()F
+	public final fun component27 ()F
+	public final fun component28 ()F
+	public final fun component29 ()F
+	public final fun component3-D9Ej5fM ()F
+	public final fun component30 ()F
+	public final fun component31 ()F
+	public final fun component32 ()F
+	public final fun component33 ()F
+	public final fun component34 ()F
+	public final fun component35 ()F
+	public final fun component36 ()F
+	public final fun component37 ()F
+	public final fun component38 ()F
+	public final fun component39-D9Ej5fM ()F
+	public final fun component4-D9Ej5fM ()F
+	public final fun component40 ()F
+	public final fun component41 ()F
+	public final fun component42 ()F
+	public final fun component43 ()F
+	public final fun component44 ()F
+	public final fun component45-D9Ej5fM ()F
+	public final fun component46-D9Ej5fM ()F
+	public final fun component47 ()F
+	public final fun component48-0d7_KjU ()J
+	public final fun component49 ()Z
+	public final fun component5-D9Ej5fM ()F
+	public final fun component50 ()F
+	public final fun component51 ()Lcom/wexpa/liquidglass/GlassRestMap;
+	public final fun component52 ()F
+	public final fun component53 ()F
+	public final fun component54 ()Z
+	public final fun component55-D9Ej5fM ()F
+	public final fun component56 ()F
+	public final fun component57 ()F
+	public final fun component58 ()F
+	public final fun component59 ()F
+	public final fun component6-D9Ej5fM ()F
+	public final fun component7 ()F
+	public final fun component8-D9Ej5fM ()F
+	public final fun component9 ()F
+	public final fun copy-Wh8Nu0c (Lcom/wexpa/liquidglass/GlassProfile;FFFFFFFFFFFFFFFFFFFFFFFJFFFFFFFFFFFFFFFFFFFFFFJZFLcom/wexpa/liquidglass/GlassRestMap;FFZFFFFF)Lcom/wexpa/liquidglass/GlassStyle;
+	public static synthetic fun copy-Wh8Nu0c$default (Lcom/wexpa/liquidglass/GlassStyle;Lcom/wexpa/liquidglass/GlassProfile;FFFFFFFFFFFFFFFFFFFFFFFJFFFFFFFFFFFFFFFFFFFFFFJZFLcom/wexpa/liquidglass/GlassRestMap;FFZFFFFFIILjava/lang/Object;)Lcom/wexpa/liquidglass/GlassStyle;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getAdaptivity ()F
+	public final fun getBackdropBlur-D9Ej5fM ()F
+	public final fun getBackdropSigma-D9Ej5fM ()F
+	public final fun getBevel-D9Ej5fM ()F
+	public final fun getBevelPeak ()F
+	public final fun getBevelPower ()F
+	public final fun getBlurRadius-D9Ej5fM ()F
+	public final fun getBodyBandScale ()F
+	public final fun getCapEdgeShadow ()F
+	public final fun getCapFold ()F
+	public final fun getContactShadow ()F
+	public final fun getContactShadowBlur-D9Ej5fM ()F
+	public final fun getContactShadowInside ()F
+	public final fun getContactShadowOffset-D9Ej5fM ()F
+	public final fun getCornerPower ()F
+	public final fun getCounterLight ()F
+	public final fun getDimmingLayer ()F
+	public final fun getDispersion ()F
+	public final fun getEdgeFold ()F
+	public final fun getEdgeLight ()F
+	public final fun getEdgeShadow ()F
+	public final fun getFallbackSurface-0d7_KjU ()J
+	public final fun getFineShare ()F
+	public final fun getFoldAtCorners ()F
+	public final fun getFresnel ()F
+	public final fun getHeldEdgeRecovery-D9Ej5fM ()F
+	public final fun getHeldEdgeTone ()F
+	public final fun getHeldGlow ()F
+	public final fun getHeldGlowFloor ()F
+	public final fun getHeldGlowReach-D9Ej5fM ()F
+	public final fun getHeldInkContinuous ()Z
+	public final fun getHeldLens ()F
+	public final fun getHeldMagnification ()F
+	public final fun getHighlightChroma ()F
+	public final fun getIndexOfRefraction ()F
+	public final fun getInkDispersion ()F
+	public final fun getInnerShadow ()F
+	public final fun getInvertsWithBackdrop ()Z
+	public final fun getLegibility ()F
+	public final fun getLiftAdaptivity ()F
+	public final fun getMirror ()F
+	public final fun getOuterContour ()F
+	public final fun getOuterContourFloor ()F
+	public final fun getProfile ()Lcom/wexpa/liquidglass/GlassProfile;
+	public final fun getRawBlur-D9Ej5fM ()F
+	public final fun getRawShare ()F
+	public final fun getRefractionBand-D9Ej5fM ()F
+	public final fun getRefractionDepth-D9Ej5fM ()F
+	public final fun getRestMap ()Lcom/wexpa/liquidglass/GlassRestMap;
+	public final fun getRimMirror ()F
+	public final fun getRimMirrorGain ()F
+	public final fun getRimSoftness-D9Ej5fM ()F
+	public final fun getSoftDetail ()F
+	public final fun getSpecular ()F
+	public final fun getSpecularPower ()F
+	public final fun getTint-0d7_KjU ()J
+	public final fun getTintAbsorption ()F
+	public final fun getTintLift ()F
+	public final fun getWideKernel-D9Ej5fM ()F
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/wexpa/liquidglass/GlassStyle$Companion {
+	public final fun clearLens (F)Lcom/wexpa/liquidglass/GlassStyle;
+	public static synthetic fun clearLens$default (Lcom/wexpa/liquidglass/GlassStyle$Companion;FILjava/lang/Object;)Lcom/wexpa/liquidglass/GlassStyle;
+	public final fun coverSheet ()Lcom/wexpa/liquidglass/GlassStyle;
+	public final fun dock ()Lcom/wexpa/liquidglass/GlassStyle;
+	public final fun getChrome ()Lcom/wexpa/liquidglass/GlassStyle;
+	public final fun getClear ()Lcom/wexpa/liquidglass/GlassStyle;
+	public final fun getDarkChrome ()Lcom/wexpa/liquidglass/GlassStyle;
+	public final fun getRegular ()Lcom/wexpa/liquidglass/GlassStyle;
+	public final fun getThick ()Lcom/wexpa/liquidglass/GlassStyle;
+	public final fun inApp (ZF)Lcom/wexpa/liquidglass/GlassStyle;
+	public static synthetic fun inApp$default (Lcom/wexpa/liquidglass/GlassStyle$Companion;ZFILjava/lang/Object;)Lcom/wexpa/liquidglass/GlassStyle;
+	public final fun menu ()Lcom/wexpa/liquidglass/GlassStyle;
+	public final fun shellIcon ()Lcom/wexpa/liquidglass/GlassStyle;
+	public final fun systemBackdrop (F)Lcom/wexpa/liquidglass/GlassStyle;
+	public static synthetic fun systemBackdrop$default (Lcom/wexpa/liquidglass/GlassStyle$Companion;FILjava/lang/Object;)Lcom/wexpa/liquidglass/GlassStyle;
+	public final fun toolbar (ZF)Lcom/wexpa/liquidglass/GlassStyle;
+	public static synthetic fun toolbar$default (Lcom/wexpa/liquidglass/GlassStyle$Companion;ZFILjava/lang/Object;)Lcom/wexpa/liquidglass/GlassStyle;
+}
+
+public final class com/wexpa/liquidglass/GlassTabBarAccessory {
+	public static final field $stable I
+	public synthetic fun <init> (FFFZFLcom/wexpa/liquidglass/GlassAccessoryLink;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public synthetic fun <init> (FFFZFLcom/wexpa/liquidglass/GlassAccessoryLink;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getFusion-D9Ej5fM ()F
+	public final fun getGap-D9Ej5fM ()F
+	public final fun getLensFusion-D9Ej5fM ()F
+	public final fun getLink ()Lcom/wexpa/liquidglass/GlassAccessoryLink;
+	public final fun getSize-D9Ej5fM ()F
+	public final fun getYieldsToLens ()Z
+	public fun hashCode ()I
+}
+
+public final class com/wexpa/liquidglass/GlassTabBarKt {
+	public static final field GlassTabBarTestTag Ljava/lang/String;
+	public static final fun GlassTabBar (IILkotlin/jvm/functions/Function1;Landroidx/compose/ui/Modifier;Lcom/wexpa/liquidglass/GlassTabBarStyle;ZFLcom/wexpa/liquidglass/GlassTabBarAccessory;Lkotlin/jvm/functions/Function4;Landroidx/compose/runtime/Composer;II)V
+}
+
+public final class com/wexpa/liquidglass/GlassTabBarStyle {
+	public static final field $stable I
+	public static final field Companion Lcom/wexpa/liquidglass/GlassTabBarStyle$Companion;
+	public fun <init> ()V
+	public synthetic fun <init> (Lcom/wexpa/liquidglass/GlassStyle;Lcom/wexpa/liquidglass/GlassStyle;Lcom/wexpa/liquidglass/GlassStyle;Lcom/wexpa/liquidglass/GlassLight;Landroidx/compose/ui/graphics/Shape;FFFFFFLcom/wexpa/liquidglass/GlassInteraction;Landroidx/compose/animation/core/AnimationSpec;Landroidx/compose/animation/core/AnimationSpec;Landroidx/compose/animation/core/AnimationSpec;Landroidx/compose/animation/core/AnimationSpec;FFFLandroidx/compose/animation/core/AnimationSpec;FFFZFFLcom/wexpa/liquidglass/GlassSelectorSpec;Lcom/wexpa/liquidglass/GlassInteraction;ZZFFFFFZFIILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public synthetic fun <init> (Lcom/wexpa/liquidglass/GlassStyle;Lcom/wexpa/liquidglass/GlassStyle;Lcom/wexpa/liquidglass/GlassStyle;Lcom/wexpa/liquidglass/GlassLight;Landroidx/compose/ui/graphics/Shape;FFFFFFLcom/wexpa/liquidglass/GlassInteraction;Landroidx/compose/animation/core/AnimationSpec;Landroidx/compose/animation/core/AnimationSpec;Landroidx/compose/animation/core/AnimationSpec;Landroidx/compose/animation/core/AnimationSpec;FFFLandroidx/compose/animation/core/AnimationSpec;FFFZFFLcom/wexpa/liquidglass/GlassSelectorSpec;Lcom/wexpa/liquidglass/GlassInteraction;ZZFFFFFZFLkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun component1 ()Lcom/wexpa/liquidglass/GlassStyle;
+	public final fun component10-D9Ej5fM ()F
+	public final fun component11-D9Ej5fM ()F
+	public final fun component12 ()Lcom/wexpa/liquidglass/GlassInteraction;
+	public final fun component13 ()Landroidx/compose/animation/core/AnimationSpec;
+	public final fun component14 ()Landroidx/compose/animation/core/AnimationSpec;
+	public final fun component15 ()Landroidx/compose/animation/core/AnimationSpec;
+	public final fun component16 ()Landroidx/compose/animation/core/AnimationSpec;
+	public final fun component17-D9Ej5fM ()F
+	public final fun component18 ()F
+	public final fun component19-D9Ej5fM ()F
+	public final fun component2 ()Lcom/wexpa/liquidglass/GlassStyle;
+	public final fun component20 ()Landroidx/compose/animation/core/AnimationSpec;
+	public final fun component21-D9Ej5fM ()F
+	public final fun component22 ()F
+	public final fun component23 ()F
+	public final fun component24 ()Z
+	public final fun component25 ()F
+	public final fun component26-D9Ej5fM ()F
+	public final fun component27 ()Lcom/wexpa/liquidglass/GlassSelectorSpec;
+	public final fun component28 ()Lcom/wexpa/liquidglass/GlassInteraction;
+	public final fun component29 ()Z
+	public final fun component3 ()Lcom/wexpa/liquidglass/GlassStyle;
+	public final fun component30 ()Z
+	public final fun component31 ()F
+	public final fun component32 ()F
+	public final fun component33 ()F
+	public final fun component34 ()F
+	public final fun component35 ()F
+	public final fun component36 ()Z
+	public final fun component37-D9Ej5fM ()F
+	public final fun component4 ()Lcom/wexpa/liquidglass/GlassLight;
+	public final fun component5 ()Landroidx/compose/ui/graphics/Shape;
+	public final fun component6-D9Ej5fM ()F
+	public final fun component7-D9Ej5fM ()F
+	public final fun component8-D9Ej5fM ()F
+	public final fun component9-D9Ej5fM ()F
+	public final fun copy-_wNFB2c (Lcom/wexpa/liquidglass/GlassStyle;Lcom/wexpa/liquidglass/GlassStyle;Lcom/wexpa/liquidglass/GlassStyle;Lcom/wexpa/liquidglass/GlassLight;Landroidx/compose/ui/graphics/Shape;FFFFFFLcom/wexpa/liquidglass/GlassInteraction;Landroidx/compose/animation/core/AnimationSpec;Landroidx/compose/animation/core/AnimationSpec;Landroidx/compose/animation/core/AnimationSpec;Landroidx/compose/animation/core/AnimationSpec;FFFLandroidx/compose/animation/core/AnimationSpec;FFFZFFLcom/wexpa/liquidglass/GlassSelectorSpec;Lcom/wexpa/liquidglass/GlassInteraction;ZZFFFFFZF)Lcom/wexpa/liquidglass/GlassTabBarStyle;
+	public static synthetic fun copy-_wNFB2c$default (Lcom/wexpa/liquidglass/GlassTabBarStyle;Lcom/wexpa/liquidglass/GlassStyle;Lcom/wexpa/liquidglass/GlassStyle;Lcom/wexpa/liquidglass/GlassStyle;Lcom/wexpa/liquidglass/GlassLight;Landroidx/compose/ui/graphics/Shape;FFFFFFLcom/wexpa/liquidglass/GlassInteraction;Landroidx/compose/animation/core/AnimationSpec;Landroidx/compose/animation/core/AnimationSpec;Landroidx/compose/animation/core/AnimationSpec;Landroidx/compose/animation/core/AnimationSpec;FFFLandroidx/compose/animation/core/AnimationSpec;FFFZFFLcom/wexpa/liquidglass/GlassSelectorSpec;Lcom/wexpa/liquidglass/GlassInteraction;ZZFFFFFZFIILjava/lang/Object;)Lcom/wexpa/liquidglass/GlassTabBarStyle;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getArrive ()Landroidx/compose/animation/core/AnimationSpec;
+	public final fun getBar ()Lcom/wexpa/liquidglass/GlassStyle;
+	public final fun getBarInteraction ()Lcom/wexpa/liquidglass/GlassInteraction;
+	public final fun getContentPadding-D9Ej5fM ()F
+	public final fun getDeformItemsWithBar ()Z
+	public final fun getFlingVelocity-D9Ej5fM ()F
+	public final fun getForm ()Landroidx/compose/animation/core/AnimationSpec;
+	public final fun getGel ()F
+	public final fun getGelReference-D9Ej5fM ()F
+	public final fun getGelSpring ()Landroidx/compose/animation/core/AnimationSpec;
+	public final fun getHeight-D9Ej5fM ()F
+	public final fun getHeldLift ()F
+	public final fun getHeldScale ()F
+	public final fun getItemsFollowBarPress ()Z
+	public final fun getLens ()Lcom/wexpa/liquidglass/GlassStyle;
+	public final fun getLensExtraWidth-D9Ej5fM ()F
+	public final fun getLensFuse-D9Ej5fM ()F
+	public final fun getLensInkAll ()Z
+	public final fun getLensInteraction ()Lcom/wexpa/liquidglass/GlassInteraction;
+	public final fun getLensOverflow-D9Ej5fM ()F
+	public final fun getLensRise-D9Ej5fM ()F
+	public final fun getLight ()Lcom/wexpa/liquidglass/GlassLight;
+	public final fun getPill ()Lcom/wexpa/liquidglass/GlassStyle;
+	public final fun getPillInset-D9Ej5fM ()F
+	public final fun getPillWidth-D9Ej5fM ()F
+	public final fun getSelectedScale ()F
+	public final fun getSelector ()Lcom/wexpa/liquidglass/GlassSelectorSpec;
+	public final fun getSettle ()Landroidx/compose/animation/core/AnimationSpec;
+	public final fun getShape ()Landroidx/compose/ui/graphics/Shape;
+	public final fun getSlotWidth-D9Ej5fM ()F
+	public final fun getSubside ()Landroidx/compose/animation/core/AnimationSpec;
+	public final fun getTapOptics ()F
+	public final fun getTapOpticsFold ()F
+	public final fun getTapSelectedScale ()F
+	public final fun getTapTintFade ()F
+	public final fun getTapTransitFold ()F
+	public final fun getTouchLift ()Z
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/wexpa/liquidglass/GlassTabBarStyle$Companion {
+	public final fun Calm (Z)Lcom/wexpa/liquidglass/GlassTabBarStyle;
+	public static synthetic fun Calm$default (Lcom/wexpa/liquidglass/GlassTabBarStyle$Companion;ZILjava/lang/Object;)Lcom/wexpa/liquidglass/GlassTabBarStyle;
+	public final fun CalmClear (Z)Lcom/wexpa/liquidglass/GlassTabBarStyle;
+	public static synthetic fun CalmClear$default (Lcom/wexpa/liquidglass/GlassTabBarStyle$Companion;ZILjava/lang/Object;)Lcom/wexpa/liquidglass/GlassTabBarStyle;
+	public final fun CalmRecordedSpace (Z)Lcom/wexpa/liquidglass/GlassTabBarStyle;
+	public static synthetic fun CalmRecordedSpace$default (Lcom/wexpa/liquidglass/GlassTabBarStyle$Companion;ZILjava/lang/Object;)Lcom/wexpa/liquidglass/GlassTabBarStyle;
+	public final fun Measured (ZF)Lcom/wexpa/liquidglass/GlassTabBarStyle;
+	public static synthetic fun Measured$default (Lcom/wexpa/liquidglass/GlassTabBarStyle$Companion;ZFILjava/lang/Object;)Lcom/wexpa/liquidglass/GlassTabBarStyle;
+	public final fun V3 (ZFLcom/wexpa/liquidglass/GlassSelectorSpec;F)Lcom/wexpa/liquidglass/GlassTabBarStyle;
+	public static synthetic fun V3$default (Lcom/wexpa/liquidglass/GlassTabBarStyle$Companion;ZFLcom/wexpa/liquidglass/GlassSelectorSpec;FILjava/lang/Object;)Lcom/wexpa/liquidglass/GlassTabBarStyle;
+	public final fun getDark ()Lcom/wexpa/liquidglass/GlassTabBarStyle;
+	public final fun getHeldLens ()Lcom/wexpa/liquidglass/GlassStyle;
+	public final fun getHeldLensMeasured ()Lcom/wexpa/liquidglass/GlassStyle;
+	public final fun getIos27 ()Lcom/wexpa/liquidglass/GlassTabBarStyle;
+	public final fun getRestingInset ()Lcom/wexpa/liquidglass/GlassStyle;
+	public final fun getRestingInsetMeasured ()Lcom/wexpa/liquidglass/GlassStyle;
+}
+
+public final class com/wexpa/liquidglass/LiquidGlassCoverSheetKt {
+	public static final fun LiquidGlassCoverSheet-_SDZwk0 (FZLandroidx/compose/ui/Modifier;Landroidx/compose/ui/graphics/Shape;JLcom/wexpa/liquidglass/GlassStyle;Lcom/wexpa/liquidglass/GlassLight;Lkotlin/jvm/functions/Function3;Landroidx/compose/runtime/Composer;II)V
+}
+
+public abstract interface annotation class com/wexpa/liquidglass/LiquidGlassDiagnosticApi : java/lang/annotation/Annotation {
+}
+
+public final class com/wexpa/liquidglass/LiquidGlassDiagnostics {
+	public static final field $stable I
+	public static final field INSTANCE Lcom/wexpa/liquidglass/LiquidGlassDiagnostics;
+	public final fun getCoverageOnly ()Z
+	public final fun getRecordPadOverridePx ()Ljava/lang/Float;
+	public final fun reset ()V
+	public final fun setCoverageOnly (Z)V
+	public final fun setRecordPadOverridePx (Ljava/lang/Float;)V
+	public final fun withDiagnostics (Ljava/lang/Float;ZLkotlin/jvm/functions/Function0;)Ljava/lang/Object;
+	public static synthetic fun withDiagnostics$default (Lcom/wexpa/liquidglass/LiquidGlassDiagnostics;Ljava/lang/Float;ZLkotlin/jvm/functions/Function0;ILjava/lang/Object;)Ljava/lang/Object;
+}
+
+public final class com/wexpa/liquidglass/LiquidGlassSupport {
+	public static final field $stable I
+	public static final field INSTANCE Lcom/wexpa/liquidglass/LiquidGlassSupport;
+	public final fun getHasBackdropBlur ()Z
+	public final fun getHasShaders ()Z
+}
+
