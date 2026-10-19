@@ -503,7 +503,8 @@ Progress:
 - [ ] Practical host-owned backdrop/widget capture beyond WinForms standard controls;
   custom/other-framework capture is still missing. 19 Oct: WPF added (`LiquidGlass.Wpf`,
   `VisualBackdrop.Capture`, `GlassBitmap`; WpfDemo `--capture` checked in CI, PR #37). Avalonia 12 added too
-  (`LiquidGlass.Avalonia`, headless demo in CI on Linux and Windows); MAUI, Flutter, React Native, Qt and Unity remain.
+  (`LiquidGlass.Avalonia`, headless demo in CI on Linux and Windows); React Native added (`ports/react-native`,
+  React Native Skia, headless-checked; device run pending); MAUI, Flutter, Qt and Unity remain.
 - [ ] Keep production shader contracts/packaging/licenses synchronized and validate each supported
   path with executable examples; documentation alone does not prove support.
 

@@ -14,7 +14,8 @@ Separate the material, motion and host integration instead of duplicating a samp
 | CanvasKit / another Skia RuntimeEffect host | Generated production material, content and aperture shaders in `ports/skia` | CanvasKit software rendering verified against JVM pixels; host capture/input remain explicit |
 | .NET / SkiaSharp | `GlassPainter`, `CalmInteraction`, `CalmNavigation` / `CalmSelectorController`, optional feedback and WinForms `ControlBackdrop` | CPU fixtures, input, the Calm selector against Kotlin trajectories and standard-control capture verified; other hosts remain open |
 | Electron, Tauri, browser WebViews | Same web module, where WebGL and origin-clean textures are available | Host lifecycle/permissions must be tested |
-| SwiftUI, Flutter, React Native, Qt, Unity, other native hosts | Implement the renderer contract below or embed a supported surface | No dedicated native adapter shipped for these hosts; not a claim of drop-in support |
+| React Native (Android, web) | [`liquidglass-react-native`](react-native.md) (`ports/react-native`): `GlassSurface` and `GlassLens` in a React Native Skia `<Canvas>`, the production painter through an adapter | Unpublished; the adapter equals CanvasKit pixel for pixel in React Native Skia's headless build; not yet run on a device; backdrop is a snapshot |
+| SwiftUI, Flutter, Qt, Unity, other native hosts | Implement the renderer contract below or embed a supported surface | No dedicated native adapter shipped for these hosts; not a claim of drop-in support |
 
 The [web preview source](https://github.com/shayann07/liquidglass/tree/main/ports/web) has no runtime
 package dependency. Copy the modules with their Apache-2.0 notices, or vendor them at a pinned revision.
