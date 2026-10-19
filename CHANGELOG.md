@@ -18,6 +18,14 @@ This file records user-visible development changes. Published artifacts are iden
   switched its `Button` import to the glass one, and it compiled. Nothing has been published; npm and
   NuGet need their tokens first ([publishing](docs/publishing.md)).
 
+### Added — Flutter (19 October)
+
+- `liquidglass` for Flutter (`ports/flutter`, new, unpublished): `GlassSurface` draws the material over
+  the live backdrop on Impeller, through `ImageFilter.shader`, with the shader generated from the
+  production SkSL (`tool/generate_shader.mjs`). Its uniforms equal the CanvasKit port's to 1e-6; it
+  runs on the Android 17 emulator (OpenGL ES). The wide tone kernel is approximated with thirteen
+  Gaussian taps; Vulkan devices are not checked yet. [Guide](docs/flutter.md).
+
 ### Changed — Skia's own backdrop is not planned (19 October)
 
 - Docs: the overlay stays on every platform. Skia's own backdrop would fix the stacking on desktop and
