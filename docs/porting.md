@@ -1,3 +1,7 @@
+---
+description: Using LiquidGlass outside Compose: the web component, CanvasKit, React Native, Flutter, .NET, and the renderer contract for other stacks.
+---
+
 # Porting LiquidGlass
 
 The goal is reusable rendering, independent of the product around it. **A renderer still needs access

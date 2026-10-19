@@ -1,3 +1,7 @@
+---
+description: Glass versions of every Material 3 component with the same names and parameters: change the imports and a Compose app gets iOS 26's Liquid Glass.
+---
+
 # Material 3, in Liquid Glass
 
 `liquidglass-material3` has a Liquid Glass version of the Material 3 components, with the same

@@ -1,3 +1,7 @@
+---
+description: Install LiquidGlass in a Compose Multiplatform or Android app with one Gradle plugin line, then add iOS 26-style glass with one modifier or by changing Material 3 imports.
+---
+
 # Getting started
 
 ## Install

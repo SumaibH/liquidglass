@@ -33,6 +33,10 @@ Owner-approved side queue (20 Oct, after MAUI, before Qt): Pages HTTPS (cert re-
 was bad_authz), description and 20 topics DONE; tagline "Liquid Glass for every stack, measured
 against iOS."; README rewrite, docs SEO + per-stack landing pages, repo reorg (ask first), help-wanted
 issues + Discussions for what this machine cannot verify, launch drafts (do not post).
+   Done 20 Oct: MAUI pushed (7d00749); issues #62-#67 (label needs-device; Discussions were already on);
+   README rewrite, docs/for/*.md landing pages, docs/overrides/main.html (OG/Twitter), social card
+   docs/assets/social-card.png (owner: upload it as the GitHub social preview, Settings > General).
+   Pages cert: domain removed 02:51 and re-added 10 min later to force a new ACME order.
 
 ## PRODUCT PLAN (18 Oct 2026, owner-approved) — read this first
 

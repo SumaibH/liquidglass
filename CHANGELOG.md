@@ -5,6 +5,16 @@ A version heading means that version is published; anything above the newest one
 
 ## Unreleased
 
+### Documentation — every stack, discoverable (20 October)
+
+- New positioning: **Liquid Glass for every stack, measured against iOS.** The README is rewritten
+  around a "pick your stack" table with one install line and snippet per stack, an honest list of
+  single-stack alternatives (quoted from their own repositories), and a help-wanted section.
+- The docs site has a "Liquid Glass for …" page per stack (Android and Compose, Flutter, React
+  Native, the web, .NET), meta descriptions, OpenGraph and Twitter link previews with a social card,
+  and the sitemap at `/sitemap.xml`.
+- Device checks this machine cannot do are open as `needs-device` issues (#62 to #67).
+
 ### Added — .NET MAUI (20 October)
 
 - `LiquidGlass.Maui` (new NuGet package, .NET 10, Android and Windows; not iOS): `GlassSurface`, a

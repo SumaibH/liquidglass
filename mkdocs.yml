@@ -5,11 +5,12 @@
 # README.md is the landing page and stays where GitHub shows it; it is not part of this site.
 # Build it locally with:  pip install mkdocs-material && mkdocs serve
 
-site_name: liquidglass
+site_name: LiquidGlass
 site_url: https://liquidglass.shayxo.dev/
 site_description: >-
-  Liquid Glass for Jetpack Compose and Compose Multiplatform. Real refraction, dispersion and
-  rim lighting in one shader. Documentation, API reference and the optical research behind it.
+  Liquid Glass for every stack, measured against iOS: Apple's iOS 26 glass for Android, Jetpack
+  Compose, desktop, web, React Native, Flutter and .NET. Refraction, dispersion and touch response
+  fitted to iOS screen recordings.
 site_author: Shayan Khan
 copyright: Apache-2.0. Not affiliated with, endorsed by, or derived from Apple.
 
@@ -25,9 +26,12 @@ strict: true
 exclude_docs: |
   /1.MP4
   /2.MP4
+  /overrides/
 
 theme:
   name: material
+  # Link previews (OpenGraph and Twitter cards) and per-page meta descriptions; see main.html.
+  custom_dir: docs/overrides
   language: en
   icon:
     repo: fontawesome/brands/github
@@ -96,10 +100,22 @@ extra:
     - icon: fontawesome/solid/cube
       link: https://central.sonatype.com/artifact/dev.shayxo.liquidglass/liquidglass
       name: Maven Central
+    - icon: fontawesome/brands/npm
+      link: https://www.npmjs.com/package/@shayxo.dev/liquidglass
+      name: npm
+    - icon: fontawesome/solid/box
+      link: https://www.nuget.org/packages/LiquidGlass
+      name: NuGet
 
 nav:
   - Home: README.md
   - Live demo: demo.md
+  - By stack:
+      - Liquid Glass for Android & Compose: for/android.md
+      - Liquid Glass for Flutter: for/flutter.md
+      - Liquid Glass for React Native: for/react-native.md
+      - Liquid Glass for the web: for/web.md
+      - Liquid Glass for .NET: for/dotnet.md
   - Development & visuals: development-status.md
   - Using it:
       - Getting started: getting-started.md

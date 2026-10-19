@@ -1,3 +1,7 @@
+---
+description: The <liquid-glass> web component: Liquid Glass for any web page or framework, refracting the live page in Chromium or drawing the production shaders.
+---
+
 # Web component
 
 `<liquid-glass>` is a standard custom element for any web page: plain HTML, React, Vue, Svelte,

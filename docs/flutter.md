@@ -1,3 +1,7 @@
+---
+description: liquiglass, Liquid Glass for Flutter: GlassSurface refracts the live backdrop on Impeller with the shader measured against iOS recordings.
+---
+
 # Flutter
 
 [`liquiglass`](https://pub.dev/packages/liquiglass), liquidglass for Flutter, puts the Compose library's material over the **live** backdrop.

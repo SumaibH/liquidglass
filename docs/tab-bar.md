@@ -1,3 +1,7 @@
+---
+description: The iOS 26 tab bar in Compose: a selection that becomes a lens you can drag and throw, with motion fitted to iOS recordings.
+---
+
 # Tab bar
 
 `GlassTabBar` combines calibrated material with authored interaction dynamics. Its Legacy

@@ -1,3 +1,7 @@
+---
+description: How LiquidGlass draws refracting glass in one shader: distance field, bevel profile, refraction, dispersion, frost and rim light.
+---
+
 # How it works
 
 One fragment shader, in the SkSL dialect shared by AGSL (Android 13+) and Skia (Desktop), over a

@@ -1,3 +1,7 @@
+---
+description: Liquid Glass for React Native on Android and the web: GlassSurface and GlassLens on React Native Skia with the production shaders.
+---
+
 # React Native
 
 `@shayxo.dev/liquidglass-react-native` draws Liquid Glass in React Native with

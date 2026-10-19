@@ -1,10 +1,23 @@
-# liquidglass — documentation
+---
+description: LiquidGlass documentation: Liquid Glass for every stack, measured against iOS. Guides for Compose, Material 3, the web, React Native, Flutter and .NET.
+---
 
-The [development status and visual guide](development-status.md) covers the Compose, CanvasKit and
-native .NET paths as of 0.2.0, source/native comparisons, verification and remaining gaps. It is the
-starting point for recent work; historical measurements have a different scope.
+# LiquidGlass
 
-A refracting glass material for Compose Multiplatform, drawn entirely in a shader.
+**Liquid Glass for every stack, measured against iOS.** Apple's iOS 26 glass for Android, desktop,
+web, React Native, Flutter and .NET: real refraction of whatever is behind it, drawn in one shader whose
+levels and motion are fitted to iOS screen recordings. [Try the live demo](demo.md).
+
+| Your stack | Start here |
+| :-- | :-- |
+| Android, Jetpack Compose, Compose Multiplatform | [Liquid Glass for Android & Compose](for/android.md) |
+| Flutter | [Liquid Glass for Flutter](for/flutter.md) |
+| React Native | [Liquid Glass for React Native](for/react-native.md) |
+| The web: React, Vue, Svelte, HTML | [Liquid Glass for the web](for/web.md) |
+| .NET: MAUI, WPF, Avalonia, WinForms | [Liquid Glass for .NET](for/dotnet.md) |
+
+The [development status and visual guide](development-status.md) covers every path, with its evidence
+and remaining gaps.
 
 If you are here to use it, start with [Getting started](getting-started.md). If you are here to
 change the optics, read [How it works](how-it-works.md) and then

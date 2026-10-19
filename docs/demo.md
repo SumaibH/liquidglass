@@ -1,3 +1,7 @@
+---
+description: Try LiquidGlass in your browser: the Compose Multiplatform demo running on WebAssembly, with glass refracting a moving scene.
+---
+
 # Live demo
 
 Atlas Studio, the library's demo app, running in your browser: Compose for Web (WebAssembly) drawing

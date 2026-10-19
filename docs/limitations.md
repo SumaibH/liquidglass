@@ -1,3 +1,7 @@
+---
+description: What LiquidGlass does not do yet, platform by platform: the honest list of gaps between it and iOS 26's Liquid Glass.
+---
+
 # Limitations
 
 ## Current development gaps
