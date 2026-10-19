@@ -1,7 +1,7 @@
 // Apache-2.0. The in-app material's uniforms: a line-for-line port of ports/skia's
 // clearMaterialUniforms (renderer.mjs) and inAppMaterialUniforms (material.mjs), which carry
 // Compose's GlassStyle.inApp. Lengths are device pixels; the density converts the dp constants.
-part of '../liquid_glass.dart';
+part of '../liquiglass.dart';
 
 const List<(double, double)> _lightOpacity = [(0, .435), (31, .514), (50, .565), (62, .600), (100, .733)];
 const List<(double, double)> _darkOpacity = [(0, .416), (29, .439), (50, .451), (62, .510), (86, .655), (100, .737)];

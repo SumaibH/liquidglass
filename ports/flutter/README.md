@@ -1,23 +1,25 @@
-# liquidglass for Flutter
+# liquiglass
 
-Liquid Glass for Flutter, using the shader the Compose library runs, measured against iOS recordings.
-`GlassSurface` refracts whatever Flutter paints behind it, live, every frame. Lists scroll under it
-and video plays under it, with no snapshots. It needs Impeller, Flutter's renderer on Android.
-Elsewhere it draws a frosted stand-in. iOS is not a target: on iOS 26 the system's own glass is the
-native choice.
+Liquid Glass for Flutter, using the shader the [liquidglass](https://github.com/shayann07/liquidglass)
+Compose library runs, measured against iOS recordings. `GlassSurface` refracts whatever Flutter paints
+behind it, live, every frame. Lists scroll under it and video plays under it, with no snapshots. It
+needs Impeller, Flutter's renderer on Android. Elsewhere it draws a frosted stand-in. iOS is not a
+target: on iOS 26 the system's own glass is the native choice.
 
-> **Not published yet.** The package keeps `publish_to: none`. Until it is released, depend on it
-> by path:
-> ```yaml
-> dependencies:
->   liquidglass:
->     path: ../path/to/liquidglass/ports/flutter
-> ```
+![A light glass card and a dark glass bar refracting a scrolling list on a Pixel 7](https://raw.githubusercontent.com/shayann07/liquidglass/main/ports/flutter/doc/pixel7.png)
+
+*Our capture: the example on a Pixel 7 (Android 17), Impeller on Vulkan.*
+
+## Install
+
+```bash
+flutter pub add liquiglass
+```
 
 ## Use
 
 ```dart
-import 'package:liquidglass/liquid_glass.dart';
+import 'package:liquiglass/liquiglass.dart';
 
 Stack(children: [
   ListView(children: rows),                     // anything: it is refracted live
@@ -69,6 +71,14 @@ loads, glass draws the stand-in.
   - the Dart uniforms equal the CanvasKit port's, to 1e-6, for three surfaces;
   - the widget lays out and paints without Impeller.
 - The example (`example/`) runs the material on a Pixel 7 on Impeller's Vulkan backend, and on the
-  Android 17 emulator on its OpenGL ES backend. See [the evidence](../../review/atlas/flutter-2026-10-19/README.md).
+  Android 17 emulator on its OpenGL ES backend. See [the evidence](https://github.com/shayann07/liquidglass/blob/main/review/atlas/flutter-2026-10-19/README.md).
 
-Apache-2.0.
+## Platforms
+
+| Platform | Status |
+| :-- | :-- |
+| Android (Impeller, Vulkan and OpenGL ES) | live glass; checked on a Pixel 7 and the Android 17 emulator |
+| Linux, macOS, Windows, web | compiles; draws the frosted stand-in unless Impeller runs; not checked on devices |
+| iOS | not a target |
+
+Apache-2.0. Not affiliated with Apple; "Liquid Glass" is used descriptively (see NOTICE).

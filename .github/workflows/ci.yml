@@ -241,6 +241,10 @@ jobs:
           node-version: 22
       - name: Generated shader and material fixture match their sources
         run: node tool/generate_shader.mjs --check && node tool/generate_fixture.mjs --check
+      - name: The pubspec follows VERSION_NAME (set_version.py writes both)
+        run: |
+          version=$(sed -n 's/^VERSION_NAME=//p' ../../gradle.properties | tr -d '\r')
+          grep -qx "version: ${version/-SNAPSHOT/-dev}" pubspec.yaml || { echo "::error::pubspec.yaml is not ${version/-SNAPSHOT/-dev}"; exit 1; }
       - name: Install Flutter 3.47.7 (stable)
         run: |
           git clone --depth 1 --branch 3.47.7 https://github.com/flutter/flutter.git "$RUNNER_TEMP/flutter"
@@ -251,6 +255,7 @@ jobs:
           flutter pub get
           flutter analyze
           flutter test
+          flutter pub publish --dry-run
           cd example && flutter pub get && flutter analyze
 
   dotnet-port:

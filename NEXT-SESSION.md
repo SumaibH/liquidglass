@@ -4,6 +4,24 @@ Updated 14 October 2026 (Claude takeover from Codex). The previous, longer hando
 at commit `efcc3b5` and in `.local/handoffs/`. Full iOS parity and owner visual acceptance are
 **not** established. Read [TODO.md](TODO.md) and the full objective before changing source.
 
+## CURRENT RUN (20 Oct 2026) — seven items, one PR each, in order
+
+Owner's list: 1 Flutter on pub.dev; 2 .NET MAUI (`LiquidGlass.Maui`, Pixel 7 captures); 3 Qt Quick
+(ShaderEffect, shader generated from material.sksl, qsb only in CI on Linux, never locally: it opens
+a GUI dialog); 4 Unity (URP/Built-in shader + UPM; Unity not installed, say what was verified);
+5 iOS motion parity (open TODO rows, full dataset, `.local/sxs/hdr.py`); 6 navigation selector
+review page, then ASK the owner; 7 v1.0.0 release PR, then ASK before merge/tag. No tags or
+releases without the owner's word in that session. Every new publish.yml job needs
+`if: needs.check.outputs.skip != 'true'`.
+
+1. Flutter, branch `claude/flutter-pubdev` (session worktree .claude/worktrees/kind-allen-15337d):
+   pub.dev name **`liquiglass`** (owner's choice; `liquidglass` is blocked by pub.dev's similarity
+   rule against `liquid_glass`). pubspec metadata, CHANGELOG, doc/pixel7.png screenshot, platforms
+   without iOS; dry run clean (only warning: dirty git). `set_version.py` writes the pubspec
+   (-SNAPSHOT -> -dev) and the package CHANGELOG heading; CI checks it; `pub-dev` job in publish.yml
+   (setup-dart OIDC, stands down until the package exists). Owner steps: docs/publishing.md
+   "pub.dev, once". Status: PR pending.
+
 ## PRODUCT PLAN (18 Oct 2026, owner-approved) — read this first
 
 Goal: a universal, star-worthy library. One-line Compose integration on Android, desktop and web,

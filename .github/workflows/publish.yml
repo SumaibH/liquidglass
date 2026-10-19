@@ -4,6 +4,7 @@ name: Publish
 #   Maven Central  liquidglass, liquidglass-material3, liquidglass-bom, and the Gradle plugin
 #   npm            @shayxo.dev/liquidglass (the <liquid-glass> web component), @shayxo.dev/liquidglass-react-native
 #   NuGet          LiquidGlass, LiquidGlass.WinForms, LiquidGlass.Wpf, LiquidGlass.Avalonia
+#   pub.dev        liquiglass (the Flutter package, ports/flutter)
 # then creates the GitHub release from .github/release-notes/vX.Y.Z.md.
 #
 # The `check` job refuses before anything is uploaded unless the tag matches VERSION_NAME, the version
@@ -27,6 +28,8 @@ on:
       - ports/npm/package.json
       - ports/react-native/package.json
       - ports/dotnet/Package.props
+      - ports/flutter/pubspec.yaml
+      - ports/flutter/CHANGELOG.md
 
 permissions:
   contents: read
@@ -266,8 +269,51 @@ jobs:
           path: ports/dotnet/artifacts/nuget/
           retention-days: 14
 
+  pub-dev:
+    needs: check
+    if: needs.check.outputs.skip != 'true'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    permissions:
+      contents: read
+      id-token: write # pub.dev automated publishing: the workflow's identity, no stored credential
+    defaults:
+      run:
+        working-directory: ports/flutter
+    env:
+      VERSION: ${{ needs.check.outputs.version }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+      # Exchanges the run's OIDC token for a pub.dev credential (PUB_TOKEN). pub.dev accepts it only
+      # for a tag push matching the package's tag pattern v{{version}} (docs/publishing.md).
+      - uses: dart-lang/setup-dart@6afc89df92d6eb3834022f73cd65adc8cdfcb92d # v1.8.1
+      - name: Install Flutter 3.47.7 (stable)
+        run: |
+          git clone --depth 1 --branch 3.47.7 https://github.com/flutter/flutter.git "$RUNNER_TEMP/flutter"
+          echo "$RUNNER_TEMP/flutter/bin" >> "$GITHUB_PATH"
+      - name: The pubspec and its CHANGELOG carry the release's version
+        run: |
+          pub_version="${VERSION/-SNAPSHOT/-dev}"
+          grep -qx "version: $pub_version" pubspec.yaml || { echo "::error::ports/flutter/pubspec.yaml is not $pub_version (run .github/scripts/set_version.py)"; exit 1; }
+          grep -qx "## $pub_version" CHANGELOG.md || { echo "::error::ports/flutter/CHANGELOG.md has no '## $pub_version' heading"; exit 1; }
+      - name: Test
+        run: |
+          flutter --disable-analytics
+          flutter pub get
+          flutter test
+      - name: Publish (dry run on pull requests)
+        run: |
+          pub_version="${VERSION/-SNAPSHOT/-dev}"
+          if [ "$DRY_RUN" = true ]; then flutter pub publish --dry-run; exit 0; fi
+          versions=$(curl -fsS https://pub.dev/api/packages/liquiglass) || {
+            # Automated publishing can only be enabled on a package that exists, so the first upload
+            # is the owner's, by hand (docs/publishing.md). Until then this channel stands down.
+            echo "::warning::liquiglass is not on pub.dev yet: publish it once by hand, then enable automated publishing"; exit 0; }
+          if echo "$versions" | grep -q "\"version\":\"$pub_version\""; then echo "already on pub.dev"; exit 0; fi
+          flutter pub publish --force
+
   github-release:
-    needs: [check, maven-library, maven-plugin, npm, npm-react-native, nuget]
+    needs: [check, maven-library, maven-plugin, npm, npm-react-native, nuget, pub-dev]
     if: github.event_name == 'push' && needs.check.outputs.skip != 'true'
     runs-on: ubuntu-24.04
     timeout-minutes: 5

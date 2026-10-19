@@ -505,7 +505,8 @@ Progress:
   `VisualBackdrop.Capture`, `GlassBitmap`; WpfDemo `--capture` checked in CI, PR #37). Avalonia 12 added too
   (`LiquidGlass.Avalonia`, headless demo in CI on Linux and Windows); React Native added (`ports/react-native`,
   React Native Skia, headless-checked; Pixel 7 checked 20 Oct); Flutter added (`ports/flutter`, live backdrop on
-  Impeller, emulator-checked; Pixel 7 Vulkan checked 20 Oct); MAUI, Qt and Unity remain.
+  Impeller, emulator-checked; Pixel 7 Vulkan checked 20 Oct; publishable on pub.dev as `liquiglass` 20 Oct,
+  first upload is the owner's); MAUI, Qt and Unity remain.
 - [x] Release pipeline for every registry (19 Oct): one tag publishes Maven Central (with the Gradle
   plugin), npm and NuGet; dry run on PRs; `set_version.py`. Waits on the npm/NuGet tokens and the owner.
 - [ ] Keep production shader contracts/packaging/licenses synchronized and validate each supported

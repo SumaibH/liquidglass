@@ -27,6 +27,11 @@ def write(path: pathlib.Path, text: str) -> None:
         f.write(text)
 
 
+def pub_version(version: str) -> str:
+    """The Flutter package's spelling: pub.dev orders -dev before the release, as Maven does -SNAPSHOT."""
+    return version.replace("-SNAPSHOT", "-dev")
+
+
 def main() -> int:
     if len(sys.argv) != 2 or not VERSION.fullmatch(sys.argv[1]):
         print(__doc__)
@@ -46,6 +51,24 @@ def main() -> int:
         if pinned in body:
             write(lock, body.replace(pinned, f'"[{new}, )"'))
             changed.append(lock)
+    old_pub, new_pub = pub_version(old), pub_version(new)
+    pubspec = ROOT / "ports" / "flutter" / "pubspec.yaml"
+    body = read(pubspec)
+    line = re.search(r"(?m)^version: (\S+)", body)
+    if line and line.group(1) == old_pub:
+        write(pubspec, body[:line.start(1)] + new_pub + body[line.end(1):])
+        changed.append(pubspec)
+    log = ROOT / "ports" / "flutter" / "CHANGELOG.md"
+    body = read(log)
+    heading = re.search(r"(?m)^## (\S+)[ \t]*$", body)
+    if heading and heading.group(1) != new_pub:
+        if heading.group(1).endswith("-dev"):  # the unreleased entry takes the new number
+            body = body[:heading.start(1)] + new_pub + body[heading.end(1):]
+        else:  # keep the released entry, open a new one above it
+            note = "In development." if new_pub.endswith("-dev") else f"Published with the library's {new}."
+            body = body[:heading.start()] + f"## {new_pub}\n\n- {note}\n\n" + body[heading.start():]
+        write(log, body)
+        changed.append(log)
     for path in changed:
         print(f"{old} -> {new}: {path.relative_to(ROOT).as_posix()}")
     if "SNAPSHOT" not in new:

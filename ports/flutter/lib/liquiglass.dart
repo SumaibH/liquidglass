@@ -1,4 +1,4 @@
-// Apache-2.0. Liquid Glass for Flutter: the liquidglass production material over the live backdrop.
+// Apache-2.0. liquiglass: Liquid Glass for Flutter, the liquidglass production material over the live backdrop.
 //
 // `GlassSurface` refracts whatever Flutter has drawn behind it, every frame, through the shader the
 // Compose library runs (generated from it: tool/generate_shader.mjs). It needs Impeller, Flutter's
@@ -138,7 +138,7 @@ class LiquidGlass {
   static Future<void> _load() async {
     try {
       // An app reads a package's assets under packages/<name>/; the package's own tests read them bare.
-      _program = await ui.FragmentProgram.fromAsset('packages/liquidglass/shaders/liquid_glass.frag')
+      _program = await ui.FragmentProgram.fromAsset('packages/liquiglass/shaders/liquid_glass.frag')
           .catchError((Object _) => ui.FragmentProgram.fromAsset('shaders/liquid_glass.frag'));
     } catch (error) {
       _loadError = error;
