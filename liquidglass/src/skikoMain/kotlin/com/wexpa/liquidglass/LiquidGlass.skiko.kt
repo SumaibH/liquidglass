@@ -31,6 +31,8 @@ actual object LiquidGlassSupport {
     actual val hasBackdropBlur: Boolean = true
 }
 
+internal actual val backdropBlurInRecording: Boolean = false
+
 internal actual val supportsGlassEndpointInputs: Boolean = true
 
 /** One opaque pixel, so the `field` child is always bound even when nothing samples it. */

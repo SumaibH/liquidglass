@@ -328,6 +328,9 @@ internal fun Modifier.liquidGlassCore(
     val shadowLayer = rememberGraphicsLayer()
     // The raw backdrop that GlassStyle.rawShare adds, blurred by GlassStyle.rawBlur.
     val rawLayer = rememberGraphicsLayer()
+    // The backdrop composite blurred on its own, where the platform cannot chain the frost ahead of
+    // the shader (see backdropBlurInRecording).
+    val frostLayer = rememberGraphicsLayer()
     // Effects are rebuilt only when their inputs change: building one binds some fifty
     // uniforms and allocates, per panel, and on a scrolling screen the inputs are the same
     // frame after frame (the backdrop changes, the uniforms do not).
@@ -690,7 +693,15 @@ internal fun Modifier.liquidGlassCore(
                     wideStrip = if (useWide) paddedSize.height.toFloat() else 0f,
                     wideScale = wideScale,
                 )
-                val effect = effects.panel(uniforms)
+                // The frost (backdropSigma, or the legacy backdropBlur radius). Where the platform
+                // evaluates a blur chained ahead of the shader only inside the window, a panel whose
+                // strip of wide tone lies off-screen (a tall sheet at the bottom of the screen) loses
+                // the rows the shader samples there; there the frost is baked into the recording
+                // instead and the panel's own effect carries no blur.
+                val frostSigmaPx = if (style.backdropSigma.isSpecified && style.backdropSigma.value > 0f) style.backdropSigma.toPx() * rs else 0f
+                val frostRadiusPx = style.backdropBlur.toPx() * rs
+                val frostInRecording = backdropBlurInRecording && (frostSigmaPx > 0f || frostRadiusPx > 0f)
+                val effect = effects.panel(if (frostInRecording) uniforms.copy(backdropSigma = 0f, backdropBlur = 0f) else uniforms)
                 if (effect != null) {
                     val fullPadded = IntSize(
                         (size.width + pad * 2f).toInt().coerceAtLeast(1),
@@ -764,7 +775,10 @@ internal fun Modifier.liquidGlassCore(
                         }
                         wideLayer.renderEffect = effects.wide(uniforms.wideKernel * wideScale)
                     }
-                    glassLayer.record(size = IntSize(paddedSize.width, paddedSize.height + stripSize.height)) {
+                    // The backdrop composite: the ground, the slice under the panel, its shadow and
+                    // whatever sits between. Drawn straight into the panel's layer, or into the frost
+                    // layer first where the frost is baked in (frostInRecording).
+                    val backdropComposite: androidx.compose.ui.graphics.drawscope.DrawScope.() -> Unit = {
                       scale(rs, rs, pivot = Offset.Zero) {
                     // Fill with the ground first. The padded slice reaches past the backdrop
                     // near a screen edge, and the backdrop is itself transparent wherever the
@@ -799,6 +813,13 @@ internal fun Modifier.liquidGlassCore(
                             }
                         }
                       }
+                    }
+                    if (frostInRecording) {
+                        frostLayer.record(size = paddedSize) { backdropComposite() }
+                        frostLayer.renderEffect = effects.frost(frostSigmaPx, frostRadiusPx)
+                    }
+                    glassLayer.record(size = IntSize(paddedSize.width, paddedSize.height + stripSize.height)) {
+                      if (frostInRecording) drawLayer(frostLayer) else backdropComposite()
                       // The strip goes in LAST: the ground fill and the backdrop above are drawn
                       // over the whole layer, strip rows included, and would paint over it.
                       if (useWide) {
@@ -1085,6 +1106,20 @@ internal class GlassEffectCache {
         return wideEffect
     }
 
+    private var frostKey: Pair<Float, Float>? = null
+    private var frostEffect: androidx.compose.ui.graphics.RenderEffect? = null
+
+    /** The frost baked into the recording: a [sigmaPx] (backdropSigma) or else a legacy [radiusPx]. */
+    fun frost(sigmaPx: Float, radiusPx: Float): androidx.compose.ui.graphics.RenderEffect {
+        val key = sigmaPx to radiusPx
+        if (key != frostKey) {
+            val r = if (sigmaPx > 0f) platformBlurRadiusForSigma(sigmaPx) else radiusPx
+            frostEffect = BlurEffect(r, r, TileMode.Clamp)
+            frostKey = key
+        }
+        return frostEffect!!
+    }
+
     fun raw(blurPx: Float): androidx.compose.ui.graphics.RenderEffect {
         if (blurPx != rawSigma) {
             rawEffect = BlurEffect(blurPx, blurPx, TileMode.Clamp)
@@ -1122,6 +1157,13 @@ expect object LiquidGlassSupport {
 
 /** The host can bind separately transformed material and ink inputs to one aperture effect. */
 internal expect val supportsGlassEndpointInputs: Boolean
+
+/**
+ * True where a blur chained ahead of the glass shader is evaluated only inside the window (Android's
+ * RenderEffect chain), so the frost has to be baked into the recording instead. Skia's image-filter
+ * graph on desktop and the web blurs the backdrop as a separate input and keeps the chain.
+ */
+internal expect val backdropBlurInRecording: Boolean
 
 /**
  * Corner radii in px, in the order the shader expects: TL, TR, BR, BL.

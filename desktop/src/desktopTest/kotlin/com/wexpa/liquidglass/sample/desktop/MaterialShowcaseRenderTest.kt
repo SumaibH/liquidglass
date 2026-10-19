@@ -27,10 +27,10 @@ import kotlin.time.Duration.Companion.minutes
 class MaterialShowcaseRenderTest {
     private val out = File("build/reports/atlas/showcase").apply { mkdirs() }
 
-    private fun shoot(name: String, dark: Boolean) = runDesktopComposeUiTest(1170, 2532, testTimeout = 6.minutes) {
+    private fun shoot(name: String, dark: Boolean, scroll: androidx.compose.ui.unit.Dp = 0.dp) = runDesktopComposeUiTest(1170, 2532, testTimeout = 6.minutes) {
         setContent {
             CompositionLocalProvider(LocalDensity provides Density(3f)) {
-                Box(Modifier.size(390.dp, 844.dp).testTag("app")) { MaterialShowcase(onSwitchScreen = {}, startDark = dark) }
+                Box(Modifier.size(390.dp, 844.dp).testTag("app")) { MaterialShowcase(onSwitchScreen = {}, startDark = dark, startScroll = scroll) }
             }
         }
         waitForIdle()
@@ -39,4 +39,7 @@ class MaterialShowcaseRenderTest {
 
     @Test fun light() = shoot("showcase-light", dark = false)
     @Test fun dark() = shoot("showcase-dark", dark = true)
+    /** Scrolled so the hero art passes under the top bar, segmented control and buttons. */
+    @Test fun scrolled() = shoot("showcase-scrolled-light", dark = false, scroll = 170.dp)
+    @Test fun scrolledDark() = shoot("showcase-scrolled-dark", dark = true, scroll = 170.dp)
 }

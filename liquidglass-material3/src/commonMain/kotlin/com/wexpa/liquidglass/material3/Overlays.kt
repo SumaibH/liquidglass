@@ -36,6 +36,7 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.IntOffset
+import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.DialogProperties
 import com.wexpa.liquidglass.CapsuleShape
@@ -286,16 +287,28 @@ fun DropdownMenu(
     if (!expanded) return
     val density = LocalDensity.current
     var origin by remember { mutableStateOf(androidx.compose.ui.geometry.Offset.Zero) }
+    var window by remember { mutableStateOf(IntSize.Zero) }
+    var menuSize by remember { mutableStateOf(IntSize.Zero) }
     GlassOverlay {
         DismissOnBack { onDismissRequest() }
-        Box(Modifier.fillMaxSize().onGloballyPositioned { origin = it.positionInRoot() }
+        Box(Modifier.fillMaxSize().onGloballyPositioned { origin = it.positionInRoot(); window = it.size }
             .clickable(interactionSource = remember { MutableInteractionSource() }, indication = null, onClick = onDismissRequest))
         Column(
             modifier
+                .onSizeChanged { menuSize = it }
                 .offset {
                     with(density) {
-                        IntOffset((anchor.left - origin.x + offset.x.toPx()).roundToInt(),
-                            (anchor.bottom - origin.y + offset.y.toPx()).roundToInt())
+                        // Below the anchor, starting at its start, as Material's; where that would
+                        // leave the window, ending at its end, and above it, then kept inside.
+                        val dx = offset.x.toPx(); val dy = offset.y.toPx()
+                        var x = anchor.left - origin.x + dx
+                        if (x + menuSize.width > window.width) x = anchor.right - origin.x - menuSize.width - dx
+                        var y = anchor.bottom - origin.y + dy
+                        if (y + menuSize.height > window.height) y = anchor.top - origin.y - menuSize.height - dy
+                        IntOffset(
+                            x.roundToInt().coerceIn(0, maxOf(0, window.width - menuSize.width)),
+                            y.roundToInt().coerceIn(0, maxOf(0, window.height - menuSize.height)),
+                        )
                     }
                 }
                 .widthIn(min = 180.dp, max = 280.dp)
