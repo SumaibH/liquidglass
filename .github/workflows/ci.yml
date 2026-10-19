@@ -228,6 +228,31 @@ jobs:
           if-no-files-found: ignore
           retention-days: 14
 
+  flutter:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    defaults:
+      run:
+        working-directory: ports/flutter
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: 22
+      - name: Generated shader and material fixture match their sources
+        run: node tool/generate_shader.mjs --check && node tool/generate_fixture.mjs --check
+      - name: Install Flutter 3.47.7 (stable)
+        run: |
+          git clone --depth 1 --branch 3.47.7 https://github.com/flutter/flutter.git "$RUNNER_TEMP/flutter"
+          echo "$RUNNER_TEMP/flutter/bin" >> "$GITHUB_PATH"
+      - name: Analyze; shader compiles and loads; uniforms equal the CanvasKit port's
+        run: |
+          flutter --disable-analytics
+          flutter pub get
+          flutter analyze
+          flutter test
+          cd example && flutter pub get && flutter analyze
+
   dotnet-port:
     strategy:
       fail-fast: false

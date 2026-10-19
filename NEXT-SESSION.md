@@ -128,6 +128,13 @@ Phases, one PR each, suite and ports green each time, the owner reviews between 
          Native Skia's API to the CanvasKit painter (Proxy: delete->dispose, enums, matrices, offscreen
          surfaces); GlassSurface/GlassLens record an SkPicture at device px. Headless tests 3/3 (adapter
          equals CanvasKit, max channel diff <= 1); tsc types; CI job react-native. Device run pending.
+       - Flutter: `ports/flutter` (package liquidglass, publish_to none). tool/generate_shader.mjs makes
+         shaders/liquid_glass.frag from material.sksl (types, content/field reads, main; wideAt = 13 Gaussian
+         taps). GlassSurface = BackdropFilterLayer(ImageFilter.shader) in a ClipRRect; uOrigin = global
+         position * dpr. NO y flip for backdrop input on GLES (the documented flip turned the page upside
+         down). flutter test 5/5 (shader loads; 75 uniforms equal ports/skia fixture). Emulator lg_verify_37
+         captures in review/atlas/flutter-2026-10-19. SDK at .local/flutter (3.47.7). Vulkan unchecked.
+       - React Native device demo: D:/lgrn/LGDemo (moved out of the repo path: CMake hit MAX_PATH).
        - The long iOS video-parity rows in TODO.md (M1-M3, O1) remain.
      - Do not run two Gradle builds in one worktree at once: the renders and XML results clobber each
        other (UncompletedCoroutinesError, stale XML). A test that passes alone may fail when run in

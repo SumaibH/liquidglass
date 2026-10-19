@@ -4,6 +4,15 @@ Updated **18 October 2026**. This describes the unreleased source, not the publi
 Full iOS parity, final owner acceptance and arbitrary-stack support are not established. Historical
 research remains available; this page identifies which later changes supersede its implementation.
 
+## Flutter (19 October)
+
+`liquidglass` for Flutter (`ports/flutter`, unpublished) puts `GlassSurface` over the live backdrop on
+Impeller: a backdrop filter running the production shader, generated from its SkSL export. The Dart
+material equals the CanvasKit port's uniforms to 1e-6, the shader compiles and loads in `flutter test`,
+and the example refracts a scrolling list on the Android 17 emulator (OpenGL ES). Approximated: the
+wide tone kernel (thirteen taps). Not yet checked: Vulkan devices. [Guide](flutter.md),
+[evidence](https://github.com/shayann07/liquidglass/blob/main/review/atlas/flutter-2026-10-19/README.md).
+
 ## React Native (19 October)
 
 `liquidglass-react-native` (`ports/react-native`, unpublished) puts `GlassSurface` and `GlassLens` in a

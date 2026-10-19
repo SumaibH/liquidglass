@@ -1,0 +1,22 @@
+name: liquidglass
+description: Liquid Glass for Flutter, measured against iOS recordings. The liquidglass production shader over the live backdrop, on Impeller.
+version: 0.0.0
+publish_to: none
+homepage: https://liquidglass.shayxo.dev/flutter/
+repository: https://github.com/shayann07/liquidglass/tree/main/ports/flutter
+
+environment:
+  sdk: ^3.9.0
+  flutter: ">=3.35.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+flutter:
+  shaders:
+    - shaders/liquid_glass.frag
