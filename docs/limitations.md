@@ -42,16 +42,17 @@ sit in a layer above it, such as a sheet or a menu drawn as a later sibling. Its
 semantics stay where they were, so a covering element still receives the touches.
 
 Keep content that must cover glass out of the glass's area, or switch the glass off while it is
-covered (`Glass.Identity`). Desktop and web are planned to move to Skia's own backdrop, which
-draws glass in place and removes this limit there; Android keeps the overlay.
+covered (`Glass.Identity`). Skia's own backdrop would draw glass in place on desktop and web and
+remove this limit there, but it blanks glass under a translucent ancestor (next section), so it is
+not planned ([spikes](https://github.com/shayann07/liquidglass/blob/main/review/atlas/backdrop-spikes-2026-10-18/README.md)).
 
 ## An ancestor's alpha does not fade glass
 
 For the same reason, glass is not drawn by its parent, so an ancestor's `alpha` or
 `graphicsLayer { alpha = … }` fades the element's siblings but not the glass or its content. Fade
 glass by changing its `Glass` (to `Glass.Identity`, or through `animateGlassStyle`), or with
-`GlassTabBar`'s `materialize`. The planned Skia backdrop path removes this limit on desktop and web
-as well.
+`GlassTabBar`'s `materialize`. Skia's own backdrop would not help here: inside a translucent layer
+its backdrop is empty, so the glass goes blank instead of ignoring the fade.
 
 ## Glass inside a scroll
 

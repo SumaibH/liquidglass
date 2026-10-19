@@ -17,6 +17,13 @@ This file records user-visible development changes. Published artifacts are iden
   from a local Maven repository, got `liquidglass` and `liquidglass-material3`, `liquidGlassAdopt`
   switched its `Button` import to the glass one, and it compiled. Nothing has been published; npm and
   NuGet need their tokens first ([publishing](docs/publishing.md)).
+
+### Changed — Skia's own backdrop is not planned (19 October)
+
+- Docs: the overlay stays on every platform. Skia's own backdrop would fix the stacking on desktop and
+  web, but the 18 October spike shows glass drawn in place goes blank under any translucent ancestor
+  (every fade animation); the guides had said it would also lift the alpha limit, which it would not.
+
 ### Added — React Native (19 October)
 
 - `liquidglass-react-native` (`ports/react-native`, new, unpublished): `GlassSurface` and `GlassLens`
