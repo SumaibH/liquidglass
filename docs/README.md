@@ -1,8 +1,8 @@
 # liquidglass — documentation
 
-The [development status and visual guide](development-status.md) covers the current unreleased
-Compose, CanvasKit and native.NET paths, source/native comparisons, verification and remaining gaps.
-It is the starting point for recent work; published0.1.0 and historical measurements have a different scope.
+The [development status and visual guide](development-status.md) covers the Compose, CanvasKit and
+native .NET paths as of 0.2.0, source/native comparisons, verification and remaining gaps. It is the
+starting point for recent work; historical measurements have a different scope.
 
 A refracting glass material for Compose Multiplatform, drawn entirely in a shader.
 

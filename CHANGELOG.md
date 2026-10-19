@@ -1,9 +1,19 @@
 # Changelog
 
 This file records user-visible development changes. Published artifacts are identified separately;
-`Unreleased` does not imply that Maven Central already contains these APIs.
+A version heading means that version is published; anything above the newest one is on `main` only.
 
-## Unreleased — Atlas stabilization
+## 0.2.0 (2026-10-19)
+
+The first release since 0.1.0, on Maven Central (`liquidglass`, `liquidglass-material3`,
+`liquidglass-bom` and the Gradle plugin `dev.shayxo.liquidglass`), npm (`liquidglass`) and NuGet
+(`LiquidGlass`, `LiquidGlass.WinForms`, `LiquidGlass.Wpf`, `LiquidGlass.Avalonia`). Release notes:
+[.github/release-notes/v0.2.0.md](.github/release-notes/v0.2.0.md). Breaking: 0.1.0's
+`LiquidGlassScene`/`LiquidGlassState`/`liquidGlassSource`/`liquidGlass` API is removed in favour of
+`LiquidGlassTheme` and `Modifier.glassEffect`. The development log of everything in it follows, newest
+first, down to 0.1.0.
+
+### Atlas stabilization
 
 ### Added — one tag publishes everything (19 October)
 
@@ -657,7 +667,7 @@ Existing `V3`, `Measured`, `Pullable` and modifier defaults remain available. Ne
 by default. The new lens and dynamics are authored approximations. Full iOS equivalence, physical-device
 verification of this revision and native support for every UI stack remain unproven.
 
-## Review fixes (unreleased)
+## Review fixes (in 0.2.0)
 
 - Glass panels follow a resize in place: the size feeding the drag policy, band, pad and path
   field is now tracked state rather than read once from the layout coordinates.
@@ -676,14 +686,14 @@ verification of this revision and native support for every UI stack remain unpro
   checks GitHub links against tracked paths.
 - Verified on the JVM suite only; no physical-device capture for the sampling change.
 
-## Astra r14 (2026-10-01, unreleased)
+## Astra r14 (2026-10-01, in 0.2.0)
 
 - Preserve touch expansion and the small-control drag response.
 - Make large cards and pills much less elastic during dragging through a shared, size-adaptive strain policy.
 - Add density, extreme-direction and actual desktop-render regression checks.
 - Android APK built; new physical-device verification remains pending.
 
-## Astra r13 review (2026-10-01, unreleased)
+## Astra r13 review (2026-10-01, in 0.2.0)
 
 - Shared anchored Pullable material: stationary layout/content, bounded deformation, level wide bars.
 - Full-screen excursion fixes: unclipped Live material, perpendicular-axis strain and endpoint resistance.
@@ -691,7 +701,7 @@ verification of this revision and native support for every UI stack remain unpro
 - Generic integration guide, physical review evidence and preserved alternative approaches.
 - No claim of complete iOS parity and no Maven Central release.
 
-## 0.2.0 (unreleased)
+## Earlier 0.2.0 development (September)
 
 - **Reduced held-bubble drag sensitivity:** lower speed response, maximum spine stretch and
   squeeze, with a gentler bounded off-axis response. Small movements remain continuous;

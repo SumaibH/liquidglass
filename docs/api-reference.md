@@ -7,9 +7,7 @@ these are source-preview APIs, not additions to the published Maven artifact.
 
 Every public symbol in the library. The guides explain *why*; this is *what*.
 
-> **Development snapshot.** The API in the first section replaced the state-and-modifier API on
-> 18 October. It is in the current source, **not** in the published `0.1.0` artifact; build it
-> with `./gradlew publishToMavenLocal` ([getting started](getting-started.md)). The APIs it
+> **Since 0.2.0.** The API in the first section replaced 0.1.0's state-and-modifier API. The APIs it
 > replaced are listed under [Removed](#removed-18-october).
 
 ---
@@ -879,7 +877,7 @@ use unpressed layout size in dp; density does not change the response. This is a
 
 ## Continuous lens and calm response (development)
 
-These APIs require the current source snapshot; they are not in the published `0.1.0` artifact.
+These APIs are in 0.2.0; they were not in 0.1.0.
 The `GlassScene` host this section used to open with was removed on 18 October; use
 `LiquidGlassTheme` ([Removed](#removed-18-october)).
 

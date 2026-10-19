@@ -5,7 +5,7 @@ for the complete feature/evidence map. Native.NET now includes production materi
 whole-surface input and verified standard WinForms-control capture. Historical r13/r14 results
 below retain their original scope; full iOS parity remains unfinished.
 
-Astra is the selected development approach for the unreleased Liquid Glass parity work.
+Astra is the selected development approach for the ongoing Liquid Glass parity work.
 It combines original iPhone reference measurements, independently tested corrections and
 useful techniques assessed from the Fable and Antigravity implementations. Review of
 [Sam Asante's web implementation](https://github.com/samasante/liquid-glass) is also informing
@@ -54,8 +54,8 @@ For the current development source, opt in using `GlassTabBar(..., style = Glass
 `V3()` retains the earlier response for comparisons.
 The bar refracts what the app's `LiquidGlassTheme` records; it takes no state since 18 October.
 See [Tab bars](tab-bar.md).
-Unreleased snapshot versions require building and publishing the matching library locally.
-They are not advertised as available on Maven Central.
+Snapshot versions of `main` require building and publishing the matching library locally; releases
+are on Maven Central.
 
 ## Historical verification and open limits
 
