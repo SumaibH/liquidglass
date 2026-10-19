@@ -7,7 +7,7 @@ One tag publishes one version everywhere:
 | Registry | Packages | Secrets |
 | :-- | :-- | :-- |
 | Maven Central | `liquidglass`, `liquidglass-material3`, `liquidglass-bom`, and the Gradle plugin `dev.shayxo.liquidglass` (artifact `liquidglass-gradle-plugin` plus its plugin marker) | `MAVEN_CENTRAL_USERNAME`, `MAVEN_CENTRAL_PASSWORD`, `SIGNING_KEY`, `SIGNING_KEY_PASSWORD` (set up since 0.1.0) |
-| npm | `@shayxo.dev/liquidglass`, the `<liquid-glass>` web component; `@shayxo.dev/liquidglass-react-native` | `NPM_TOKEN` for the first release, then none: trusted publishing |
+| npm | `@shayxo.dev/liquidglass`, the `<liquid-glass>` web component; `@shayxo.dev/liquidglass-react-native` | none: trusted publishing (from 0.2.2; 0.2.1 used a token) |
 | NuGet | `LiquidGlass`, `LiquidGlass.WinForms`, `LiquidGlass.Wpf`, `LiquidGlass.Avalonia` | none: trusted publishing |
 | GitHub | a release with the notes in `.github/release-notes/vX.Y.Z.md` | none (the workflow's token) |
 
@@ -80,24 +80,27 @@ marked as a pre-release on GitHub; NuGet and Maven treat it as a pre-release by 
    `liquidglass-react-native` were free on 19 October 2026, but npm refused them on publish as too
    similar to `liquid-glass` and `liquid-glass-react-native`. `npm view` cannot see that rule, so a
    new unscoped name is only known to be accepted once it is published.
-3. A granular access token (Account, Access Tokens, Generate New Token, Granular): read and write
-   on packages, with two-factor bypass allowed so CI can publish. Before the first publish the token
-   cannot be limited to a package that does not exist yet, so give it all packages and narrow it to
-   `@shayxo.dev/liquidglass` and `@shayxo.dev/liquidglass-react-native` afterwards.
-4. `gh secret set NPM_TOKEN --repo shayann07/liquidglass` and paste it.
+3. npm configures [trusted publishing](https://docs.npmjs.com/trusted-publishers) per package, so
+   only once a package exists. The first publish of a new package therefore needs a granular access
+   token (Account, Access Tokens, Generate New Token, Granular: read and write on packages, two-factor
+   bypass allowed) in the `NPM_TOKEN` secret, and the npm job's Publish step needs
+   `env: NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}` for that one run. 0.2.1 published both packages
+   that way.
+4. Then, for each package: Settings, Trusted Publisher, GitHub Actions; owner `shayann07`,
+   repository `liquidglass`, workflow filename `publish.yml`, no environment; tick **Allow npm
+   publish** (without it the publisher may only stage a publish, and the workflow publishes
+   directly); Set up connection. Under Publishing access choose **Require two-factor authentication
+   and disallow bypass 2fa tokens**. Delete the token on npmjs.com and
+   `gh secret delete NPM_TOKEN --repo shayann07/liquidglass`. Both packages were set up this way on
+   20 October 2026.
+5. npm marks a new trusted publisher *pending validation* until a publish goes through it, within
+   about a day. 0.2.2 was released to validate it.
 
 Packages are published with [provenance](https://docs.npmjs.com/generating-provenance-statements):
 npm shows that each version was built by this workflow from this repository.
 
-### Then trusted publishing
-
-npm configures [trusted publishing](https://docs.npmjs.com/trusted-publishers) per package, so only
-once a package exists. After the first release, for `@shayxo.dev/liquidglass` and for
-`@shayxo.dev/liquidglass-react-native`:
-the package's Settings, Trusted Publisher, GitHub Actions, owner `shayann07`, repository
-`liquidglass`, workflow `publish.yml`, no environment. Then delete the token on npmjs.com and
-`gh secret delete NPM_TOKEN --repo shayann07/liquidglass`. The npm jobs already run npm 11 with
-`id-token: write`, so they need no change: npm uses the workflow's identity when the package trusts it.
+The npm jobs run npm 11 (trusted publishing needs 11.5.1 or later) with `id-token: write`; npm
+exchanges the run's OIDC token for a one-time credential, so no npm secret exists.
 
 ## NuGet, once
 
@@ -188,10 +191,11 @@ Each of these cost time once, on 2026-09-10, and should not cost it again.
   Dynadot's `ns1` served it within minutes while `ns2` kept the old zone for over an hour on
   some of its anycast nodes, without bumping the zone serial, so any resolver that happened to
   ask `ns2` saw nothing.
-- **One tag push started two publish runs for v0.2.1**, seconds apart, and the concurrency group did
-  not queue the second. The first published everything; the second failed harmlessly because npm and
-  Maven Central refuse a version that already exists. If it happens again, judge the release by the
-  run that succeeded, and check the registries.
+- **GitHub started two publish runs for the v0.2.1 tag**, three seconds apart, from one push. The
+  concurrency group queued the second until the first had published everything, but the registries
+  did not show the new version yet: `npm view` still missed it and Central was still finishing the
+  first deployment, so the second run failed (harmlessly) on every upload. Since 0.2.2 the `check`
+  job stands down when an earlier run for the same tag has succeeded.
 - **A failed publish run can be rerun on the same tag** with `gh run rerun <id> --failed`.
   Nothing reaches Central until signing passes, so a signing failure leaves no partial
   deployment behind.

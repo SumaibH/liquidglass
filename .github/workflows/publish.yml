@@ -44,6 +44,7 @@ jobs:
       actions: read
     outputs:
       version: ${{ steps.version.outputs.version }}
+      skip: ${{ steps.version.outputs.skip }}
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
         with:
@@ -63,10 +64,18 @@ jobs:
           ci=$(gh run list --workflow ci.yml --commit "$GITHUB_SHA" --branch main --json conclusion --jq '[.[] | select(.conclusion == "success")] | length')
           [ "$ci" -gt 0 ] || fail "CI has not passed on main for $GITHUB_SHA; wait for it, then rerun this workflow"
           [ -f ".github/release-notes/v$version.md" ] || fail "missing .github/release-notes/v$version.md"
+          # GitHub occasionally starts a tag's run twice. The concurrency group queues the second one,
+          # but by then the registries may not show the first upload yet (v0.2.1), so stand down here.
+          done=$(gh run list --workflow publish.yml --branch "$GITHUB_REF_NAME" --event push --json databaseId,conclusion             --jq "[.[] | select(.conclusion == \"success\" and .databaseId != $GITHUB_RUN_ID)] | length")
+          if [ "$done" -gt 0 ]; then
+            echo "::notice::$GITHUB_REF_NAME was already published by an earlier run of this workflow; nothing to do"
+            echo "skip=true" >> "$GITHUB_OUTPUT"; exit 0
+          fi
           echo "Publishing $version"
 
   maven-library:
     needs: check
+    if: needs.check.outputs.skip != 'true'
     runs-on: ubuntu-24.04
     timeout-minutes: 40
     steps:
@@ -97,6 +106,7 @@ jobs:
 
   maven-plugin:
     needs: check
+    if: needs.check.outputs.skip != 'true'
     runs-on: ubuntu-24.04
     timeout-minutes: 15
     steps:
@@ -129,6 +139,7 @@ jobs:
 
   npm:
     needs: check
+    if: needs.check.outputs.skip != 'true'
     runs-on: ubuntu-24.04
     timeout-minutes: 10
     permissions:
@@ -154,17 +165,17 @@ jobs:
           npm pkg delete private
           npm pack --dry-run
       - name: Publish
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
         run: |
           tag=latest; case "$VERSION" in *-*) tag=next;; esac
           if [ "$DRY_RUN" = true ]; then npm publish --dry-run --tag "$tag"; exit 0; fi
-          # Trusted publishing (OIDC) once the package trusts this workflow; NPM_TOKEN until then.
+          # Trusted publishing: npm exchanges the run's OIDC token (id-token: write) for a one-time
+          # credential. The package trusts publish.yml in this repository; no token is stored.
           if npm view "@shayxo.dev/liquidglass@$VERSION" version >/dev/null 2>&1; then echo "already on npm"; exit 0; fi
           npm publish --provenance --access public --tag "$tag"
 
   npm-react-native:
     needs: check
+    if: needs.check.outputs.skip != 'true'
     runs-on: ubuntu-24.04
     timeout-minutes: 15
     permissions:
@@ -192,17 +203,17 @@ jobs:
           npm pkg delete private
           npm pack --dry-run
       - name: Publish
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
         run: |
           tag=latest; case "$VERSION" in *-*) tag=next;; esac
           if [ "$DRY_RUN" = true ]; then npm publish --dry-run --tag "$tag"; exit 0; fi
-          # Trusted publishing (OIDC) once the package trusts this workflow; NPM_TOKEN until then.
+          # Trusted publishing: npm exchanges the run's OIDC token (id-token: write) for a one-time
+          # credential. The package trusts publish.yml in this repository; no token is stored.
           if npm view "@shayxo.dev/liquidglass-react-native@$VERSION" version >/dev/null 2>&1; then echo "already on npm"; exit 0; fi
           npm publish --provenance --access public --tag "$tag"
 
   nuget:
     needs: check
+    if: needs.check.outputs.skip != 'true'
     runs-on: windows-2025 # WinForms and WPF pack only on Windows
     timeout-minutes: 15
     permissions:
@@ -257,7 +268,7 @@ jobs:
 
   github-release:
     needs: [check, maven-library, maven-plugin, npm, npm-react-native, nuget]
-    if: github.event_name == 'push'
+    if: github.event_name == 'push' && needs.check.outputs.skip != 'true'
     runs-on: ubuntu-24.04
     timeout-minutes: 5
     permissions:
