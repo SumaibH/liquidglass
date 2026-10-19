@@ -150,7 +150,7 @@
         "type": "Project",
         "dependencies": {
           "Avalonia": "[12.1.4, )",
-          "LiquidGlass": "[0.2.0-atlas.1-SNAPSHOT, )"
+          "LiquidGlass": "[0.2.0, )"
         }
       }
     }

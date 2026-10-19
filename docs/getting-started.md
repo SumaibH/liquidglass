@@ -2,8 +2,8 @@
 
 ## Install
 
-Three ways, from least to most control. The plugin, the BOM and `liquidglass-material3` are new and
-**unreleased**; the published `0.1.0` has only the core artifact with its earlier API.
+Three ways, from least to most control. The plugin, the BOM and `liquidglass-material3` are new in
+0.2.0.
 
 **The Gradle plugin**, one line. It adds `liquidglass` to `commonMain` (or `implementation`), and
 `liquidglass-material3` too when the module already uses Material 3:
@@ -11,7 +11,7 @@ Three ways, from least to most control. The plugin, the BOM and `liquidglass-mat
 ```kotlin
 // build.gradle.kts
 plugins {
-    id("dev.shayxo.liquidglass") version "<version>"
+    id("dev.shayxo.liquidglass") version "0.2.0"
 }
 ```
 
@@ -24,7 +24,7 @@ once (`--dry-run` lists the changes first). `liquidGlass { material3.set(false) 
 **The BOM**, the convention Compose and Firebase use:
 
 ```kotlin
-implementation(platform("dev.shayxo.liquidglass:liquidglass-bom:<version>"))
+implementation(platform("dev.shayxo.liquidglass:liquidglass-bom:0.2.0"))
 implementation("dev.shayxo.liquidglass:liquidglass")
 implementation("dev.shayxo.liquidglass:liquidglass-material3")   // Material 3 apps
 ```
@@ -33,19 +33,18 @@ implementation("dev.shayxo.liquidglass:liquidglass-material3")   // Material 3 a
 
 ```kotlin
 // your module's build.gradle.kts — commonMain for a multiplatform module
-implementation("dev.shayxo.liquidglass:liquidglass:0.1.0")
+implementation("dev.shayxo.liquidglass:liquidglass:0.2.0")
 ```
 
-It is a Kotlin Multiplatform module with Android, desktop JVM and web (`wasmJs`, unreleased) variants; Gradle picks the one
+It is a Kotlin Multiplatform module with Android, desktop JVM and web (`wasmJs`) variants; Gradle picks the one
 each target needs. It depends on Compose Multiplatform's foundation and ui, and on nothing else
 — it does **not** need material3, and it does not care whether your app uses it.
 
 **Not using Compose?** On an ordinary web page, or with React, Vue, Svelte or Angular, use the
-[`<liquid-glass>` web component](web-component.md) instead (npm package `liquidglass`, not published
-yet). It refracts live HTML in Chromium, frosts elsewhere, and can draw the production shaders over a
+[`<liquid-glass>` web component](web-component.md) instead (`npm install liquidglass`). It refracts live HTML in Chromium, frosts elsewhere, and can draw the production shaders over a
 source you give it.
 
-**To try an unreleased change**, build it yourself:
+**To try `main` before the next release**, build it yourself:
 
 ```bash
 git clone https://github.com/shayann07/liquidglass && cd liquidglass
@@ -67,10 +66,8 @@ dependencyResolutionManagement {
 
 ## Which API you get
 
-The published `0.1.0` artifact has the earlier state-and-modifier API
-(`rememberLiquidGlassState`, `Modifier.liquidGlassSource`, `Modifier.liquidGlass`). The current
-source replaced it on 18 October with the API below, which is **not** in `0.1.0`: to use it,
-build the current source as above and depend on the `VERSION_NAME` from `gradle.properties`. The
+0.2.0 replaced 0.1.0's state-and-modifier API (`rememberLiquidGlassState`,
+`Modifier.liquidGlassSource`, `Modifier.liquidGlass`) with the API below. The
 [API reference](api-reference.md#removed-18-october) maps each removed name to its replacement.
 
 ## Set up once, at the root

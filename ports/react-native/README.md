@@ -5,9 +5,9 @@ with the library's production shaders: the same SkSL the Compose library runs, m
 recordings. For Android and React Native Web. iOS is not a target. On iOS 26, use the system's own glass,
 for example through `expo-glass-effect`.
 
-> **Not published yet.** The package keeps `"private": true`; the release workflow will publish it
-> with the rest of the library. Until then, install it from a checkout:
-> `npm install ../path/to/liquidglass/ports/react-native`.
+```sh
+npm install liquidglass-react-native @shopify/react-native-skia
+```
 
 ![Glass rendered by React Native Skia's headless build: a lens bending the lines, a light and a dark surface](../../review/atlas/react-native-2026-10-19/react-native-glass.png)
 

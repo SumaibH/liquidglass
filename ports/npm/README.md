@@ -12,10 +12,13 @@ behind it, in the element's shadow root, and never takes clicks or focus.
 </liquid-glass>
 ```
 
-> **Not published yet.** The package is named `liquidglass` and keeps `"private": true` in
-> `package.json`, so it cannot be published by accident. Publishing to npm waits for the owner.
-> Until then, use it from this directory (see [Use it before it is published](#use-it-before-it-is-published)).
-> Apache-2.0; LICENSE and NOTICE are the repository's copies.
+```sh
+npm install liquidglass
+```
+
+> The repository keeps `"private": true` and version `0.0.0` in `package.json`; the release workflow
+> stamps the version and publishes with provenance. To run it from a checkout, see
+> [From a checkout](#from-a-checkout). Apache-2.0; LICENSE and NOTICE are the repository's copies.
 
 ![The example in Chromium, light: HTML engine over live HTML (top), canvas engine over a canvas (bottom)](../../review/web-component-2026-10-18/light.png)
 
@@ -252,7 +255,7 @@ optional tint, and the shader does the rest.
 - The HTML engine re-renders the displacement map on resize (tens of milliseconds for a large card
   on first use); it does not animate shape changes smoothly.
 
-## Use it before it is published
+## From a checkout
 
 The package is plain ES modules with no build step. From a checkout:
 

@@ -1,9 +1,21 @@
 # Changelog
 
 This file records user-visible development changes. Published artifacts are identified separately;
-`Unreleased` does not imply that Maven Central already contains these APIs.
+A version heading means that version is published; anything above the newest one is on `main` only.
 
-## Unreleased — Atlas stabilization
+## 0.2.0 (2026-10-19)
+
+The first release since 0.1.0, on Maven Central (`liquidglass`, `liquidglass-material3`,
+`liquidglass-bom` and the Gradle plugin `dev.shayxo.liquidglass`), npm (`liquidglass`,
+`liquidglass-react-native`) and NuGet
+(`LiquidGlass`, `LiquidGlass.WinForms`, `LiquidGlass.Wpf`, `LiquidGlass.Avalonia`); the Flutter port is
+source only. Release notes:
+[.github/release-notes/v0.2.0.md](.github/release-notes/v0.2.0.md). Breaking: 0.1.0's
+`LiquidGlassScene`/`LiquidGlassState`/`liquidGlassSource`/`liquidGlass` API is removed in favour of
+`LiquidGlassTheme` and `Modifier.glassEffect`. The development log of everything in it follows, newest
+first, down to 0.1.0.
+
+### Atlas stabilization
 
 ### Added — one tag publishes everything (19 October)
 
@@ -15,8 +27,9 @@ This file records user-visible development changes. Published artifacts are iden
 - `.github/scripts/set_version.py` sets the one version everywhere it is written down.
 - Rehearsed end to end on 19 October: a new desktop project applied `id("dev.shayxo.liquidglass")`
   from a local Maven repository, got `liquidglass` and `liquidglass-material3`, `liquidGlassAdopt`
-  switched its `Button` import to the glass one, and it compiled. Nothing has been published. npm needs its token; NuGet uses
-  trusted publishing, with no stored key ([publishing](docs/publishing.md)).
+  switched its `Button` import to the glass one, and it compiled. NuGet publishes through trusted
+  publishing, with no stored key; npm uses a token for its first release, then trusted publishing too
+  ([publishing](docs/publishing.md)).
 
 ### Checked — Flutter and React Native on a phone (20 October)
 
@@ -49,7 +62,7 @@ This file records user-visible development changes. Published artifacts are iden
 
 ### Added — React Native (19 October)
 
-- `liquidglass-react-native` (`ports/react-native`, new, unpublished): `GlassSurface` and `GlassLens`
+- `liquidglass-react-native` (`ports/react-native`, new, on npm): `GlassSurface` and `GlassLens`
   for a React Native Skia `<Canvas>`, on Android and React Native Web. A small adapter runs the
   CanvasKit painter and the production shaders unchanged on React Native Skia's API. In React Native
   Skia's headless build its glass equals CanvasKit's (no channel off by more than 1). Not yet run on a
@@ -694,7 +707,7 @@ Existing `V3`, `Measured`, `Pullable` and modifier defaults remain available. Ne
 by default. The new lens and dynamics are authored approximations. Full iOS equivalence, physical-device
 verification of this revision and native support for every UI stack remain unproven.
 
-## Review fixes (unreleased)
+## Review fixes (in 0.2.0)
 
 - Glass panels follow a resize in place: the size feeding the drag policy, band, pad and path
   field is now tracked state rather than read once from the layout coordinates.
@@ -713,14 +726,14 @@ verification of this revision and native support for every UI stack remain unpro
   checks GitHub links against tracked paths.
 - Verified on the JVM suite only; no physical-device capture for the sampling change.
 
-## Astra r14 (2026-10-01, unreleased)
+## Astra r14 (2026-10-01, in 0.2.0)
 
 - Preserve touch expansion and the small-control drag response.
 - Make large cards and pills much less elastic during dragging through a shared, size-adaptive strain policy.
 - Add density, extreme-direction and actual desktop-render regression checks.
 - Android APK built; new physical-device verification remains pending.
 
-## Astra r13 review (2026-10-01, unreleased)
+## Astra r13 review (2026-10-01, in 0.2.0)
 
 - Shared anchored Pullable material: stationary layout/content, bounded deformation, level wide bars.
 - Full-screen excursion fixes: unclipped Live material, perpendicular-axis strain and endpoint resistance.
@@ -728,7 +741,7 @@ verification of this revision and native support for every UI stack remain unpro
 - Generic integration guide, physical review evidence and preserved alternative approaches.
 - No claim of complete iOS parity and no Maven Central release.
 
-## 0.2.0 (unreleased)
+## Earlier 0.2.0 development (September)
 
 - **Reduced held-bubble drag sensitivity:** lower speed response, maximum spine stretch and
   squeeze, with a gentler bounded off-axis response. Small movements remain continuous;

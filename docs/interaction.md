@@ -40,7 +40,7 @@ as glass responding to a touch. It drags a small magnification of the backdrop w
 
 ### Press and pull
 
-The unreleased `GlassInteraction.Pullable` preset adds per-side press growth and continuous
+The `GlassInteraction.Pullable` preset (new in 0.2.0) adds per-side press growth and continuous
 drag deformation. The target becomes progressively resistant before it enters the animation,
 so a distant pointer cannot store unlimited hidden travel. Stretch and squeeze use the
 support widths along and across the pull; wide panels therefore do not lose a large fraction

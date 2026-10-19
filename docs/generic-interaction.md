@@ -134,8 +134,8 @@ external press source. The source does not arbitrate pointer ownership for you.
 
 ## Build and verification
 
-The new APIs are unreleased. Publish this source with `./gradlew publishToMavenLocal`; consume the
-same `VERSION_NAME` from `gradle.properties` through Maven Local. R14's archived artifact predates
+These APIs are in 0.2.0. To try `main`, publish it with `./gradlew publishToMavenLocal` and consume
+the `VERSION_NAME` from `gradle.properties` through Maven Local. R14's archived artifact predates
 the calm preset, continuous lens and parent-driven pull API.
 The isolated owner workspace uses its private Gradle/Maven wrapper for both operations.
 

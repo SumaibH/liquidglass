@@ -6,7 +6,7 @@ owns the canvas, layout, input, accessibility and the pixels behind the glass.
 
 This is an experimental adapter. It is packaged as `LiquidGlass` (the painter, .NET 8) and
 `LiquidGlass.WinForms` (the Windows Forms host, .NET 10); CI packs both on every change and checks
-their contents (`check-packages.mjs`). Nothing is published to NuGet until the owner releases it. The renderer targets
+their contents (`check-packages.mjs`). Released on NuGet from 0.2.0. The renderer targets
 .NET 8; the runnable Windows Forms example targets .NET 10 / Windows 10 build 19041 or newer.
 SkiaSharp is pinned to 4.153.1, with dependency locks in each project.
 
@@ -49,7 +49,7 @@ Build with that wrapper, then execute the DLL with the system `dotnet` when its 
 
 ## Add glass to a host
 
-Once released: `dotnet add package LiquidGlass`. Until then, reference `LiquidGlass.Skia/LiquidGlass.Skia.csproj` from your project. Keep `ports/skia/shaders`
+`dotnet add package LiquidGlass` (and `LiquidGlass.WinForms`, `LiquidGlass.Wpf` or `LiquidGlass.Avalonia` for a host), or reference `LiquidGlass.Skia/LiquidGlass.Skia.csproj` from a checkout. Keep `ports/skia/shaders`
 alongside it: the build embeds those production exports. The built DLL does not fetch shader files
 at runtime. For a Linux host, add the matching `SkiaSharp.NativeAssets.Linux` package and install
 fontconfig/fonts. The dependency-free variant has no system font provider; a host using it must

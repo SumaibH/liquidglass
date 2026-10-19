@@ -123,7 +123,8 @@ Phases, one PR each, suite and ports green each time, the owner reviews between 
        - Rehearsal: library and plugin published to a scratch Maven repo; a fresh Compose desktop
          project applied `id("dev.shayxo.liquidglass")`, `liquidGlassAdopt` swapped `Button`, compiled.
          `npm publish --dry-run` of a stamped copy: 23 files, 84.9 kB.
-       - Owner actions before a release: `NPM_TOKEN` and `NUGET_API_KEY` secrets; the word to tag.
+       - Owner actions: done on 19 Oct (`NPM_TOKEN` set, NuGet trusted publishing policy, "go" to tag).
+         After 0.2.0 reaches npm: add a trusted publisher to both npm packages, delete the token.
      - Next:
        - Compare against the private CC/stills locally.
        - MAUI needs the MAUI workload (`SkiaSharp.Views.Maui.Controls` 4.153.1 exists).

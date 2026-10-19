@@ -2,8 +2,7 @@
 
 `<liquid-glass>` is a standard custom element for any web page: plain HTML, React, Vue, Svelte,
 Angular or anything else that renders DOM. What you put inside it stays ordinary HTML above the glass:
-buttons keep their clicks, focus and accessible names. The package is `liquidglass` on npm once it is
-published; **it is not published yet** (`"private": true` until the owner publishes it). The full
+buttons keep their clicks, focus and accessible names. The package is `liquidglass` on npm (`npm install liquidglass`). The full
 package guide is [ports/npm/README.md](https://github.com/shayann07/liquidglass/blob/main/ports/npm/README.md).
 
 ```html

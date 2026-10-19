@@ -11,9 +11,9 @@ React Native Web. iOS is not a target; on iOS 26 the system's own glass is the n
 The demo app also runs on a Pixel 7 and the Android 17 emulator
 ([evidence](https://github.com/shayann07/liquidglass/blob/main/review/atlas/react-native-2026-10-19/README.md)).*
 
-!!! note "Unpublished"
-    The package keeps `"private": true` until the release. Install it from a checkout:
-    `npm install ../path/to/liquidglass/ports/react-native`.
+```sh
+npm install liquidglass-react-native @shopify/react-native-skia
+```
 
 ```jsx
 import {Canvas, makeImageFromView} from '@shopify/react-native-skia';
