@@ -36,7 +36,9 @@ maps each removed name to its replacement.
 Glass is drawn in an overlay above the theme's recording, on every platform, so it never samples
 itself. Two consequences are open limits: glass draws above content that is not glass, and an
 ancestor's alpha does not fade it ([Limitations](limitations.md#glass-draws-above-content-that-is-not-glass)).
-Desktop and web are planned to move to Skia's own backdrop, which removes both there.
+Skia's own backdrop (desktop and web) was considered and set aside on 19 October: it fixes the
+stacking but blanks glass under any translucent ancestor, which every fade animation creates
+([spikes](https://github.com/shayann07/liquidglass/blob/main/review/atlas/backdrop-spikes-2026-10-18/README.md)). The overlay stays on every platform.
 
 Evidence: `GlassEffectTest` in the desktop render suite checks that a lens magnifies the page and
 not its own content at the top level, under a `graphicsLayer` and inside a scrolled column; that a
@@ -317,8 +319,7 @@ trace was produced and no permission changes were made. See [performance](perfor
    21-29 ms on Intel UHD, slower than the 11 October record (4.5 / 8.9 ms). A 14 October build times the same
    as this one, so the 18 October changes did not cause it; its cause is not established. Owner visual
    acceptance of the desktop windows is still open.
-4. Additional host integrations, with executable evidence. In Compose, the Skia backdrop path
-   for desktop and web, which would lift the overlay's two limits there.
+4. Additional host integrations, with executable evidence.
 5. No release/tag is authorized.
 
 The current checklist has 27 completed and 22 open entries of unequal size; this is not a progress
