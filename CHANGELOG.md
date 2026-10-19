@@ -18,8 +18,8 @@ first, down to 0.1.0.
 ### Added — one tag publishes everything (19 October)
 
 - The release workflow publishes every artifact from one tag: the library, Material 3, the BOM and,
-  new, the Gradle plugin `dev.shayxo.liquidglass` on Maven Central; the `liquidglass` web component on
-  npm (with provenance); the four NuGet packages; and a GitHub release. It refuses before uploading
+  new, the Gradle plugin `dev.shayxo.liquidglass` on Maven Central; the `liquidglass` web component and
+  `liquidglass-react-native` on npm (with provenance); the four NuGet packages; and a GitHub release. It refuses before uploading
   unless the tag matches the version, the commit is on `main` and passed CI, and the release notes
   exist. Pull requests that touch the release files run it as a dry run.
 - `.github/scripts/set_version.py` sets the one version everywhere it is written down.
@@ -27,6 +27,13 @@ first, down to 0.1.0.
   from a local Maven repository, got `liquidglass` and `liquidglass-material3`, `liquidGlassAdopt`
   switched its `Button` import to the glass one, and it compiled. Nothing has been published; npm and
   NuGet need their tokens first ([publishing](docs/publishing.md)).
+
+### Changed — Skia's own backdrop is not planned (19 October)
+
+- Docs: the overlay stays on every platform. Skia's own backdrop would fix the stacking on desktop and
+  web, but the 18 October spike shows glass drawn in place goes blank under any translucent ancestor
+  (every fade animation); the guides had said it would also lift the alpha limit, which it would not.
+
 ### Added — React Native (19 October)
 
 - `liquidglass-react-native` (`ports/react-native`, new, on npm): `GlassSurface` and `GlassLens`
