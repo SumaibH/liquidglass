@@ -104,9 +104,21 @@ Phases, one PR each, suite and ports green each time, the owner reviews between 
        - Avalonia: Avalonia 12 accepts SkiaSharp 4; `LiquidGlass.Avalonia` and a headless demo checked
          in CI on Linux and Windows (Avalonia 11, on SkiaSharp 2.88, cannot).
        - The neck "crease": a density-2 probe found no crease, only a small kink at the waist. Left.
-     - Next for quality: compare against the private CC/stills locally; the tab bar's Ios27 style
-       (unmeasured numbers) could take the measured rim; web Escape routing depends on the host's
-       navigation-event dispatcher (documented).
+       - Later that night, also merged:
+         - #37: WPF.
+         - #38: the Android frost fix, the scrolled showcase, the tooltip and menu fixes.
+         - #39: handoff.
+         - #40: `GlassTabBarStyle.Ios27` takes iOS 27's measured rim (roadmap item 3).
+         - #41: Escape already dismisses glass overlays on desktop and the web. Compose
+           Multiplatform 1.12.1 maps Escape to back; docs corrected.
+         - #42: `LiquidGlass.Avalonia`. Avalonia 12 runs on SkiaSharp 4. The headless demo is in CI
+           on Linux and Windows.
+       - No PRs open at the end of the night. Nothing was published; no tags.
+     - Next:
+       - Compare against the private CC/stills locally.
+       - MAUI needs the MAUI workload (`SkiaSharp.Views.Maui.Controls` 4.153.1 exists).
+       - Flutter, React Native, Qt and Unity need their own integrations.
+       - The long iOS video-parity rows in TODO.md (M1-M3, O1) remain.
      - Do not run two Gradle builds in one worktree at once: the renders and XML results clobber each
        other (UncompletedCoroutinesError, stale XML). A test that passes alone may fail when run in
        parallel.
