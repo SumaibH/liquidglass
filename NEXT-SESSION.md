@@ -144,7 +144,7 @@ Phases, one PR each, suite and ports green each time, the owner reviews between 
          taps). GlassSurface = BackdropFilterLayer(ImageFilter.shader) in a ClipRRect; uOrigin = global
          position * dpr. NO y flip for backdrop input on GLES (the documented flip turned the page upside
          down). flutter test 5/5 (shader loads; 75 uniforms equal ports/skia fixture). Emulator lg_verify_37
-         captures in review/atlas/flutter-2026-10-19. SDK at .local/flutter (3.47.7). Vulkan unchecked.
+         captures in review/atlas/flutter-2026-10-19. SDK at .local/flutter (3.47.7). Vulkan checked on Pixel 7, 20 Oct.
        - React Native device demo: D:/lgrn/LGDemo (moved out of the repo path: CMake hit MAX_PATH).
        - The long iOS video-parity rows in TODO.md (M1-M3, O1) remain.
      - Do not run two Gradle builds in one worktree at once: the renders and XML results clobber each

@@ -18,6 +18,23 @@ an ordinary `ListView`; the glass refracts it live.*
 
 *Full-resolution crops from the scrolled capture.*
 
+## Pixel 7 (Vulkan) — 20 October
+
+![The example on a Pixel 7 at rest (left) and scrolled (right)](flutter-pixel7.png)
+
+*Our capture: the same example (`ports/flutter/example`, profile build, source revision `0f52457`) on a
+Pixel 7 running Android 17. Logcat at launch: "Using the Impeller rendering backend (Vulkan)". Flutter
+3.47.7. `adb exec-out screencap`; left at rest, right after a swipe, scaled to 45%.*
+
+![The dark bar on the Pixel 7 refracting row 6, its icons above the glass](flutter-pixel7-bar-crop.png)
+
+*Full-resolution crop from the capture at rest: the bar refracts row 6 the right way up, so the
+generated shader needs no flip on Vulkan either.*
+
+[flutter-pixel7.mp4](flutter-pixel7.mp4): 6 s of `adb shell screenrecord` (scaled to 540 px wide)
+while `adb shell input swipe` scrolls the list three times and back. The glass follows the list every
+frame. This is a visual check only; frame timing was not measured.
+
 ## Checks
 
 - `flutter test`:
@@ -36,7 +53,6 @@ flip, the backdrop is the right way up. The generated shader has no flip.
 
 ## Limits
 
-- An emulator, not a phone. Impeller's Vulkan backend (most phones, the Pixel 7 among them) is not
-  checked yet.
+- One phone: the Pixel 7 (Vulkan) and the emulator (OpenGL ES). Frame timing is not measured.
 - The wide tone kernel is approximated with thirteen Gaussian taps (see the package README).
 - Rounded rectangles only. There is no lens or navigation bar, and no touch response.

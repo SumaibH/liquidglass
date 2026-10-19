@@ -10,7 +10,8 @@ research remains available; this page identifies which later changes supersede i
 Impeller: a backdrop filter running the production shader, generated from its SkSL export. The Dart
 material equals the CanvasKit port's uniforms to 1e-6, the shader compiles and loads in `flutter test`,
 and the example refracts a scrolling list on the Android 17 emulator (OpenGL ES). Approximated: the
-wide tone kernel (thirteen taps). Not yet checked: Vulkan devices. [Guide](flutter.md),
+wide tone kernel (thirteen taps). On 20 October it ran on a Pixel 7 on Impeller's Vulkan backend too. Not yet
+measured: frame timing. [Guide](flutter.md),
 [evidence](https://github.com/shayann07/liquidglass/blob/main/review/atlas/flutter-2026-10-19/README.md).
 
 ## React Native (19 October)
@@ -20,7 +21,7 @@ React Native Skia `<Canvas>` on Android and React Native Web, with the productio
 adapter runs the CanvasKit painter unchanged on React Native Skia's API. In React Native Skia's headless
 build (CanvasKit, software) the adapter's glass equals CanvasKit's, no channel off by more than 1, and
 the components render in an element tree. The demo app runs on the Android 17 emulator (a first run
-there found surfaces drawing nothing, fixed by raster offscreen surfaces); not yet on a phone. The backdrop
+there found surfaces drawing nothing, fixed by raster offscreen surfaces) and, on 20 October, on a Pixel 7. The backdrop
 is a snapshot.
 [Guide](react-native.md), [evidence](https://github.com/shayann07/liquidglass/blob/main/review/atlas/react-native-2026-10-19/README.md).
 

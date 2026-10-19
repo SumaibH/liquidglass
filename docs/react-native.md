@@ -8,7 +8,7 @@ React Native Web. iOS is not a target; on iOS 26 the system's own glass is the n
 ![Glass rendered by React Native Skia's headless build: a lens bending the lines, a light and a dark surface](assets/react-native-glass.png)
 
 *Our render: React Native Skia 2.14.0 headless (its JSI API over CanvasKit, software), pixel ratio 2.
-The demo app also runs on the Android 17 emulator
+The demo app also runs on a Pixel 7 and the Android 17 emulator
 ([evidence](https://github.com/shayann07/liquidglass/blob/main/review/atlas/react-native-2026-10-19/README.md)).*
 
 ```sh
@@ -53,7 +53,7 @@ Native Skia tree. [Evidence](https://github.com/shayann07/liquidglass/blob/main/
 
 ## Limits
 
-- Run on the Android emulator, not yet on a phone.
+- Run on one phone (Pixel 7) and the Android emulator; inspected by eye there.
 - The backdrop is a snapshot: capture it again when the page changes.
 - No touch response yet. The press and pull motion exists in the painter's controllers, but these
   components do not use it.
