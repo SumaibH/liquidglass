@@ -205,6 +205,9 @@ jobs:
     needs: check
     runs-on: windows-2025 # WinForms and WPF pack only on Windows
     timeout-minutes: 15
+    permissions:
+      contents: read
+      id-token: write # NuGet trusted publishing: the workflow's identity, no stored key
     env:
       DOTNET_CLI_TELEMETRY_OPTOUT: '1'
       DOTNET_GENERATE_ASPNET_CERTIFICATE: 'false'
@@ -226,13 +229,20 @@ jobs:
           done
           node ports/dotnet/check-packages.mjs ports/dotnet/artifacts/nuget --winforms --wpf --avalonia
           ls ports/dotnet/artifacts/nuget
+      # Trusted publishing: nuget.org's policy for shayxo.dev trusts this repository's publish.yml and
+      # exchanges the run's OIDC token for an API key that lives an hour (docs/publishing.md).
+      - name: Sign in to nuget.org
+        if: env.DRY_RUN != 'true'
+        id: nuget-login
+        uses: NuGet/login@8d196754b4036150537f80ac539e15c2f1028841 # v1.2.0
+        with:
+          user: shayxo.dev
       - name: Publish
         if: env.DRY_RUN != 'true'
         shell: bash
         env:
-          NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
+          NUGET_API_KEY: ${{ steps.nuget-login.outputs.NUGET_API_KEY }}
         run: |
-          [ -n "$NUGET_API_KEY" ] || { echo "::error::NUGET_API_KEY is missing (docs/publishing.md)"; exit 1; }
           # The .snupkg symbol packages beside them are pushed with them.
           dotnet nuget push "ports/dotnet/artifacts/nuget/*.nupkg" --api-key "$NUGET_API_KEY" \
             --source https://api.nuget.org/v3/index.json --skip-duplicate

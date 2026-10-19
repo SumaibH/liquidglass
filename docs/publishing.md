@@ -8,7 +8,7 @@ One tag publishes one version everywhere:
 | :-- | :-- | :-- |
 | Maven Central | `liquidglass`, `liquidglass-material3`, `liquidglass-bom`, and the Gradle plugin `dev.shayxo.liquidglass` (artifact `liquidglass-gradle-plugin` plus its plugin marker) | `MAVEN_CENTRAL_USERNAME`, `MAVEN_CENTRAL_PASSWORD`, `SIGNING_KEY`, `SIGNING_KEY_PASSWORD` (set up since 0.1.0) |
 | npm | `liquidglass`, the `<liquid-glass>` web component; `liquidglass-react-native` | `NPM_TOKEN` |
-| NuGet | `LiquidGlass`, `LiquidGlass.WinForms`, `LiquidGlass.Wpf`, `LiquidGlass.Avalonia` | `NUGET_API_KEY` |
+| NuGet | `LiquidGlass`, `LiquidGlass.WinForms`, `LiquidGlass.Wpf`, `LiquidGlass.Avalonia` | none: trusted publishing |
 | GitHub | a release with the notes in `.github/release-notes/vX.Y.Z.md` | none (the workflow's token) |
 
 The Gradle plugin is on Maven Central rather than the Gradle Plugin Portal, under the same signing key.
@@ -63,7 +63,7 @@ No signing key is needed for this. Signing switches on only when a key is presen
    SNAPSHOT, the commit is on `main` and passed CI there, and the release notes exist. Then each
    registry is its own job, and the GitHub release follows them. Maven Central shows the artifacts
    within about half an hour.
-7. If one job fails (a missing secret, an outage), fix the cause and run
+7. If one job fails (a missing secret or policy, an outage), fix the cause and run
    `gh run rerun <id> --failed`. The others stay published; npm and NuGet skip a version that is
    already there.
 8. `python .github/scripts/set_version.py X.Y+1.0-SNAPSHOT` on `main`.
@@ -87,13 +87,17 @@ npm shows that each version was built by this workflow from this repository.
 
 ## NuGet, once
 
-1. An account at [nuget.org](https://www.nuget.org) (a Microsoft account).
-2. The IDs `LiquidGlass`, `LiquidGlass.WinForms`, `LiquidGlass.Wpf` and `LiquidGlass.Avalonia` were
+NuGet publishes through [trusted publishing](https://learn.microsoft.com/nuget/nuget-org/trusted-publishing):
+no API key is stored. The workflow signs in with `NuGet/login`, which exchanges the run's GitHub OIDC
+token for an API key valid for an hour.
+
+1. An account at [nuget.org](https://www.nuget.org) (a Microsoft account); the workflow signs in as
+   `shayxo.dev`.
+2. Account, Trusted Publishing, Create: package owner `shayxo.dev`, repository owner `shayann07`,
+   repository `liquidglass`, workflow file `publish.yml`, no environment (set up on 19 October 2026).
+3. The IDs `LiquidGlass`, `LiquidGlass.WinForms`, `LiquidGlass.Wpf` and `LiquidGlass.Avalonia` were
    free on 19 October 2026; the first push claims them. Optionally reserve the `LiquidGlass` prefix
    afterwards (nuget.org ID prefix reservation), which marks the packages as verified.
-3. An API key (Account, API Keys, Create): scope "Push new packages and package versions", glob
-   pattern `LiquidGlass*`.
-4. `gh secret set NUGET_API_KEY --repo shayann07/liquidglass` and paste it.
 
 ## Maven Central
 
