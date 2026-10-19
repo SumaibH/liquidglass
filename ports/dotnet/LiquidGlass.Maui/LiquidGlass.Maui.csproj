@@ -12,6 +12,9 @@
     <SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">10.0.19041.0</SupportedOSPlatformVersion>
     <TargetPlatformMinVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">10.0.19041.0</TargetPlatformMinVersion>
     <RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
+    <!-- Restore MAUI from nuget.org only: the SDK's bundled library-packs copies hash differently, so a
+         lock file written from them fails NU1403 on another machine. -->
+    <DisableImplicitLibraryPacksFolder>true</DisableImplicitLibraryPacksFolder>
     <PackageId>LiquidGlass.Maui</PackageId>
     <PackageTags>$(PackageTags);maui;dotnet-maui;android</PackageTags>
     <Description>.NET MAUI adapter for LiquidGlass: a GlassSurface view that refracts the app's own MAUI content on Android and Windows, drawn by the production shaders through SkiaSharp.Views.Maui. iOS is not a target.</Description>

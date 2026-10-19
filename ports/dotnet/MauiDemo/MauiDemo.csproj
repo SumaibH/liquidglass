@@ -15,6 +15,9 @@
          as a default publish RID, for which .NET 10 has no Mono runtime pack. Android names its own. -->
     <UseDefaultPublishRuntimeIdentifier>false</UseDefaultPublishRuntimeIdentifier>
     <RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
+    <!-- Restore MAUI from nuget.org only: the SDK's bundled library-packs copies hash differently, so a
+         lock file written from them fails NU1403 on another machine. -->
+    <DisableImplicitLibraryPacksFolder>true</DisableImplicitLibraryPacksFolder>
     <!-- A demo: no store packaging, no trimming surprises in the shader reflection. -->
     <AndroidPackageFormat>apk</AndroidPackageFormat>
   </PropertyGroup>
