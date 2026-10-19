@@ -25,7 +25,7 @@ From 1.0.0 it follows [Semantic Versioning](https://semver.org):
 | Compose Multiplatform | `dev.shayxo.liquidglass:liquidglass`, `:liquidglass-material3`, `:liquidglass-bom`; Gradle plugin `dev.shayxo.liquidglass` | Every public declaration, checked: the ABI is committed under each module's `api/` and CI fails on an unrecorded change (`checkKotlinAbi`). The plugin's `liquidGlassAdopt` task and its extension. |
 | Web | npm `@shayxo.dev/liquidglass` | The `<liquid-glass>` element: its attributes, properties and events, and the module's typed exports (`index.d.mts`). |
 | React Native | npm `@shayxo.dev/liquidglass-react-native` | `GlassSurface`, `GlassLens` and their props; `createGlassPainter`, `recordGlass` (`index.d.ts`). |
-| Flutter | pub.dev `liquiglass` | `GlassSurface`, `GlassMaterial`, `LiquidGlass.ensureInitialized`. |
+| Flutter | pub.dev `liquiglass` (first upload pending; until then depend on `ports/flutter` by path or git) | `GlassSurface`, `GlassMaterial`, `LiquidGlass.ensureInitialized`. |
 | .NET | NuGet `LiquidGlass`, `.WinForms`, `.Wpf`, `.Avalonia`, `.Maui` | Every public type and member. |
 
 **Previews, outside the promise until they are verified on their platform:** the Qt Quick port

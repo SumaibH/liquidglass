@@ -479,7 +479,7 @@ Progress:
 - [x] Native studio redesign, Sky/Type/Lines scenes, continuous draggable lens and responsive controls.
 - [x] App-owned AWT replay, stable-layout checks, source screenshots and actual GPU metadata.
 - [x] Prefer NVIDIA discrete GPU; paired static redraw submission improved on the owner's machine.
-- [x] Fix first-use/live interaction hitches and measure presented-frame/input behavior separately **Closed 20 Oct:** Measured 20 Oct on a Pixel 7 apart from redraw/readback (review/atlas/first-use-2026-10-20): one 317-370 ms frame on the first tap after install; warm-up is #71.
+- [ ] Fix first-use/live interaction hitches and measure presented-frame/input behavior separately **Open (#71):** the first-use measurement is done (Pixel 7, 20 Oct, review/atlas/first-use-2026-10-20): one 317-370 ms frame on the first tap after install. The hitch itself and presented-frame timing remain open under #71.
   from forced redraw submission and screenshot readback. No false FPS claims from phase snapshots.
   The wide-input fix adds about 3 ms median submission time in the controlled NVIDIA comparison;
   cropping its transformed input preserved pixels but did not improve speed and was rejected.

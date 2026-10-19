@@ -725,18 +725,6 @@ final object com.wexpa.liquidglass/GlassMaterial { // com.wexpa.liquidglass/Glas
     final fun toolbarOpacity(kotlin/Boolean, kotlin/Float = ...): kotlin/Float // com.wexpa.liquidglass/GlassMaterial.toolbarOpacity|toolbarOpacity(kotlin.Boolean;kotlin.Float){}[0]
 }
 
-final object com.wexpa.liquidglass/LiquidGlassDiagnostics { // com.wexpa.liquidglass/LiquidGlassDiagnostics|null[0]
-    final var coverageOnly // com.wexpa.liquidglass/LiquidGlassDiagnostics.coverageOnly|{}coverageOnly[0]
-        final fun <get-coverageOnly>(): kotlin/Boolean // com.wexpa.liquidglass/LiquidGlassDiagnostics.coverageOnly.<get-coverageOnly>|<get-coverageOnly>(){}[0]
-        final fun <set-coverageOnly>(kotlin/Boolean) // com.wexpa.liquidglass/LiquidGlassDiagnostics.coverageOnly.<set-coverageOnly>|<set-coverageOnly>(kotlin.Boolean){}[0]
-    final var recordPadOverridePx // com.wexpa.liquidglass/LiquidGlassDiagnostics.recordPadOverridePx|{}recordPadOverridePx[0]
-        final fun <get-recordPadOverridePx>(): kotlin/Float? // com.wexpa.liquidglass/LiquidGlassDiagnostics.recordPadOverridePx.<get-recordPadOverridePx>|<get-recordPadOverridePx>(){}[0]
-        final fun <set-recordPadOverridePx>(kotlin/Float?) // com.wexpa.liquidglass/LiquidGlassDiagnostics.recordPadOverridePx.<set-recordPadOverridePx>|<set-recordPadOverridePx>(kotlin.Float?){}[0]
-
-    final fun <#A1: kotlin/Any?> withDiagnostics(kotlin/Float? = ..., kotlin/Boolean = ..., kotlin/Function0<#A1>): #A1 // com.wexpa.liquidglass/LiquidGlassDiagnostics.withDiagnostics|withDiagnostics(kotlin.Float?;kotlin.Boolean;kotlin.Function0<0:0>){0§<kotlin.Any?>}[0]
-    final fun reset() // com.wexpa.liquidglass/LiquidGlassDiagnostics.reset|reset(){}[0]
-}
-
 final object com.wexpa.liquidglass/LiquidGlassSupport { // com.wexpa.liquidglass/LiquidGlassSupport|null[0]
     final val hasBackdropBlur // com.wexpa.liquidglass/LiquidGlassSupport.hasBackdropBlur|{}hasBackdropBlur[0]
         final fun <get-hasBackdropBlur>(): kotlin/Boolean // com.wexpa.liquidglass/LiquidGlassSupport.hasBackdropBlur.<get-hasBackdropBlur>|<get-hasBackdropBlur>(){}[0]

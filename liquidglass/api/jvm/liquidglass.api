@@ -625,18 +625,6 @@ public final class com/wexpa/liquidglass/LiquidGlassCoverSheetKt {
 public abstract interface annotation class com/wexpa/liquidglass/LiquidGlassDiagnosticApi : java/lang/annotation/Annotation {
 }
 
-public final class com/wexpa/liquidglass/LiquidGlassDiagnostics {
-	public static final field $stable I
-	public static final field INSTANCE Lcom/wexpa/liquidglass/LiquidGlassDiagnostics;
-	public final fun getCoverageOnly ()Z
-	public final fun getRecordPadOverridePx ()Ljava/lang/Float;
-	public final fun reset ()V
-	public final fun setCoverageOnly (Z)V
-	public final fun setRecordPadOverridePx (Ljava/lang/Float;)V
-	public final fun withDiagnostics (Ljava/lang/Float;ZLkotlin/jvm/functions/Function0;)Ljava/lang/Object;
-	public static synthetic fun withDiagnostics$default (Lcom/wexpa/liquidglass/LiquidGlassDiagnostics;Ljava/lang/Float;ZLkotlin/jvm/functions/Function0;ILjava/lang/Object;)Ljava/lang/Object;
-}
-
 public final class com/wexpa/liquidglass/LiquidGlassSupport {
 	public static final field $stable I
 	public static final field INSTANCE Lcom/wexpa/liquidglass/LiquidGlassSupport;
