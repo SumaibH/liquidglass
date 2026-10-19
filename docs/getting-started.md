@@ -15,6 +15,9 @@ plugins {
 }
 ```
 
+The plugin is on Maven Central: `pluginManagement { repositories { mavenCentral() } }` in
+`settings.gradle.kts` finds it, and new Android Studio and Kotlin Multiplatform projects already list it.
+
 `./gradlew liquidGlassAdopt` then switches an existing app's Material 3 imports to the glass versions,
 once (`--dry-run` lists the changes first). `liquidGlass { material3.set(false) }` keeps Material out.
 
