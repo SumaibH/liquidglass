@@ -8,7 +8,7 @@ shapes and motion in its own colour scheme.
   <img src="assets/material3-light.png" width="300" alt="A Material 3 music app in glass, light scheme: top bar, segmented control, buttons, chips, a frosted mini player with a switch and a slider, and the tab bar with a search button, over album art">
   <img src="assets/material3-dark.png" width="300" alt="The same app in the dark scheme">
 </p>
-<p align="center"><sub>Rendered by the library (desktop Skia, 390 × 844 dp at density 3, scaled down) from Material's default light and dark schemes; only the imports differ from a Material 3 app. The same screen runs on Android and in the browser. <a href="https://github.com/shayann07/liquidglass/blob/main/review/atlas/glass-quality-2026-10-18/README.md">Evidence and limits</a>, including a Pixel 7 capture.</sub></p>
+<p align="center"><sub>Rendered by the library (desktop Skia, 390 × 844 dp at density 3, scaled down), scrolled so the album art passes under the glass, from Material's default light and dark schemes; only the imports differ from a Material 3 app. The same screen runs on Android and in the browser. <a href="https://github.com/shayann07/liquidglass/blob/main/review/atlas/showcase-2026-10-19/README.md">Evidence and limits</a>, including Pixel 7 captures.</sub></p>
 
 [Try it in your browser](demo.md#material-3). The change is the imports:
 

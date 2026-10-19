@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
@@ -12,6 +13,8 @@ import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.TooltipDefaults
+import androidx.compose.material3.rememberTooltipState
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.*
@@ -27,6 +30,8 @@ import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.drawscope.rotate
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.wexpa.liquidglass.material3.*
 import kotlin.math.PI
@@ -48,7 +53,13 @@ private val Albums = listOf(
  */
 @OptIn(androidx.compose.material3.ExperimentalMaterial3Api::class)
 @Composable
-fun MaterialShowcase(onSwitchScreen: () -> Unit, startDark: Boolean = false) {
+fun MaterialShowcase(
+    onSwitchScreen: () -> Unit,
+    startDark: Boolean = false,
+    startSheet: Boolean = false,
+    /** Start scrolled this far, so the album art already sits under the top bar's glass. */
+    startScroll: Dp = 0.dp,
+) {
     var dark by remember { mutableStateOf(startDark) }
     MaterialTheme(colorScheme = if (dark) darkColorScheme() else lightColorScheme()) {
         var tab by remember { mutableIntStateOf(0) }
@@ -57,7 +68,7 @@ fun MaterialShowcase(onSwitchScreen: () -> Unit, startDark: Boolean = false) {
         var progress by remember { mutableFloatStateOf(.38f) }
         var crossfade by remember { mutableStateOf(true) }
         var dialog by remember { mutableStateOf(false) }
-        var sheet by remember { mutableStateOf(false) }
+        var sheet by remember { mutableStateOf(startSheet) }
         var menu by remember { mutableStateOf(false) }
         var downloaded by remember { mutableStateOf(true) }
         Scaffold(
@@ -67,7 +78,11 @@ fun MaterialShowcase(onSwitchScreen: () -> Unit, startDark: Boolean = false) {
                     title = { Text("Library", fontWeight = FontWeight.Bold) },
                     navigationIcon = { IconButton(onClick = onSwitchScreen) { Icon(Icons.AutoMirrored.Filled.ArrowBack, "Atlas Studio") } },
                     actions = {
-                        IconButton(onClick = { dark = !dark }) { Icon(Icons.Default.Star, "Switch light and dark") }
+                        // Hold (or hover) for the glass tooltip.
+                        TooltipBox(TooltipDefaults.rememberPlainTooltipPositionProvider(),
+                            { PlainTooltip { Text(if (dark) "Switch to light" else "Switch to dark") } }, rememberTooltipState()) {
+                            IconButton(onClick = { dark = !dark }) { Icon(Icons.Default.Star, "Switch light and dark") }
+                        }
                         Box {
                             IconButton(onClick = { menu = true }) { Icon(Icons.Default.MoreVert, "More") }
                             DropdownMenu(expanded = menu, onDismissRequest = { menu = false }) {
@@ -91,8 +106,10 @@ fun MaterialShowcase(onSwitchScreen: () -> Unit, startDark: Boolean = false) {
         ) { padding ->
             Box(Modifier.fillMaxSize()) {
                 Wallpaper(dark, Modifier.fillMaxSize())
+                val scrollPx = with(LocalDensity.current) { startScroll.roundToPx() }
                 LazyVerticalGrid(
                     GridCells.Adaptive(150.dp), Modifier.fillMaxSize(),
+                    state = rememberLazyGridState(initialFirstVisibleItemScrollOffset = scrollPx),
                     contentPadding = PaddingValues(start = 16.dp, end = 16.dp, top = padding.calculateTopPadding() + 172.dp, bottom = 240.dp),
                     horizontalArrangement = Arrangement.spacedBy(14.dp), verticalArrangement = Arrangement.spacedBy(16.dp),
                 ) {

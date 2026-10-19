@@ -214,6 +214,8 @@ class GlassMaterialComponentsTest {
         onNodeWithTag("anchor").performTouchInput { longClick() }
         waitUntil(timeoutMillis = 10_000) { tip.isVisible }
         onNodeWithTag("tip", useUnmergedTree = true).assertExists()
+        waitForIdle()
+        assertEquals(1, clicks, "a long press for the tooltip must not also click its anchor")
     }
 
     @Test fun backDismissesOverlaysAndATallSheetStopsHalfway() = runDesktopComposeUiTest(390, 700, testTimeout = 4.minutes) {
@@ -269,6 +271,32 @@ class GlassMaterialComponentsTest {
         assertTrue(top in 300f..400f, "the partial stop shows half the window; the sheet's top is at $top")
         back.backCompleted()
         waitUntil(timeoutMillis = 20_000) { !sheet }
+    }
+
+    @Test fun aMenuAtTheWindowsEdgeStaysInside() = runDesktopComposeUiTest(390, 700, testTimeout = 4.minutes) {
+        setContent {
+            CompositionLocalProvider(LocalDensity provides Density(1f)) {
+                MaterialTheme(colorScheme = lightColorScheme()) {
+                    Scaffold(Modifier.size(390.dp, 700.dp)) { _ ->
+                        Box(Modifier.fillMaxSize()) {
+                            // The anchor is the window's last 40 dp, at the bottom: below it and after it
+                            // there is no room, so the menu must end at its end and open upward.
+                            Box(Modifier.align(Alignment.BottomEnd).size(40.dp)) {
+                                DropdownMenu(expanded = true, onDismissRequest = {}, modifier = Modifier.testTag("menu")) {
+                                    DropdownMenuItem(text = { Text("A long first item") }, onClick = {})
+                                    DropdownMenuItem(text = { Text("Second") }, onClick = {})
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        waitForIdle()
+        val bounds = onNodeWithTag("menu", useUnmergedTree = true).fetchSemanticsNode().boundsInRoot
+        assertTrue(bounds.left >= 0f && bounds.right <= 390f, "the menu leaves the window sideways: $bounds")
+        assertTrue(bounds.top >= 0f && bounds.bottom <= 700f, "the menu leaves the window vertically: $bounds")
+        assertTrue(bounds.bottom <= 660f + 1f, "with no room below, the menu opens above its anchor: $bounds")
     }
 
     @Test fun buttonsClickAndOverlaysOpenAndDismiss() = runDesktopComposeUiTest(390, 700, testTimeout = 4.minutes) {
