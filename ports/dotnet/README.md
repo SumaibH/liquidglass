@@ -49,7 +49,7 @@ Build with that wrapper, then execute the DLL with the system `dotnet` when its 
 
 ## Add glass to a host
 
-`dotnet add package LiquidGlass` (and `LiquidGlass.WinForms`, `LiquidGlass.Wpf` or `LiquidGlass.Avalonia` for a host), or reference `LiquidGlass.Skia/LiquidGlass.Skia.csproj` from a checkout. Keep `ports/skia/shaders`
+`dotnet add package LiquidGlass` (and `LiquidGlass.WinForms`, `LiquidGlass.Wpf`, `LiquidGlass.Avalonia` or `LiquidGlass.Maui` for a host), or reference `LiquidGlass.Skia/LiquidGlass.Skia.csproj` from a checkout. Keep `ports/skia/shaders`
 alongside it: the build embeds those production exports. The built DLL does not fetch shader files
 at runtime. For a Linux host, add the matching `SkiaSharp.NativeAssets.Linux` package and install
 fontconfig/fonts. The dependency-free variant has no system font provider; a host using it must
@@ -178,6 +178,49 @@ Avalonia 12 is built on SkiaSharp 3.119 and accepts the painter's SkiaSharp 4.15
 process; the [Avalonia host](AvaloniaDemo/Program.cs) runs headlessly with Avalonia's Skia renderer,
 draws a glass card and a lens over Avalonia content, checks the pixels and saves
 `avalonia-glass.png`. CI runs it on Linux and Windows. [Evidence](../../review/atlas/avalonia-2026-10-19/README.md).
+
+### .NET MAUI: glass over your own MAUI views
+
+Reference `LiquidGlass.Maui` (package `LiquidGlass.Maui`; .NET 10, Android and Windows; iOS and Mac
+Catalyst are not targets). `GlassSurface` is a `ContentView`: its glass is drawn by the painter through
+`SkiaSharp.Views.Maui`, and its `Content` stays ordinary MAUI views with their layout, input and
+accessibility. `GlassBackdrop` captures one of your elements (a page's content, a ScrollView's
+content) from its native view: Android's `View.Draw` into a bitmap, WinUI's `RenderTargetBitmap`.
+It captures by itself once the element is drawn, and again when its size changes; call
+`RefreshAsync()` after its content changes. Glass follows the element as it scrolls, with no new
+capture.
+
+```csharp
+// MauiProgram.cs
+builder.UseMauiApp<App>().UseLiquidGlass();
+
+// A page: rows in a ScrollView, glass over them in the same Grid.
+var backdrop = new GlassBackdrop(rows, BackgroundColor);   // rows = the ScrollView's content
+var bar = new GlassSurface
+{
+    Backdrop = backdrop, Dark = true, Radius = 36, HeightRequest = 72,
+    VerticalOptions = LayoutOptions.End, Margin = new Thickness(20, 0, 20, 28),
+    Content = tabs,                                         // ordinary MAUI views on the glass
+};
+Content = new Grid { Children = { new ScrollView { Content = rows }, bar } };
+```
+
+Keep every `GlassSurface` outside the element its backdrop captures. `Padding` insets the content
+only; the glass fills the surface. The backdrop is a snapshot: content that animates on its own (a
+video, a spinner) shows its state at the last capture. MAUI's own `CaptureAsync` is not used on
+Android: there it copies the window's pixels over the element's bounds, overlays included, so the glass
+refracted itself in the first device run.
+
+The [MAUI demo](MauiDemo/MauiProgram.cs) (`net10.0-android`) is a light glass card and a dark glass bar
+over 24 rows of native MAUI views. It runs on a Pixel 7; CI builds the library for all three targets
+and the demo's APK on Windows, packs `LiquidGlass.Maui` and checks it ships no iOS assets.
+[Evidence](../../review/atlas/maui-2026-10-20/README.md).
+
+```sh
+dotnet workload install maui-android
+dotnet build ports/dotnet/MauiDemo -c Release
+adb install -r ports/dotnet/MauiDemo/bin/Release/net10.0-android/dev.shayxo.liquidglass.mauidemo-Signed.apk
+```
 
 ## Navigation: the Calm selector
 

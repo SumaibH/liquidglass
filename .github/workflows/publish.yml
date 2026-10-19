@@ -3,7 +3,7 @@ name: Publish
 # Pushing a tag `vX.Y.Z` publishes that version everywhere at once:
 #   Maven Central  liquidglass, liquidglass-material3, liquidglass-bom, and the Gradle plugin
 #   npm            @shayxo.dev/liquidglass (the <liquid-glass> web component), @shayxo.dev/liquidglass-react-native
-#   NuGet          LiquidGlass, LiquidGlass.WinForms, LiquidGlass.Wpf, LiquidGlass.Avalonia
+#   NuGet          LiquidGlass, LiquidGlass.WinForms, LiquidGlass.Wpf, LiquidGlass.Avalonia, LiquidGlass.Maui
 #   pub.dev        liquiglass (the Flutter package, ports/flutter)
 # then creates the GitHub release from .github/release-notes/vX.Y.Z.md.
 #
@@ -218,7 +218,7 @@ jobs:
     needs: check
     if: needs.check.outputs.skip != 'true'
     runs-on: windows-2025 # WinForms and WPF pack only on Windows
-    timeout-minutes: 15
+    timeout-minutes: 30
     permissions:
       contents: read
       id-token: write # NuGet trusted publishing: the workflow's identity, no stored key
@@ -235,13 +235,15 @@ jobs:
       - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
           node-version: 22
+      - name: Install the MAUI workloads (LiquidGlass.Maui targets Android and Windows)
+        run: dotnet workload install maui-android maui-windows
       - name: Pack and check the packages
         shell: bash
         run: |
-          for p in LiquidGlass.Skia LiquidGlass.WinForms LiquidGlass.Wpf LiquidGlass.Avalonia; do
+          for p in LiquidGlass.Skia LiquidGlass.WinForms LiquidGlass.Wpf LiquidGlass.Avalonia LiquidGlass.Maui; do
             dotnet pack "ports/dotnet/$p/$p.csproj" -c Release -o ports/dotnet/artifacts/nuget || exit 1
           done
-          node ports/dotnet/check-packages.mjs ports/dotnet/artifacts/nuget --winforms --wpf --avalonia
+          node ports/dotnet/check-packages.mjs ports/dotnet/artifacts/nuget --winforms --wpf --avalonia --maui
           ls ports/dotnet/artifacts/nuget
       # Trusted publishing: nuget.org's policy for shayxo.dev trusts this repository's publish.yml and
       # exchanges the run's OIDC token for an API key that lives an hour (docs/publishing.md).

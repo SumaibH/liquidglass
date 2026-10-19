@@ -1,0 +1,25 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net10.0-android</TargetFramework>
+    <OutputType>Exe</OutputType>
+    <UseMaui>true</UseMaui>
+    <SingleProject>true</SingleProject>
+    <Nullable>enable</Nullable><ImplicitUsings>enable</ImplicitUsings><TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <RootNamespace>MauiDemo</RootNamespace>
+    <ApplicationTitle>LiquidGlass MAUI</ApplicationTitle>
+    <ApplicationId>dev.shayxo.liquidglass.mauidemo</ApplicationId>
+    <ApplicationDisplayVersion>1.0</ApplicationDisplayVersion>
+    <ApplicationVersion>1</ApplicationVersion>
+    <SupportedOSPlatformVersion>24.0</SupportedOSPlatformVersion>
+    <!-- A Release build trims, and the SDK then adds the build machine's runtime (win-x64, linux-x64)
+         as a default publish RID, for which .NET 10 has no Mono runtime pack. Android names its own. -->
+    <UseDefaultPublishRuntimeIdentifier>false</UseDefaultPublishRuntimeIdentifier>
+    <RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
+    <!-- A demo: no store packaging, no trimming surprises in the shader reflection. -->
+    <AndroidPackageFormat>apk</AndroidPackageFormat>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="../LiquidGlass.Maui/LiquidGlass.Maui.csproj" />
+    <PackageReference Include="Microsoft.Maui.Controls" Version="10.0.110" />
+  </ItemGroup>
+</Project>

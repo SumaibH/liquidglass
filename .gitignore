@@ -90,3 +90,6 @@ test-results/
 # Owner-supplied motion recordings are research inputs, not website assets.
 /docs/1.MP4
 /docs/2.MP4
+
+# .NET check output run from the repository root by mistake (use ports/dotnet/artifacts)
+/artifacts/

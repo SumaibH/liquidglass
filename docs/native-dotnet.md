@@ -3,7 +3,7 @@
 The experimental source adapter renders the production material on SkiaSharp without Compose,
 JavaScript or a browser. It supplies a painter, a whole-surface interaction controller and a
 Windows-specific control-backdrop helper. On NuGet from 0.2.1: `LiquidGlass`, `LiquidGlass.WinForms`,
-`LiquidGlass.Wpf` and `LiquidGlass.Avalonia`.
+`LiquidGlass.Wpf` and `LiquidGlass.Avalonia`; `LiquidGlass.Maui` from the next release ([below](#net-maui)).
 
 ![Native card press, pull, recovery and reduced motion](https://raw.githubusercontent.com/shayann07/liquidglass/b46207d665725a0aa841102bfbdcbe74aaf4ac3c/review/atlas/dotnet-calm-2026-10-13/native-phases.png)
 
@@ -18,6 +18,8 @@ snapshots, not continuous timing or displayed-frame measurements.
 | `ports/dotnet/LiquidGlass.WinForms` | .NET 10/Windows 10 build 19041+; owned-control capture |
 | `ports/dotnet/WinFormsDemo` | .NET 10/Windows; interactive lens/card and native-control examples |
 | `ports/dotnet/Checks` | .NET 8; renderer, fixture, lifecycle and interaction verification |
+| `ports/dotnet/LiquidGlass.Maui` | .NET 10; Android and Windows (not iOS); `GlassSurface` over your own MAUI views |
+| `ports/dotnet/MauiDemo` | .NET 10 Android; glass card and bar over a scrolling page |
 
 SkiaSharp is pinned to 4.153.1 with dependency locks. Linux rendering needs matching native assets,
 fontconfig and fonts. Windows Forms is Windows-only; other SkiaSharp host frameworks need their own
@@ -34,6 +36,34 @@ dotnet run --project ports/dotnet/WinFormsDemo --no-restore -- --controls
 ```
 
 The maintainer's private SDK/cache wrapper is `tools/dotnet-port.ps1`; it does not install an SDK.
+
+## .NET MAUI
+
+`LiquidGlass.Maui` adds a `GlassSurface` view to .NET MAUI apps on Android and Windows. iOS and Mac
+Catalyst are not targets: on iOS 26 the system draws Liquid Glass natively.
+
+![The MAUI demo on a Pixel 7: a light glass card refracting the page title, a dark glass bar refracting a row](assets/maui-pixel7.png)
+
+*Our capture: `ports/dotnet/MauiDemo` (Release) on a Pixel 7, Android 17, a frame of
+`adb shell screenrecord` mid-scroll, scaled to 50%. The page is 24 rows of native MAUI views.
+[Evidence](https://github.com/shayann07/liquidglass/blob/main/review/atlas/maui-2026-10-20/README.md).*
+
+```csharp
+builder.UseMauiApp<App>().UseLiquidGlass();             // MauiProgram.cs
+
+var backdrop = new GlassBackdrop(rows, BackgroundColor); // the ScrollView's content
+var bar = new GlassSurface { Backdrop = backdrop, Dark = true, Radius = 36, HeightRequest = 72, Content = tabs };
+Content = new Grid { Children = { new ScrollView { Content = rows }, bar } };
+```
+
+`GlassBackdrop` draws the element's native view into a bitmap (Android `View.Draw`, WinUI
+`RenderTargetBitmap`) once it is drawn and whenever its size changes; call `RefreshAsync()` after its
+content changes. Glass follows it while it scrolls. It is a snapshot, so content animating on its own
+shows its state at the last capture. `GlassSurface` takes `Radius`, `Dark`, `TintAmount`, `Light`,
+`Materialize`, `ReducedTransparency` and `IncreasedContrast`. Verified on a Pixel 7; the Windows
+target builds and packs in CI but has not been run. The
+[package README](https://github.com/shayann07/liquidglass/blob/main/ports/dotnet/README.md#net-maui-glass-over-your-own-maui-views)
+has the details.
 
 ## Painter contract
 

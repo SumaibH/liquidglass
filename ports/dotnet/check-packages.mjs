@@ -1,6 +1,7 @@
 // Checks the packed NuGet packages (CI, after `dotnet pack`): each has its readme, NOTICE, licence
 // expression, the library's version and its assembly; LiquidGlass embeds the production shaders.
-// Usage: node ports/dotnet/check-packages.mjs <directory with .nupkg files> [--winforms] [--wpf] [--avalonia]
+// Usage: node ports/dotnet/check-packages.mjs <directory with .nupkg files> [--winforms] [--wpf] [--avalonia] [--maui]
+// An expected assembly is a path or, for TFMs whose folder carries a platform version, a RegExp.
 import { readFileSync, readdirSync } from 'node:fs';
 import { join } from 'node:path';
 import { inflateRawSync } from 'node:zlib';
@@ -32,13 +33,18 @@ const expected = [['LiquidGlass', 'lib/net8.0/LiquidGlass.Skia.dll']];
 if (flags.includes('--winforms')) expected.push(['LiquidGlass.WinForms', 'lib/net10.0-windows10.0.19041/LiquidGlass.WinForms.dll']);
 if (flags.includes('--wpf')) expected.push(['LiquidGlass.Wpf', 'lib/net10.0-windows10.0.19041/LiquidGlass.Wpf.dll']);
 if (flags.includes('--avalonia')) expected.push(['LiquidGlass.Avalonia', 'lib/net8.0/LiquidGlass.Avalonia.dll']);
+// MAUI: the portable assembly and the Android one (folder net10.0-android<API>); Windows' too when packed on Windows.
+if (flags.includes('--maui')) expected.push(['LiquidGlass.Maui', 'lib/net10.0/LiquidGlass.Maui.dll', /^lib\/net10\.0-android[\d.]*\/LiquidGlass\.Maui\.dll$/,
+  ...(process.platform === 'win32' || flags.includes('--maui-windows') ? [/^lib\/net10\.0-windows10\.0\.19041[\d.]*\/LiquidGlass\.Maui\.dll$/] : [])]);
 let failures = 0;
 const fail = (m) => { console.error('FAIL ' + m); failures++; };
-for (const [id, dll] of expected) {
+for (const [id, dll, ...more] of expected) {
   const file = `${id}.${version}.nupkg`;
   if (!readdirSync(dir).includes(file)) { fail(`${file} missing in ${dir}`); continue; }
   const zip = unzip(readFileSync(join(dir, file)));
   for (const name of ['PACKAGE.md', 'NOTICE', dll]) if (!zip.has(name)) fail(`${file}: no ${name}`);
+  for (const pattern of more) if (![...zip.keys()].some((k) => pattern.test(k))) fail(`${file}: no entry matching ${pattern}`);
+  if (id === 'LiquidGlass.Maui' && [...zip.keys()].some((k) => /^lib\/net10\.0-(ios|maccatalyst)/.test(k))) fail(`${file}: ships iOS or Mac Catalyst`);
   const nuspec = zip.get(`${id}.nuspec`)?.toString('utf8') ?? '';
   if (!nuspec.includes('<license type="expression">Apache-2.0</license>')) fail(`${file}: licence expression`);
   if (!nuspec.includes(`<version>${version}</version>`)) fail(`${file}: version is not ${version}`);

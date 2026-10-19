@@ -1,0 +1,24 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <Import Project="../Package.props" />
+  <PropertyGroup>
+    <!-- Android everywhere; Windows where the Windows App SDK builds. iOS and Mac Catalyst are not
+         targets: on iOS 26 the system draws Liquid Glass natively. -->
+    <TargetFrameworks>net10.0;net10.0-android</TargetFrameworks>
+    <TargetFrameworks Condition="$([MSBuild]::IsOSPlatform('windows'))">$(TargetFrameworks);net10.0-windows10.0.19041.0</TargetFrameworks>
+    <UseMaui>true</UseMaui>
+    <SingleProject>true</SingleProject>
+    <Nullable>enable</Nullable><ImplicitUsings>enable</ImplicitUsings><TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'">24.0</SupportedOSPlatformVersion>
+    <SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">10.0.19041.0</SupportedOSPlatformVersion>
+    <TargetPlatformMinVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">10.0.19041.0</TargetPlatformMinVersion>
+    <RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
+    <PackageId>LiquidGlass.Maui</PackageId>
+    <PackageTags>$(PackageTags);maui;dotnet-maui;android</PackageTags>
+    <Description>.NET MAUI adapter for LiquidGlass: a GlassSurface view that refracts the app's own MAUI content on Android and Windows, drawn by the production shaders through SkiaSharp.Views.Maui. iOS is not a target.</Description>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="../LiquidGlass.Skia/LiquidGlass.Skia.csproj" />
+    <PackageReference Include="Microsoft.Maui.Controls" Version="10.0.110" />
+    <PackageReference Include="SkiaSharp.Views.Maui.Controls" Version="4.153.1" />
+  </ItemGroup>
+</Project>

@@ -20,7 +20,19 @@ releases without the owner's word in that session. Every new publish.yml job nee
    without iOS; dry run clean (only warning: dirty git). `set_version.py` writes the pubspec
    (-SNAPSHOT -> -dev) and the package CHANGELOG heading; CI checks it; `pub-dev` job in publish.yml
    (setup-dart OIDC, stands down until the package exists). Owner steps: docs/publishing.md
-   "pub.dev, once". Status: PR pending.
+   "pub.dev, once". Status: MERGED (#61, c185827). Owner: first upload by hand, then automated
+   publishing. Owner switched to direct pushes to main (no PRs) on 20 Oct.
+2. MAUI, branch `claude/maui`: `LiquidGlass.Maui` (net10.0 / android / windows), MauiDemo (android),
+   CI job `maui` (windows-2025, workloads maui-android + maui-windows), NuGet job packs it.
+   Local SDK: `.local/dotnet` (10.0.402 + maui-android); set DOTNET_ROOT to it, pass
+   -p:AndroidSdkDirectory=D:/DevSetup/Android/Sdk -p:JavaSdkDirectory=<JDK 21>. Release Android build
+   needs UseDefaultPublishRuntimeIdentifier=false (else win-x64 Mono pack NU1102). Pixel 7 checked,
+   evidence review/atlas/maui-2026-10-20. MAUI CaptureAsync on Android copies window pixels (glass saw
+   itself): replaced by View.Draw.
+Owner-approved side queue (20 Oct, after MAUI, before Qt): Pages HTTPS (cert re-requested 20 Oct,
+was bad_authz), description and 20 topics DONE; tagline "Liquid Glass for every stack, measured
+against iOS."; README rewrite, docs SEO + per-stack landing pages, repo reorg (ask first), help-wanted
+issues + Discussions for what this machine cannot verify, launch drafts (do not post).
 
 ## PRODUCT PLAN (18 Oct 2026, owner-approved) — read this first
 

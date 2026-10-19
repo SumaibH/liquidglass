@@ -106,7 +106,7 @@ list only what their own READMEs and docs state (checked 18 October 2026).
 | Web, any framework | [`<liquid-glass>` web component](ports/npm/README.md) (npm `@shayxo.dev/liquidglass`): refracts live HTML in Chromium and frosts elsewhere, or draws the production shaders over a source you give it ([evidence](review/web-component-2026-10-18/README.md)); [CanvasKit port](ports/skia/README.md) with the production shaders, scene API, Calm navigation selector and input controller; [small WebGL lens preview](ports/web/README.md) |
 | React Native | [`GlassSurface` and `GlassLens` on React Native Skia](ports/react-native/README.md), Android and web (npm `@shayxo.dev/liquidglass-react-native`; [evidence](review/atlas/react-native-2026-10-19/README.md)) |
 | Flutter | [`GlassSurface` over the live backdrop on Impeller](ports/flutter/README.md), Android (pub.dev `liquiglass`, first upload pending; [evidence](review/atlas/flutter-2026-10-19/README.md)) |
-| .NET | [SkiaSharp painter, tab bar, WinForms, WPF and Avalonia adapters](ports/dotnet/README.md) |
+| .NET | [SkiaSharp painter, tab bar, WinForms, WPF, Avalonia and MAUI adapters](ports/dotnet/README.md) (MAUI: Android, Pixel 7 checked; [evidence](review/atlas/maui-2026-10-20/README.md)) |
 | iOS | Not planned: iOS 26 draws Liquid Glass natively |
 
 ## Atlas Studio

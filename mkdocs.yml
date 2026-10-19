@@ -113,7 +113,7 @@ nav:
       - Web component: web-component.md
       - React Native: react-native.md
       - Flutter: flutter.md
-      - Native .NET & WinForms: native-dotnet.md
+      - .NET (WinForms, WPF, Avalonia, MAUI): native-dotnet.md
       - Adaptation: adaptation.md
       - Tab bar: tab-bar.md
       - Accessibility: accessibility.md

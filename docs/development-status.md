@@ -4,6 +4,16 @@ Updated **20 October 2026**. This describes 0.2.2 (0.2.0's code, on every regist
 Full iOS parity, final owner acceptance and arbitrary-stack support are not established. Historical
 research remains available; this page identifies which later changes supersede its implementation.
 
+## .NET MAUI (20 October)
+
+`LiquidGlass.Maui` (`ports/dotnet/LiquidGlass.Maui`, unreleased) puts `GlassSurface` over the app's own
+MAUI views on Android and Windows. The backdrop is drawn from the element's native view. The demo runs on a
+Pixel 7, with the glass following the page as it scrolls. The first device run found that MAUI's
+`CaptureAsync` copies window pixels on Android, so the glass refracted itself; it now draws the view.
+Not run: the Windows target (it builds and packs in CI). Not measured: frame timing.
+[Guide](native-dotnet.md#net-maui),
+[evidence](https://github.com/shayann07/liquidglass/blob/main/review/atlas/maui-2026-10-20/README.md).
+
 ## Flutter on pub.dev (20 October)
 
 The Flutter package is publishable as `liquiglass` (pub.dev refuses `liquidglass` as too close to

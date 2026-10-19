@@ -5,6 +5,15 @@ A version heading means that version is published; anything above the newest one
 
 ## Unreleased
 
+### Added — .NET MAUI (20 October)
+
+- `LiquidGlass.Maui` (new NuGet package, .NET 10, Android and Windows; not iOS): `GlassSurface`, a
+  `ContentView` whose glass refracts a `GlassBackdrop`, one of the app's own MAUI elements drawn from its
+  native view. Glass follows the element as it scrolls, with no new capture. `builder.UseLiquidGlass()`
+  registers SkiaSharp's handlers. Demo `ports/dotnet/MauiDemo` runs on a Pixel 7
+  ([evidence](review/atlas/maui-2026-10-20/README.md)); CI builds all three targets and the APK,
+  packs the package and checks it carries no iOS assets; the publish workflow packs it with the others.
+
 ### Added — Flutter on pub.dev (20 October)
 
 - The Flutter package is ready for pub.dev as **`liquiglass`**: pub.dev refuses `liquidglass` because
