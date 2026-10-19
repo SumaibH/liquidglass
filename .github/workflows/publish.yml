@@ -21,6 +21,8 @@ on:
     paths:
       - .github/workflows/publish.yml
       - .github/scripts/set_version.py
+      - .github/release-notes/**
+      - gradle.properties
       - gradle-plugin/build.gradle.kts
       - ports/npm/package.json
       - ports/dotnet/Package.props
