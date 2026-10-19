@@ -84,10 +84,11 @@ test('scheme, tint and resize update the material', async ({page}) => {
   await page.goto('/index.html?scheme=light');
   const tint = sel => page.evaluate(sel => getComputedStyle(document.querySelector(sel).shadowRoot.querySelector('.tint')).backgroundColor, sel);
   // Light Regular: 241 grey at 144/255; dark: 35/115 grey at 115/255 (black at 0.451 plus the 35/255 lift).
-  expect(await tint('#card')).toBe('rgba(241, 241, 241, 0.565)');
+  // Polled: the element styles itself after the page loads (CI once read it before: rgba(0, 0, 0, 0)).
+  await expect.poll(() => tint('#card')).toBe('rgba(241, 241, 241, 0.565)');
   await page.getByRole('button', {name: 'Dark'}).click();
   await expect.poll(() => tint('#card')).toBe('rgba(78, 78, 78, 0.45)'); // Chromium stores alpha in 8 bits (115/255)
-  expect(await tint('#tinted')).toMatch(/^rgba\(/);
+  await expect.poll(() => tint('#tinted')).toMatch(/^rgba\(/);
   const width = () => page.evaluate(() => document.querySelector('#card').shadowRoot.querySelector('filter').getAttribute('width'));
   const before = Number(await width());
   await page.evaluate(() => { document.querySelector('#card').style.width = '360px'; });
