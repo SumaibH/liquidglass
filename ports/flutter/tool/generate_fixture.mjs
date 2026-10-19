@@ -26,7 +26,17 @@ const output = JSON.stringify(fixture, null, 1) + '\n';
 const target = new URL('../test/material_fixture.json', import.meta.url);
 if (process.argv.includes('--check')) {
   const actual = await readFile(target, 'utf8').catch(() => '');
-  if (actual.replace(/\r\n/g, '\n') !== output) throw new Error('test/material_fixture.json is stale. Run node tool/generate_fixture.mjs.');
+  // Compared as numbers, not bytes: V8 versions may round Math.pow differently in the last bit
+  // (Node 22 in CI against Node 24 locally), far below the Dart test's 1e-6.
+  const same = (a, b) => typeof a === 'number' && typeof b === 'number'
+    ? Math.abs(a - b) <= 1e-12 * Math.max(1, Math.abs(a))
+    : Array.isArray(a) ? Array.isArray(b) && a.length === b.length && a.every((v, i) => same(v, b[i]))
+    : a && typeof a === 'object' ? !!b && typeof b === 'object' && Object.keys(a).length === Object.keys(b).length &&
+      Object.keys(a).every(k => same(a[k], b[k]))
+    : a === b;
+  let parsed = null;
+  try { parsed = JSON.parse(actual); } catch {}
+  if (!same(fixture, parsed)) throw new Error('test/material_fixture.json is stale. Run node tool/generate_fixture.mjs.');
   console.log(`material_fixture.json matches ports/skia (${fixture.length} cases).`);
 } else {
   await writeFile(target, output);
