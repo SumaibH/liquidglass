@@ -11,6 +11,13 @@ This file records user-visible development changes. Published artifacts are iden
   web, but the 18 October spike shows glass drawn in place goes blank under any translucent ancestor
   (every fade animation); the guides had said it would also lift the alpha limit, which it would not.
 
+### Fixed — React Native on Android (19 October)
+
+- `liquidglass-react-native`: on Android the surfaces drew nothing. The painter's offscreen buffer was a
+  GPU surface made on the JS thread, whose texture a picture replayed on React Native Skia's render
+  thread cannot draw; the adapter now makes raster surfaces. Found and confirmed on the Android 17
+  emulator; the docs now say the source must be opaque.
+
 ### Added — React Native (19 October)
 
 - `liquidglass-react-native` (`ports/react-native`, new, unpublished): `GlassSurface` and `GlassLens`
