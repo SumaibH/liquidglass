@@ -24,7 +24,7 @@
       "liquidglass.wpf": {
         "type": "Project",
         "dependencies": {
-          "LiquidGlass": "[0.2.1, )"
+          "LiquidGlass": "[0.3.0-SNAPSHOT, )"
         }
       }
     }

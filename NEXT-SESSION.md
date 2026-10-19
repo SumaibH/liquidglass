@@ -124,7 +124,10 @@ Phases, one PR each, suite and ports green each time, the owner reviews between 
          project applied `id("dev.shayxo.liquidglass")`, `liquidGlassAdopt` swapped `Button`, compiled.
          `npm publish --dry-run` of a stamped copy: 23 files, 84.9 kB.
        - Owner actions: done on 19 Oct (`NPM_TOKEN` set, NuGet trusted publishing policy, "go" to tag).
-         20 Oct: v0.2.0 reached Maven Central only (npm refused the unscoped names; NuGet push glob bug).
+         20 Oct: v0.2.1 PUBLISHED everywhere (Maven Central, npm @shayxo.dev/*, NuGet x4, GitHub release,
+         run 39318114773). main is 0.3.0-SNAPSHOT. Owner: npm trusted publisher on both packages, then
+         delete NPM_TOKEN.
+         v0.2.0 reached Maven Central only (npm refused the unscoped names; NuGet push glob bug).
          0.2.1 = same code, npm scoped as @shayxo.dev/*, NuGet push fixed. After 0.2.1 reaches npm: add a
          trusted publisher to both npm packages, delete the token.
      - Next:
