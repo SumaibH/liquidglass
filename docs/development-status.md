@@ -1,6 +1,6 @@
 # Development status and visual guide
 
-Updated **18 October 2026**. This describes 0.2.0 and `main`.
+Updated **20 October 2026**. This describes 0.2.1 (0.2.0's code on every registry) and `main`.
 Full iOS parity, final owner acceptance and arbitrary-stack support are not established. Historical
 research remains available; this page identifies which later changes supersede its implementation.
 
@@ -16,7 +16,7 @@ measured: frame timing. [Guide](flutter.md),
 
 ## React Native (19 October)
 
-`liquidglass-react-native` (`ports/react-native`, on npm from 0.2.0) puts `GlassSurface` and `GlassLens` in a
+`@shayxo.dev/liquidglass-react-native` (`ports/react-native`, on npm from 0.2.1) puts `GlassSurface` and `GlassLens` in a
 React Native Skia `<Canvas>` on Android and React Native Web, with the production shaders: a small
 adapter runs the CanvasKit painter unchanged on React Native Skia's API. In React Native Skia's headless
 build (CanvasKit, software) the adapter's glass equals CanvasKit's, no channel off by more than 1, and
@@ -60,7 +60,7 @@ JVM renders, not a physical-device record; this page links no device record for 
 
 ## Web component (18 October)
 
-`<liquid-glass>` (`ports/npm`, npm package `liquidglass`) brings the material to any
+`<liquid-glass>` (`ports/npm`, npm package `@shayxo.dev/liquidglass`) brings the material to any
 web page or framework as a custom element; its content stays ordinary HTML. `engine="html"` refracts
 the live page with `backdrop-filter`: an SVG displacement map computed from the shader's own geometry in
 Chromium, a frosted blur in Firefox and Safari. It is a CSS approximation of the material, with
@@ -158,7 +158,7 @@ backend comparison. [GPU evidence](https://github.com/shayann07/liquidglass/blob
 | Free magnifier | `GlassStyle.clearLens` / native `DrawLens` | Continuous mapping; distinct from a held navigation selector |
 | Calm navigation | `GlassTabBarStyle.Calm()` | Tap/held travel, landing recovery, whole-bar off-axis strain and separate appearance |
 | Portable production renderer | CanvasKit `createGlassScene` / `createGlassPainter` | Production shaders, explicit source, density, lifecycle and input |
-| Any web page or framework | `<liquid-glass>` (npm `liquidglass`) | HTML engine: the live page, a CSS approximation (refraction in Chromium only); canvas engine: production shaders over a supplied source |
+| Any web page or framework | `<liquid-glass>` (npm `@shayxo.dev/liquidglass`) | HTML engine: the live page, a CSS approximation (refraction in Chromium only); canvas engine: production shaders over a supplied source |
 | Lightweight browser lens | `ports/web` | Dependency-free lens preview; not the full material |
 | Native .NET | `GlassPainter`, `CalmInteraction`, `GlassFeedback` | SkiaSharp material and whole-surface input; host schedules redraws |
 | Existing WinForms controls | `ControlBackdrop.Capture` | Owned control subtree only, explicit invalidation/lifetime and supported-type limits |

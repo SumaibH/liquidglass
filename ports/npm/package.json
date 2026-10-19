@@ -1,5 +1,5 @@
 {
-  "name": "liquidglass",
+  "name": "@shayxo.dev/liquidglass",
   "version": "0.0.0",
   "private": true,
   "description": "<liquid-glass>: a framework-independent custom element for the liquidglass material. Refracts live HTML (Chromium) or draws the production shaders through CanvasKit.",

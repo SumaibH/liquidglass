@@ -6,8 +6,8 @@ const here = name => new URL(`../${name}`, import.meta.url);
 const text = async url => (await readFile(url, 'utf8')).replace(/\r\n/g, '\n');
 const pkg = JSON.parse(await readFile(here('package.json'), 'utf8'));
 
-test('package metadata: unscoped name, private until the owner publishes, optional CanvasKit peer', () => {
-  assert.equal(pkg.name, 'liquidglass');
+test('package metadata: scoped name, private until the owner publishes, optional CanvasKit peer', () => {
+  assert.equal(pkg.name, '@shayxo.dev/liquidglass');
   assert.equal(pkg.private, true);
   assert.equal(pkg.type, 'module');
   assert.equal(pkg.license, 'Apache-2.0');

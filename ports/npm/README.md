@@ -13,7 +13,7 @@ behind it, in the element's shadow root, and never takes clicks or focus.
 ```
 
 ```sh
-npm install liquidglass
+npm install @shayxo.dev/liquidglass
 ```
 
 > The repository keeps `"private": true` and version `0.0.0` in `package.json`; the release workflow
@@ -80,21 +80,21 @@ default `1`) and `--liquid-glass-ground` (the canvas engine's colour behind the 
 
 ```html
 <script type="module">
-  import 'liquidglass'; // registers <liquid-glass>
+  import '@shayxo.dev/liquidglass'; // registers <liquid-glass>
 </script>
 <liquid-glass shape="rect" radius="24" style="padding: 20px">
   <h3>Weather</h3><p>Partly cloudy</p>
 </liquid-glass>
 ```
 
-`import 'liquidglass'` registers the element once (guarded by `customElements.get`). To register
-under another name, or not at all: `import {define} from 'liquidglass/element'; define('my-glass')`.
+`import '@shayxo.dev/liquidglass'` registers the element once (guarded by `customElements.get`). To register
+under another name, or not at all: `import {define} from '@shayxo.dev/liquidglass/element'; define('my-glass')`.
 Importing is safe during server rendering: nothing touches the DOM until the element connects.
 
 **React** (19 sets properties on custom elements; in 18 use a ref for `source`)
 
 ```jsx
-import 'liquidglass';
+import '@shayxo.dev/liquidglass';
 
 export function Toolbar() {
   return (
@@ -125,7 +125,7 @@ vue({template: {compilerOptions: {isCustomElement: tag => tag === 'liquid-glass'
 **Svelte**: works as is; Svelte sets `source` as a property.
 
 ```svelte
-<script>import 'liquidglass'; let canvas;</script>
+<script>import '@shayxo.dev/liquidglass'; let canvas;</script>
 <canvas bind:this={canvas}></canvas>
 <liquid-glass engine="canvas" source={canvas}>Library</liquid-glass>
 ```
@@ -142,7 +142,7 @@ export class BarComponent { accent = 'rgb(10 132 255 / 0.5)'; }
 loaded only when an element uses `engine="canvas"`. Tell the package where it is, once:
 
 ```js
-import {configureCanvasKit} from 'liquidglass';
+import {configureCanvasKit} from '@shayxo.dev/liquidglass';
 // With a bundler (Vite shown): pass CanvasKitInit and the wasm URL.
 import CanvasKitInit from 'canvaskit-wasm';
 import wasm from 'canvaskit-wasm/bin/canvaskit.wasm?url';

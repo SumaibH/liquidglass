@@ -1,6 +1,6 @@
 // Compile-only checks of the public types (npm run test:types).
-import {LiquidGlassElement, define, configureCanvasKit} from 'liquidglass';
-import {define as defineOnly} from 'liquidglass/element';
+import {LiquidGlassElement, define, configureCanvasKit} from '@shayxo.dev/liquidglass';
+import {define as defineOnly} from '@shayxo.dev/liquidglass/element';
 
 const Ctor: typeof LiquidGlassElement = define();
 void defineOnly('my-glass');

@@ -2,7 +2,7 @@ name: Publish
 
 # Pushing a tag `vX.Y.Z` publishes that version everywhere at once:
 #   Maven Central  liquidglass, liquidglass-material3, liquidglass-bom, and the Gradle plugin
-#   npm            liquidglass (the <liquid-glass> web component), liquidglass-react-native
+#   npm            @shayxo.dev/liquidglass (the <liquid-glass> web component), @shayxo.dev/liquidglass-react-native
 #   NuGet          LiquidGlass, LiquidGlass.WinForms, LiquidGlass.Wpf, LiquidGlass.Avalonia
 # then creates the GitHub release from .github/release-notes/vX.Y.Z.md.
 #
@@ -160,7 +160,7 @@ jobs:
           tag=latest; case "$VERSION" in *-*) tag=next;; esac
           if [ "$DRY_RUN" = true ]; then npm publish --dry-run --tag "$tag"; exit 0; fi
           # Trusted publishing (OIDC) once the package trusts this workflow; NPM_TOKEN until then.
-          if npm view "liquidglass@$VERSION" version >/dev/null 2>&1; then echo "liquidglass@$VERSION is already on npm"; exit 0; fi
+          if npm view "@shayxo.dev/liquidglass@$VERSION" version >/dev/null 2>&1; then echo "already on npm"; exit 0; fi
           npm publish --provenance --access public --tag "$tag"
 
   npm-react-native:
@@ -198,7 +198,7 @@ jobs:
           tag=latest; case "$VERSION" in *-*) tag=next;; esac
           if [ "$DRY_RUN" = true ]; then npm publish --dry-run --tag "$tag"; exit 0; fi
           # Trusted publishing (OIDC) once the package trusts this workflow; NPM_TOKEN until then.
-          if npm view "liquidglass-react-native@$VERSION" version >/dev/null 2>&1; then echo "already on npm"; exit 0; fi
+          if npm view "@shayxo.dev/liquidglass-react-native@$VERSION" version >/dev/null 2>&1; then echo "already on npm"; exit 0; fi
           npm publish --provenance --access public --tag "$tag"
 
   nuget:
@@ -237,15 +237,18 @@ jobs:
         uses: NuGet/login@8d196754b4036150537f80ac539e15c2f1028841 # v1.2.0
         with:
           user: shayxo.dev
-      - name: Publish
-        if: env.DRY_RUN != 'true'
+      - name: Publish (to a local feed in a dry run)
         shell: bash
         env:
           NUGET_API_KEY: ${{ steps.nuget-login.outputs.NUGET_API_KEY }}
         run: |
-          # The .snupkg symbol packages beside them are pushed with them.
-          dotnet nuget push "ports/dotnet/artifacts/nuget/*.nupkg" --api-key "$NUGET_API_KEY" \
-            --source https://api.nuget.org/v3/index.json --skip-duplicate
+          source=https://api.nuget.org/v3/index.json
+          if [ "$DRY_RUN" = true ]; then source="$RUNNER_TEMP/nuget-feed"; mkdir -p "$source"; fi
+          # The .snupkg symbol packages beside them are pushed with them. Bash expands the glob: on the
+          # Windows runner, dotnet given the quoted relative wildcard reported that it does not exist.
+          for f in ports/dotnet/artifacts/nuget/*.nupkg; do
+            dotnet nuget push "$f" --api-key "${NUGET_API_KEY:-dry-run}" --source "$source" --skip-duplicate
+          done
       - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7
         with:
           name: nuget-packages

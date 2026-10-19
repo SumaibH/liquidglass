@@ -2,7 +2,7 @@
 
 The experimental source adapter renders the production material on SkiaSharp without Compose,
 JavaScript or a browser. It supplies a painter, a whole-surface interaction controller and a
-Windows-specific control-backdrop helper. On NuGet from 0.2.0: `LiquidGlass`, `LiquidGlass.WinForms`,
+Windows-specific control-backdrop helper. On NuGet from 0.2.1: `LiquidGlass`, `LiquidGlass.WinForms`,
 `LiquidGlass.Wpf` and `LiquidGlass.Avalonia`.
 
 ![Native card press, pull, recovery and reduced motion](https://raw.githubusercontent.com/shayann07/liquidglass/b46207d665725a0aa841102bfbdcbe74aaf4ac3c/review/atlas/dotnet-calm-2026-10-13/native-phases.png)

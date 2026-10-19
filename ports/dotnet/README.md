@@ -6,7 +6,7 @@ owns the canvas, layout, input, accessibility and the pixels behind the glass.
 
 This is an experimental adapter. It is packaged as `LiquidGlass` (the painter, .NET 8) and
 `LiquidGlass.WinForms` (the Windows Forms host, .NET 10); CI packs both on every change and checks
-their contents (`check-packages.mjs`). Released on NuGet from 0.2.0. The renderer targets
+their contents (`check-packages.mjs`). Released on NuGet from 0.2.1. The renderer targets
 .NET 8; the runnable Windows Forms example targets .NET 10 / Windows 10 build 19041 or newer.
 SkiaSharp is pinned to 4.153.1, with dependency locks in each project.
 

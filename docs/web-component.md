@@ -2,11 +2,11 @@
 
 `<liquid-glass>` is a standard custom element for any web page: plain HTML, React, Vue, Svelte,
 Angular or anything else that renders DOM. What you put inside it stays ordinary HTML above the glass:
-buttons keep their clicks, focus and accessible names. The package is `liquidglass` on npm (`npm install liquidglass`). The full
+buttons keep their clicks, focus and accessible names. The package is `@shayxo.dev/liquidglass` on npm (`npm install @shayxo.dev/liquidglass`). The full
 package guide is [ports/npm/README.md](https://github.com/shayann07/liquidglass/blob/main/ports/npm/README.md).
 
 ```html
-<script type="module">import 'liquidglass';</script>
+<script type="module">import '@shayxo.dev/liquidglass';</script>
 
 <liquid-glass interactive>
   <button>Back</button><button>Share</button>
@@ -40,7 +40,7 @@ it only refracts that source, not the rest of the page, and it loads CanvasKit (
 HTML engine.
 
 ```js
-import {configureCanvasKit} from 'liquidglass';
+import {configureCanvasKit} from '@shayxo.dev/liquidglass';
 configureCanvasKit({locateFile: file => `/canvaskit/${file}`}); // where canvaskit.wasm is served
 document.querySelector('liquid-glass[engine=canvas]').source = document.querySelector('#art');
 ```
