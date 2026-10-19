@@ -112,6 +112,7 @@ nav:
       - Other UI stacks: porting.md
       - Web component: web-component.md
       - React Native: react-native.md
+      - Flutter: flutter.md
       - Native .NET & WinForms: native-dotnet.md
       - Adaptation: adaptation.md
       - Tab bar: tab-bar.md

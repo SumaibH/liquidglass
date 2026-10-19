@@ -6,8 +6,10 @@ A version heading means that version is published; anything above the newest one
 ## 0.2.0 (2026-10-19)
 
 The first release since 0.1.0, on Maven Central (`liquidglass`, `liquidglass-material3`,
-`liquidglass-bom` and the Gradle plugin `dev.shayxo.liquidglass`), npm (`liquidglass`) and NuGet
-(`LiquidGlass`, `LiquidGlass.WinForms`, `LiquidGlass.Wpf`, `LiquidGlass.Avalonia`). Release notes:
+`liquidglass-bom` and the Gradle plugin `dev.shayxo.liquidglass`), npm (`liquidglass`,
+`liquidglass-react-native`) and NuGet
+(`LiquidGlass`, `LiquidGlass.WinForms`, `LiquidGlass.Wpf`, `LiquidGlass.Avalonia`); the Flutter port is
+source only. Release notes:
 [.github/release-notes/v0.2.0.md](.github/release-notes/v0.2.0.md). Breaking: 0.1.0's
 `LiquidGlassScene`/`LiquidGlassState`/`liquidGlassSource`/`liquidGlass` API is removed in favour of
 `LiquidGlassTheme` and `Modifier.glassEffect`. The development log of everything in it follows, newest
@@ -27,6 +29,14 @@ first, down to 0.1.0.
   from a local Maven repository, got `liquidglass` and `liquidglass-material3`, `liquidGlassAdopt`
   switched its `Button` import to the glass one, and it compiled. Nothing has been published; npm and
   NuGet need their tokens first ([publishing](docs/publishing.md)).
+
+### Added — Flutter (19 October)
+
+- `liquidglass` for Flutter (`ports/flutter`, new, unpublished): `GlassSurface` draws the material over
+  the live backdrop on Impeller, through `ImageFilter.shader`, with the shader generated from the
+  production SkSL (`tool/generate_shader.mjs`). Its uniforms equal the CanvasKit port's to 1e-6; it
+  runs on the Android 17 emulator (OpenGL ES). The wide tone kernel is approximated with thirteen
+  Gaussian taps; Vulkan devices are not checked yet. [Guide](docs/flutter.md).
 
 ### Changed — Skia's own backdrop is not planned (19 October)
 
