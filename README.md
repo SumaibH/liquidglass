@@ -33,6 +33,8 @@ versions of every Material 3 component.</p>
 | **React Native** (Android, web) | `npm install @shayxo.dev/liquidglass-react-native` | [React Native](docs/react-native.md) |
 | **Flutter** (Android) | `flutter pub add liquiglass` (first pub.dev upload pending) | [Flutter](docs/flutter.md) |
 | **.NET** (WinForms, WPF, Avalonia, MAUI) | `dotnet add package LiquidGlass` + `LiquidGlass.Maui` / `.Wpf` / `.Avalonia` / `.WinForms` | [.NET](docs/native-dotnet.md) |
+| **Qt Quick** (QML, C++, PySide6) | `import LiquidGlass` from [`ports/qt`](ports/qt/README.md) | [Qt](docs/qt.md) |
+| **Unity** (Built-in, URP) | Package Manager → git URL `…/liquidglass.git?path=/ports/unity/com.shayxo.liquidglass` (not yet run in Unity) | [Unity](docs/unity.md) |
 
 iOS is not a target on any stack: iOS 26 draws Liquid Glass natively.
 
@@ -133,6 +135,8 @@ is claimed here to lack anything.
 | React Native | [`GlassSurface`, `GlassLens`](ports/react-native/README.md) on React Native Skia, Android and web ([evidence](review/atlas/react-native-2026-10-19/README.md)) |
 | Flutter | [`GlassSurface`](ports/flutter/README.md) over the live backdrop on Impeller, Android ([evidence](review/atlas/flutter-2026-10-19/README.md)) |
 | .NET | [SkiaSharp painter and tab bar; WinForms, WPF, Avalonia and MAUI adapters](ports/dotnet/README.md) ([MAUI evidence](review/atlas/maui-2026-10-20/README.md)) |
+| Qt Quick | [`GlassSurface`](ports/qt/README.md), a `ShaderEffect` over the live item behind it; rendered offscreen in CI ([evidence](review/atlas/qt-2026-10-20/README.md)) |
+| Unity | [Built-in and URP shaders, `GlassSurface`](ports/unity/README.md); shader compiled with FXC and rendered on D3D11 WARP in CI, not yet run in Unity ([evidence](review/atlas/unity-2026-10-20/README.md)) |
 | iOS | Not a target: iOS 26 draws Liquid Glass natively |
 
 ## Atlas Studio

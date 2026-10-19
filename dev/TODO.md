@@ -507,7 +507,8 @@ Progress:
   React Native Skia, headless-checked; Pixel 7 checked 20 Oct); Flutter added (`ports/flutter`, live backdrop on
   Impeller, emulator-checked; Pixel 7 Vulkan checked 20 Oct; publishable on pub.dev as `liquiglass` 20 Oct,
   first upload is the owner's); MAUI added 20 Oct (`LiquidGlass.Maui`, Pixel 7 checked, Windows
-  built not run); Qt and Unity remain.
+  built not run); Qt Quick (`ports/qt`, CI offscreen render) and Unity (`ports/unity`, FXC + WARP
+  in CI, never run in Unity) added 20 Oct.
 - [x] Release pipeline for every registry (19 Oct): one tag publishes Maven Central (with the Gradle
   plugin), npm and NuGet; dry run on PRs; `set_version.py`. Waits on the npm/NuGet tokens and the owner.
 - [ ] Keep production shader contracts/packaging/licenses synchronized and validate each supported

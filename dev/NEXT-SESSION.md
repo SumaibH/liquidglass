@@ -41,6 +41,25 @@ issues + Discussions for what this machine cannot verify, launch drafts (do not 
    paths unchanged), dev/{NEXT-SESSION,TODO,PROGRESS,WORKSPACE}.md + dev/archive, tools/launch_desktop.bat.
    Links rewritten (0 broken before/after); desktop, web and sample compile. Launch drafts:
    drafts/launch-drafts.md in the session worktree (untracked, git-excluded; never posted).
+   MAUI CI NU1403 fixed (DisableImplicitLibraryPacksFolder; main 02e835e all green).
+   Pages HTTPS: still bad_authz after API remove/re-add (02:51-03:21); owner may need Settings > Pages
+   remove/save/re-add, or wait (Let's Encrypt caches failed authorizations). DNS checked correct.
+3. Qt Quick, branch `claude/qt-port` (draft PR #68 = CI sandbox only; push commits to main, close it):
+   ports/qt: tool/generate_shader.mjs (GLSL 440 + GlassEffect.qml), LiquidGlass/{GlassSurface.qml,
+   material.js, qmldir}, examples/pyside (main.py --grab), test/material.test.mjs. CI job `qt`
+   (ubuntu, PySide6 6.11.2, pyside6-qsb, xvfb + Mesa llvmpipe GL 4.5, QSG_RENDER_LOOP=basic).
+   Fixed on the way: PySide can't convert QML types/enums (findChild, shaderStatus int, shiboken
+   wrapInstance to QQuickWindow); FrameAnimation made opt-in (followsMovement); backdropColor (uBase)
+   for transparent backdrop parts. Bar glass confirmed rendering in CI. *.qsb not committed (gitignored).
+   Locally: QT_QPA_PLATFORM=offscreen uses the software adaptation (no ShaderEffect) - test in CI only.
+4. Unity, same branch: ports/unity (UPM com.shayxo.liquidglass): generated LiquidGlassMaterial.hlsl
+   (single-arg ctors -> casts, HLSL keywords renamed, mix/fract/inversesqrt), LiquidGlassScreen.hlsl
+   (ddx/ddy Jacobian layer px -> screen uv), LiquidGlass.shader (Built-in GrabPass), LiquidGlassURP.shader,
+   GlassMaterial.cs (pure, doubles), GlassSurface.cs, .meta files (tool/write_meta.mjs, md5 GUIDs).
+   Checks (net8.0-windows, Vortice 3.8.3): fixture 3/3, FXC ps_5_0, D3D11 WARP render + pixel checks.
+   CI job `unity` (windows-2025) passed. Never run in Unity: said so in README/docs.
+5. Parity: p20 replays of all five recordings (rrw.sh with WT=this worktree) -> ref/<name>/p20, then
+   levels.py / trackscore.py / tapprofile.py against p18/p16 to confirm no regression and list residuals.
 
 ## PRODUCT PLAN (18 Oct 2026, owner-approved) — read this first
 

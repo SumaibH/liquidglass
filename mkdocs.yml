@@ -116,6 +116,8 @@ nav:
       - Liquid Glass for React Native: for/react-native.md
       - Liquid Glass for the web: for/web.md
       - Liquid Glass for .NET: for/dotnet.md
+      - Liquid Glass for Qt Quick: qt.md
+      - Liquid Glass for Unity: unity.md
   - Development & visuals: development-status.md
   - Using it:
       - Getting started: getting-started.md

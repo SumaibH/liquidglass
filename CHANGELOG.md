@@ -5,6 +5,18 @@ A version heading means that version is published; anything above the newest one
 
 ## Unreleased
 
+### Added — Qt Quick and Unity (20 October)
+
+- **Qt Quick** (`ports/qt`, new): `GlassSurface`, a `ShaderEffect` over a live `ShaderEffectSource` of
+  the item behind it, for QML in C++ or PySide6 apps (Qt 6). Its GLSL 440 shaders and `GlassEffect.qml`
+  are generated from the production SkSL (`tool/generate_shader.mjs --check`); `material.js` equals the
+  CanvasKit port's material. CI compiles the shaders with `qsb` on Linux and renders the PySide6 example
+  offscreen under Xvfb, checking the glass's pixels ([evidence](review/atlas/qt-2026-10-20/README.md)).
+- **Unity** (`ports/unity`, new, UPM `com.shayxo.liquidglass`): the material as generated HLSL, shaders
+  for the Built-in pipeline (GrabPass) and URP (opaque texture), and a `GlassSurface` component for quads
+  and UI. **Not yet run in Unity.** CI checks the material against the shared fixture, compiles the HLSL
+  with FXC as `ps_5_0` and renders it on Direct3D 11 WARP ([evidence](review/atlas/unity-2026-10-20/README.md)).
+
 ### Changed — repository layout (20 October)
 
 - The apps moved under `apps/` (`apps/sample`, `apps/desktop`, `apps/web`); their Gradle paths are

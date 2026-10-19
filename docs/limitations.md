@@ -265,4 +265,4 @@ bound, not claimed as a recovered Apple input gain. Existing expressive presets 
 The dependency-free web preview supports the continuous lens only. The separate CanvasKit kit exports
 all three production passes, with a high-level clear-lens painter and lower-level material bindings.
 Both accept host-supplied backdrops; neither captures arbitrary DOM, protected video or other apps.
-Full native adapters for SwiftUI, Flutter, Qt, Unity and React Native are not shipped. See [porting](porting.md).
+Flutter, React Native, Qt Quick and Unity have ports with their own limits (Unity's has not been run in Unity yet); SwiftUI is not a target. See [porting](porting.md).

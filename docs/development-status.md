@@ -4,6 +4,17 @@ Updated **20 October 2026**. This describes 0.2.2 (0.2.0's code, on every regist
 Full iOS parity, final owner acceptance and arbitrary-stack support are not established. Historical
 research remains available; this page identifies which later changes supersede its implementation.
 
+## Qt Quick and Unity (20 October)
+
+- **Qt Quick** (`ports/qt`): `GlassSurface` over a live `ShaderEffectSource` of the item behind it.
+  Shaders generated from the production SkSL, compiled with `qsb` and rendered offscreen under Xvfb on
+  Mesa's software OpenGL in CI, with pixel checks. Not checked: a GPU, Windows/macOS hosts, frame timing.
+  [Guide](qt.md).
+- **Unity** (`ports/unity`): Built-in and URP shaders plus `GlassSurface`. The generated HLSL compiles
+  with FXC (`ps_5_0`) and renders on D3D11 WARP in CI; the material equals the CanvasKit port's. **Never
+  run in Unity** (not installed here): ShaderLab, GrabPass, URP and the component are unverified.
+  [Guide](unity.md).
+
 ## .NET MAUI (20 October)
 
 `LiquidGlass.Maui` (`ports/dotnet/LiquidGlass.Maui`, unreleased) puts `GlassSurface` over the app's own
