@@ -3,13 +3,27 @@
 This file records user-visible development changes. Published artifacts are identified separately;
 A version heading means that version is published; anything above the newest one is on `main` only.
 
+## 0.2.1 (2026-10-20)
+
+0.2.0's code on every registry: Maven Central (`liquidglass`, `liquidglass-material3`,
+`liquidglass-bom` and the Gradle plugin `dev.shayxo.liquidglass`), npm (`@shayxo.dev/liquidglass` and
+`@shayxo.dev/liquidglass-react-native`) and NuGet (`LiquidGlass`, `LiquidGlass.WinForms`,
+`LiquidGlass.Wpf`, `LiquidGlass.Avalonia`). Release notes:
+[.github/release-notes/v0.2.1.md](.github/release-notes/v0.2.1.md).
+
+- **npm packages are scoped.** npm refused the names `liquidglass` and `liquidglass-react-native` as
+  too similar to existing packages. Install `@shayxo.dev/liquidglass` (import
+  `'@shayxo.dev/liquidglass'`) and `@shayxo.dev/liquidglass-react-native`.
+- **NuGet upload fixed.** The publish step passed a quoted wildcard that `dotnet nuget push` could not
+  resolve on the Windows runner; bash now expands it, and a dry run pushes to a local feed so the
+  step is exercised on every pull request that touches the release files.
+
 ## 0.2.0 (2026-10-19)
 
-The first release since 0.1.0, on Maven Central (`liquidglass`, `liquidglass-material3`,
-`liquidglass-bom` and the Gradle plugin `dev.shayxo.liquidglass`), npm (`liquidglass`,
-`liquidglass-react-native`) and NuGet
-(`LiquidGlass`, `LiquidGlass.WinForms`, `LiquidGlass.Wpf`, `LiquidGlass.Avalonia`); the Flutter port is
-source only. Release notes:
+The first release since 0.1.0. It reached **Maven Central only** (`liquidglass`,
+`liquidglass-material3`, `liquidglass-bom` and the Gradle plugin `dev.shayxo.liquidglass`): npm refused
+its package names and the NuGet upload step failed, both fixed in 0.2.1. The Flutter port is source
+only. Release notes:
 [.github/release-notes/v0.2.0.md](.github/release-notes/v0.2.0.md). Breaking: 0.1.0's
 `LiquidGlassScene`/`LiquidGlassState`/`liquidGlassSource`/`liquidGlass` API is removed in favour of
 `LiquidGlassTheme` and `Modifier.glassEffect`. The development log of everything in it follows, newest

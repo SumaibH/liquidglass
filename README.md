@@ -17,7 +17,7 @@ and the web.
 </p>
 <p align="center"><sub>Rendered by the library (desktop Skia, deterministic 60 fps replay of a tap, a hold and a throw; shown at 30 fps).</sub></p>
 
-> **Status.** `0.2.0` is on Maven Central, npm and NuGet. Motion and material are compared against iOS 26 recordings and are close but **not yet
+> **Status.** `0.2.1` is on Maven Central, npm and NuGet. Motion and material are compared against iOS 26 recordings and are close but **not yet
 > identical**; the [remaining differences](review/atlas/reference-replay-2026-10-13/README.md#remaining-differences)
 > are listed openly.
 
@@ -74,7 +74,7 @@ GlassTabBar(itemCount = 3, selectedIndex = selected, onSelected = { selected = i
 ## Install
 
 ```kotlin
-plugins { id("dev.shayxo.liquidglass") version "0.2.0" }   // adds the right artifacts
+plugins { id("dev.shayxo.liquidglass") version "0.2.1" }   // adds the right artifacts
 ```
 
 or the BOM, or plain artifacts (`dev.shayxo.liquidglass:liquidglass`, `:liquidglass-material3`) —
@@ -103,8 +103,8 @@ list only what their own READMEs and docs state (checked 18 October 2026).
 | Android below 13 | Tinted fallback with rim lighting; no refraction |
 | Desktop JVM | Full shader (Skia). Windows and Linux tested; macOS untested |
 | Web, Compose (Wasm) | Full shader (Skia), the same code as desktop ([live demo](https://liquidglass.shayxo.dev/demo/)) |
-| Web, any framework | [`<liquid-glass>` web component](ports/npm/README.md) (npm `liquidglass`): refracts live HTML in Chromium and frosts elsewhere, or draws the production shaders over a source you give it ([evidence](review/web-component-2026-10-18/README.md)); [CanvasKit port](ports/skia/README.md) with the production shaders, scene API, Calm navigation selector and input controller; [small WebGL lens preview](ports/web/README.md) |
-| React Native | [`GlassSurface` and `GlassLens` on React Native Skia](ports/react-native/README.md), Android and web (npm `liquidglass-react-native`; [evidence](review/atlas/react-native-2026-10-19/README.md)) |
+| Web, any framework | [`<liquid-glass>` web component](ports/npm/README.md) (npm `@shayxo.dev/liquidglass`): refracts live HTML in Chromium and frosts elsewhere, or draws the production shaders over a source you give it ([evidence](review/web-component-2026-10-18/README.md)); [CanvasKit port](ports/skia/README.md) with the production shaders, scene API, Calm navigation selector and input controller; [small WebGL lens preview](ports/web/README.md) |
+| React Native | [`GlassSurface` and `GlassLens` on React Native Skia](ports/react-native/README.md), Android and web (npm `@shayxo.dev/liquidglass-react-native`; [evidence](review/atlas/react-native-2026-10-19/README.md)) |
 | Flutter | [`GlassSurface` over the live backdrop on Impeller](ports/flutter/README.md), Android (from source, not on pub.dev yet; [evidence](review/atlas/flutter-2026-10-19/README.md)) |
 | .NET | [SkiaSharp painter, tab bar, WinForms, WPF and Avalonia adapters](ports/dotnet/README.md) |
 | iOS | Not planned: iOS 26 draws Liquid Glass natively |

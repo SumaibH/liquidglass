@@ -1,6 +1,6 @@
 # React Native
 
-`liquidglass-react-native` draws Liquid Glass in React Native with
+`@shayxo.dev/liquidglass-react-native` draws Liquid Glass in React Native with
 [React Native Skia](https://shopify.github.io/react-native-skia/), using the library's production
 shaders: the SkSL the Compose library runs, measured against iOS recordings. It targets Android and
 React Native Web. iOS is not a target; on iOS 26 the system's own glass is the native choice.
@@ -12,12 +12,12 @@ The demo app also runs on a Pixel 7 and the Android 17 emulator
 ([evidence](https://github.com/shayann07/liquidglass/blob/main/review/atlas/react-native-2026-10-19/README.md)).*
 
 ```sh
-npm install liquidglass-react-native @shopify/react-native-skia
+npm install @shayxo.dev/liquidglass-react-native @shopify/react-native-skia
 ```
 
 ```jsx
 import {Canvas, makeImageFromView} from '@shopify/react-native-skia';
-import {GlassSurface, GlassLens} from 'liquidglass-react-native';
+import {GlassSurface, GlassLens} from '@shayxo.dev/liquidglass-react-native';
 
 const [backdrop, setBackdrop] = useState(null);
 useEffect(() => { makeImageFromView(pageRef).then(setBackdrop); }, []);

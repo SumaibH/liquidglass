@@ -1,5 +1,5 @@
 {
-  "name": "liquidglass-react-native",
+  "name": "@shayxo.dev/liquidglass-react-native",
   "version": "0.0.0",
   "private": true,
   "description": "Liquid Glass for React Native: the liquidglass production shaders drawn by React Native Skia on Android and the web.",

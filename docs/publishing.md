@@ -7,7 +7,7 @@ One tag publishes one version everywhere:
 | Registry | Packages | Secrets |
 | :-- | :-- | :-- |
 | Maven Central | `liquidglass`, `liquidglass-material3`, `liquidglass-bom`, and the Gradle plugin `dev.shayxo.liquidglass` (artifact `liquidglass-gradle-plugin` plus its plugin marker) | `MAVEN_CENTRAL_USERNAME`, `MAVEN_CENTRAL_PASSWORD`, `SIGNING_KEY`, `SIGNING_KEY_PASSWORD` (set up since 0.1.0) |
-| npm | `liquidglass`, the `<liquid-glass>` web component; `liquidglass-react-native` | `NPM_TOKEN` for the first release, then none: trusted publishing |
+| npm | `@shayxo.dev/liquidglass`, the `<liquid-glass>` web component; `@shayxo.dev/liquidglass-react-native` | `NPM_TOKEN` for the first release, then none: trusted publishing |
 | NuGet | `LiquidGlass`, `LiquidGlass.WinForms`, `LiquidGlass.Wpf`, `LiquidGlass.Avalonia` | none: trusted publishing |
 | GitHub | a release with the notes in `.github/release-notes/vX.Y.Z.md` | none (the workflow's token) |
 
@@ -65,7 +65,9 @@ No signing key is needed for this. Signing switches on only when a key is presen
    within about half an hour.
 7. If one job fails (a missing secret or policy, an outage), fix the cause and run
    `gh run rerun <id> --failed`. The others stay published; npm and NuGet skip a version that is
-   already there.
+   already there. A rerun runs the workflow and sources as tagged, so a fix to either needs a new
+   patch version: 0.2.0 reached Maven Central only (npm refused its package names, and the NuGet
+   upload step had a path bug), and 0.2.1 shipped the same code everywhere.
 8. `python .github/scripts/set_version.py X.Y+1.0-SNAPSHOT` on `main`.
 
 A version with a pre-release suffix (`0.3.0-beta.1`) goes to npm under the `next` dist-tag and is
@@ -74,12 +76,14 @@ marked as a pre-release on GitHub; NuGet and Maven treat it as a pre-release by 
 ## npm, once
 
 1. An account at [npmjs.com](https://www.npmjs.com) with two-factor authentication.
-2. The names `liquidglass` and `liquidglass-react-native` were free on 19 October 2026; the first
-   publish claims them.
+2. The packages live under the account's scope, `@shayxo.dev`. The unscoped names `liquidglass` and
+   `liquidglass-react-native` were free on 19 October 2026, but npm refused them on publish as too
+   similar to `liquid-glass` and `liquid-glass-react-native`. `npm view` cannot see that rule, so a
+   new unscoped name is only known to be accepted once it is published.
 3. A granular access token (Account, Access Tokens, Generate New Token, Granular): read and write
    on packages, with two-factor bypass allowed so CI can publish. Before the first publish the token
    cannot be limited to a package that does not exist yet, so give it all packages and narrow it to
-   `liquidglass` afterwards.
+   `@shayxo.dev/liquidglass` and `@shayxo.dev/liquidglass-react-native` afterwards.
 4. `gh secret set NPM_TOKEN --repo shayann07/liquidglass` and paste it.
 
 Packages are published with [provenance](https://docs.npmjs.com/generating-provenance-statements):
@@ -88,7 +92,8 @@ npm shows that each version was built by this workflow from this repository.
 ### Then trusted publishing
 
 npm configures [trusted publishing](https://docs.npmjs.com/trusted-publishers) per package, so only
-once a package exists. After the first release, for `liquidglass` and for `liquidglass-react-native`:
+once a package exists. After the first release, for `@shayxo.dev/liquidglass` and for
+`@shayxo.dev/liquidglass-react-native`:
 the package's Settings, Trusted Publisher, GitHub Actions, owner `shayann07`, repository
 `liquidglass`, workflow `publish.yml`, no environment. Then delete the token on npmjs.com and
 `gh secret delete NPM_TOKEN --repo shayann07/liquidglass`. The npm jobs already run npm 11 with
