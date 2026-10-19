@@ -116,9 +116,10 @@ on a panel they take the panel's frost, because glass on glass samples the page 
 
 - Dialogs, sheets and menus are drawn in the app's window, in `GlassOverlay`, not in a separate
   window. That is what lets their glass refract the screen behind them. The platform's back gesture
-  dismisses them (and tooltips) through Compose's navigation-event dispatcher. An Android
-  `ComponentActivity` provides one; on desktop and the web, provide `LocalNavigationEventDispatcherOwner`
-  to route Escape or the browser's back. Without one, back does nothing.
+  dismisses them (and tooltips) through Compose's navigation-event dispatcher, which Compose
+  provides everywhere. On Android it is the system back. On desktop and the web, Compose
+  Multiplatform sends Escape as back. A host that provides no dispatcher gets no back
+  dismissal, and nothing fails.
 - `SheetState` supports `show()`, `hide()`, `expand()`, `partialExpand()`, `isVisible`,
   `currentValue`, `targetValue` and `hasPartiallyExpandedState`. A sheet taller than half the window
   opens at a partially expanded stop showing half of it (iOS's medium detent), unless

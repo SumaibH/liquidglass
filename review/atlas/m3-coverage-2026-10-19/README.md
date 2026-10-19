@@ -49,7 +49,8 @@ persistent state for the render.*
 
 - **Back.** The platform's back gesture dismisses the glass dialogs, sheets, menus and tooltips. They
   live in the app's window, so they register with Compose's navigation-event dispatcher themselves.
-  An Android `ComponentActivity` provides the dispatcher; without one, back does nothing.
+  Compose provides the dispatcher: the system back on Android, and Escape on desktop and the web,
+  which Compose Multiplatform sends as back.
 - **Partially expanded sheets.** A sheet taller than half the window opens at a stop showing half of
   it, iOS's medium detent. Dragging settles at the nearest stop.
 
