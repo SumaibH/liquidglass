@@ -1,0 +1,81 @@
+# yaml-language-server: $schema=https://coderabbit.ai/integrations/schema.v2.json
+# CodeRabbit reviews pull requests to main. Generated, vendored and binary files are skipped: each
+# generated file has a --check in CI that fails when it drifts from its source, so review the source.
+language: en-US
+tone_instructions: >-
+  Be concise and concrete. Prefer one precise comment with a failure scenario over several stylistic
+  ones. Do not comment on formatting the existing code already uses.
+
+reviews:
+  profile: chill
+  request_changes_workflow: false
+  high_level_summary: true
+  poem: false
+  review_status: true
+  collapse_walkthrough: true
+  sequence_diagrams: false
+  auto_review:
+    enabled: true
+    drafts: false
+    base_branches: ["main"]
+  path_filters:
+    # Generated from the production SkSL or the Kotlin library; reviewed through their generators.
+    - "!ports/skia/shaders/**"
+    - "!ports/skia/selector-material-data.mjs"
+    - "!ports/flutter/shaders/liquid_glass.frag"
+    - "!ports/flutter/lib/src/uniforms.g.dart"
+    - "!ports/flutter/test/material_fixture.json"
+    - "!ports/qt/LiquidGlass/shaders/**"
+    - "!ports/qt/LiquidGlass/GlassEffect.qml"
+    - "!ports/unity/com.shayxo.liquidglass/Runtime/Shaders/LiquidGlassMaterial.hlsl"
+    - "!ports/unity/com.shayxo.liquidglass/Runtime/GlassUniforms.g.cs"
+    - "!**/*.meta"
+    - "!ports/skia/fixtures/**"
+    - "!ports/dotnet/Checks/fixtures/**"
+    # Vendored copies, lock files, evidence and research material.
+    - "!**/vendor/**"
+    - "!**/packages.lock.json"
+    - "!**/package-lock.json"
+    - "!**/pubspec.lock"
+    - "!kotlin-js-store/**"
+    - "!review/**/*.json"
+    - "!research/**"
+    - "!dev/archive/**"
+  path_instructions:
+    - path: "liquidglass/src/**"
+      instructions: >-
+        The optics are measured, not styled. Every number is measured, inherited or authored, and the
+        three must not be mixed in comments or KDoc. Flag any change to a measured constant that does not
+        say what it was scored against. New optical behaviour must arrive behind a style flag with the
+        default unchanged, so every verified path keeps its tolerance. Shader source (SkSL/AGSL strings)
+        is exported to ports/skia/shaders and regenerated into every port: flag shader changes that do
+        not regenerate the ports' files.
+    - path: "liquidglass*/src/**/*Test.kt"
+      instructions: >-
+        Render tests score real frames. Flag a widened tolerance or a skipped assertion that is not
+        explained in the change.
+    - path: "ports/**"
+      instructions: >-
+        Ports must not reimplement the material: shaders are generated from ports/skia/shaders/material.sksl
+        by each port's tool/generate_shader.mjs, and material numbers are checked against the shared fixture
+        (ports/flutter/test/material_fixture.json). iOS is never a target in any port.
+    - path: "**/*.md"
+      instructions: >-
+        Positioning is "Liquid Glass for every stack, measured against iOS". Flag any claim of being the
+        "first" or "only" Liquid Glass implementation, any claim of iOS support, and any image whose caption
+        does not say how it was captured. Private iOS recordings must never be referenced as published files.
+    - path: ".github/workflows/**"
+      instructions: >-
+        Third-party actions are pinned to full commit SHAs with the version in a comment. Every job in
+        publish.yml after `check` needs `if: needs.check.outputs.skip != 'true'`. Publishing uses trusted
+        publishing (OIDC); flag any new long-lived token.
+  tools:
+    shellcheck:
+      enabled: true
+    markdownlint:
+      enabled: false
+    gitleaks:
+      enabled: true
+
+chat:
+  auto_reply: true
