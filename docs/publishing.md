@@ -9,6 +9,7 @@ One tag publishes one version everywhere:
 | Maven Central | `liquidglass`, `liquidglass-material3`, `liquidglass-bom`, and the Gradle plugin `dev.shayxo.liquidglass` (artifact `liquidglass-gradle-plugin` plus its plugin marker) | `MAVEN_CENTRAL_USERNAME`, `MAVEN_CENTRAL_PASSWORD`, `SIGNING_KEY`, `SIGNING_KEY_PASSWORD` (set up since 0.1.0) |
 | npm | `@shayxo.dev/liquidglass`, the `<liquid-glass>` web component; `@shayxo.dev/liquidglass-react-native` | none: trusted publishing (from 0.2.2; 0.2.1 used a token) |
 | NuGet | `LiquidGlass`, `LiquidGlass.WinForms`, `LiquidGlass.Wpf`, `LiquidGlass.Avalonia` | none: trusted publishing |
+| pub.dev | `liquiglass`, the Flutter package (`ports/flutter`) | none: automated publishing (GitHub Actions OIDC), once the owner's first upload exists |
 | GitHub | a release with the notes in `.github/release-notes/vX.Y.Z.md` | none (the workflow's token) |
 
 The Gradle plugin is on Maven Central rather than the Gradle Plugin Portal, under the same signing key.
@@ -20,7 +21,9 @@ already do. Listing it on the Plugin Portal as well is optional and not set up.
 
 `VERSION_NAME` in the root `gradle.properties` is the one number. The Gradle builds read it, the
 NuGet packages read it (`ports/dotnet/Package.props`), and the npm job stamps it into `package.json`
-at publish time. The repository keeps both npm packages (`ports/npm`, `ports/react-native`) at
+at publish time. The Flutter package writes it in `ports/flutter/pubspec.yaml`, with `-SNAPSHOT` spelt
+`-dev` as Dart does (`0.3.0-SNAPSHOT` is `0.3.0-dev`), and heads `ports/flutter/CHANGELOG.md` with it;
+the script does both, and CI fails if the pubspec drifts. The repository keeps both npm packages (`ports/npm`, `ports/react-native`) at
 `"private": true` and `0.0.0`, so a stray `npm publish` from a checkout cannot go out. Change it with the script, which also rewrites the
 .NET lock files that record it:
 
@@ -101,6 +104,48 @@ npm shows that each version was built by this workflow from this repository.
 
 The npm jobs run npm 11 (trusted publishing needs 11.5.1 or later) with `id-token: write`; npm
 exchanges the run's OIDC token for a one-time credential, so no npm secret exists.
+
+## pub.dev, once
+
+The Flutter package is `liquiglass`. pub.dev refuses a new name that matches an existing one once
+underscores are removed, so `liquidglass` is unavailable (`liquid_glass` exists), and so are
+`liquidglass_flutter` and `flutter_liquidglass`.
+
+pub.dev turns on automated publishing per package, so only once the package exists. The first upload
+is therefore the owner's, by hand, with their Google account. Until then the `pub-dev` job stands down
+with a warning, and the other registries publish as usual.
+
+**First upload** (from `main`, any machine with Flutter 3.35 or later):
+
+1. `cd ports/flutter`
+2. `flutter pub publish --dry-run` must end with `Package has 0 warnings.` A dirty git tree counts as
+   a warning, so publish from a clean checkout.
+3. `flutter pub publish`. It prints a `https://accounts.google.com/...` link and waits.
+4. Open the link, choose the Google account that should own the package, and click **Allow** (pub.dev
+   asks to see your email address). The browser says *Authorization complete*.
+5. Back in the terminal, answer `y` to *Do you want to publish liquiglass ...?*. The package appears at
+   <https://pub.dev/packages/liquiglass> within a minute; its score takes a few minutes more.
+
+**Optional: a verified publisher.** A badge with your domain instead of your email:
+
+1. <https://pub.dev/create-publisher>, enter `shayxo.dev`, **Create publisher**.
+2. pub.dev sends you to Google Search Console to prove you own the domain: add the DNS TXT record it
+   shows at your DNS provider, wait for it to resolve, click **Verify**.
+3. <https://pub.dev/packages/liquiglass/admin>, **Transfer to publisher**, choose `shayxo.dev`.
+
+**Automated publishing** (after the first upload):
+
+1. <https://pub.dev/packages/liquiglass/admin>, section **Automated publishing**.
+2. Tick **Enable publishing from GitHub Actions**.
+3. Repository: `shayann07/liquidglass`. Tag pattern: `v{{version}}`.
+4. Leave **Enable publishing with workflow_dispatch events** unticked and **Require GitHub Actions
+   environment** empty (the job uses none).
+5. **Update**.
+
+From then on a tag `vX.Y.Z` publishes `liquiglass X.Y.Z`. `dart-lang/setup-dart` exchanges the run's
+OIDC token (`id-token: write`) for a pub.dev credential, and pub.dev accepts it only for a tag push in
+this repository whose tag matches the pattern and the pubspec version. The job skips a version pub.dev
+already has.
 
 ## NuGet, once
 

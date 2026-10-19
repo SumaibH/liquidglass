@@ -4,9 +4,17 @@ Updated **20 October 2026**. This describes 0.2.2 (0.2.0's code, on every regist
 Full iOS parity, final owner acceptance and arbitrary-stack support are not established. Historical
 research remains available; this page identifies which later changes supersede its implementation.
 
+## Flutter on pub.dev (20 October)
+
+The Flutter package is publishable as `liquiglass` (pub.dev refuses `liquidglass` as too close to
+`liquid_glass`): pub.dev metadata, a package CHANGELOG, a screenshot, platforms without iOS, and
+`flutter pub publish --dry-run` clean. Its version follows `VERSION_NAME` (`-SNAPSHOT` as `-dev`).
+A `pub-dev` job in the publish workflow publishes each tag through pub.dev's automated publishing, once
+the owner's first upload exists ([publishing](publishing.md#pubdev-once)). Not yet on pub.dev.
+
 ## Flutter (19 October)
 
-`liquidglass` for Flutter (`ports/flutter`, unpublished) puts `GlassSurface` over the live backdrop on
+`liquiglass`, liquidglass for Flutter (`ports/flutter`) puts `GlassSurface` over the live backdrop on
 Impeller: a backdrop filter running the production shader, generated from its SkSL export. The Dart
 material equals the CanvasKit port's uniforms to 1e-6, the shader compiles and loads in `flutter test`,
 and the example refracts a scrolling list on the Android 17 emulator (OpenGL ES). Approximated: the

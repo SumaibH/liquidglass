@@ -1,7 +1,7 @@
 // Apache-2.0. A scrolling page under live Liquid Glass: a toolbar card and a dark bar refract the list
 // as it moves. `flutter run` on an Android device or emulator (Impeller).
 import 'package:flutter/material.dart';
-import 'package:liquidglass/liquid_glass.dart';
+import 'package:liquiglass/liquiglass.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();

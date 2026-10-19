@@ -1,13 +1,34 @@
-name: liquidglass
-description: Liquid Glass for Flutter, measured against iOS recordings. The liquidglass production shader over the live backdrop, on Impeller.
-version: 0.0.0
-publish_to: none
+name: liquiglass
+description: >-
+  Liquid Glass for Flutter, measured against iOS recordings: refraction, dispersion and the iOS
+  material over the live backdrop, every frame, on Impeller. Android; iOS is not a target.
+# Written by .github/scripts/set_version.py from gradle.properties VERSION_NAME (-SNAPSHOT becomes -dev).
+version: 0.3.0-dev
 homepage: https://liquidglass.shayxo.dev/flutter/
 repository: https://github.com/shayann07/liquidglass/tree/main/ports/flutter
+issue_tracker: https://github.com/shayann07/liquidglass/issues
+documentation: https://liquidglass.shayxo.dev/flutter/
+topics:
+  - liquid-glass
+  - glassmorphism
+  - shader
+  - blur
+  - ui
+screenshots:
+  - description: A light glass card and a dark glass bar refracting a scrolling list on a Pixel 7 (Impeller, Vulkan).
+    path: doc/pixel7.png
 
 environment:
   sdk: ^3.9.0
   flutter: ">=3.35.0"
+
+# iOS is deliberately absent: on iOS 26 the system's own glass is the native choice.
+platforms:
+  android:
+  linux:
+  macos:
+  web:
+  windows:
 
 dependencies:
   flutter:

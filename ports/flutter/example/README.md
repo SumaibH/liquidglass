@@ -1,4 +1,4 @@
-# liquidglass_example
+# liquiglass_example
 
 A new Flutter project.
 

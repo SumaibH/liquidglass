@@ -5,7 +5,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:liquidglass/liquid_glass.dart';
+import 'package:liquiglass/liquiglass.dart';
 
 void main() {
   final fixture = jsonDecode(File('test/material_fixture.json').readAsStringSync()) as List<dynamic>;

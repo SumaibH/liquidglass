@@ -1,6 +1,6 @@
 # Flutter
 
-`liquidglass` for Flutter puts the Compose library's material over the **live** backdrop.
+[`liquiglass`](https://pub.dev/packages/liquiglass), liquidglass for Flutter, puts the Compose library's material over the **live** backdrop.
 `GlassSurface` refracts whatever Flutter paints behind it, every frame: lists scrolling under it,
 images, video. No snapshot is involved. It runs on Impeller, Flutter's renderer on Android. iOS is
 not a target; on iOS 26 the system's own glass is the native choice.
@@ -9,12 +9,18 @@ not a target; on iOS 26 the system's own glass is the native choice.
 
 *Our capture: the example on the Android 17 emulator, Impeller (OpenGL ES), at rest and scrolled.*
 
-!!! note "Unpublished"
-    The package keeps `publish_to: none` until the release. Depend on it by path:
-    `liquidglass: {path: ../path/to/liquidglass/ports/flutter}`.
+```bash
+flutter pub add liquiglass
+```
+
+!!! note "The name"
+    pub.dev refuses `liquidglass` as too close to the existing `liquid_glass`, so the Flutter package
+    is `liquiglass`. It follows the library's version (`0.3.0-SNAPSHOT` on `main` is `0.3.0-dev`).
+    Until its first upload is on pub.dev, depend on it by path:
+    `liquiglass: {path: ../path/to/liquidglass/ports/flutter}`.
 
 ```dart
-import 'package:liquidglass/liquid_glass.dart';
+import 'package:liquiglass/liquiglass.dart';
 
 Stack(children: [
   ListView(children: rows),

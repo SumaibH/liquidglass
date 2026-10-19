@@ -3,6 +3,18 @@
 This file records user-visible development changes. Published artifacts are identified separately;
 A version heading means that version is published; anything above the newest one is on `main` only.
 
+## Unreleased
+
+### Added — Flutter on pub.dev (20 October)
+
+- The Flutter package is ready for pub.dev as **`liquiglass`**: pub.dev refuses `liquidglass` because
+  `liquid_glass` exists. Import `package:liquiglass/liquiglass.dart` (was `liquid_glass.dart`). The
+  package has pub.dev metadata, its own CHANGELOG, a Pixel 7 screenshot, and declares Android, Linux,
+  macOS, Windows and web (not iOS); `flutter pub publish --dry-run` is clean and runs in CI.
+- `set_version.py` writes the package's version (`-SNAPSHOT` as `-dev`); CI fails if it drifts.
+- `publish.yml` gains a `pub-dev` job: pub.dev automated publishing through GitHub Actions OIDC, no
+  stored credential. It stands down until the owner's first upload ([publishing](docs/publishing.md#pubdev-once)).
+
 ## 0.2.2 (2026-10-20)
 
 0.2.1 with npm on [trusted publishing](https://docs.npmjs.com/trusted-publishers): the npm packages are
