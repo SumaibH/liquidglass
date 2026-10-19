@@ -302,8 +302,8 @@ data class GlassStyle(
      * It is also what defines a shape where nothing is lit. The edge line above is entirely
      * directional, so at the sides of a lens lit from overhead it contributes nothing; the
      * reference shows a one-pixel *dark* step there, which is this. [GlassTabBarStyle.HeldLens]
-     * sets it to the measured 0.08. Raise it further for the 2026 look, which darkens the whole
-     * contour and brightens the specular to match; see [GlassTabBarStyle.Ios27].
+     * sets it to the measured 0.08. iOS 27's own contour lies outside the outline instead; that is
+     * [outerContour], which [GlassTabBarStyle.Ios27] uses.
      */
     val edgeShadow: Float = 0f,
     /**

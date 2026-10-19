@@ -5,6 +5,11 @@ This file records user-visible development changes. Published artifacts are iden
 
 ## Unreleased — Atlas stabilization
 
+### Changed — `GlassTabBarStyle.Ios27` is measured (19 October)
+
+- The preset's guessed numbers are replaced with iOS 27's measured rim: the outer contour (0.61), the
+  bar's lit edge scaled to iOS 27's peak and half-depth, and no dispersion. `Dark` is unchanged.
+
 ### Changed — the showcase scrolls under its glass; tooltip fix (19 October)
 
 - `MaterialShowcase(startScroll = …)` starts scrolled, so the album art passes under the top bar's

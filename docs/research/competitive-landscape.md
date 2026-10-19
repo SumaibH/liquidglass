@@ -125,10 +125,10 @@ path, on the GPU.
 
 Haze keeps a dated research note concluding that the 2026 revision adds a darkened edge and
 brighter speculars. Apple's own Platforms State of the Union says the same, and adds better
-diffusion of busy content. Both of those are now reachable here through
-[`GlassStyle.edgeShadow`](../api-reference.md) and the `Ios27` tab bar preset, with the numbers
-tagged as ours rather than measured, because the captures this library was tuned against predate
-the revision.
+diffusion of busy content. Both are now reachable here and measured on iOS 27 captures:
+[`GlassStyle.outerContour`](../api-reference.md) draws the darkened edge outside the outline. The
+`Ios27` tab bar preset and the Material 3 components use it, together with the measured lit edge
+(19 October).
 
 QWEA0's lighting comments are per-angle readings off iOS 26 screenshots, and they independently
 match what this library already does: two angular lobes of **equal peak**, the far side being

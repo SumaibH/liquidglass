@@ -156,13 +156,22 @@ class GlassTabBarStyleTest {
     }
 
     @Test
-    fun testTheIos27PresetOnlyDarkensTheContourAndBrightensTheHighlight() {
+    fun testTheIos27PresetIsDarkWithIos27sMeasuredRim() {
         val base = GlassTabBarStyle.Dark
         val revised = GlassTabBarStyle.Ios27
-        assertTrue(revised.lens.edgeShadow > base.lens.edgeShadow, "2026 darkens the edge")
-        assertTrue(revised.lens.specular > base.lens.specular, "and brightens the specular")
+        // The contour outside the outline and no dispersion, on the bar and the lens.
+        assertEquals(0.61f, revised.bar.outerContour)
+        assertEquals(0.61f, revised.lens.outerContour)
+        assertEquals(0f, revised.bar.dispersion)
+        assertEquals(0f, revised.lens.dispersion)
+        // The bar's lit edge scaled to iOS 27's measured peak and half-depth.
+        assertEquals(base.bar.specular * 0.256f / 0.213f, revised.bar.specular, 1e-6f)
+        assertTrue(revised.bar.bevel > base.bar.bevel, "a wider chamfer: it halves 2.37 px in, not 1.8")
+        // Everything else is Dark's.
+        assertEquals(base.lens.specular, revised.lens.specular, "the lens keeps its measured held optics")
         assertEquals(base.height, revised.height, "geometry is unchanged; only the surface moved")
         assertEquals(base.lens.refractionDepth, revised.lens.refractionDepth)
+        assertEquals(base.light, revised.light)
     }
 
     @Test

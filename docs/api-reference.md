@@ -294,8 +294,8 @@ Put a shadow on `modifier` with `clip = false`; the held lens is taller than the
 2026-09-12, the indicator and lens of the iOS 27 recording: `pill = RestingInsetMeasured`, `lens =
 HeldLensMeasured`, `pillInset` 4dp, `pillWidth` 84dp, `lensOverflow` 5dp, `lensExtraWidth` 21dp, `heldScale`
 1.05, `heldLift` 16/255, `selectedScale` 1.18 (see [the tab bar](tab-bar.md)). Its base
-(`GlassStyle.inApp`); see [Tab bar](tab-bar.md#the-measured-bar). `Dark` and `Ios27` keep the
-0.1 optics.
+(`GlassStyle.inApp`); see [Tab bar](tab-bar.md#the-measured-bar). `Dark` keeps the 0.1 optics, and
+`Ios27` is `Dark` with iOS 27's measured rim.
 
 ```kotlin
 @Immutable
