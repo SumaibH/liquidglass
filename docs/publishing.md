@@ -191,10 +191,11 @@ Each of these cost time once, on 2026-09-10, and should not cost it again.
   Dynadot's `ns1` served it within minutes while `ns2` kept the old zone for over an hour on
   some of its anycast nodes, without bumping the zone serial, so any resolver that happened to
   ask `ns2` saw nothing.
-- **One tag push started two publish runs for v0.2.1**, seconds apart, and the concurrency group did
-  not queue the second. The first published everything; the second failed harmlessly because npm and
-  Maven Central refuse a version that already exists. If it happens again, judge the release by the
-  run that succeeded, and check the registries.
+- **GitHub started two publish runs for the v0.2.1 tag**, three seconds apart, from one push. The
+  concurrency group queued the second until the first had published everything, but the registries
+  did not show the new version yet: `npm view` still missed it and Central was still finishing the
+  first deployment, so the second run failed (harmlessly) on every upload. Since 0.2.2 the `check`
+  job stands down when an earlier run for the same tag has succeeded.
 - **A failed publish run can be rerun on the same tag** with `gh run rerun <id> --failed`.
   Nothing reaches Central until signing passes, so a signing failure leaves no partial
   deployment behind.
