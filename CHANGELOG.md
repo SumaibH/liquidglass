@@ -23,6 +23,13 @@ This file records user-visible development changes. Published artifacts are iden
   now blurs the backdrop in a nested layer instead; desktop and the web are unchanged. Evidence:
   `review/atlas/android-frost-2026-10-19`.
 
+### Added — Avalonia (19 October)
+
+- `LiquidGlass.Avalonia` (new, .NET 8, Windows, macOS and Linux): glass over native Avalonia 12 content,
+  the WPF adapter's shape (`VisualBackdrop.Capture`, `GlassBitmap`). The capture honours the platform's
+  channel order. `AvaloniaDemo` renders headlessly with Avalonia's Skia renderer and checks the pixels,
+  in CI on Linux and Windows; the package is packed (not published).
+
 ### Added — WPF (19 October)
 
 - `LiquidGlass.Wpf` (new, .NET 10, Windows): `VisualBackdrop.Capture` renders the host's own WPF subtree

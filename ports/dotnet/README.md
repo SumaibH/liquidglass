@@ -155,6 +155,30 @@ Capture again after the backdrop's content or layout changes, not when only the 
 and a lens you drag. `--capture DIR` lays it out without a window, renders it, checks the pixels and
 saves `wpf-glass.png`; CI runs that on Windows. [Evidence](../../review/atlas/wpf-2026-10-19/README.md).
 
+### Use existing Avalonia content as the backdrop
+
+Reference `LiquidGlass.Avalonia/LiquidGlass.Avalonia.csproj` (.NET 8; Windows, macOS and Linux; package
+`LiquidGlass.Avalonia` once released). It is the WPF adapter's shape. `VisualBackdrop.Capture` renders
+your own Avalonia subtree into an opaque Skia image, in whichever channel order the platform uses.
+`GlassBitmap` is a `WriteableBitmap` the painter draws into, shown with an `Image` under ordinary
+Avalonia labels:
+
+```csharp
+using LiquidGlass.Avalonia;
+using LiquidGlass.Skia;
+
+var source = VisualBackdrop.Capture(backdrop, new SKColor(246, 243, 248), topLevel.RenderScaling);
+painter.SetSource(source);                       // keep `source` alive while the painter uses it
+var glass = new GlassBitmap(source.Width, source.Height, topLevel.RenderScaling);
+glassImage.Source = glass.Bitmap;                // <Image Stretch="None"/> over the backdrop
+glass.Render(canvas => painter.DrawSurface(canvas, cardRectInDevicePixels, 28, new(Density: (float)topLevel.RenderScaling)));
+```
+
+Avalonia 12 is built on SkiaSharp 3.119 and accepts the painter's SkiaSharp 4.153.1 in the same
+process; the [Avalonia host](AvaloniaDemo/Program.cs) runs headlessly with Avalonia's Skia renderer,
+draws a glass card and a lens over Avalonia content, checks the pixels and saves
+`avalonia-glass.png`. CI runs it on Linux and Windows. [Evidence](../../review/atlas/avalonia-2026-10-19/README.md).
+
 ## Navigation: the Calm selector
 
 `CalmNavigation` runs the Compose `GlassTabBar` gesture protocol over `CalmSelectorController`, a
@@ -309,9 +333,8 @@ Verified locally: Windows CPU rendering, the interactive Windows Forms host, fou
 shared-source lens/card drawing and lifecycle checks. [Evidence and exact scope](../../review/atlas/dotnet-2026-10-10/README.md).
 Windows/Linux renderer checks and Windows host compilation are in CI. macOS, GPU hosts, Android/iOS
 SkiaSharp views and MAUI have not received native host verification here. WPF is verified offscreen
-in CI (`WpfDemo --capture`). Avalonia 11 is built on SkiaSharp 2.88 and cannot load this painter's
-SkiaSharp 4 in the same process; use the web component in a WebView, or render glass in a separate
-process, until Avalonia moves to SkiaSharp 4. SwiftUI,
+in CI (`WpfDemo --capture`), and Avalonia 12 headlessly on Linux and Windows (`AvaloniaDemo`).
+Avalonia 11, on SkiaSharp 2.88, cannot load this painter's SkiaSharp 4; use Avalonia 12. SwiftUI,
 Flutter, React Native, Qt and Unity still need their own integration. Whole-surface calm interaction
 is supplied, and so are the Calm navigation-selector dynamics (`CalmSelectorController`,
 `CalmNavigation`, `GlassPainter.DrawSelector`); portable refracted foreground is not supplied by

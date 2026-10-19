@@ -1,0 +1,15 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <Import Project="../Package.props" />
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>enable</Nullable><ImplicitUsings>enable</ImplicitUsings><TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
+    <PackageId>LiquidGlass.Avalonia</PackageId>
+    <Description>Avalonia adapter for LiquidGlass: glass over native Avalonia content on Windows, macOS and Linux, with backdrops captured from the visuals the host owns and glass drawn into a WriteableBitmap.</Description>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="../LiquidGlass.Skia/LiquidGlass.Skia.csproj" />
+    <PackageReference Include="Avalonia" Version="12.1.4" />
+  </ItemGroup>
+</Project>
