@@ -7,7 +7,7 @@ One tag publishes one version everywhere:
 | Registry | Packages | Secrets |
 | :-- | :-- | :-- |
 | Maven Central | `liquidglass`, `liquidglass-material3`, `liquidglass-bom`, and the Gradle plugin `dev.shayxo.liquidglass` (artifact `liquidglass-gradle-plugin` plus its plugin marker) | `MAVEN_CENTRAL_USERNAME`, `MAVEN_CENTRAL_PASSWORD`, `SIGNING_KEY`, `SIGNING_KEY_PASSWORD` (set up since 0.1.0) |
-| npm | `liquidglass`, the `<liquid-glass>` web component; `liquidglass-react-native` | `NPM_TOKEN` |
+| npm | `liquidglass`, the `<liquid-glass>` web component; `liquidglass-react-native` | `NPM_TOKEN` for the first release, then none: trusted publishing |
 | NuGet | `LiquidGlass`, `LiquidGlass.WinForms`, `LiquidGlass.Wpf`, `LiquidGlass.Avalonia` | none: trusted publishing |
 | GitHub | a release with the notes in `.github/release-notes/vX.Y.Z.md` | none (the workflow's token) |
 
@@ -84,6 +84,15 @@ marked as a pre-release on GitHub; NuGet and Maven treat it as a pre-release by 
 
 Packages are published with [provenance](https://docs.npmjs.com/generating-provenance-statements):
 npm shows that each version was built by this workflow from this repository.
+
+### Then trusted publishing
+
+npm configures [trusted publishing](https://docs.npmjs.com/trusted-publishers) per package, so only
+once a package exists. After the first release, for `liquidglass` and for `liquidglass-react-native`:
+the package's Settings, Trusted Publisher, GitHub Actions, owner `shayann07`, repository
+`liquidglass`, workflow `publish.yml`, no environment. Then delete the token on npmjs.com and
+`gh secret delete NPM_TOKEN --repo shayann07/liquidglass`. The npm jobs already run npm 11 with
+`id-token: write`, so they need no change: npm uses the workflow's identity when the package trusts it.
 
 ## NuGet, once
 
