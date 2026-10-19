@@ -63,6 +63,11 @@ The ports' surfaces bind `Glass.Regular`'s light, `GlassLight.Default` (-0.35, -
   measured against iOS.
 - `liquidglass-bom` (new) and the Gradle plugin `dev.shayxo.liquidglass` (new): one line adds the right
   artifacts; `liquidGlassAdopt` switches an app's Material 3 imports once. Not published.
+- Release pipeline (19 October): one tag publishes the library, Material 3, the BOM and the plugin to
+  Maven Central (the plugin through its marker, no Plugin Portal account needed), the web component to
+  npm and the four .NET packages to NuGet, then creates the GitHub release. Pull requests touching it
+  run it as a dry run. Rehearsed locally: a new desktop project applied the plugin by its ID, adopted a
+  `Button` and compiled. npm and NuGet still need their tokens ([publishing](publishing.md)).
 - Evidence: [Material 3 renders](https://github.com/shayann07/liquidglass/blob/main/review/atlas/material3-2026-10-18/README.md).
   Android: the showcase and Atlas render on a Pixel 7 (Android 17) with every glass element and its
   content, at the same frame rate as the pre-Phase-2 build in a paired run, and on the Android 37.1

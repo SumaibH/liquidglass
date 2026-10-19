@@ -114,6 +114,16 @@ Phases, one PR each, suite and ports green each time, the owner reviews between 
          - #42: `LiquidGlass.Avalonia`. Avalonia 12 runs on SkiaSharp 4. The headless demo is in CI
            on Linux and Windows.
        - No PRs open at the end of the night. Nothing was published; no tags.
+     - 19 Oct day, release readiness (owner: "okay start" on step 1 of the plan):
+       - `publish.yml`: one tag publishes Maven Central (library, Material 3, BOM, and the Gradle plugin
+         with its marker), npm (provenance) and NuGet, then a GitHub release. A `check` job refuses
+         unless the tag matches VERSION_NAME, the version is not a SNAPSHOT, the commit is on main with
+         CI green, and `.github/release-notes/vX.Y.Z.md` exists. PRs touching release files dry-run it.
+       - `.github/scripts/set_version.py` (gradle.properties plus the .NET lock files).
+       - Rehearsal: library and plugin published to a scratch Maven repo; a fresh Compose desktop
+         project applied `id("dev.shayxo.liquidglass")`, `liquidGlassAdopt` swapped `Button`, compiled.
+         `npm publish --dry-run` of a stamped copy: 23 files, 84.9 kB.
+       - Owner actions before a release: `NPM_TOKEN` and `NUGET_API_KEY` secrets; the word to tag.
      - Next:
        - Compare against the private CC/stills locally.
        - MAUI needs the MAUI workload (`SkiaSharp.Views.Maui.Controls` 4.153.1 exists).

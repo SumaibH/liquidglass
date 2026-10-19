@@ -1,47 +1,220 @@
 name: Publish
 
-# Pushing a tag `vX.Y.Z` publishes that version to Maven Central. The tag must match
-# VERSION_NAME in gradle.properties, or the workflow refuses rather than publishing something
-# under the wrong name. The secrets are described in docs/publishing.md.
+# Pushing a tag `vX.Y.Z` publishes that version everywhere at once:
+#   Maven Central  liquidglass, liquidglass-material3, liquidglass-bom, and the Gradle plugin
+#   npm            liquidglass (the <liquid-glass> web component)
+#   NuGet          LiquidGlass, LiquidGlass.WinForms, LiquidGlass.Wpf, LiquidGlass.Avalonia
+# then creates the GitHub release from .github/release-notes/vX.Y.Z.md.
+#
+# The `check` job refuses before anything is uploaded unless the tag matches VERSION_NAME, the version
+# is not a SNAPSHOT, the tagged commit is on main and passed CI there, and the release notes exist.
+# Each channel is its own job, so one failure (a missing secret, a registry outage) leaves the others
+# published and is fixed with `gh run rerun <id> --failed`; npm and NuGet skip versions already there.
+# The secrets are described in docs/publishing.md.
+#
+# A pull request that touches the release files runs the same jobs as a dry run: everything is built,
+# packed and checked, nothing is uploaded and no secret is read.
 on:
   push:
     tags: ['v*']
+  pull_request:
+    paths:
+      - .github/workflows/publish.yml
+      - .github/scripts/set_version.py
+      - gradle-plugin/build.gradle.kts
+      - ports/npm/package.json
+      - ports/dotnet/Package.props
 
 permissions:
   contents: read
 concurrency:
   group: publish-${{ github.ref }}
   cancel-in-progress: false
+env:
+  DRY_RUN: ${{ github.event_name == 'pull_request' }}
 jobs:
-  publish:
+  check:
     runs-on: ubuntu-24.04
-    timeout-minutes: 30
+    timeout-minutes: 5
+    permissions:
+      contents: read
+      actions: read
+    outputs:
+      version: ${{ steps.version.outputs.version }}
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
-
-      - name: Check the tag matches VERSION_NAME
+        with:
+          fetch-depth: 0
+      - id: version
+        name: Version, tag, CI result and release notes
+        env:
+          GH_TOKEN: ${{ github.token }}
         run: |
-          expected="VERSION_NAME=${GITHUB_REF_NAME#v}"
-          if ! grep -qx "$expected" gradle.properties; then
-            echo "tag $GITHUB_REF_NAME does not match gradle.properties:"
-            grep VERSION_NAME gradle.properties
-            exit 1
-          fi
+          version=$(sed -n 's/^VERSION_NAME=//p' gradle.properties | tr -d '\r')
+          echo "version=$version" >> "$GITHUB_OUTPUT"
+          if [ "$DRY_RUN" = true ]; then echo "Dry run of $version: nothing will be uploaded"; exit 0; fi
+          fail() { echo "::error::$1"; exit 1; }
+          [ "${GITHUB_REF_NAME#v}" = "$version" ] || fail "tag $GITHUB_REF_NAME does not match VERSION_NAME=$version"
+          case "$version" in *SNAPSHOT*) fail "$version is a SNAPSHOT: set the release version first (.github/scripts/set_version.py)";; esac
+          git merge-base --is-ancestor "$GITHUB_SHA" origin/main || fail "the tagged commit is not on main"
+          ci=$(gh run list --workflow ci.yml --commit "$GITHUB_SHA" --branch main --json conclusion --jq '[.[] | select(.conclusion == "success")] | length')
+          [ "$ci" -gt 0 ] || fail "CI has not passed on main for $GITHUB_SHA; wait for it, then rerun this workflow"
+          [ -f ".github/release-notes/v$version.md" ] || fail "missing .github/release-notes/v$version.md"
+          echo "Publishing $version"
 
+  maven-library:
+    needs: check
+    runs-on: ubuntu-24.04
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
       - uses: actions/setup-java@b843ebf9b913146b38da2eaa7aeddf76074ae1ad # v6
         with:
           distribution: temurin
           java-version: 21
-
       - uses: gradle/actions/setup-gradle@3f5f9adaf7d9fecd50b5935e54106014257a94e6 # v6
-
-      - name: Test
-        run: ./gradlew :liquidglass:allTests --stacktrace
-
+        with:
+          cache-read-only: true
+      - name: Dry run (publish to the runner's local repository)
+        if: env.DRY_RUN == 'true'
+        run: |
+          ./gradlew :liquidglass:publishToMavenLocal :liquidglass-material3:publishToMavenLocal :liquidglass-bom:publishToMavenLocal --no-configuration-cache --stacktrace
+          ls -R ~/.m2/repository/dev/shayxo/liquidglass | grep -E '\.(pom|module|aar|jar|klib)$'
       - name: Publish to Maven Central
-        run: ./gradlew publishAndReleaseToMavenCentral --no-configuration-cache --stacktrace
+        if: env.DRY_RUN != 'true'
+        run: |
+          [ -n "$ORG_GRADLE_PROJECT_mavenCentralUsername" ] && [ -n "$ORG_GRADLE_PROJECT_signingInMemoryKey" ] \
+            || { echo "::error::Maven Central or signing secrets are missing (docs/publishing.md)"; exit 1; }
+          ./gradlew publishAndReleaseToMavenCentral --no-configuration-cache --stacktrace
         env:
           ORG_GRADLE_PROJECT_mavenCentralUsername: ${{ secrets.MAVEN_CENTRAL_USERNAME }}
           ORG_GRADLE_PROJECT_mavenCentralPassword: ${{ secrets.MAVEN_CENTRAL_PASSWORD }}
           ORG_GRADLE_PROJECT_signingInMemoryKey: ${{ secrets.SIGNING_KEY }}
           ORG_GRADLE_PROJECT_signingInMemoryKeyPassword: ${{ secrets.SIGNING_KEY_PASSWORD }}
+
+  maven-plugin:
+    needs: check
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+      - uses: actions/setup-java@b843ebf9b913146b38da2eaa7aeddf76074ae1ad # v6
+        with:
+          distribution: temurin
+          java-version: 21
+      - uses: gradle/actions/setup-gradle@3f5f9adaf7d9fecd50b5935e54106014257a94e6 # v6
+        with:
+          cache-read-only: true
+      - name: Test the plugin
+        run: ./gradlew -p gradle-plugin test --stacktrace
+      - name: Dry run (publish to the runner's local repository)
+        if: env.DRY_RUN == 'true'
+        run: |
+          ./gradlew -p gradle-plugin publishToMavenLocal --no-configuration-cache --stacktrace
+          ls -R ~/.m2/repository/dev/shayxo/liquidglass | grep -E '\.(pom|module|jar)$'
+      - name: Publish the Gradle plugin and its marker to Maven Central
+        if: env.DRY_RUN != 'true'
+        run: |
+          [ -n "$ORG_GRADLE_PROJECT_mavenCentralUsername" ] && [ -n "$ORG_GRADLE_PROJECT_signingInMemoryKey" ] \
+            || { echo "::error::Maven Central or signing secrets are missing (docs/publishing.md)"; exit 1; }
+          ./gradlew -p gradle-plugin publishAndReleaseToMavenCentral --no-configuration-cache --stacktrace
+        env:
+          ORG_GRADLE_PROJECT_mavenCentralUsername: ${{ secrets.MAVEN_CENTRAL_USERNAME }}
+          ORG_GRADLE_PROJECT_mavenCentralPassword: ${{ secrets.MAVEN_CENTRAL_PASSWORD }}
+          ORG_GRADLE_PROJECT_signingInMemoryKey: ${{ secrets.SIGNING_KEY }}
+          ORG_GRADLE_PROJECT_signingInMemoryKeyPassword: ${{ secrets.SIGNING_KEY_PASSWORD }}
+
+  npm:
+    needs: check
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    permissions:
+      contents: read
+      id-token: write # npm provenance: the package links back to this workflow run
+    defaults:
+      run:
+        working-directory: ports/npm
+    env:
+      VERSION: ${{ needs.check.outputs.version }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: 22
+          registry-url: https://registry.npmjs.org
+      - run: npm ci --ignore-scripts
+      - name: Unit, provenance, vendored-file and type checks
+        run: npm test
+      - name: Stamp the version (the repository keeps the package private and unversioned)
+        run: |
+          npm pkg set version="$VERSION"
+          npm pkg delete private
+          npm pack --dry-run
+      - name: Publish
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: |
+          tag=latest; case "$VERSION" in *-*) tag=next;; esac
+          if [ "$DRY_RUN" = true ]; then npm publish --dry-run --tag "$tag"; exit 0; fi
+          [ -n "$NODE_AUTH_TOKEN" ] || { echo "::error::NPM_TOKEN is missing (docs/publishing.md)"; exit 1; }
+          if npm view "liquidglass@$VERSION" version >/dev/null 2>&1; then echo "liquidglass@$VERSION is already on npm"; exit 0; fi
+          npm publish --provenance --access public --tag "$tag"
+
+  nuget:
+    needs: check
+    runs-on: windows-2025 # WinForms and WPF pack only on Windows
+    timeout-minutes: 15
+    env:
+      DOTNET_CLI_TELEMETRY_OPTOUT: '1'
+      DOTNET_GENERATE_ASPNET_CERTIFICATE: 'false'
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+      - uses: actions/setup-dotnet@a98b56852c35b8e3190ac28c8c2271da59106c68 # v6.0.0
+        with:
+          dotnet-version: |
+            8.0.x
+            10.0.x
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: 22
+      - name: Pack and check the packages
+        shell: bash
+        run: |
+          for p in LiquidGlass.Skia LiquidGlass.WinForms LiquidGlass.Wpf LiquidGlass.Avalonia; do
+            dotnet pack "ports/dotnet/$p/$p.csproj" -c Release -o ports/dotnet/artifacts/nuget || exit 1
+          done
+          node ports/dotnet/check-packages.mjs ports/dotnet/artifacts/nuget --winforms --wpf --avalonia
+          ls ports/dotnet/artifacts/nuget
+      - name: Publish
+        if: env.DRY_RUN != 'true'
+        shell: bash
+        env:
+          NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
+        run: |
+          [ -n "$NUGET_API_KEY" ] || { echo "::error::NUGET_API_KEY is missing (docs/publishing.md)"; exit 1; }
+          # The .snupkg symbol packages beside them are pushed with them.
+          dotnet nuget push "ports/dotnet/artifacts/nuget/*.nupkg" --api-key "$NUGET_API_KEY" \
+            --source https://api.nuget.org/v3/index.json --skip-duplicate
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7
+        with:
+          name: nuget-packages
+          path: ports/dotnet/artifacts/nuget/
+          retention-days: 14
+
+  github-release:
+    needs: [check, maven-library, maven-plugin, npm, nuget]
+    if: github.event_name == 'push'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    permissions:
+      contents: write
+    env:
+      VERSION: ${{ needs.check.outputs.version }}
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+      - name: Create the GitHub release
+        run: |
+          if gh release view "v$VERSION" >/dev/null 2>&1; then echo "v$VERSION exists"; exit 0; fi
+          pre=""; case "$VERSION" in *-*) pre="--prerelease";; esac
+          gh release create "v$VERSION" --verify-tag --title "v$VERSION" --notes-file ".github/release-notes/v$VERSION.md" $pre
