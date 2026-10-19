@@ -5,7 +5,7 @@ android-compileSdkMinor = "1"
 android-minSdk = "24"
 android-targetSdk = "37"
 androidx-activity = "1.13.0"
-composeMultiplatform = "1.12.1"
+composeMultiplatform = "1.12.2"
 kotlin = "2.4.21"
 material3 = "1.13.0-alpha02"
 # liquidglass-material3 builds against the last stable Material 3, the one Compose Multiplatform 1.12.1

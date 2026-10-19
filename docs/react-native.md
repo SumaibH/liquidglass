@@ -8,7 +8,8 @@ React Native Web. iOS is not a target; on iOS 26 the system's own glass is the n
 ![Glass rendered by React Native Skia's headless build: a lens bending the lines, a light and a dark surface](assets/react-native-glass.png)
 
 *Our render: React Native Skia 2.14.0 headless (its JSI API over CanvasKit, software), pixel ratio 2.
-Not yet run on a device.*
+The demo app also runs on the Android 17 emulator
+([evidence](https://github.com/shayann07/liquidglass/blob/main/review/atlas/react-native-2026-10-19/README.md)).*
 
 !!! note "Unpublished"
     The package keeps `"private": true` until the release. Install it from a checkout:
@@ -28,8 +29,8 @@ useEffect(() => { makeImageFromView(pageRef).then(setBackdrop); }, []);
 </Canvas>
 ```
 
-`source` is an image of what is behind the glass, at device resolution, its top-left at the canvas's
-origin; positions and sizes are in the canvas's units. `GlassSurface` takes the material's options:
+`source` is an opaque image of what is behind the glass (give the captured view a background), at
+device resolution, its top-left at the canvas's origin; positions and sizes are in the canvas's units. `GlassSurface` takes the material's options:
 
 - `radius`;
 - `dark`, `tintAmount` and `tint`;
@@ -52,7 +53,7 @@ Native Skia tree. [Evidence](https://github.com/shayann07/liquidglass/blob/main/
 
 ## Limits
 
-- Not yet run on a phone.
+- Run on the Android emulator, not yet on a phone.
 - The backdrop is a snapshot: capture it again when the page changes.
 - No touch response yet. The press and pull motion exists in the painter's controllers, but these
   components do not use it.

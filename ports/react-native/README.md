@@ -12,7 +12,8 @@ for example through `expo-glass-effect`.
 ![Glass rendered by React Native Skia's headless build: a lens bending the lines, a light and a dark surface](../../review/atlas/react-native-2026-10-19/react-native-glass.png)
 
 *Our render: `npm run example`, React Native Skia 2.14.0 headless (its JSI API over CanvasKit 0.41,
-software), 960 × 640 at pixel ratio 2. Not yet run on a device; see [Limits](#limits).*
+software), 960 × 640 at pixel ratio 2. On Android: the demo app on the Android 17 emulator
+([evidence](../../review/atlas/react-native-2026-10-19/README.md)).*
 
 ## Use
 
@@ -31,8 +32,9 @@ useEffect(() => { makeImageFromView(pageRef).then(setBackdrop); }, []);
 </Canvas>
 ```
 
-- **`source`** is an `SkImage` of what is behind the glass, at device resolution, with its top-left at
-  the canvas's origin. `makeImageFromView` of the views underneath gives exactly that. So does an image
+- **`source`** is an **opaque** `SkImage` of what is behind the glass, at device resolution, with its
+  top-left at the canvas's origin. Give the captured view a background colour: where the image is
+  transparent the glass sees black. `makeImageFromView` of the views underneath gives exactly that. So does an image
   you draw in the same canvas. Capture again when the page changes, not on every frame.
 - Positions and sizes are in the canvas's units. The glass is recorded at device resolution
   (`pixelRatio`, `PixelRatio.get()` by default), so the rim stays sharp.
@@ -80,8 +82,8 @@ by `npm test`.
 
 ## Limits
 
-- **Not yet run on a device.** The checks run React Native Skia's web implementation. On Android, its
-  native implementation takes the same calls; that has not been confirmed on a phone.
+- **Checked on the Android emulator, not yet on a phone.** The automated checks run React Native
+  Skia's web implementation; the demo app ran on the Android 17 emulator.
 - **The backdrop is a snapshot.** Glass refracts the image you give it. A page that scrolls under the
   glass needs a new snapshot, or a backdrop drawn in the same Skia canvas.
 - **No touch response yet.** The press and pull motion of the Compose library is in the painter's

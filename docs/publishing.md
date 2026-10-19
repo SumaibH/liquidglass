@@ -1,41 +1,107 @@
 # Publishing
 
-Maintainer notes. Consumers only need the coordinates:
+Maintainer notes. Consumers only need the [install instructions](getting-started.md#install).
 
-```kotlin
-implementation("dev.shayxo.liquidglass:liquidglass:0.1.0")
+One tag publishes one version everywhere:
+
+| Registry | Packages | Secrets |
+| :-- | :-- | :-- |
+| Maven Central | `liquidglass`, `liquidglass-material3`, `liquidglass-bom`, and the Gradle plugin `dev.shayxo.liquidglass` (artifact `liquidglass-gradle-plugin` plus its plugin marker) | `MAVEN_CENTRAL_USERNAME`, `MAVEN_CENTRAL_PASSWORD`, `SIGNING_KEY`, `SIGNING_KEY_PASSWORD` (set up since 0.1.0) |
+| npm | `liquidglass`, the `<liquid-glass>` web component; `liquidglass-react-native` | `NPM_TOKEN` |
+| NuGet | `LiquidGlass`, `LiquidGlass.WinForms`, `LiquidGlass.Wpf`, `LiquidGlass.Avalonia` | `NUGET_API_KEY` |
+| GitHub | a release with the notes in `.github/release-notes/vX.Y.Z.md` | none (the workflow's token) |
+
+The Gradle plugin is on Maven Central rather than the Gradle Plugin Portal, under the same signing key.
+`plugins { id("dev.shayxo.liquidglass") }` finds it through its plugin marker in any build that lists
+`mavenCentral()` in `pluginManagement`, which the Android Studio and Kotlin Multiplatform templates
+already do. Listing it on the Plugin Portal as well is optional and not set up.
+
+## The version
+
+`VERSION_NAME` in the root `gradle.properties` is the one number. The Gradle builds read it, the
+NuGet packages read it (`ports/dotnet/Package.props`), and the npm job stamps it into `package.json`
+at publish time. The repository keeps both npm packages (`ports/npm`, `ports/react-native`) at
+`"private": true` and `0.0.0`, so a stray `npm publish` from a checkout cannot go out. Change it with the script, which also rewrites the
+.NET lock files that record it:
+
+```bash
+python .github/scripts/set_version.py 0.2.0
 ```
-
-## Coordinates
-
-`GROUP`, `POM_ARTIFACT_ID` and `VERSION_NAME` in the root `gradle.properties` are the whole of
-it. The published artifacts are the Kotlin Multiplatform root module `liquidglass`, which
-carries the Gradle module metadata a KMP consumer resolves through, plus `liquidglass-android`
-and `liquidglass-jvm`. A consumer declares the root and Gradle picks the variant.
 
 ## Locally
 
 ```bash
-./gradlew publishToMavenLocal
+./gradlew publishToMavenLocal                      # the library, Material 3 and the BOM
+./gradlew -p gradle-plugin publishToMavenLocal     # the Gradle plugin and its marker
 ```
 
 puts every artifact in `~/.m2/repository/dev/shayxo/liquidglass/`. A consuming project adds
-`mavenLocal()` to its repositories, restricted to this group so that a stale `~/.m2` cannot
-shadow anything else:
+`mavenLocal()` to its repositories (and to `pluginManagement` for the plugin), restricted to this
+group so that a stale `~/.m2` cannot shadow anything else:
 
 ```kotlin
-// settings.gradle.kts, dependencyResolutionManagement.repositories
-mavenLocal { content { includeGroup("dev.shayxo.liquidglass") } }
+// settings.gradle.kts, in pluginManagement.repositories and dependencyResolutionManagement.repositories
+mavenLocal { content { includeGroupAndSubgroups("dev.shayxo") } }
 ```
 
 No signing key is needed for this. Signing switches on only when a key is present.
 
+## Each release
+
+1. `python .github/scripts/set_version.py X.Y.Z`.
+2. Write `.github/release-notes/vX.Y.Z.md` (the GitHub release body) and give `CHANGELOG.md` the
+   dated `## X.Y.Z` heading.
+3. Update the install snippets that name a version or say "unreleased":
+   `grep -rn "unreleased\|0\.1\.0" README.md docs/*.md`.
+4. Open a pull request. Its `Publish` checks run the whole release as a dry run: every package is
+   built, packed and checked, nothing is uploaded.
+5. Merge, wait for CI on `main`, then tag the merge commit:
+   ```bash
+   git tag vX.Y.Z <merge commit> && git push origin vX.Y.Z
+   ```
+6. `.github/workflows/publish.yml` refuses unless the tag matches `VERSION_NAME`, the version is not a
+   SNAPSHOT, the commit is on `main` and passed CI there, and the release notes exist. Then each
+   registry is its own job, and the GitHub release follows them. Maven Central shows the artifacts
+   within about half an hour.
+7. If one job fails (a missing secret, an outage), fix the cause and run
+   `gh run rerun <id> --failed`. The others stay published; npm and NuGet skip a version that is
+   already there.
+8. `python .github/scripts/set_version.py X.Y+1.0-SNAPSHOT` on `main`.
+
+A version with a pre-release suffix (`0.3.0-beta.1`) goes to npm under the `next` dist-tag and is
+marked as a pre-release on GitHub; NuGet and Maven treat it as a pre-release by its suffix.
+
+## npm, once
+
+1. An account at [npmjs.com](https://www.npmjs.com) with two-factor authentication.
+2. The names `liquidglass` and `liquidglass-react-native` were free on 19 October 2026; the first
+   publish claims them.
+3. A granular access token (Account, Access Tokens, Generate New Token, Granular): read and write
+   on packages, with two-factor bypass allowed so CI can publish. Before the first publish the token
+   cannot be limited to a package that does not exist yet, so give it all packages and narrow it to
+   `liquidglass` afterwards.
+4. `gh secret set NPM_TOKEN --repo shayann07/liquidglass` and paste it.
+
+Packages are published with [provenance](https://docs.npmjs.com/generating-provenance-statements):
+npm shows that each version was built by this workflow from this repository.
+
+## NuGet, once
+
+1. An account at [nuget.org](https://www.nuget.org) (a Microsoft account).
+2. The IDs `LiquidGlass`, `LiquidGlass.WinForms`, `LiquidGlass.Wpf` and `LiquidGlass.Avalonia` were
+   free on 19 October 2026; the first push claims them. Optionally reserve the `LiquidGlass` prefix
+   afterwards (nuget.org ID prefix reservation), which marks the packages as verified.
+3. An API key (Account, API Keys, Create): scope "Push new packages and package versions", glob
+   pattern `LiquidGlass*`.
+4. `gh secret set NUGET_API_KEY --repo shayann07/liquidglass` and paste it.
+
 ## Maven Central
 
 Publishing goes through Sonatype's Central Portal, via the
-[vanniktech maven-publish plugin](https://github.com/vanniktech/gradle-maven-publish-plugin).
+[vanniktech maven-publish plugin](https://github.com/vanniktech/gradle-maven-publish-plugin), for the
+library build and for the separate `gradle-plugin` build alike.
 
-### Once
+### Once (done for 0.1.0)
 
 1. **An account** at [central.sonatype.com](https://central.sonatype.com).
 2. **A verified namespace.** The group is `dev.shayxo.liquidglass`, under the namespace
@@ -67,21 +133,11 @@ In GitHub Actions, the same four as repository secrets named `MAVEN_CENTRAL_USER
 `MAVEN_CENTRAL_PASSWORD`, `SIGNING_KEY` and `SIGNING_KEY_PASSWORD`; the publish workflow maps
 them onto `ORG_GRADLE_PROJECT_*` variables, which Gradle reads as project properties.
 
-### Each release
-
-1. Set `VERSION_NAME` in `gradle.properties` and add the version to `CHANGELOG.md`.
-2. Commit, then tag and push:
-   ```bash
-   git tag v0.1.0 && git push origin main v0.1.0
-   ```
-3. `.github/workflows/publish.yml` checks the tag against `VERSION_NAME`, runs the tests, and
-   runs `publishAndReleaseToMavenCentral`, which uploads, validates and releases in one step.
-   The artifacts appear on Central within about half an hour, and in search a little later.
-
-To publish from a machine instead:
+To publish from a machine instead of CI:
 
 ```bash
 ./gradlew publishAndReleaseToMavenCentral --no-configuration-cache
+./gradlew -p gradle-plugin publishAndReleaseToMavenCentral --no-configuration-cache
 ```
 
 `publishToMavenCentral` (without `AndRelease`) uploads and stops, leaving the deployment for a

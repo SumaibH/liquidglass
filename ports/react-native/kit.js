@@ -49,9 +49,11 @@ export function createSkiaKit(Skia, {TileMode, FilterMode, MipmapMode, BlendMode
     targets.set(proxy, value);
     return proxy;
   }
-  /** The painter's offscreen buffers: GPU-backed where the platform offers one, raster otherwise. */
+  /** The painter's offscreen buffers (the tone buffer, a composed backdrop): raster, on purpose. A GPU
+   * surface made on the JS thread yields a texture image that a picture replayed on React Native
+   * Skia's render thread cannot draw; on Android the glass then drew nothing (19 October, emulator). */
   function makeSurface({width, height}) {
-    return wrap(Skia.Surface.MakeOffscreen?.(width, height) ?? Skia.Surface.Make(width, height));
+    return wrap(Skia.Surface.Make(width, height));
   }
   const namespace = object => new Proxy(object, {
     get(target, key) {
