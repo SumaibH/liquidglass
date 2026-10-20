@@ -35,6 +35,14 @@ scope/API/positioning decisions, one Gradle build per worktree).
 
 ### Agent work, in this order
 
+- [ ] **Web demo (liquidglass.shayxo.dev/demo/): slow, sometimes blank, components need polish (owner, 20 Oct).**
+  The Wasm demo shows a black page for a long time on first load, sometimes never renders, and several
+  Material 3 components look visually wrong (owner screenshot of #material3: the mini player's slider
+  thumb sits outside its track, the switch and refresh button crowd the card edge, the "Recently played"
+  hero is one huge empty gradient). Next: measure load (bundle size, time to first frame, console errors)
+  in Chromium; add a loading state; find the failed-render cause; then audit every component on the
+  #material3 page against the Pixel 7 captures (review/atlas/android-material3-2026-10-18) and fix,
+  with before/after evidence under review/. Open an issue when this starts.
 - [ ] **Refraction reads weaker than iOS (owner review, 20 Oct).** The owner watched the selector
   side-by-side page (.local/review-selector, iOS beside p20) and is about 90% satisfied, but says
   our refraction feels much weaker than in the recordings. Next: measure displacement (how far the
