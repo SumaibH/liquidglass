@@ -28,6 +28,11 @@ scope/API/positioning decisions, one Gradle build per worktree).
 - [x] (20 Oct: owner looked; ~90% satisfied, refraction too weak, see agent work. CodeRabbit: no card on file, so the trial just ends on 2 Nov; do not click "Continue to payment".) Look at the navigation selector side-by-side page (.local/review-selector/index.html, local
   only) and the launch drafts (drafts/launch-drafts.md, local only), then post if happy.
 
+- [ ] Launch posts, parked by the owner 20 Oct. Drafts: drafts/launch-drafts.md (local only). Done: awesome-list PRs
+  jetpack-compose/jetpack-compose-awesome#104 and web-padawan/awesome-web-components#155 (kmp-awesome needs iOS and
+  ~50 stars; awesome-flutter and awesome-react-native need real adoption, so retry later). Not done: Show HN (HN refused
+  sign-up on the owner's network), Reddit (blocked in the agent browser), X, Kotlin Slack, dev.to. Only on the owner's word.
+
 ### Agent work, in this order
 
 - [ ] **Refraction reads weaker than iOS (owner review, 20 Oct).** The owner watched the selector
