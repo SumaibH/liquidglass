@@ -120,6 +120,12 @@ differences](review/atlas/reference-replay-2026-10-13/README.md#remaining-differ
 inferred from it). The motion is close; iOS still bends the icons under the lens more strongly, and that is
 open work. <a href="review/atlas/ios-side-by-side-2026-10-20/README.md">Source, method and limits</a>.</sub></p>
 
+<p align="center">
+  <img src="review/atlas/ios-side-by-side-2026-10-20/tap.gif" width="400" alt="iOS 26 above, LiquidGlass below: a tap moves the selection between tabs">
+  <img src="review/atlas/ios-side-by-side-2026-10-20/throw.gif" width="400" alt="iOS 26 above, LiquidGlass below: the held lens thrown along the bar">
+</p>
+<p align="center"><sub>A tap (left) and a throw (right): iOS 26 on top, LiquidGlass below.</sub></p>
+
 **One material, every stack.** Compose, the web component, React Native, Flutter and .NET all run the
 same production shader, generated from one source and checked against each other in CI.
 
