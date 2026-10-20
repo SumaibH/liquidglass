@@ -13,7 +13,7 @@ pre-authorization. The Publish run (39348823435) passed every job. Confirmed: np
 `@shayxo.dev/liquidglass` and `-react-native` at 1.0.0; Maven Central POM at 1.0.0; GitHub Release
 v1.0.0. NuGet accepted all five packages and their symbols; its search index was still catching up
 when this was written, so check nuget.org. pub-dev stood down as designed: `liquiglass` does not exist
-on pub.dev yet. Main is now 1.1.0-SNAPSHOT.
+on pub.dev yet. Main is now 1.1.0-SNAPSHOT. **The open work is the "AFTER 1.0" list at the top of TODO.md.**
 
 Owner, by hand: pub.dev first upload and automated publishing (docs/publishing.md "pub.dev,
 once"); Pages HTTPS certificate (bad_authz; remove/re-add the custom domain, or wait); upload

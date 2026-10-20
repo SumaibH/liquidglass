@@ -3,6 +3,59 @@
 Updated 2026-10-14. Start with [NEXT-SESSION.md](NEXT-SESSION.md). Checked entries describe
 bounded completed work, **not completion of full iOS parity**. All open rows remain in scope.
 
+## AFTER 1.0 (20 Oct 2026) — start here
+
+v1.0.0 is released (tag on 4a71394; npm, Maven Central, NuGet incl. `LiquidGlass.Maui`, GitHub
+Release). Main is 1.1.0-SNAPSHOT. Everything below the "PRODUCT PLAN" heading is history; the open
+work is this list. Each row names its issue; close the row and the issue in the same change, with
+evidence under `review/` for anything visible. Rules: AGENTS.md (opt-in optics, never re-fit a
+measured constant silently, docs/CHANGELOG/dev notes in the same change, ask the owner before
+scope/API/positioning decisions, one Gradle build per worktree).
+
+### Owner only (an agent cannot do these; remind the owner, do not attempt)
+
+- [ ] pub.dev first upload of `liquiglass`, then automated publishing (`v{{version}}`):
+  docs/publishing.md "pub.dev, once". Until then the `pub-dev` job warns and stands down. After it,
+  remove "first upload pending" from docs/compatibility.md, ports/flutter/README.md, README.md and
+  docs/for/flutter.md.
+- [ ] Pages HTTPS: certificate state `bad_authz` for `liquidglass.shayxo.dev` (DNS is correct).
+  Settings → Pages: clear the custom domain, Save, re-enter it, Save; tick Enforce HTTPS once the
+  certificate is issued. Check: `gh api repos/shayann07/liquidglass/pages --jq .https_certificate.state`
+  should say `approved`.
+- [ ] Social preview: Settings → General → Social preview → upload docs/assets/social-card.png.
+- [ ] CodeRabbit: trial ends 2 Nov 2026; the repo is public, so reviews stay free. Confirm no paid
+  plan starts (coderabbit.ai → Subscription).
+- [ ] Look at the navigation selector side-by-side page (.local/review-selector/index.html, local
+  only) and the launch drafts (drafts/launch-drafts.md, local only), then post if happy.
+
+### Agent work, in this order
+
+- [ ] **#71 first-tap hitch.** One 317-370 ms frame on the first tap after install on a Pixel 7
+  (shader compile, cached per install); later cold starts 29-65 ms; the baseline profile changed
+  nothing measurable. Try: compile the selector's RuntimeShaders (and draw one 1x1 frame with each)
+  off the gesture path, e.g. when the bar first composes. Measure with
+  review/atlas/first-use-2026-10-20/measure.sh (needs `pm clear` or reinstall between runs to get
+  the first-install case) before and after; ship only if the first-tap max frame drops clearly and
+  cold-start time does not rise (owner: "Yes, if measured better"). Also narrow
+  liquidglass/src/androidMain/baselineProfiles/baseline-prof.txt to the measured path, or remove it
+  if it still shows no gain (CodeRabbit nitpick on #76).
+- [ ] **#70 tap pill plateau ends ~50 ms early.** Scored with `.local/sxs` (main checkout):
+  rrw.sh renders a replay (WT=worktree), taparrive.py / tapprofile.py score it, run from the repo
+  root. A fall-omega change was tried and rejected 20 Oct (review/atlas/reference-replay-2026-10-13
+  README). Any change opt-in or scored against all five recordings, reported in that README.
+- [ ] **#72 held lens over page content reads 5 levels below iOS (docs/2).** On black pages it is
+  -0.1 / +1, so it is content-dependent. Score with levels.py; same rules.
+- [ ] **#73 score the rim's chromatic fringes and timing** instead of judging by eye: add a scorer
+  next to levels.py, then decide with the owner whether any change is needed.
+
+### Help wanted (needs hardware this machine does not have; keep the issues current)
+
+- [ ] #62 LiquidGlass.Maui on Windows · #63 desktop and Avalonia on macOS · #64 the web component
+  in Safari · #65 more Android devices · #66 Flutter and React Native frame timing on a phone ·
+  #67 Linux desktop on real GPUs · #74 the Unity package in Unity · #75 the Qt port on a GPU.
+  When a contributor reports, add their evidence under review/, update docs/compatibility.md
+  (Qt/Unity leave "preview" only after #74/#75) and close the issue.
+
 ## PRODUCT PLAN (18 Oct 2026, owner-approved) — read this first
 
 Goal: a universal, star-worthy library. One-line Compose integration on Android, desktop and web,
@@ -529,6 +582,8 @@ Progress:
 - [x] PR6 merged (02f74a4) on the owner's explicit instruction; no package, tag or release.
 
 ## Next action only
+
+Superseded 20 Oct 2026: see "AFTER 1.0" at the top.
 
 Current long-tap source is locally verified:344library passes/27optional skips,3Atlas passes,
 Androidassembly and43inspected native phases. Originaltimeout/retry provenance is preserved.
