@@ -91,11 +91,18 @@ GlassSurface(radius: 36, dark: true, child: Row(children: icons))   // over a Li
 var bar = new GlassSurface { Backdrop = new GlassBackdrop(rows), Dark = true, Radius = 36, Content = tabs };
 ```
 
-<p align="center">
-  <img src="review/atlas/flutter-2026-10-19/flutter-pixel7-bar-crop.png" width="380" alt="Flutter on a Pixel 7: the dark glass bar refracting a list row">
-  <img src="review/atlas/maui-2026-10-20/maui-bar-crop.png" width="380" alt=".NET MAUI on a Pixel 7: the dark glass bar refracting a row of native views">
-</p>
-<p align="center"><sub>The same material from Flutter (left) and .NET MAUI (right), both on a Pixel 7.</sub></p>
+
+## On every stack
+
+<table>
+<tr><td align="center" valign="top"><img src="review/atlas/android-material3-2026-10-18/material3-pixel7.png" width="200" alt="Material 3 components in glass on a Pixel 7"><br><sub><b>Compose, Material 3</b><br>Pixel 7, Android 17</sub></td><td align="center" valign="top"><img src="review/atlas/react-native-2026-10-19/react-native-pixel7.png" width="200" alt="React Native: a lens, a light surface and a dark bar on a Pixel 7"><br><sub><b>React Native</b><br>Pixel 7, React Native Skia</sub></td><td align="center" valign="top"><img src="review/atlas/qt-2026-10-20/qt-glass.png" width="200" alt="Qt Quick from PySide6: a glass card and a dark bar refracting a list"><br><sub><b>Qt Quick</b> (preview)<br>PySide6, Mesa software render in CI</sub></td></tr>
+<tr><td align="center" valign="top"><img src="review/atlas/flutter-2026-10-19/flutter-pixel7-bar-crop.png" width="260" alt="Flutter on a Pixel 7: the dark glass bar refracting a list row"><br><sub><b>Flutter</b><br>Pixel 7, Impeller</sub></td><td align="center" valign="top"><img src="review/atlas/maui-2026-10-20/maui-bar-crop.png" width="260" alt=".NET MAUI on a Pixel 7: the dark glass bar refracting native views"><br><sub><b>.NET MAUI</b><br>Pixel 7</sub></td><td align="center" valign="top"><img src="review/web-component-2026-10-18/dark-card-2x.png" width="260" alt="The web component: a dark glass card with HTML text and a button"><br><sub><b>Web component</b><br>Chromium, headless capture</sub></td></tr>
+<tr><td align="center" valign="top"><img src="review/atlas/wpf-2026-10-19/wpf-glass.png" width="260" alt="WPF: a frosted glass card with WPF labels and a lens bending colour bands"><br><sub><b>WPF</b><br>Windows 11</sub></td><td align="center" valign="top"><img src="review/atlas/avalonia-2026-10-19/avalonia-glass.png" width="260" alt="Avalonia: a frosted glass card with Avalonia labels and a lens bending colour bands"><br><sub><b>Avalonia</b><br>Windows 11</sub></td><td align="center" valign="top"><img src="review/atlas/unity-2026-10-20/unity-warp.png" width="260" alt="The Unity shaders rendered on Direct3D 11 WARP: a lens and a bar over stripes"><br><sub><b>Unity</b> (preview)<br>D3D11 WARP in CI, not yet run in Unity</sub></td></tr>
+</table>
+
+<sub>Each image is the library rendering on that stack, captured by its demo app; the review folder next
+to each one gives the revision, the backend, how it was captured and its limits. Qt and Unity are previews:
+rendered in CI only, never yet on a GPU or in the Unity editor.</sub>
 
 ## Why this one
 
