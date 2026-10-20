@@ -33,11 +33,19 @@ scope/API/positioning decisions, one Gradle build per worktree).
   ~50 stars; awesome-flutter and awesome-react-native need real adoption, so retry later). Not done: Show HN (HN refused
   sign-up on the owner's network), Reddit (blocked in the agent browser), X, Kotlin Slack, dev.to. Only on the owner's word.
 
-### Agent work, in this order (GitHub milestone "1.1.0": #70-#73, #77-#79)
+### Agent work, in this order (GitHub milestone "1.1.0": #70-#73, #77-#82)
 
 No 1.0.1: the owner decided on 20 Oct to ship these together as 1.1.0 rather than release the Flutter
 description fix alone.
 
+- [ ] **#80 #81 #82 External bug reports (itsaqeeldev, 20 Oct), all confirmed in source, for 1.1.0.** Each issue
+  carries a runnable jvmTest reproduction; turn each into a regression test that asserts the fixed behaviour.
+  #82: `rememberGlassPathField` keys on padded w/h but builds from size and pad; key on the real inputs.
+  #80: `GlassRegion.views` keeps every nested-theme settings tuple and `liquidGlassSource` mirrors them all;
+  track active consumers, release superseded/disposed views (no plain LRU). #81: path-field build runs at
+  full padded resolution during composition and before the `hasShaders` check; skip it without shaders,
+  reuse EDT scratch buffers, fix docs/shapes.md ("half resolution" is the output, not the computation),
+  then consider a bounded-resolution or off-composition build; odd-pad and field-consumer tests stay gates.
 - [ ] **#78 / #79 Web demo (liquidglass.shayxo.dev/demo/): slow, sometimes blank (#78); Material 3 components need polish (#79). Owner, 20 Oct.**
   The Wasm demo shows a black page for a long time on first load, sometimes never renders, and several
   Material 3 components look visually wrong (owner screenshot of #material3: the mini player's slider
