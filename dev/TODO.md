@@ -23,13 +23,20 @@ scope/API/positioning decisions, one Gradle build per worktree).
   certificate is issued. Check: `gh api repos/shayann07/liquidglass/pages --jq .https_certificate.state`
   should say `approved`.
 - [ ] Social preview: Settings → General → Social preview → upload docs/assets/social-card.png.
-- [ ] CodeRabbit: trial ends 2 Nov 2026; the repo is public, so reviews stay free. Confirm no paid
+- [x] CodeRabbit: trial ends 2 Nov 2026; the repo is public, so reviews stay free. Confirm no paid
   plan starts (coderabbit.ai → Subscription).
-- [ ] Look at the navigation selector side-by-side page (.local/review-selector/index.html, local
+- [x] (20 Oct: owner looked; ~90% satisfied, refraction too weak, see agent work. CodeRabbit: no card on file, so the trial just ends on 2 Nov; do not click "Continue to payment".) Look at the navigation selector side-by-side page (.local/review-selector/index.html, local
   only) and the launch drafts (drafts/launch-drafts.md, local only), then post if happy.
 
 ### Agent work, in this order
 
+- [ ] **Refraction reads weaker than iOS (owner review, 20 Oct).** The owner watched the selector
+  side-by-side page (.local/review-selector, iOS beside p20) and is about 90% satisfied, but says
+  our refraction feels much weaker than in the recordings. Next: measure displacement (how far the
+  backdrop under the pill/lens is bent at the rim and across the body) in the recordings vs our
+  replay, with a scorer beside levels.py; report the gap per recording; then ask the owner. Any
+  change is opt-in or scored against all five recordings, never a silent re-fit. Open an issue
+  when this starts.
 - [ ] **#71 first-tap hitch.** One 317-370 ms frame on the first tap after install on a Pixel 7
   (shader compile, cached per install); later cold starts 29-65 ms; the baseline profile changed
   nothing measurable. Try: compile the selector's RuntimeShaders (and draw one 1x1 frame with each)
