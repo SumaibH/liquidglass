@@ -14,7 +14,7 @@ scope/API/positioning decisions, one Gradle build per worktree).
 
 ### Owner only (an agent cannot do these; remind the owner, do not attempt)
 
-- [ ] pub.dev: 1.0.0 uploaded 20 Oct (docs updated). Left: turn on automated publishing (`v{{version}}`):
+- [x] pub.dev: 1.0.0 uploaded 20 Oct (docs updated); the owner enabled automated publishing (GitHub Actions, push events, `v{{version}}`) the same day. Not readable from outside: the first proof is the next tag's `pub-dev` job. 1.0.0 scored 150/160 (description over 180 characters; shortened on main for 1.1). Was:
   docs/publishing.md "pub.dev, once". Until then the `pub-dev` job warns and stands down. After it,
   remove "first upload pending" from docs/compatibility.md, ports/flutter/README.md, README.md and
   docs/for/flutter.md.

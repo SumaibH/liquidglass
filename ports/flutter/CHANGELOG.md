@@ -6,9 +6,10 @@ publishes `liquiglass` at the same number. The full history is in the repository
 
 ## 1.1.0-dev
 
-- In development.
+- Shorter package description (pub.dev allows 180 characters; 1.0.0 lost 10 pub points for it).
 
 ## 1.0.0
+
 
 - First pub.dev release. `GlassSurface` draws the liquidglass material over the live backdrop
   through `ImageFilter.shader` on Impeller, its shader generated from the Compose library's
