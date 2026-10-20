@@ -38,7 +38,7 @@ scope/API/positioning decisions, one Gradle build per worktree).
 No 1.0.1: the owner decided on 20 Oct to ship these together as 1.1.0 rather than release the Flutter
 description fix alone.
 
-- [ ] **#80 #81 #82 External bug reports (itsaqeeldev, 20 Oct), all confirmed in source, for 1.1.0.** Each issue
+- [ ] **#80 #81 #82 External bug reports (itsaqeeldev, 20 Oct), all confirmed in source, for 1.1.0.** The owner invited the reporter to send PRs (help wanted): review theirs first; fix only if nobody takes it before 1.1.0. Each issue
   carries a runnable jvmTest reproduction; turn each into a regression test that asserts the fixed behaviour.
   #82: `rememberGlassPathField` keys on padded w/h but builds from size and pad; key on the real inputs.
   #80: `GlassRegion.views` keeps every nested-theme settings tuple and `liquidGlassSource` mirrors them all;
