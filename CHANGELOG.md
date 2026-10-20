@@ -3,6 +3,9 @@
 This file records user-visible development changes. Published artifacts are identified separately;
 A version heading means that version is published; anything above the newest one is on `main` only.
 
+Flutter: `liquiglass` 1.0.0 is on pub.dev (<https://pub.dev/packages/liquiglass>), uploaded by hand on
+20 October; later tags publish it from the release workflow.
+
 ## 1.0.0 (2026-10-20)
 
 The first release with a compatibility promise ([support and compatibility](docs/compatibility.md)):

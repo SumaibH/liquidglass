@@ -14,11 +14,11 @@ scope/API/positioning decisions, one Gradle build per worktree).
 
 ### Owner only (an agent cannot do these; remind the owner, do not attempt)
 
-- [ ] pub.dev first upload of `liquiglass`, then automated publishing (`v{{version}}`):
+- [ ] pub.dev: 1.0.0 uploaded 20 Oct (docs updated). Left: turn on automated publishing (`v{{version}}`):
   docs/publishing.md "pub.dev, once". Until then the `pub-dev` job warns and stands down. After it,
   remove "first upload pending" from docs/compatibility.md, ports/flutter/README.md, README.md and
   docs/for/flutter.md.
-- [ ] Pages HTTPS: certificate state `bad_authz` for `liquidglass.shayxo.dev` (DNS is correct).
+- [x] Pages HTTPS, fixed 20 Oct (certificate approved, HTTPS enforced). Was: certificate state `bad_authz` for `liquidglass.shayxo.dev` (DNS is correct).
   Settings → Pages: clear the custom domain, Save, re-enter it, Save; tick Enforce HTTPS once the
   certificate is issued. Check: `gh api repos/shayann07/liquidglass/pages --jq .https_certificate.state`
   should say `approved`.

@@ -43,7 +43,8 @@ The Flutter package is publishable as `liquiglass` (pub.dev refuses `liquidglass
 `liquid_glass`): pub.dev metadata, a package CHANGELOG, a screenshot, platforms without iOS, and
 `flutter pub publish --dry-run` clean. Its version follows `VERSION_NAME` (`-SNAPSHOT` as `-dev`).
 A `pub-dev` job in the publish workflow publishes each tag through pub.dev's automated publishing, once
-the owner's first upload exists ([publishing](publishing.md#pubdev-once)). Not yet on pub.dev.
+the owner's first upload exists ([publishing](publishing.md#pubdev-once)). 1.0.0 was uploaded by hand on
+20 October: <https://pub.dev/packages/liquiglass>.
 
 ## Flutter (19 October)
 

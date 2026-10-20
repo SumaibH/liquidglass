@@ -31,7 +31,7 @@ versions of every Material 3 component.</p>
 | **Material 3** (Compose) | change the imports, or `./gradlew liquidGlassAdopt` | [Material 3](docs/material3.md) |
 | **Web**, any framework | `npm install @shayxo.dev/liquidglass` | [`<liquid-glass>`](docs/web-component.md) |
 | **React Native** (Android, web) | `npm install @shayxo.dev/liquidglass-react-native` | [React Native](docs/react-native.md) |
-| **Flutter** (Android) | `flutter pub add liquiglass` (first pub.dev upload pending) | [Flutter](docs/flutter.md) |
+| **Flutter** (Android) | `flutter pub add liquiglass` | [Flutter](docs/flutter.md) |
 | **.NET** (WinForms, WPF, Avalonia, MAUI) | `dotnet add package LiquidGlass` + `LiquidGlass.Maui` / `.Wpf` / `.Avalonia` / `.WinForms` | [.NET](docs/native-dotnet.md) |
 | **Qt Quick** (QML, C++, PySide6) | `import LiquidGlass` from [`ports/qt`](ports/qt/README.md) | [Qt](docs/qt.md) |
 | **Unity** (Built-in, URP) | Package Manager → git URL `…/liquidglass.git?path=/ports/unity/com.shayxo.liquidglass` (not yet run in Unity) | [Unity](docs/unity.md) |

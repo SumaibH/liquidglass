@@ -28,8 +28,8 @@ Stack(children: [
 ])
 ```
 
-pub.dev reserves `liquidglass` because `liquid_glass` exists, so the package is `liquiglass`. Its
-first upload is pending; until then, depend on it by path. iOS is not a target: on iOS 26 the system's
+pub.dev reserves `liquidglass` because `liquid_glass` exists, so the package is `liquiglass`. Install it
+with `flutter pub add liquiglass`. iOS is not a target: on iOS 26 the system's
 own glass is the native choice.
 
 Next: [the Flutter guide](../flutter.md) · [Limitations](../limitations.md)

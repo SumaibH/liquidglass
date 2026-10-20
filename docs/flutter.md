@@ -19,9 +19,9 @@ flutter pub add liquiglass
 
 !!! note "The name"
     pub.dev refuses `liquidglass` as too close to the existing `liquid_glass`, so the Flutter package
-    is `liquiglass`. It follows the library's version (`0.3.0-SNAPSHOT` on `main` is `0.3.0-dev`).
-    Until its first upload is on pub.dev, depend on it by path:
-    `liquiglass: {path: ../path/to/liquidglass/ports/flutter}`.
+    is `liquiglass` ([pub.dev/packages/liquiglass](https://pub.dev/packages/liquiglass)). It follows
+    the library's version (`1.1.0-SNAPSHOT` on `main` is `1.1.0-dev`); to try `main`, depend on it by
+    path: `liquiglass: {path: ../path/to/liquidglass/ports/flutter}`.
 
 ```dart
 import 'package:liquiglass/liquiglass.dart';
