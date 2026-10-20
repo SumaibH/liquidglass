@@ -1273,7 +1273,7 @@
       "liquidglass.maui": {
         "type": "Project",
         "dependencies": {
-          "LiquidGlass": "[1.0.0, )",
+          "LiquidGlass": "[1.1.0-SNAPSHOT, )",
           "Microsoft.Maui.Controls": "[10.0.110, )",
           "SkiaSharp.Views.Maui.Controls": "[4.153.1, )"
         }

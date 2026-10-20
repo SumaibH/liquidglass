@@ -141,7 +141,7 @@
       "liquidglass.winforms": {
         "type": "Project",
         "dependencies": {
-          "LiquidGlass": "[1.0.0, )"
+          "LiquidGlass": "[1.1.0-SNAPSHOT, )"
         }
       }
     }

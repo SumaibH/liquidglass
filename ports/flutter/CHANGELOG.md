@@ -4,6 +4,10 @@ The Flutter package follows the liquidglass repository's version: every release 
 publishes `liquiglass` at the same number. The full history is in the repository's
 [CHANGELOG](https://github.com/shayann07/liquidglass/blob/main/CHANGELOG.md).
 
+## 1.1.0-dev
+
+- In development.
+
 ## 1.0.0
 
 - First pub.dev release. `GlassSurface` draws the liquidglass material over the live backdrop

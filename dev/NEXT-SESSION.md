@@ -4,6 +4,23 @@ Updated 14 October 2026 (Claude takeover from Codex). The previous, longer hando
 at commit `efcc3b5` and in `.local/handoffs/`. Full iOS parity and owner visual acceptance are
 **not** established. Read [TODO.md](TODO.md) and the full objective before changing source.
 
+## RELEASED: v1.0.0 (20 Oct 2026)
+
+Release PR #76 merged (4a71394) after CodeRabbit's review: the first-use TODO row stays open
+under #71, the Flutter install is marked pending, measure.sh is portable, and the ABI dumps exclude
+`@LiquidGlassDiagnosticApi`. Main CI was green; tag `v1.0.0` was pushed on 4a71394 with the owner's
+pre-authorization. The Publish run (39348823435) passed every job. Confirmed: npm
+`@shayxo.dev/liquidglass` and `-react-native` at 1.0.0; Maven Central POM at 1.0.0; GitHub Release
+v1.0.0. NuGet accepted all five packages and their symbols; its search index was still catching up
+when this was written, so check nuget.org. pub-dev stood down as designed: `liquiglass` does not exist
+on pub.dev yet. Main is now 1.1.0-SNAPSHOT.
+
+Owner, by hand: pub.dev first upload and automated publishing (docs/publishing.md "pub.dev,
+once"); Pages HTTPS certificate (bad_authz; remove/re-add the custom domain, or wait); upload
+docs/assets/social-card.png as the repository social preview; CodeRabbit trial (ends 2 Nov; the
+repo is public, so reviews stay free); the selector review page .local/review-selector/index.html;
+launch drafts drafts/launch-drafts.md.
+
 ## CURRENT RUN (20 Oct 2026) — seven items, one PR each, in order
 
 Owner's list: 1 Flutter on pub.dev; 2 .NET MAUI (`LiquidGlass.Maui`, Pixel 7 captures); 3 Qt Quick
