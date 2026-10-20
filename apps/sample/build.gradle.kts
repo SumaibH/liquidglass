@@ -50,4 +50,11 @@ android {
     buildFeatures {
         compose = true
     }
+    buildTypes {
+        // A release build installable from the command line, for frame timing on a phone: debug builds
+        // run without ahead-of-time compilation, so their first-use frames say little about an app's.
+        release {
+            signingConfig = signingConfigs.getByName("debug")
+        }
+    }
 }

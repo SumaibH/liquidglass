@@ -992,6 +992,27 @@ the impact. The narrowing itself is real and is listed below.
 
 ## Remaining differences
 
+**Scoreboard, 20 October (build `ab574ec`, replay `p20`).** All five recordings replayed through today's
+renderer (desktop GPU, deterministic 60 fps, Calm) from the same inferred scripts as passes 16-18, and
+scored in display colours (HDR10 decoded) against iOS. Levels are the median of ours minus iOS's, in
+8-bit levels; tracking is the selector's path against iOS's ink over holds and drags.
+
+| Recording | rest bar | rest pill | held bar | held lens | tap pill | tracking rms | best shift |
+| :-- | --: | --: | --: | --: | --: | --: | --: |
+| docs/1 (37 taps) | 0 | 0 | | | +0.8 (pass 18: -8.9) | | |
+| docs/2 | 0 | -3 | +1.3 | -5.0 (pass 18: -13.3) | | 31.6 px (31.5) | 0 ms |
+| IMG_6756 | 0 | 0 | 0 | -0.1 | | 11.0 px (11.0) | -8 ms |
+| JGEY2190 | 0 | -1.5 | | | -2.0 (pass 16: -7.7) | 26.8 px | -8 ms |
+| LOLL8185 | 0 | 0 | -1 | +1 | | 9.2 px (9.2) | -8 ms |
+
+No region regressed since passes 16-18. Neck timing on docs/2 is unchanged (forms -50 / 0 / -67 ms, parts
+0 / -33 / +100 ms). Still open: the tap pill's plateau ends about 50 ms sooner than iOS's (docs/1 profile:
+iOS 53 at 150 ms and 51 at 183 ms after the ink leaves, ours 47 and 42; equal again from 250 ms); docs/2's
+held lens over the avatar (-5).
+Tried and rejected (20 October): a slower appearance fall (`tapAppearanceFallOmega` 20 instead of 45) leaves the
+profile identical to 233 ms and only lengthens the tail (35 against iOS's 30 at 250 ms), so the early dip is not
+the fall rate.
+
 - Pass 16 (display colours): a held lens over page content: iOS's brightens what it shows (docs/2:
   88 against our 61 over the avatar); no tint or raw page share reproduces it (fits by replay). The
   resting pill reads 3 above iOS's on black pages. iOS's bar lights 33 ms before a tap's ink

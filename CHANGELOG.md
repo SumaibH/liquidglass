@@ -3,7 +3,26 @@
 This file records user-visible development changes. Published artifacts are identified separately;
 A version heading means that version is published; anything above the newest one is on `main` only.
 
-## Unreleased
+## 1.0.0 (2026-10-20)
+
+The first release with a compatibility promise ([support and compatibility](docs/compatibility.md)):
+semantic versioning across Maven Central, npm and NuGet, and a public Kotlin API checked against a committed
+dump. It adds .NET MAUI, publishes Flutter as `liquiglass` (first pub.dev upload pending), and previews Qt
+Quick and Unity. Release notes: [.github/release-notes/v1.0.0.md](.github/release-notes/v1.0.0.md).
+
+### Added — 1.0 (20 October)
+
+- `docs/compatibility.md`: what 1.0 promises per stack, minimum versions, deprecation and visual-change
+  policy; the Qt and Unity ports are previews outside the promise.
+- Kotlin ABI validation for `liquidglass` and `liquidglass-material3` (`api/`, `checkKotlinAbi` in CI).
+- A library baseline profile (`liquidglass/src/androidMain/baselineProfiles/baseline-prof.txt`). On a
+  Pixel 7 it did not measurably change the first tap; the one-time first-use frame (317-370 ms, shader
+  compilation) is #71 ([evidence](review/atlas/first-use-2026-10-20/README.md)).
+- The sample's release build is signed with the debug key, so it installs from the command line for timing.
+- Parity scoreboard of all five recordings on this build
+  ([record](review/atlas/reference-replay-2026-10-13/README.md#remaining-differences)); the open TODO rows
+  are closed with their evidence or tracked as issues #70-#75.
+- CodeRabbit reviews pull requests (`.coderabbit.yaml`).
 
 ### Added — Qt Quick and Unity (20 October)
 

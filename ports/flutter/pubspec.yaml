@@ -3,7 +3,7 @@ description: >-
   Liquid Glass for Flutter, measured against iOS recordings: refraction, dispersion and the iOS
   material over the live backdrop, every frame, on Impeller. Android; iOS is not a target.
 # Written by .github/scripts/set_version.py from gradle.properties VERSION_NAME (-SNAPSHOT becomes -dev).
-version: 0.3.0-dev
+version: 1.0.0
 homepage: https://liquidglass.shayxo.dev/flutter/
 repository: https://github.com/shayann07/liquidglass/tree/main/ports/flutter
 issue_tracker: https://github.com/shayann07/liquidglass/issues

@@ -12,6 +12,14 @@ plugins {
 }
 
 kotlin {
+    // The 1.0 compatibility promise, checked: the public ABI is dumped to api/ and `checkKotlinAbi`
+    // (part of `check`) fails when it changes without the dump being updated (`updateKotlinAbi`).
+    @OptIn(org.jetbrains.kotlin.gradle.dsl.abi.ExperimentalAbiValidation::class)
+    abiValidation {
+        // Outside the promise (docs/compatibility.md): measurement-rig API.
+        filters { exclude { annotatedWith.add("com.wexpa.liquidglass.LiquidGlassDiagnosticApi") } }
+    }
+
     jvm()
 
     // Compose for Web. It draws through the same Skia (Skiko) as desktop, so it shares desktop's

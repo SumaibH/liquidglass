@@ -1,0 +1,249 @@
+public final class com/wexpa/liquidglass/material3/AppBarsKt {
+	public static final fun BottomAppBar-8V94_ZQ (Landroidx/compose/ui/Modifier;JLandroidx/compose/foundation/layout/PaddingValues;Landroidx/compose/foundation/layout/WindowInsets;Lkotlin/jvm/functions/Function3;Landroidx/compose/runtime/Composer;II)V
+	public static final fun BottomAppBar-hYmLsZ8 (Lkotlin/jvm/functions/Function3;Landroidx/compose/ui/Modifier;Lkotlin/jvm/functions/Function2;JLandroidx/compose/foundation/layout/WindowInsets;Landroidx/compose/material3/BottomAppBarScrollBehavior;Lcom/wexpa/liquidglass/material3/GlassLayout;Landroidx/compose/runtime/Composer;II)V
+	public static final fun CenterAlignedTopAppBar-gNPyAyM (Lkotlin/jvm/functions/Function2;Landroidx/compose/ui/Modifier;Lkotlin/jvm/functions/Function2;Lkotlin/jvm/functions/Function3;FLandroidx/compose/foundation/layout/WindowInsets;Landroidx/compose/material3/TopAppBarColors;Landroidx/compose/material3/TopAppBarScrollBehavior;Lcom/wexpa/liquidglass/material3/GlassLayout;Landroidx/compose/runtime/Composer;II)V
+	public static final fun LargeTopAppBar (Lkotlin/jvm/functions/Function2;Landroidx/compose/ui/Modifier;Lkotlin/jvm/functions/Function2;Lkotlin/jvm/functions/Function3;Landroidx/compose/foundation/layout/WindowInsets;Landroidx/compose/material3/TopAppBarColors;Landroidx/compose/material3/TopAppBarScrollBehavior;Lcom/wexpa/liquidglass/material3/GlassLayout;Landroidx/compose/runtime/Composer;II)V
+	public static final fun MediumTopAppBar (Lkotlin/jvm/functions/Function2;Landroidx/compose/ui/Modifier;Lkotlin/jvm/functions/Function2;Lkotlin/jvm/functions/Function3;Landroidx/compose/foundation/layout/WindowInsets;Landroidx/compose/material3/TopAppBarColors;Landroidx/compose/material3/TopAppBarScrollBehavior;Lcom/wexpa/liquidglass/material3/GlassLayout;Landroidx/compose/runtime/Composer;II)V
+	public static final fun TopAppBar-gNPyAyM (Lkotlin/jvm/functions/Function2;Landroidx/compose/ui/Modifier;Lkotlin/jvm/functions/Function2;Lkotlin/jvm/functions/Function3;FLandroidx/compose/foundation/layout/WindowInsets;Landroidx/compose/material3/TopAppBarColors;Landroidx/compose/material3/TopAppBarScrollBehavior;Lcom/wexpa/liquidglass/material3/GlassLayout;Landroidx/compose/runtime/Composer;II)V
+}
+
+public final class com/wexpa/liquidglass/material3/ButtonsKt {
+	public static final fun Button-Yod850M (Lkotlin/jvm/functions/Function0;Landroidx/compose/ui/Modifier;ZLandroidx/compose/ui/graphics/Shape;Lcom/wexpa/liquidglass/Glass;JLandroidx/compose/foundation/BorderStroke;Landroidx/compose/foundation/layout/PaddingValues;Landroidx/compose/foundation/interaction/MutableInteractionSource;Lkotlin/jvm/functions/Function3;Landroidx/compose/runtime/Composer;II)V
+	public static final fun Card-Ccamzx0 (Lkotlin/jvm/functions/Function0;Landroidx/compose/ui/Modifier;ZLandroidx/compose/ui/graphics/Shape;Lcom/wexpa/liquidglass/Glass;JLandroidx/compose/foundation/BorderStroke;Landroidx/compose/foundation/interaction/MutableInteractionSource;Lkotlin/jvm/functions/Function3;Landroidx/compose/runtime/Composer;II)V
+	public static final fun Card-fWhpE4E (Landroidx/compose/ui/Modifier;Landroidx/compose/ui/graphics/Shape;Lcom/wexpa/liquidglass/Glass;JLandroidx/compose/foundation/BorderStroke;Lkotlin/jvm/functions/Function3;Landroidx/compose/runtime/Composer;II)V
+	public static final fun ElevatedButton-Yod850M (Lkotlin/jvm/functions/Function0;Landroidx/compose/ui/Modifier;ZLandroidx/compose/ui/graphics/Shape;Lcom/wexpa/liquidglass/Glass;JLandroidx/compose/foundation/BorderStroke;Landroidx/compose/foundation/layout/PaddingValues;Landroidx/compose/foundation/interaction/MutableInteractionSource;Lkotlin/jvm/functions/Function3;Landroidx/compose/runtime/Composer;II)V
+	public static final fun ElevatedCard-uDo3WH8 (Landroidx/compose/ui/Modifier;Landroidx/compose/ui/graphics/Shape;Lcom/wexpa/liquidglass/Glass;JLkotlin/jvm/functions/Function3;Landroidx/compose/runtime/Composer;II)V
+	public static final fun ExtendedFloatingActionButton-ElI5-7k (Lkotlin/jvm/functions/Function2;Lkotlin/jvm/functions/Function2;Lkotlin/jvm/functions/Function0;Landroidx/compose/ui/Modifier;ZLandroidx/compose/ui/graphics/Shape;JJLcom/wexpa/liquidglass/Glass;Landroidx/compose/foundation/interaction/MutableInteractionSource;Landroidx/compose/runtime/Composer;II)V
+	public static final fun FilledIconButton-NpZTi58 (Lkotlin/jvm/functions/Function0;Landroidx/compose/ui/Modifier;ZLcom/wexpa/liquidglass/Glass;JLandroidx/compose/ui/graphics/Shape;Landroidx/compose/foundation/interaction/MutableInteractionSource;Lkotlin/jvm/functions/Function2;Landroidx/compose/runtime/Composer;II)V
+	public static final fun FilledIconToggleButton (ZLkotlin/jvm/functions/Function1;Landroidx/compose/ui/Modifier;ZLandroidx/compose/ui/graphics/Shape;Lcom/wexpa/liquidglass/Glass;Lcom/wexpa/liquidglass/Glass;Landroidx/compose/foundation/interaction/MutableInteractionSource;Lkotlin/jvm/functions/Function2;Landroidx/compose/runtime/Composer;II)V
+	public static final fun FilledTonalButton-Yod850M (Lkotlin/jvm/functions/Function0;Landroidx/compose/ui/Modifier;ZLandroidx/compose/ui/graphics/Shape;Lcom/wexpa/liquidglass/Glass;JLandroidx/compose/foundation/BorderStroke;Landroidx/compose/foundation/layout/PaddingValues;Landroidx/compose/foundation/interaction/MutableInteractionSource;Lkotlin/jvm/functions/Function3;Landroidx/compose/runtime/Composer;II)V
+	public static final fun FilledTonalIconButton-NpZTi58 (Lkotlin/jvm/functions/Function0;Landroidx/compose/ui/Modifier;ZLcom/wexpa/liquidglass/Glass;JLandroidx/compose/ui/graphics/Shape;Landroidx/compose/foundation/interaction/MutableInteractionSource;Lkotlin/jvm/functions/Function2;Landroidx/compose/runtime/Composer;II)V
+	public static final fun FilledTonalIconToggleButton (ZLkotlin/jvm/functions/Function1;Landroidx/compose/ui/Modifier;ZLandroidx/compose/ui/graphics/Shape;Lcom/wexpa/liquidglass/Glass;Lcom/wexpa/liquidglass/Glass;Landroidx/compose/foundation/interaction/MutableInteractionSource;Lkotlin/jvm/functions/Function2;Landroidx/compose/runtime/Composer;II)V
+	public static final fun FloatingActionButton-X-z6DiA (Lkotlin/jvm/functions/Function0;Landroidx/compose/ui/Modifier;Landroidx/compose/ui/graphics/Shape;JJLcom/wexpa/liquidglass/Glass;Landroidx/compose/foundation/interaction/MutableInteractionSource;Lkotlin/jvm/functions/Function2;Landroidx/compose/runtime/Composer;II)V
+	public static final fun IconButton-NpZTi58 (Lkotlin/jvm/functions/Function0;Landroidx/compose/ui/Modifier;ZLcom/wexpa/liquidglass/Glass;JLandroidx/compose/ui/graphics/Shape;Landroidx/compose/foundation/interaction/MutableInteractionSource;Lkotlin/jvm/functions/Function2;Landroidx/compose/runtime/Composer;II)V
+	public static final fun IconToggleButton-QPuc2h0 (ZLkotlin/jvm/functions/Function1;Landroidx/compose/ui/Modifier;ZLcom/wexpa/liquidglass/Glass;Lcom/wexpa/liquidglass/Glass;JJLandroidx/compose/ui/graphics/Shape;Landroidx/compose/foundation/interaction/MutableInteractionSource;Lkotlin/jvm/functions/Function2;Landroidx/compose/runtime/Composer;III)V
+	public static final fun LargeFloatingActionButton-X-z6DiA (Lkotlin/jvm/functions/Function0;Landroidx/compose/ui/Modifier;Landroidx/compose/ui/graphics/Shape;JJLcom/wexpa/liquidglass/Glass;Landroidx/compose/foundation/interaction/MutableInteractionSource;Lkotlin/jvm/functions/Function2;Landroidx/compose/runtime/Composer;II)V
+	public static final fun OutlinedButton-Yod850M (Lkotlin/jvm/functions/Function0;Landroidx/compose/ui/Modifier;ZLandroidx/compose/ui/graphics/Shape;Lcom/wexpa/liquidglass/Glass;JLandroidx/compose/foundation/BorderStroke;Landroidx/compose/foundation/layout/PaddingValues;Landroidx/compose/foundation/interaction/MutableInteractionSource;Lkotlin/jvm/functions/Function3;Landroidx/compose/runtime/Composer;II)V
+	public static final fun OutlinedCard-fWhpE4E (Landroidx/compose/ui/Modifier;Landroidx/compose/ui/graphics/Shape;Lcom/wexpa/liquidglass/Glass;JLandroidx/compose/foundation/BorderStroke;Lkotlin/jvm/functions/Function3;Landroidx/compose/runtime/Composer;II)V
+	public static final fun OutlinedIconButton-NpZTi58 (Lkotlin/jvm/functions/Function0;Landroidx/compose/ui/Modifier;ZLcom/wexpa/liquidglass/Glass;JLandroidx/compose/ui/graphics/Shape;Landroidx/compose/foundation/interaction/MutableInteractionSource;Lkotlin/jvm/functions/Function2;Landroidx/compose/runtime/Composer;II)V
+	public static final fun OutlinedIconToggleButton (ZLkotlin/jvm/functions/Function1;Landroidx/compose/ui/Modifier;ZLandroidx/compose/ui/graphics/Shape;Lcom/wexpa/liquidglass/Glass;Lcom/wexpa/liquidglass/Glass;Landroidx/compose/foundation/interaction/MutableInteractionSource;Lkotlin/jvm/functions/Function2;Landroidx/compose/runtime/Composer;II)V
+	public static final fun SmallFloatingActionButton-X-z6DiA (Lkotlin/jvm/functions/Function0;Landroidx/compose/ui/Modifier;Landroidx/compose/ui/graphics/Shape;JJLcom/wexpa/liquidglass/Glass;Landroidx/compose/foundation/interaction/MutableInteractionSource;Lkotlin/jvm/functions/Function2;Landroidx/compose/runtime/Composer;II)V
+	public static final fun TextButton-Yod850M (Lkotlin/jvm/functions/Function0;Landroidx/compose/ui/Modifier;ZLandroidx/compose/ui/graphics/Shape;Lcom/wexpa/liquidglass/Glass;JLandroidx/compose/foundation/BorderStroke;Landroidx/compose/foundation/layout/PaddingValues;Landroidx/compose/foundation/interaction/MutableInteractionSource;Lkotlin/jvm/functions/Function3;Landroidx/compose/runtime/Composer;II)V
+}
+
+public final class com/wexpa/liquidglass/material3/ChipsKt {
+	public static final fun AssistChip-FItCLgY (Lkotlin/jvm/functions/Function0;Lkotlin/jvm/functions/Function2;Landroidx/compose/ui/Modifier;ZLkotlin/jvm/functions/Function2;Lkotlin/jvm/functions/Function2;Landroidx/compose/ui/graphics/Shape;Lcom/wexpa/liquidglass/Glass;JLandroidx/compose/foundation/interaction/MutableInteractionSource;Landroidx/compose/runtime/Composer;II)V
+	public static final fun ElevatedAssistChip-FItCLgY (Lkotlin/jvm/functions/Function0;Lkotlin/jvm/functions/Function2;Landroidx/compose/ui/Modifier;ZLkotlin/jvm/functions/Function2;Lkotlin/jvm/functions/Function2;Landroidx/compose/ui/graphics/Shape;Lcom/wexpa/liquidglass/Glass;JLandroidx/compose/foundation/interaction/MutableInteractionSource;Landroidx/compose/runtime/Composer;II)V
+	public static final fun ElevatedFilterChip-bZJ3-2A (ZLkotlin/jvm/functions/Function0;Lkotlin/jvm/functions/Function2;Landroidx/compose/ui/Modifier;ZLkotlin/jvm/functions/Function2;Lkotlin/jvm/functions/Function2;Landroidx/compose/ui/graphics/Shape;Lcom/wexpa/liquidglass/Glass;JLandroidx/compose/foundation/interaction/MutableInteractionSource;Landroidx/compose/runtime/Composer;III)V
+	public static final fun ElevatedSuggestionChip-lmFMXvc (Lkotlin/jvm/functions/Function0;Lkotlin/jvm/functions/Function2;Landroidx/compose/ui/Modifier;ZLkotlin/jvm/functions/Function2;Landroidx/compose/ui/graphics/Shape;Lcom/wexpa/liquidglass/Glass;JLandroidx/compose/foundation/interaction/MutableInteractionSource;Landroidx/compose/runtime/Composer;II)V
+	public static final fun FilterChip-bZJ3-2A (ZLkotlin/jvm/functions/Function0;Lkotlin/jvm/functions/Function2;Landroidx/compose/ui/Modifier;ZLkotlin/jvm/functions/Function2;Lkotlin/jvm/functions/Function2;Landroidx/compose/ui/graphics/Shape;Lcom/wexpa/liquidglass/Glass;JLandroidx/compose/foundation/interaction/MutableInteractionSource;Landroidx/compose/runtime/Composer;III)V
+	public static final fun InputChip-ygcbOzY (ZLkotlin/jvm/functions/Function0;Lkotlin/jvm/functions/Function2;Landroidx/compose/ui/Modifier;ZLkotlin/jvm/functions/Function2;Lkotlin/jvm/functions/Function2;Lkotlin/jvm/functions/Function2;Landroidx/compose/ui/graphics/Shape;Lcom/wexpa/liquidglass/Glass;JLandroidx/compose/foundation/interaction/MutableInteractionSource;Landroidx/compose/runtime/Composer;III)V
+	public static final fun NavigationRail-FU0evQE (Landroidx/compose/ui/Modifier;Lcom/wexpa/liquidglass/Glass;JLkotlin/jvm/functions/Function3;Landroidx/compose/foundation/layout/WindowInsets;Lkotlin/jvm/functions/Function3;Landroidx/compose/runtime/Composer;II)V
+	public static final fun NavigationRailItem (ZLkotlin/jvm/functions/Function0;Lkotlin/jvm/functions/Function2;Landroidx/compose/ui/Modifier;ZLkotlin/jvm/functions/Function2;ZLandroidx/compose/material3/NavigationRailItemColors;Landroidx/compose/foundation/interaction/MutableInteractionSource;Landroidx/compose/runtime/Composer;II)V
+	public static final fun Snackbar-3gDbpQw (Landroidx/compose/ui/Modifier;Lkotlin/jvm/functions/Function2;Lkotlin/jvm/functions/Function2;ZLandroidx/compose/ui/graphics/Shape;Lcom/wexpa/liquidglass/Glass;JJJLkotlin/jvm/functions/Function2;Landroidx/compose/runtime/Composer;II)V
+	public static final fun Snackbar-zTql3dQ (Landroidx/compose/material3/SnackbarData;Landroidx/compose/ui/Modifier;ZLandroidx/compose/ui/graphics/Shape;Lcom/wexpa/liquidglass/Glass;JJJJLandroidx/compose/runtime/Composer;II)V
+	public static final fun SuggestionChip-lmFMXvc (Lkotlin/jvm/functions/Function0;Lkotlin/jvm/functions/Function2;Landroidx/compose/ui/Modifier;ZLkotlin/jvm/functions/Function2;Landroidx/compose/ui/graphics/Shape;Lcom/wexpa/liquidglass/Glass;JLandroidx/compose/foundation/interaction/MutableInteractionSource;Landroidx/compose/runtime/Composer;II)V
+}
+
+public final class com/wexpa/liquidglass/material3/ComposableSingletons$AppBarsKt {
+	public static final field INSTANCE Lcom/wexpa/liquidglass/material3/ComposableSingletons$AppBarsKt;
+	public fun <init> ()V
+	public final fun getLambda$-1411689117$liquidglass_liquidglass_material3 ()Lkotlin/jvm/functions/Function3;
+	public final fun getLambda$-1954439594$liquidglass_liquidglass_material3 ()Lkotlin/jvm/functions/Function2;
+	public final fun getLambda$-292807006$liquidglass_liquidglass_material3 ()Lkotlin/jvm/functions/Function2;
+	public final fun getLambda$1020870896$liquidglass_liquidglass_material3 ()Lkotlin/jvm/functions/Function2;
+	public final fun getLambda$1581692026$liquidglass_liquidglass_material3 ()Lkotlin/jvm/functions/Function2;
+	public final fun getLambda$1757387545$liquidglass_liquidglass_material3 ()Lkotlin/jvm/functions/Function3;
+	public final fun getLambda$18891149$liquidglass_liquidglass_material3 ()Lkotlin/jvm/functions/Function3;
+	public final fun getLambda$2009680793$liquidglass_liquidglass_material3 ()Lkotlin/jvm/functions/Function3;
+}
+
+public final class com/wexpa/liquidglass/material3/ComposableSingletons$ChipsKt {
+	public static final field INSTANCE Lcom/wexpa/liquidglass/material3/ComposableSingletons$ChipsKt;
+	public fun <init> ()V
+	public final fun getLambda$2010581128$liquidglass_liquidglass_material3 ()Lkotlin/jvm/functions/Function2;
+}
+
+public final class com/wexpa/liquidglass/material3/ComposableSingletons$NavigationBarKt {
+	public static final field INSTANCE Lcom/wexpa/liquidglass/material3/ComposableSingletons$NavigationBarKt;
+	public fun <init> ()V
+	public final fun getLambda$933013032$liquidglass_liquidglass_material3 ()Lkotlin/jvm/functions/Function2;
+}
+
+public final class com/wexpa/liquidglass/material3/ComposableSingletons$OverlaysKt {
+	public static final field INSTANCE Lcom/wexpa/liquidglass/material3/ComposableSingletons$OverlaysKt;
+	public fun <init> ()V
+	public final fun getLambda$1826304650$liquidglass_liquidglass_material3 ()Lkotlin/jvm/functions/Function2;
+}
+
+public final class com/wexpa/liquidglass/material3/ComposableSingletons$PickersKt {
+	public static final field INSTANCE Lcom/wexpa/liquidglass/material3/ComposableSingletons$PickersKt;
+	public fun <init> ()V
+	public final fun getLambda$321686547$liquidglass_liquidglass_material3 ()Lkotlin/jvm/functions/Function2;
+}
+
+public final class com/wexpa/liquidglass/material3/ComposableSingletons$ScaffoldKt {
+	public static final field INSTANCE Lcom/wexpa/liquidglass/material3/ComposableSingletons$ScaffoldKt;
+	public fun <init> ()V
+	public final fun getLambda$-1495654543$liquidglass_liquidglass_material3 ()Lkotlin/jvm/functions/Function2;
+	public final fun getLambda$-1896350079$liquidglass_liquidglass_material3 ()Lkotlin/jvm/functions/Function2;
+	public final fun getLambda$-94900910$liquidglass_liquidglass_material3 ()Lkotlin/jvm/functions/Function2;
+	public final fun getLambda$13481361$liquidglass_liquidglass_material3 ()Lkotlin/jvm/functions/Function2;
+}
+
+public final class com/wexpa/liquidglass/material3/ComposableSingletons$SearchBarKt {
+	public static final field INSTANCE Lcom/wexpa/liquidglass/material3/ComposableSingletons$SearchBarKt;
+	public fun <init> ()V
+	public final fun getLambda$1780840730$liquidglass_liquidglass_material3 ()Lkotlin/jvm/functions/Function3;
+	public final fun getLambda$585763212$liquidglass_liquidglass_material3 ()Lkotlin/jvm/functions/Function3;
+}
+
+public final class com/wexpa/liquidglass/material3/ComposableSingletons$SegmentedKt {
+	public static final field INSTANCE Lcom/wexpa/liquidglass/material3/ComposableSingletons$SegmentedKt;
+	public fun <init> ()V
+	public final fun getLambda$-1061324698$liquidglass_liquidglass_material3 ()Lkotlin/jvm/functions/Function2;
+	public final fun getLambda$-119315681$liquidglass_liquidglass_material3 ()Lkotlin/jvm/functions/Function3;
+	public final fun getLambda$-1240154286$liquidglass_liquidglass_material3 ()Lkotlin/jvm/functions/Function2;
+	public final fun getLambda$-1411021996$liquidglass_liquidglass_material3 ()Lkotlin/jvm/functions/Function3;
+	public final fun getLambda$-143323869$liquidglass_liquidglass_material3 ()Lkotlin/jvm/functions/Function2;
+	public final fun getLambda$-156192881$liquidglass_liquidglass_material3 ()Lkotlin/jvm/functions/Function2;
+	public final fun getLambda$-1660327507$liquidglass_liquidglass_material3 ()Lkotlin/jvm/functions/Function3;
+	public final fun getLambda$-2019085518$liquidglass_liquidglass_material3 ()Lkotlin/jvm/functions/Function2;
+	public final fun getLambda$-586789884$liquidglass_liquidglass_material3 ()Lkotlin/jvm/functions/Function2;
+	public final fun getLambda$1220528000$liquidglass_liquidglass_material3 ()Lkotlin/jvm/functions/Function2;
+	public final fun getLambda$1236301494$liquidglass_liquidglass_material3 ()Lkotlin/jvm/functions/Function2;
+	public final fun getLambda$235321729$liquidglass_liquidglass_material3 ()Lkotlin/jvm/functions/Function2;
+	public final fun getLambda$436477346$liquidglass_liquidglass_material3 ()Lkotlin/jvm/functions/Function3;
+	public final fun getLambda$907037384$liquidglass_liquidglass_material3 ()Lkotlin/jvm/functions/Function3;
+	public final fun getLambda$931933440$liquidglass_liquidglass_material3 ()Lkotlin/jvm/functions/Function2;
+}
+
+public final class com/wexpa/liquidglass/material3/ControlsKt {
+	public static final fun RangeSlider (Lkotlin/ranges/ClosedFloatingPointRange;Lkotlin/jvm/functions/Function1;Landroidx/compose/ui/Modifier;ZLkotlin/ranges/ClosedFloatingPointRange;ILkotlin/jvm/functions/Function0;Landroidx/compose/material3/SliderColors;Landroidx/compose/runtime/Composer;II)V
+	public static final fun Slider (FLkotlin/jvm/functions/Function1;Landroidx/compose/ui/Modifier;ZLkotlin/ranges/ClosedFloatingPointRange;ILkotlin/jvm/functions/Function0;Landroidx/compose/material3/SliderColors;Landroidx/compose/foundation/interaction/MutableInteractionSource;Landroidx/compose/runtime/Composer;II)V
+	public static final fun Switch (ZLkotlin/jvm/functions/Function1;Landroidx/compose/ui/Modifier;Lkotlin/jvm/functions/Function2;ZLandroidx/compose/material3/SwitchColors;Landroidx/compose/foundation/interaction/MutableInteractionSource;Landroidx/compose/runtime/Composer;II)V
+}
+
+public final class com/wexpa/liquidglass/material3/DrawersKt {
+	public static final fun DismissibleDrawerSheet-Snr_uVM (Landroidx/compose/material3/DrawerState;Landroidx/compose/ui/Modifier;Landroidx/compose/ui/graphics/Shape;JJFLandroidx/compose/foundation/layout/WindowInsets;Lkotlin/jvm/functions/Function3;Landroidx/compose/runtime/Composer;II)V
+	public static final fun DismissibleDrawerSheet-sKfQg0A (Landroidx/compose/ui/Modifier;Landroidx/compose/ui/graphics/Shape;JJFLandroidx/compose/foundation/layout/WindowInsets;Lcom/wexpa/liquidglass/Glass;Lkotlin/jvm/functions/Function3;Landroidx/compose/runtime/Composer;II)V
+	public static final fun ModalDrawerSheet-Snr_uVM (Landroidx/compose/material3/DrawerState;Landroidx/compose/ui/Modifier;Landroidx/compose/ui/graphics/Shape;JJFLandroidx/compose/foundation/layout/WindowInsets;Lkotlin/jvm/functions/Function3;Landroidx/compose/runtime/Composer;II)V
+	public static final fun ModalDrawerSheet-sKfQg0A (Landroidx/compose/ui/Modifier;Landroidx/compose/ui/graphics/Shape;JJFLandroidx/compose/foundation/layout/WindowInsets;Lcom/wexpa/liquidglass/Glass;Lkotlin/jvm/functions/Function3;Landroidx/compose/runtime/Composer;II)V
+	public static final fun NavigationDrawerItem (Lkotlin/jvm/functions/Function2;ZLkotlin/jvm/functions/Function0;Landroidx/compose/ui/Modifier;Lkotlin/jvm/functions/Function2;Lkotlin/jvm/functions/Function2;Landroidx/compose/ui/graphics/Shape;Lcom/wexpa/liquidglass/Glass;Landroidx/compose/material3/NavigationDrawerItemColors;Landroidx/compose/foundation/interaction/MutableInteractionSource;Landroidx/compose/runtime/Composer;II)V
+	public static final fun PermanentDrawerSheet-sKfQg0A (Landroidx/compose/ui/Modifier;Landroidx/compose/ui/graphics/Shape;JJFLandroidx/compose/foundation/layout/WindowInsets;Lcom/wexpa/liquidglass/Glass;Lkotlin/jvm/functions/Function3;Landroidx/compose/runtime/Composer;II)V
+}
+
+public final class com/wexpa/liquidglass/material3/GlassLayout : java/lang/Enum {
+	public static final field Ios Lcom/wexpa/liquidglass/material3/GlassLayout;
+	public static final field Material Lcom/wexpa/liquidglass/material3/GlassLayout;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public static fun valueOf (Ljava/lang/String;)Lcom/wexpa/liquidglass/material3/GlassLayout;
+	public static fun values ()[Lcom/wexpa/liquidglass/material3/GlassLayout;
+}
+
+public final class com/wexpa/liquidglass/material3/GlassMaterialDefaults {
+	public static final field $stable I
+	public static final field INSTANCE Lcom/wexpa/liquidglass/material3/GlassMaterialDefaults;
+	public static final field ProminentAlpha F
+	public final fun forContainer-ek8zF_U (JLandroidx/compose/runtime/Composer;I)Lcom/wexpa/liquidglass/Glass;
+	public final fun getControl ()Lcom/wexpa/liquidglass/Glass;
+	public final fun getPanel ()Lcom/wexpa/liquidglass/Glass;
+	public final fun getPanelBackdropSigma-D9Ej5fM ()F
+	public final fun getRegular (Landroidx/compose/runtime/Composer;I)Lcom/wexpa/liquidglass/Glass;
+	public final fun getToolbar ()Lcom/wexpa/liquidglass/Glass;
+	public final fun prominent-Iv8Zu3U (JLandroidx/compose/runtime/Composer;II)Lcom/wexpa/liquidglass/Glass;
+}
+
+public final class com/wexpa/liquidglass/material3/GlassNavigationDefaults {
+	public static final field $stable I
+	public static final field INSTANCE Lcom/wexpa/liquidglass/material3/GlassNavigationDefaults;
+	public final fun itemColors-RGew2ao (JJJLandroidx/compose/runtime/Composer;II)Landroidx/compose/material3/NavigationBarItemColors;
+}
+
+public abstract interface class com/wexpa/liquidglass/material3/MultiChoiceSegmentedButtonRowScope : androidx/compose/foundation/layout/RowScope {
+}
+
+public final class com/wexpa/liquidglass/material3/NavigationBarKt {
+	public static final fun NavigationBar-J4bqYow (Landroidx/compose/ui/Modifier;JJFLandroidx/compose/foundation/layout/WindowInsets;Lcom/wexpa/liquidglass/material3/GlassLayout;Lkotlin/jvm/functions/Function2;Lkotlin/jvm/functions/Function0;Lkotlin/jvm/functions/Function3;Landroidx/compose/runtime/Composer;II)V
+	public static final fun NavigationBarItem (Landroidx/compose/foundation/layout/RowScope;ZLkotlin/jvm/functions/Function0;Lkotlin/jvm/functions/Function2;Landroidx/compose/ui/Modifier;ZLkotlin/jvm/functions/Function2;ZLandroidx/compose/material3/NavigationBarItemColors;Landroidx/compose/foundation/interaction/MutableInteractionSource;Landroidx/compose/runtime/Composer;II)V
+}
+
+public final class com/wexpa/liquidglass/material3/OverlaysKt {
+	public static final fun AlertDialog-gFlafc4 (Lkotlin/jvm/functions/Function0;Lkotlin/jvm/functions/Function2;Landroidx/compose/ui/Modifier;Lkotlin/jvm/functions/Function2;Lkotlin/jvm/functions/Function2;Lkotlin/jvm/functions/Function2;Lkotlin/jvm/functions/Function2;Landroidx/compose/ui/graphics/Shape;Lcom/wexpa/liquidglass/Glass;JJJLandroidx/compose/ui/window/DialogProperties;Landroidx/compose/runtime/Composer;III)V
+	public static final fun BasicAlertDialog (Lkotlin/jvm/functions/Function0;Landroidx/compose/ui/Modifier;Landroidx/compose/ui/window/DialogProperties;Lkotlin/jvm/functions/Function2;Landroidx/compose/runtime/Composer;II)V
+	public static final fun DragHandle-iJQMabo (Landroidx/compose/ui/Modifier;JLandroidx/compose/runtime/Composer;II)V
+	public static final fun DropdownMenu-4kj-_NE (ZLkotlin/jvm/functions/Function0;Landroidx/compose/ui/Modifier;JLandroidx/compose/ui/graphics/Shape;Lcom/wexpa/liquidglass/Glass;Lkotlin/jvm/functions/Function3;Landroidx/compose/runtime/Composer;II)V
+	public static final fun DropdownMenuItem (Lkotlin/jvm/functions/Function2;Lkotlin/jvm/functions/Function0;Landroidx/compose/ui/Modifier;Lkotlin/jvm/functions/Function2;Lkotlin/jvm/functions/Function2;ZLandroidx/compose/material3/MenuItemColors;Landroidx/compose/foundation/layout/PaddingValues;Landroidx/compose/foundation/interaction/MutableInteractionSource;Landroidx/compose/runtime/Composer;II)V
+	public static final fun ModalBottomSheet-dl4swmI (Lkotlin/jvm/functions/Function0;Landroidx/compose/ui/Modifier;Lcom/wexpa/liquidglass/material3/SheetState;FLandroidx/compose/ui/graphics/Shape;Lcom/wexpa/liquidglass/Glass;JJLkotlin/jvm/functions/Function2;Lkotlin/jvm/functions/Function2;Lkotlin/jvm/functions/Function3;Landroidx/compose/runtime/Composer;III)V
+	public static final fun rememberModalBottomSheetState (ZLkotlin/jvm/functions/Function1;Landroidx/compose/runtime/Composer;II)Lcom/wexpa/liquidglass/material3/SheetState;
+}
+
+public final class com/wexpa/liquidglass/material3/PickersKt {
+	public static final fun DatePicker (Landroidx/compose/material3/DatePickerState;Landroidx/compose/ui/Modifier;Landroidx/compose/material3/DatePickerFormatter;Landroidx/compose/material3/DatePickerColors;Lkotlin/jvm/functions/Function2;Lkotlin/jvm/functions/Function2;ZLandroidx/compose/runtime/Composer;II)V
+	public static final fun DatePickerDialog-zadm560 (Lkotlin/jvm/functions/Function0;Lkotlin/jvm/functions/Function2;Landroidx/compose/ui/Modifier;Lkotlin/jvm/functions/Function2;Landroidx/compose/ui/graphics/Shape;FLandroidx/compose/material3/DatePickerColors;Landroidx/compose/ui/window/DialogProperties;Lcom/wexpa/liquidglass/Glass;Lkotlin/jvm/functions/Function3;Landroidx/compose/runtime/Composer;II)V
+	public static final fun DateRangePicker (Landroidx/compose/material3/DateRangePickerState;Landroidx/compose/ui/Modifier;Landroidx/compose/material3/DatePickerFormatter;Landroidx/compose/material3/DatePickerColors;Lkotlin/jvm/functions/Function2;Lkotlin/jvm/functions/Function2;ZLandroidx/compose/runtime/Composer;II)V
+	public static final fun TimePickerDialog-pX9LQoI (Lkotlin/jvm/functions/Function0;Lkotlin/jvm/functions/Function2;Lkotlin/jvm/functions/Function2;Landroidx/compose/ui/Modifier;Landroidx/compose/ui/window/DialogProperties;Lkotlin/jvm/functions/Function2;Lkotlin/jvm/functions/Function2;Landroidx/compose/ui/graphics/Shape;JLcom/wexpa/liquidglass/Glass;Lkotlin/jvm/functions/Function3;Landroidx/compose/runtime/Composer;III)V
+}
+
+public final class com/wexpa/liquidglass/material3/ScaffoldKt {
+	public static final fun Scaffold-TvnljyQ (Landroidx/compose/ui/Modifier;Lkotlin/jvm/functions/Function2;Lkotlin/jvm/functions/Function2;Lkotlin/jvm/functions/Function2;Lkotlin/jvm/functions/Function2;IJJLandroidx/compose/foundation/layout/WindowInsets;Lkotlin/jvm/functions/Function3;Landroidx/compose/runtime/Composer;II)V
+}
+
+public final class com/wexpa/liquidglass/material3/SearchBarKt {
+	public static final fun DockedSearchBar (Ljava/lang/String;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function1;ZLkotlin/jvm/functions/Function1;Landroidx/compose/ui/Modifier;ZLkotlin/jvm/functions/Function2;Lkotlin/jvm/functions/Function2;Lkotlin/jvm/functions/Function2;Landroidx/compose/ui/graphics/Shape;Lcom/wexpa/liquidglass/Glass;Lcom/wexpa/liquidglass/Glass;Lkotlin/jvm/functions/Function3;Landroidx/compose/runtime/Composer;III)V
+	public static final fun SearchBar (Ljava/lang/String;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function1;ZLkotlin/jvm/functions/Function1;Landroidx/compose/ui/Modifier;ZLkotlin/jvm/functions/Function2;Lkotlin/jvm/functions/Function2;Lkotlin/jvm/functions/Function2;Landroidx/compose/ui/graphics/Shape;Lcom/wexpa/liquidglass/Glass;Lcom/wexpa/liquidglass/Glass;Lkotlin/jvm/functions/Function3;Landroidx/compose/runtime/Composer;III)V
+}
+
+public final class com/wexpa/liquidglass/material3/SegmentedButtonDefaults {
+	public static final field $stable I
+	public static final field INSTANCE Lcom/wexpa/liquidglass/material3/SegmentedButtonDefaults;
+	public final fun Icon (ZLkotlin/jvm/functions/Function2;Lkotlin/jvm/functions/Function2;Landroidx/compose/runtime/Composer;II)V
+	public final fun colors-dgg9oW8 (JJLandroidx/compose/runtime/Composer;II)Landroidx/compose/material3/SegmentedButtonColors;
+	public final fun itemShape (IILandroidx/compose/foundation/shape/CornerBasedShape;Landroidx/compose/runtime/Composer;II)Landroidx/compose/ui/graphics/Shape;
+}
+
+public final class com/wexpa/liquidglass/material3/SegmentedKt {
+	public static final fun LeadingIconTab-wqdebIU (ZLkotlin/jvm/functions/Function0;Lkotlin/jvm/functions/Function2;Lkotlin/jvm/functions/Function2;Landroidx/compose/ui/Modifier;ZJJLandroidx/compose/foundation/interaction/MutableInteractionSource;Landroidx/compose/runtime/Composer;II)V
+	public static final fun MultiChoiceSegmentedButtonRow-uFdPcIQ (Landroidx/compose/ui/Modifier;FLkotlin/jvm/functions/Function3;Landroidx/compose/runtime/Composer;II)V
+	public static final fun PrimaryScrollableTabRow-qhFBPw4 (ILandroidx/compose/ui/Modifier;Landroidx/compose/foundation/ScrollState;JJFLkotlin/jvm/functions/Function3;Lkotlin/jvm/functions/Function2;Lkotlin/jvm/functions/Function2;Landroidx/compose/runtime/Composer;II)V
+	public static final fun PrimaryTabRow-pAZo6Ak (ILandroidx/compose/ui/Modifier;JJLkotlin/jvm/functions/Function3;Lkotlin/jvm/functions/Function2;Lkotlin/jvm/functions/Function2;Landroidx/compose/runtime/Composer;II)V
+	public static final fun ScrollableTabRow-zTRkEkM (ILandroidx/compose/ui/Modifier;JFLkotlin/jvm/functions/Function2;Landroidx/compose/runtime/Composer;II)V
+	public static final fun SecondaryScrollableTabRow-qhFBPw4 (ILandroidx/compose/ui/Modifier;Landroidx/compose/foundation/ScrollState;JJFLkotlin/jvm/functions/Function3;Lkotlin/jvm/functions/Function2;Lkotlin/jvm/functions/Function2;Landroidx/compose/runtime/Composer;II)V
+	public static final fun SecondaryTabRow-pAZo6Ak (ILandroidx/compose/ui/Modifier;JJLkotlin/jvm/functions/Function3;Lkotlin/jvm/functions/Function2;Lkotlin/jvm/functions/Function2;Landroidx/compose/runtime/Composer;II)V
+	public static final fun SegmentedButton (Lcom/wexpa/liquidglass/material3/MultiChoiceSegmentedButtonRowScope;ZLkotlin/jvm/functions/Function1;Landroidx/compose/ui/graphics/Shape;Landroidx/compose/ui/Modifier;ZLandroidx/compose/material3/SegmentedButtonColors;Landroidx/compose/foundation/BorderStroke;Landroidx/compose/foundation/layout/PaddingValues;Landroidx/compose/foundation/interaction/MutableInteractionSource;Lkotlin/jvm/functions/Function2;Lkotlin/jvm/functions/Function2;Landroidx/compose/runtime/Composer;III)V
+	public static final fun SegmentedButton (Lcom/wexpa/liquidglass/material3/SingleChoiceSegmentedButtonRowScope;ZLkotlin/jvm/functions/Function0;Landroidx/compose/ui/graphics/Shape;Landroidx/compose/ui/Modifier;ZLandroidx/compose/material3/SegmentedButtonColors;Landroidx/compose/foundation/BorderStroke;Landroidx/compose/foundation/layout/PaddingValues;Landroidx/compose/foundation/interaction/MutableInteractionSource;Lkotlin/jvm/functions/Function2;Lkotlin/jvm/functions/Function2;Landroidx/compose/runtime/Composer;III)V
+	public static final fun SingleChoiceSegmentedButtonRow-uFdPcIQ (Landroidx/compose/ui/Modifier;FLkotlin/jvm/functions/Function3;Landroidx/compose/runtime/Composer;II)V
+	public static final fun Tab-wqdebIU (ZLkotlin/jvm/functions/Function0;Landroidx/compose/ui/Modifier;ZLkotlin/jvm/functions/Function2;Lkotlin/jvm/functions/Function2;JJLandroidx/compose/foundation/interaction/MutableInteractionSource;Landroidx/compose/runtime/Composer;II)V
+	public static final fun TabRow-pAZo6Ak (ILandroidx/compose/ui/Modifier;JJLkotlin/jvm/functions/Function3;Lkotlin/jvm/functions/Function2;Lkotlin/jvm/functions/Function2;Landroidx/compose/runtime/Composer;II)V
+}
+
+public final class com/wexpa/liquidglass/material3/SheetState {
+	public static final field $stable I
+	public final fun expand (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public final fun getCurrentValue ()Landroidx/compose/material3/SheetValue;
+	public final fun getHasExpandedState ()Z
+	public final fun getHasPartiallyExpandedState ()Z
+	public final fun getTargetValue ()Landroidx/compose/material3/SheetValue;
+	public final fun hide (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public final fun isVisible ()Z
+	public final fun partialExpand (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public final fun show (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+}
+
+public abstract interface class com/wexpa/liquidglass/material3/SingleChoiceSegmentedButtonRowScope : androidx/compose/foundation/layout/RowScope {
+}
+
+public final class com/wexpa/liquidglass/material3/SurfacesKt {
+	public static final fun Surface-9FW6N_Y (Lkotlin/jvm/functions/Function0;Landroidx/compose/ui/Modifier;ZLandroidx/compose/ui/graphics/Shape;JJFFLandroidx/compose/foundation/BorderStroke;Landroidx/compose/foundation/interaction/MutableInteractionSource;Lcom/wexpa/liquidglass/Glass;Lkotlin/jvm/functions/Function2;Landroidx/compose/runtime/Composer;III)V
+	public static final fun Surface-xam5sdo (Landroidx/compose/ui/Modifier;Landroidx/compose/ui/graphics/Shape;JJFFLandroidx/compose/foundation/BorderStroke;Lcom/wexpa/liquidglass/Glass;Lkotlin/jvm/functions/Function2;Landroidx/compose/runtime/Composer;II)V
+}
+
+public abstract interface class com/wexpa/liquidglass/material3/TooltipScope {
+}
+
+public final class com/wexpa/liquidglass/material3/TooltipsKt {
+	public static final fun PlainTooltip-tg9DpQw (Lcom/wexpa/liquidglass/material3/TooltipScope;Landroidx/compose/ui/Modifier;FLandroidx/compose/ui/graphics/Shape;JJFFLcom/wexpa/liquidglass/Glass;Lkotlin/jvm/functions/Function2;Landroidx/compose/runtime/Composer;II)V
+	public static final fun RichTooltip-h1M5xCY (Lcom/wexpa/liquidglass/material3/TooltipScope;Landroidx/compose/ui/Modifier;Lkotlin/jvm/functions/Function2;Lkotlin/jvm/functions/Function2;FLandroidx/compose/ui/graphics/Shape;Lcom/wexpa/liquidglass/Glass;JJFFLkotlin/jvm/functions/Function2;Landroidx/compose/runtime/Composer;III)V
+	public static final fun TooltipBox (Landroidx/compose/ui/window/PopupPositionProvider;Lkotlin/jvm/functions/Function3;Landroidx/compose/material3/TooltipState;Landroidx/compose/ui/Modifier;Lkotlin/jvm/functions/Function0;ZZZLkotlin/jvm/functions/Function2;Landroidx/compose/runtime/Composer;II)V
+}
+

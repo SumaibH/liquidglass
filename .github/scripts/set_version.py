@@ -70,7 +70,7 @@ def main() -> int:
             changed.append(upm)
     log = ROOT / "ports" / "flutter" / "CHANGELOG.md"
     body = read(log)
-    heading = re.search(r"(?m)^## (\S+)[ \t]*$", body)
+    heading = re.search(r"(?m)^## (\S+)[ \t\r]*$", body)  # \r: a checkout may have CRLF endings
     if heading and heading.group(1) != new_pub:
         if heading.group(1).endswith("-dev"):  # the unreleased entry takes the new number
             body = body[:heading.start(1)] + new_pub + body[heading.end(1):]

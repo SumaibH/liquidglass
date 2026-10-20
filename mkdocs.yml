@@ -155,6 +155,7 @@ nav:
       - Reading their source: research/competitor-source-study.md
       - iOS 27 measurements (raw): research/ios27-measurements-raw.md
   - Project:
+      - Support and compatibility: compatibility.md
       - Implementation status: implementation-status.md
       - Roadmap: roadmap.md
       - Publishing: publishing.md
