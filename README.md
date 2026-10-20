@@ -113,6 +113,13 @@ record](docs/research/README.md), [the latest comparison](review/atlas/reference
 The motion is close to iOS but **not yet identical**, and the [remaining
 differences](review/atlas/reference-replay-2026-10-13/README.md#remaining-differences) are listed.
 
+<p align="center">
+  <img src="review/atlas/ios-side-by-side-2026-10-20/held-drag.gif" width="640" alt="iOS 27 above, LiquidGlass below: the same held drag of the tab bar's lens from Keypad to Calls and back">
+</p>
+<p align="center"><sub>iOS 27 (top, the owner's screen recording) and LiquidGlass (bottom, replaying the finger path
+inferred from it). The motion is close; iOS still bends the icons under the lens more strongly, and that is
+open work. <a href="review/atlas/ios-side-by-side-2026-10-20/README.md">Source, method and limits</a>.</sub></p>
+
 **One material, every stack.** Compose, the web component, React Native, Flutter and .NET all run the
 same production shader, generated from one source and checked against each other in CI.
 
