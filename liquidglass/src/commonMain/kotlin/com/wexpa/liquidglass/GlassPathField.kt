@@ -173,9 +173,13 @@ internal fun buildPathField(
     val pixels = mask.toPixelMap()
     buffers.ensureCapacity(layerWidth * layerHeight)
     val inside = buffers.inside
+    // Read the packed ARGB words directly: alpha above 0.5 is an alpha byte of 128 or more, the
+    // same test `pixels[x, y].alpha > 0.5f` made through a Color per pixel.
+    val argb = pixels.buffer
     for (y in 0 until layerHeight) {
+        val row = pixels.bufferOffset + y * pixels.stride
         for (x in 0 until layerWidth) {
-            inside[y * layerWidth + x] = pixels[x, y].alpha > 0.5f
+            inside[y * layerWidth + x] = (argb[row + x] ushr 24) >= 128
         }
     }
 
@@ -249,48 +253,56 @@ private fun edt(inside: BooleanArray, w: Int, h: Int, seedInside: Boolean, buffe
         }
     }
 
-    /** Propagates a neighboring seed only when its squared distance improves this pixel. */
-    fun compare(i: Int, ox: Int, oy: Int, sx: Int, sy: Int) {
-        val nx = i + ox + oy * w
-        if (nx < 0 || nx >= w * h) return
-        val cx = dx[nx] + sx
-        val cy = dy[nx] + sy
-        if (cx >= FAR || cy >= FAR) return
-        val cd = cx * cx + cy * cy
-        if (cd < d[i] * d[i]) {
-            dx[i] = cx; dy[i] = cy; d[i] = sqrt(cd)
-        }
-    }
-
+    // Every neighbour below is inside the grid by its row/column guard, so [relax] needs no bounds
+    // check; the visiting order and the comparison are unchanged, so the result is bit-identical.
     for (y in 0 until h) {
+        val row = y * w
         for (x in 0 until w) {
-            val i = y * w + x
-            if (x > 0) compare(i, -1, 0, 1, 0)
-            if (y > 0) compare(i, 0, -1, 0, 1)
-            if (x > 0 && y > 0) compare(i, -1, -1, 1, 1)
-            if (x < w - 1 && y > 0) compare(i, 1, -1, 1, 1)
+            val i = row + x
+            if (x > 0) relax(dx, dy, d, i, i - 1, 1f, 0f)
+            if (y > 0) {
+                relax(dx, dy, d, i, i - w, 0f, 1f)
+                if (x > 0) relax(dx, dy, d, i, i - w - 1, 1f, 1f)
+                if (x < w - 1) relax(dx, dy, d, i, i - w + 1, 1f, 1f)
+            }
         }
-        for (x in w - 1 downTo 0) {
-            val i = y * w + x
-            if (x < w - 1) compare(i, 1, 0, 1, 0)
+        for (x in w - 2 downTo 0) {
+            val i = row + x
+            relax(dx, dy, d, i, i + 1, 1f, 0f)
         }
     }
     for (y in h - 1 downTo 0) {
+        val row = y * w
         for (x in w - 1 downTo 0) {
-            val i = y * w + x
-            if (x < w - 1) compare(i, 1, 0, 1, 0)
-            if (y < h - 1) compare(i, 0, 1, 0, 1)
-            if (x < w - 1 && y < h - 1) compare(i, 1, 1, 1, 1)
-            if (x > 0 && y < h - 1) compare(i, -1, 1, 1, 1)
+            val i = row + x
+            if (x < w - 1) relax(dx, dy, d, i, i + 1, 1f, 0f)
+            if (y < h - 1) {
+                relax(dx, dy, d, i, i + w, 0f, 1f)
+                if (x < w - 1) relax(dx, dy, d, i, i + w + 1, 1f, 1f)
+                if (x > 0) relax(dx, dy, d, i, i + w - 1, 1f, 1f)
+            }
         }
-        for (x in 0 until w) {
-            val i = y * w + x
-            if (x > 0) compare(i, -1, 0, 1, 0)
+        for (x in 1 until w) {
+            val i = row + x
+            relax(dx, dy, d, i, i - 1, 1f, 0f)
         }
     }
 
     for (i in 0 until w * h) if (d[i] >= FAR) d[i] = min(w, h).toFloat()
     return d
+}
+
+/** Takes the neighbour [n]'s nearest-seed offset, one step further, when it improves pixel [i]. */
+@Suppress("NOTHING_TO_INLINE")
+private inline fun relax(dx: FloatArray, dy: FloatArray, d: FloatArray, i: Int, n: Int, sx: Float, sy: Float) {
+    val cx = dx[n] + sx
+    val cy = dy[n] + sy
+    if (cx >= FAR || cy >= FAR) return
+    val cd = cx * cx + cy * cy
+    val di = d[i]
+    if (cd < di * di) {
+        dx[i] = cx; dy[i] = cy; d[i] = sqrt(cd)
+    }
 }
 
 /** Compose has no common way to make an [ImageBitmap] from raw pixels. */
