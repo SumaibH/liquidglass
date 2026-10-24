@@ -6,6 +6,12 @@ Read this first after an interruption. Detailed history lives in the
 
 ## Current state
 
+**20 October web demo first load (#78, PR #85):** a loader replaces the black first load (shown in
+0.05-0.2 s instead of 7.6 s unthrottled / 30 s on slow 4G, headless Chrome, cold caches); Compose mounts
+in `#app`; no-Wasm-GC, failed-download/startup-error and lost-context states show on the page. Download
+(4.46 MB gzip, 3.28 MB of it skiko.wasm) and first-visit shader compilation are unchanged, so the time to a
+usable app is unchanged. Chromium only. [Evidence](../review/atlas/web-demo-load-2026-10-20/README.md).
+
 **20 October first tap after install (#71):** traced on a Pixel 7: the selector's pad followed its
 deforming body, so its layers were reallocated mid-tap and the first new size compiled a 265-286 ms GPU
 pipeline for the glass shader. `GlassPadFloor` holds the largest pad; the first tap's slowest frame is

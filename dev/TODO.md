@@ -48,10 +48,14 @@ description fix alone.
   Verification and historical results: `review/atlas/compose-cache-field-2026-10-20/README.md`.
 - [ ] **#81 follow-up:** bounded-resolution or off-composition field preparation. Full-resolution
   EDT remains synchronous; odd-pad and field-consumer tests stay gates.
-- [ ] **#78 Web demo (liquidglass.shayxo.dev/demo/): slow, sometimes blank. Owner, 20 Oct.**
-  The Wasm demo shows a black page for a long time on first load and sometimes never renders. Next:
-  measure load (bundle size, time to first frame, console errors) in Chromium; add a loading state;
-  find the failed-render cause; before/after numbers under review/.
+- [ ] **#78 Web demo first load: loader and on-page failures landed (itsaqeeldev, PR #85, 20 Oct); load time still open.** Measured in headless Chrome
+  (tools/measure_web_demo.mjs, cold caches): 4.46 MB gzip (skiko.wasm 3.28 MB), then ~2 s per opening frame
+  compiling shaders on a first visit; black page 7.6 s unthrottled, 30 s on slow 4G. Loader from first paint
+  (0.05-0.2 s), hidden after settled frames; Compose mounts in #app (it replaced the body's children);
+  no-Wasm-GC, failed-download/uncaught-error and lost-WebGL-context states on the page; docs iframes lazy.
+  Time to a usable app unchanged (download + shaders). review/atlas/web-demo-load-2026-10-20.
+  Still open: cut the transfer (4.46 MB; brotli or a smaller skiko build), first-visit shader compile
+  (~2 s per opening frame), the never-renders root cause (not reproduced), and Firefox/Safari/phone checks.
 - [x] **#79 Material 3 polish (itsaqeeldev, 20 Oct).** Slider/RangeSlider tracks now run under the
   thumb's whole travel (they stopped half a thumb short: Material insets the track box by half a
   thumb and the glass track inset again); `GlassSliderTrackTest` failed before, passes after. Showcase:
