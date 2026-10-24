@@ -1,5 +1,26 @@
 # Resume LiquidGlass / Atlas Studio
 
+## PAUSED 24 October — owner decisions to act on first
+
+The owner paused here (usage limit). Resume with these, in order:
+
+1. **#73 rim fringes: build iOS's behaviour, no opt-in.** The owner's words: "build the exact stuff like
+   ios bruh no need for opt ins we need that". So this is a deliberate default change, exempt from the
+   opt-in rule. Target, from review/atlas/rim-fringe-score-2026-10-24: fringes 30-100x today's strength,
+   growing 5-30x with selector speed, starting 33-50 ms after a tap and peaking at 84-116 ms, peaking at
+   lift on held gestures and fading 110-120 ms after, with warm hues (the white content splits too). Knobs:
+   `GlassSelectorRimDispersion` (GlassTabBar.kt ~2235), the held lens's `dispersion` (~2089) and the shader
+   split (GlassShaderSource.kt ~546). Score every candidate with tools/measure_rim_fringe.py on all five
+   recordings, plus levels.py/hazescore.py so nothing else regresses; record before/after under review/.
+2. **#77 refraction band: choose by eye against iOS.** The owner's words: "check which one looks visually
+   more close to the ios references and then decide acc to that". Render the Calm lens band at 0.3
+   (today), 0.6, 1.0 and 1.1 beside the iOS frames (all five recordings, including the bar's end cap and
+   the fuse with the search button, where "two glasses" appeared on 18 Oct). Pick the closest, make it
+   the default, and record the comparison and the reason (scorer: tools/reference-replay/refraction.py).
+   #73's split scales with this band, so settle #77 first or score the two together.
+3. Then #70, #72, the rest of #78 (load time needs a CDN/brotli decision from the owner), and #81
+   (off-composition field build).
+
 ## 24 October: open PRs landed, #89 fixed, #81 faster
 
 All open PRs are merged (#83-#88). Issues closed: #71, #79, #80, #82, #89. Still open for 1.1.0:

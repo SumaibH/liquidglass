@@ -33,6 +33,11 @@ scope/API/positioning decisions, one Gradle build per worktree).
   ~50 stars; awesome-flutter and awesome-react-native need real adoption, so retry later). Not done: Show HN (HN refused
   sign-up on the owner's network), Reddit (blocked in the agent browser), X, Kotlin Slack, dev.to. Only on the owner's word.
 
+### Owner decisions, 24 Oct (act on these first; see NEXT-SESSION "PAUSED 24 October")
+
+- [ ] **#73:** make the rim fringes match iOS by default ("no need for opt ins"); scored on all five recordings.
+- [ ] **#77:** render the lens band at 0.3 / 0.6 / 1.0 / 1.1 beside iOS, adopt the one that looks closest, and record why.
+
 ### Agent work, in this order (GitHub milestone "1.1.0": #70-#73, #77-#82)
 
 No 1.0.1: the owner decided on 20 Oct to ship these together as 1.1.0 rather than release the Flutter
