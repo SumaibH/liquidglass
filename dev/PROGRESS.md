@@ -6,6 +6,12 @@ Read this first after an interruption. Detailed history lives in the
 
 ## Current state
 
+**20 October first tap after install (#71):** traced on a Pixel 7: the selector's pad followed its
+deforming body, so its layers were reallocated mid-tap and the first new size compiled a 265-286 ms GPU
+pipeline for the glass shader. `GlassPadFloor` holds the largest pad; the first tap's slowest frame is
+67-91 ms (was 326-352), cold start unchanged. The library baseline profile is removed (no measurable gain).
+[Evidence](../review/atlas/first-tap-fix-2026-10-20/README.md).
+
 **20 October Material 3 polish (#79, PR #84):** slider and range-slider tracks span the thumb's whole
 travel; they stopped half a thumb short of each end (19 dp, derived from the authored 38 dp thumb;
 `GlassSliderTrackTest` measured 19 px at density 1 before the fix, red before and green after). The
