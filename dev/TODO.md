@@ -22,7 +22,7 @@ scope/API/positioning decisions, one Gradle build per worktree).
   Settings → Pages: clear the custom domain, Save, re-enter it, Save; tick Enforce HTTPS once the
   certificate is issued. Check: `gh api repos/shayann07/liquidglass/pages --jq .https_certificate.state`
   should say `approved`.
-- [ ] Social preview: Settings → General → Social preview → upload docs/assets/social-card.png.
+- [x] Social preview: uploaded 20 Oct (docs/assets/social-card.png).
 - [x] CodeRabbit: trial ends 2 Nov 2026; the repo is public, so reviews stay free. Confirm no paid
   plan starts (coderabbit.ai → Subscription).
 - [x] (20 Oct: owner looked; ~90% satisfied, refraction too weak, see agent work. CodeRabbit: no card on file, so the trial just ends on 2 Nov; do not click "Continue to payment".) Look at the navigation selector side-by-side page (.local/review-selector/index.html, local
@@ -48,6 +48,11 @@ description fix alone.
   Verification and historical results: `review/atlas/compose-cache-field-2026-10-20/README.md`.
 - [ ] **#81 follow-up:** bounded-resolution or off-composition field preparation. Full-resolution
   EDT remains synchronous; odd-pad and field-consumer tests stay gates.
+  24 Oct: EDT ~15% faster with bit-identical output (no per-neighbour closure/bounds check, packed
+  mask read); `FieldAllocationBenchmarkTest` pixels identical. The build is still synchronous at full
+  resolution.
+- [x] **#89 Material 3 slider RTL (24 Oct).** Tracks draw from the start edge, mirrored right to left;
+  two RTL tests red before, green after; material3 22/22; review/atlas/material3-slider-rtl-2026-10-24.
 - [ ] **#78 Web demo first load: loader and on-page failures landed (itsaqeeldev, PR #85, 20 Oct); load time still open.** Measured in headless Chrome
   (tools/measure_web_demo.mjs, cold caches): 4.46 MB gzip (skiko.wasm 3.28 MB), then ~2 s per opening frame
   compiling shaders on a first visit; black page 7.6 s unthrottled, 30 s on slow 4G. Loader from first paint

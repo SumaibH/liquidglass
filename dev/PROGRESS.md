@@ -6,6 +6,15 @@ Read this first after an interruption. Detailed history lives in the
 
 ## Current state
 
+**24 October takeover of open PRs and issues:** #83, #84, #85, #86 merged (the maintainer rebased
+#84-#86, corrected #84's test counts, made #85 "Part of #78" and kept that row open, and fixed #86's
+pad floor so a fuse's neck margin is never held: `GlassPadContractTest.aFuseMarginIsNeverHeld`).
+Dependabot #87/#88 merged after checking the Gradle checksum and action SHAs. #89 (slider RTL) fixed:
+two RTL tests red before, green after, material3 22/22,
+[evidence](../review/atlas/material3-slider-rtl-2026-10-24/README.md). #81: EDT without per-neighbour
+closures; `FieldAllocationBenchmarkTest` pixels identical to the baseline, p50 ratio to the unchanged
+baseline 0.84-0.85 after vs 0.93-1.05 before (512x256, 1080x300, 1080x720; desktop JVM, n=25 each).
+
 **20 October web demo first load (#78, PR #85):** a loader replaces the black first load (shown in
 0.05-0.2 s instead of 7.6 s unthrottled / 30 s on slow 4G, headless Chrome, cold caches); Compose mounts
 in `#app`; no-Wasm-GC, failed-download/startup-error and lost-context states show on the page. Download

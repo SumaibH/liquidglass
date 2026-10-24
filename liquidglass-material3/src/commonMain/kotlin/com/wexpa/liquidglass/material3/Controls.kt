@@ -30,7 +30,10 @@ import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.drawscope.DrawScope
+import androidx.compose.ui.graphics.drawscope.scale
 import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import com.wexpa.liquidglass.CapsuleShape
 import com.wexpa.liquidglass.Glass
@@ -165,8 +168,10 @@ private fun GlassRangeTrack(state: RangeSliderState, colors: SliderColors, enabl
     Canvas(Modifier.fillMaxWidth().height(6.dp)) {
         val r = CornerRadius(size.height / 2f)
         val overhang = GlassThumbWidth.toPx() / 2f
-        drawRoundRect(inactive, Offset(-overhang, 0f), Size(size.width + 2f * overhang, size.height), r)
-        drawRoundRect(active, Offset(from * size.width, 0f), Size((to - from) * size.width, size.height), r)
+        startToEnd {
+            drawRoundRect(inactive, Offset(-overhang, 0f), Size(size.width + 2f * overhang, size.height), r)
+            drawRoundRect(active, Offset(from * size.width, 0f), Size((to - from) * size.width, size.height), r)
+        }
     }
 }
 
@@ -186,7 +191,14 @@ private fun GlassSliderTrack(state: SliderState, range: ClosedFloatingPointRange
         // Material lays the track out between the thumb's centre positions (half a thumb in from each
         // end). iOS's capsule runs under the whole thumb, so draw half a thumb past both ends.
         val overhang = GlassThumbWidth.toPx() / 2f
-        drawRoundRect(inactive, Offset(-overhang, 0f), Size(size.width + 2f * overhang, size.height), r)
-        drawRoundRect(active, Offset(-overhang, 0f), Size(overhang + fraction * size.width, size.height), r)
+        startToEnd {
+            drawRoundRect(inactive, Offset(-overhang, 0f), Size(size.width + 2f * overhang, size.height), r)
+            drawRoundRect(active, Offset(-overhang, 0f), Size(overhang + fraction * size.width, size.height), r)
+        }
     }
+}
+
+/** Draws [block] from the start edge: mirrored right to left, where Material places the thumbs from the right (#89). */
+private inline fun DrawScope.startToEnd(block: DrawScope.() -> Unit) {
+    if (layoutDirection == LayoutDirection.Rtl) scale(-1f, 1f) { block() } else block()
 }

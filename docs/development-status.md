@@ -5,6 +5,14 @@ Full iOS parity is not established: the measured differences are open as issues 
 accepted the navigation selector on 20 October. Historical
 research remains available; this page identifies which later changes supersede its implementation.
 
+## Main after 1.0 (24 October)
+
+- Material 3 sliders mirror right to left: the fill now grows from the right edge to the thumb, and the
+  range fill sits between the mirrored thumbs (#89). Desktop renders before and after:
+  [evidence](https://github.com/shayann07/liquidglass/blob/main/review/atlas/material3-slider-rtl-2026-10-24/README.md).
+- Custom-path field builds are about 15% faster on the desktop JVM, with bit-identical fields (paired
+  run of `tools/benchmarks/pathfield`); the bounded-resolution / off-composition build in #81 is still open.
+
 ## Web demo first load (20 October, #78)
 
 - The demo showed a black page for 7.6 s unthrottled and 30 s on slow 4G on a first visit (a 4.46 MB gzip

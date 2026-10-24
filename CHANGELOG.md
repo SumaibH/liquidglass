@@ -6,6 +6,12 @@ A version heading means that version is published; anything above the newest one
 Flutter: `liquiglass` 1.0.0 is on pub.dev (<https://pub.dev/packages/liquiglass>), uploaded by hand on
 20 October; later tags publish it from the release workflow.
 
+- Material 3: `Slider` and `RangeSlider` fills follow the thumbs right to left; the track was drawn
+  unmirrored, so in RTL layouts the fill grew from the left edge, away from the thumb (#89).
+  [Evidence](review/atlas/material3-slider-rtl-2026-10-24/README.md).
+- Custom-path fields build about 15% faster (paired desktop JVM benchmark, phone-width and larger
+  panels), with bit-identical output: the distance transform no longer calls a closure with a bounds
+  check per neighbour, and the mask is read from packed pixels instead of a `Color` per pixel (#81).
 - Compose: release nested-theme recording views when their last consumer changes settings,
   leaves composition or is abandoned; shared active consumers keep receiving backdrop updates (#80).
 - Skip custom-path field generation without shaders and reuse bounded distance-transform scratch

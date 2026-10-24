@@ -14,12 +14,14 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.PixelMap
 import androidx.compose.ui.graphics.toPixelMap
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.test.ExperimentalTestApi
 import androidx.compose.ui.test.captureToImage
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.runDesktopComposeUiTest
 import androidx.compose.ui.unit.Density
+import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -38,11 +40,11 @@ class GlassSliderTrackTest {
     private val colors @Composable get() = SliderDefaults.colors(activeTrackColor = Color.Red, inactiveTrackColor = Color.Blue)
 
     /** [content] 300 dp wide on black at density 1, captured. */
-    private fun track(content: @Composable () -> Unit): PixelMap {
+    private fun track(direction: LayoutDirection = LayoutDirection.Ltr, content: @Composable () -> Unit): PixelMap {
         lateinit var pixels: PixelMap
         runDesktopComposeUiTest(400, 120, testTimeout = 2.minutes) {
             setContent {
-                CompositionLocalProvider(LocalDensity provides Density(1f)) {
+                CompositionLocalProvider(LocalDensity provides Density(1f), LocalLayoutDirection provides direction) {
                     MaterialTheme(colorScheme = lightColorScheme()) {
                         Box(Modifier.background(Color.Black).padding(40.dp)) {
                             Box(Modifier.width(300.dp).testTag("slider")) { content() }
@@ -116,5 +118,31 @@ class GlassSliderTrackTest {
         val (left, right) = travel / 4 + 38 to travel * 3 / 4
         assertTrue(active.first <= left + 3 && active.last >= right - 3,
             "the fill $active does not reach both thumbs (expected about $left..$right)")
+    }
+
+    /**
+     * Right to left (#89): Material places the thumb from the right, so the fill must grow from the
+     * right too. At 0.25 the fill is the right quarter of the travel and the track runs to both ends.
+     */
+    @Test fun rightToLeftTheFillGrowsFromTheRight() {
+        val pixels = track(LayoutDirection.Rtl) { Slider(value = .25f, onValueChange = {}, colors = colors) }
+        val active = pixels.span { it.isRed() }
+        val inactive = pixels.span { it.isBlue() }
+        assertTrue(active.last >= pixels.width - 3, "the fill ends ${pixels.width - 1 - active.last} px short of the slider's right edge")
+        val travel = pixels.width - 38
+        val thumbLeft = pixels.width - 19 - travel / 4 - 19
+        assertTrue(active.first >= thumbLeft - 3, "the fill starts at ${active.first}, left of the thumb at about $thumbLeft")
+        assertTrue(inactive.first <= 2, "the track starts ${inactive.first} px in, not at the slider's left edge")
+    }
+
+    /** Right to left, the range fill sits between the mirrored thumbs. */
+    @Test fun rightToLeftTheRangeFillIsMirrored() {
+        val pixels = track(LayoutDirection.Rtl) { RangeSlider(value = .1f..(.4f), onValueChange = {}, colors = colors) }
+        val active = pixels.span { it.isRed() }
+        val travel = pixels.width - 38
+        // Thumbs at 0.1 and 0.4 from the right; their centres are 19 + 0.1/0.4 x travel from the right edge.
+        val (left, right) = pixels.width - 19 - (travel * .4f).toInt() to pixels.width - 19 - (travel * .1f).toInt()
+        assertTrue(active.first >= left - 3 - 19 && active.last <= right + 3 + 19 && active.last > pixels.width / 2,
+            "the fill $active is not between the mirrored thumbs (about $left..$right)")
     }
 }
