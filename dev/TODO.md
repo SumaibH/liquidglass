@@ -73,6 +73,12 @@ description fix alone.
   backdrop under the pill/lens is bent at the rim and across the body) in the recordings vs our
   replay, with a scorer beside levels.py; report the gap per recording; then ask the owner. Any
   change is opt-in or scored against all five recordings, never a silent re-fit.
+  **Measured 24 Oct** (review/atlas/refraction-gap-2026-10-24, scorer tools/reference-replay/refraction.py):
+  at the held lens's rim iOS pulls the bar's edge +10.9 px toward the lens centre, ours -2.2 px (gap ~13 px
+  on docs/2, IMG_6756, LOLL8185; +9.7 on JGEY2190; docs/1 has no held lens); body magnification matches
+  within 0.04; transit pill 1.10-1.14 vs 1.16-1.21. Cause: Calm lens `bodyBandScale` 0.3 (authored).
+  Replay-only candidates on IMG_6756: 0.6 -> +3.8, 1.0 -> +9.8. Next: owner decides on an opt-in band
+  ~1.0-1.1, then score all five plus levels.py and judge the bar's end cap ("two glasses" risk).
 - [x] **#71 first-tap hitch (itsaqeeldev, 20 Oct).** Traced: the selector's pad followed its deforming
   body, its layers were reallocated mid-tap (756x505 -> 748x497 -> 740x489) and the first new size compiled
   a 265-286 ms Vulkan pipeline for the glass shader. GlassPadFloor holds the largest pad: first-tap slowest
