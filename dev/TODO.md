@@ -91,7 +91,13 @@ description fix alone.
 - [ ] **#72 held lens over page content reads 5 levels below iOS (docs/2).** On black pages it is
   -0.1 / +1, so it is content-dependent. Score with levels.py; same rules.
 - [ ] **#73 score the rim's chromatic fringes and timing** instead of judging by eye: add a scorer
-  next to levels.py, then decide with the owner whether any change is needed.
+  next to levels.py, then decide with the owner whether any change is needed. **Scored 24 Oct**
+  (`tools/measure_rim_fringe.py` = `.local/sxs/fringe.py`; review/atlas/rim-fringe-score-2026-10-24):
+  iOS's fringes are 30 to more than 100x ours (peak E per touch ours/iOS 0.00-0.03 on all five); iOS's grow 5-30x with
+  speed, peak at a held gesture's lift and fade +110-120 ms after it; ours are flat and too faint to time
+  except on docs/2 (same shape). Split is authored 0.05 of the band (GlassTabBar.kt:2235, :2089).
+  Next: owner decides; an opt-in candidate (style field for the constant, travel gain, split in px) is
+  described in the record, nothing applied.
 
 ### Help wanted (needs hardware this machine does not have; keep the issues current)
 

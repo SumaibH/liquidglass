@@ -6,6 +6,14 @@ Read this first after an interruption. Detailed history lives in the
 
 ## Current state
 
+**24 October #73 rim fringe score (measurement only):** new scorer
+`tools/measure_rim_fringe.py` (private twin `.local/sxs/fringe.py`) counts off-ink chromatic pixels in the bar per
+frame, iOS (HDR10 decoded) against the replay of the same inferred input, with page/badge hues excluded, a
+4:2:0 codec control and a threshold sweep. All five recordings: iOS fringed in 22-90 % of frames, ours in 0-3 %;
+peak E per touch ours/iOS 0.00-0.03; iOS grows 5-30x with speed, peaks at lift, fades +110-120 ms. docs/1, docs/2
+re-rendered at `dc79d5b` (pixel-identical to p20); the other three use p20 (the JVM ran out of commit memory while
+other builds ran). No optic changed. Record: `review/atlas/rim-fringe-score-2026-10-24/README.md`.
+
 **24 October takeover of open PRs and issues:** #83, #84, #85, #86 merged (the maintainer rebased
 #84-#86, corrected #84's test counts, made #85 "Part of #78" and kept that row open, and fixed #86's
 pad floor so a fuse's neck margin is never held: `GlassPadContractTest.aFuseMarginIsNeverHeld`).

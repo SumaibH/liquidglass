@@ -5,9 +5,18 @@
 All open PRs are merged (#83-#88). Issues closed: #71, #79, #80, #82, #89. Still open for 1.1.0:
 #78 (load time: transfer, first-visit shader compile, never-renders cause), #81 (bounded-resolution or
 off-composition field build; this session made the EDT ~15% faster, bit-identical), #70, #72, #73, #77.
-Measurement-only branches for #77 (refraction gap) and #73 (rim fringe scorer) were started in local
-worktrees `.claude/worktrees/refraction-77` and `fringe-73`; check them before redoing that work.
+#77 and #73 are measured (records below and in review/atlas/refraction-gap-2026-10-24 and
+rim-fringe-score-2026-10-24); both wait on the owner's decision about an opt-in candidate.
 The #86 fuse follow-up was not re-measured on the Pixel 7 (not connected); the tap path is unchanged by it.
+
+## #73 rim fringe score (24 October, measurement only)
+
+Scorer `tools/measure_rim_fringe.py` (= `.local/sxs/fringe.py`), record
+`review/atlas/rim-fringe-score-2026-10-24/README.md`. iOS fringes are 30 to more than 100x ours on all five recordings,
+grow with speed, peak at lift and fade +110-120 ms; ours near absent. Nothing changed in the library.
+Resume: the owner decides whether to try the opt-in candidate described in the record; if yes, render a
+sweep with rrw.sh and score each with the tool on all five (re-render IMG_6756/JGEY2190/LOLL8185 when memory allows;
+they used p20, pixel-identical on docs/1 and docs/2).
 
 ## Compose cache/field fixes and PR #83 review follow-up (20 October)
 

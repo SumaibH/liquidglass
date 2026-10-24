@@ -1058,7 +1058,9 @@ before (left) and with `capFold` 1 (right).*
   0.3 is kept; the 9.9 s landing passes its rest by
   36.5 px against 41; the left width series' first frames narrow up to 11.2 px less; the 28.66 s
   landing is an input artefact (source frame gap).
-- Cap swirl (pass 9, fringes pass 11): comparable petals and fringes, judged by eye.
+- Cap swirl (pass 9, fringes pass 11): comparable petals, judged by eye. The fringes were scored on 24 October
+  ([rim fringe score](../rim-fringe-score-2026-10-24/README.md), #73): iOS's are 30 to more than 100 times ours on all five
+  recordings, grow with speed and fade 110-120 ms after a lift; ours are near absent. Not changed.
 - Neck timing (pass 11): median 0 ms; 34.8 s 100 ms late (bar and lens disagree on its lift).
 - The rebuilt reversal input and the full video 2 script (`v2-script.txt`) are inferred; the
   per-episode lag numbers above are relative to that inference.
