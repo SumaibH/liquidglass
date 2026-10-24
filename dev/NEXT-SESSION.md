@@ -18,6 +18,13 @@ The owner paused here (usage limit). Resume with these, in order:
    the fuse with the search button, where "two glasses" appeared on 18 Oct). Pick the closest, make it
    the default, and record the comparison and the reason (scorer: tools/reference-replay/refraction.py).
    #73's split scales with this band, so settle #77 first or score the two together.
+   **Progress 24 Oct (second pause):** candidate replays are rendered (local, private):
+   `.local/sxs/ref/<name>/r77-lband{06,1,11}` for IMG_6756, docs2, LOLL8185 and JGEY2190 (JGEY2190 1.1
+   may be incomplete: check its frame count against 2882). Baseline 0.3 is `p20`, except docs2, whose
+   candidates used `ref/docs2/script3.txt` rather than p20's `v2-script.txt`: render a docs2 0.3 baseline
+   from script3 (`calm`) before comparing. Render with ABSOLUTE script/out paths (relative ones fail).
+   Next: contact sheets iOS vs 0.3/0.6/1.0/1.1 at held, moving, end-cap and fuse moments; refraction.py
+   on each; pick; change `bodyBandScale` at GlassTabBar.kt ~1671/1707; full suite; evidence.
 3. Then #70, #72, the rest of #78 (load time needs a CDN/brotli decision from the owner), and #81
    (off-composition field build).
 
