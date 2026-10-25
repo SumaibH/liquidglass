@@ -28,6 +28,16 @@ The owner paused here (usage limit). Resume with these, in order:
 3. Then #70, #72, the rest of #78 (load time needs a CDN/brotli decision from the owner), and #81
    (off-composition field build).
 
+## #78 web demo preload (24 October, cloud session, PR)
+
+Both `.wasm` files are preloaded from the page head (only where WebAssembly GC validates); the build
+writes their hashed names into index.html. Skia ready (`context` mark) 4603 → 4262 ms fast 4G, 23635 →
+23283 ms slow 4G, 562 → 511 ms unthrottled (noise); software-GL Chromium in a container, 5 cold runs.
+The five loader states behave as before. Next, on a machine with a GPU: run
+`node tools/measure_web_demo.mjs <dist>#material3 3` (Chrome, no MEASURE_UNTIL) for `ready`, then try a
+shader warm-up only if it moves `ready`. Brotli/CDN needs the owner. Record:
+review/atlas/web-demo-load-2026-10-24/README.md.
+
 ## #81 off-composition field build (24 October, cloud session, PR)
 
 Size-only changes to a custom-path panel build the field on `Dispatchers.Default`; the previous field
