@@ -2238,12 +2238,15 @@ internal fun glassSelectorMaterial(style: GlassTabBarStyle, formation: Float, tr
     val foldCorners = fringe?.getOrNull(2) ?: GlassSelectorTransitFoldCorners
     val rimMirror = fringe?.getOrNull(3) ?: GlassSelectorRimMirror
     val rimGain = fringe?.getOrNull(4) ?: GlassSelectorRimGain
+    val transitSoft = fringe?.getOrNull(5) ?: GlassSelectorTransitRimSoft
+    val heldMoving = fringe?.getOrNull(6) ?: GlassSelectorHeldFringeMoving
     return if (glassSelectorFold(style, formation, transitAppearance) > 0f)
-        material.copy(profile = GlassProfile.Measured, foldAtCorners = foldCorners, rimMirror = rimMirror, rimMirrorGain = rimGain, dispersion = moving, inkDispersion = moving)
+        material.copy(profile = GlassProfile.Measured, foldAtCorners = foldCorners, rimMirror = rimMirror, rimMirrorGain = rimGain, dispersion = moving, inkDispersion = moving,
+            rimSoftness = if (transitSoft > 0f) transitSoft.dp else material.rimSoftness)
     // A held lens keeps the measured held map when still and blends toward the same rim mirror
     // at its caps as it travels ([glassSelectorFormation] carries the travel amount).
     else if (style.tapOpticsFold > 0f && formation >= 0.5f) {
-        val split = still + (moving - still) * heldTravel.coerceIn(0f, 1f)
+        val split = still + (heldMoving - still) * heldTravel.coerceIn(0f, 1f)
         material.copy(foldAtCorners = 1f, rimMirror = rimMirror, rimMirrorGain = rimGain, dispersion = split, inkDispersion = split * GlassSelectorInkSplitShare)
     }
     else material
@@ -2261,6 +2264,10 @@ internal const val GlassCalmLensBand = 1.1f
 /** The rim split of a still held lens (#73, 26 October 0.08, was 0.05): with the split proportional to the
  * shift (GlassShaderSource) and the spectral rim, against IMG_6756 35.5 / 43.8 s by eye. Authored. */
 internal const val GlassSelectorRimDispersion = 0.08f
+/** A held lens's rim split at full travel (#94): a long held drag fringed 0.2-0.6x iOS's at the tap value. */
+internal const val GlassSelectorHeldFringeMoving = 0.14f
+/** Smear of a tap's stretched rim in transit, dp; 0 keeps the lens's own (#94). */
+internal const val GlassSelectorTransitRimSoft = 0f
 /** The share of the rim split the selected ink takes: iOS's ink stays clean inside a held lens; the full
  * split drew a dark ring round each icon (LOLL8185 22.2 s, 26 October). Authored. */
 internal const val GlassSelectorInkSplitShare = 0.3f
