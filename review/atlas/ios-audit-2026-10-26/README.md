@@ -21,11 +21,11 @@ GitHub issues group these by area (see the end).
 
 ## A. Held lens, still (optics)
 
-1. **H, S** Rim colour fringes: iOS shows saturated rainbow fringes (red/green/blue, 2-6 px) along the held lens's top and bottom rims at rest; ours shows none. Fringe scorer: iOS fringed 22-90 % of frames, ours 0-3 % (#73).
-2. **H, S** Rim refraction strength: iOS pulls the bar's straight edge ~+11 px toward the lens centre; ours -2.2 px at band 0.3 (#77). Band 1.1 reaches +9.8-+11 but see 3-5.
-3. **H, E** Rim refraction *shape*: iOS bends the bar's edge into a curve that meets the lens rim at both ends (a crescent following the capsule); ours keeps it a straight horizontal line across the whole lens, at every band tried (IMG_6756 35.5 s, 43.8 s; LOLL8185 24.3 s).
-4. **H, E** With the band at 1.0-1.1, content near the rim (labels, icons) breaks into displaced fragments over content pages ("Contac" + "ts", Pixel 7, 26 Oct); iOS compresses and curls it smoothly along the rim. The band alone cannot be the fix.
-5. **M, E** The dark band inside ours at band 1.1 reads as a flat slab at the bottom; iOS's is a thin curved crescent, thicker at the top than at the bottom (IMG_6756 35.5 s).
+1. **H, S** **[done 26 Oct, see fringe-refraction-2026-10-26]** Rim colour fringes: iOS shows saturated rainbow fringes (red/green/blue, 2-6 px) along the held lens's top and bottom rims at rest; ours shows none. Fringe scorer: iOS fringed 22-90 % of frames, ours 0-3 % (#73).
+2. **H, S** **[done 26 Oct, see fringe-refraction-2026-10-26]** Rim refraction strength: iOS pulls the bar's straight edge ~+11 px toward the lens centre; ours -2.2 px at band 0.3 (#77). Band 1.1 reaches +9.8-+11 but see 3-5.
+3. **H, E** **[done 26 Oct, see fringe-refraction-2026-10-26]** Rim refraction *shape*: iOS bends the bar's edge into a curve that meets the lens rim at both ends (a crescent following the capsule); ours keeps it a straight horizontal line across the whole lens, at every band tried (IMG_6756 35.5 s, 43.8 s; LOLL8185 24.3 s).
+4. **H, E** **[done 26 Oct, see fringe-refraction-2026-10-26]** With the band at 1.0-1.1, content near the rim (labels, icons) breaks into displaced fragments over content pages ("Contac" + "ts", Pixel 7, 26 Oct); iOS compresses and curls it smoothly along the rim. The band alone cannot be the fix.
+5. **M, E** **[done 26 Oct, see fringe-refraction-2026-10-26]** The dark band inside ours at band 1.1 reads as a flat slab at the bottom; iOS's is a thin curved crescent, thicker at the top than at the bottom (IMG_6756 35.5 s).
 6. **H, E** Rim outline: iOS draws a thin, crisp, dark outline with a brighter inner line; ours is a soft grey ring 2-3x wider and lower in contrast.
 7. **M, E** Rim specular: iOS's lens catches a bright highlight along its upper-left and lower-right rim; ours has no directional highlight.
 8. **M, S** Bar growth while held: iOS's bar grows 4-13 px taller when a lens is held, so the lens overhangs it less at the bottom; ours does not grow, the lens hangs 1-3 px deeper (refraction record h 13.7 vs 12.3 px).
@@ -37,7 +37,7 @@ GitHub issues group these by area (see the end).
 
 ## B. Held lens, moving (drag)
 
-14. **H, S** Fringes do not grow with speed: iOS's fringe energy rises 5-30x from still to fast; ours stays flat (fringe scorer, all five recordings).
+14. **H, S** **[done 26 Oct, see fringe-refraction-2026-10-26]** Fringes do not grow with speed: iOS's fringe energy rises 5-30x from still to fast; ours stays flat (fringe scorer, all five recordings).
 15. **H, E** Mirror swirl inside a moving lens: iOS mirrors the neighbouring icon into the lens's leading cap as a smooth curl with colour (LOLL8185 26.5 s, docs/2 8.6 s); ours draws a hard-edged blue blob and cuts labels ("Corτacs", "C...s", LOLL8185 22.2 s; docs/2 8.6 s), worse at band 1.1.
 16. **M, E** Labels inside a moving lens: iOS keeps the label legible and bends its ends along the bottom rim; ours clips or squashes it at the bottom rim.
 17. **M, E** Lens formation onset in a drag-from-rest: iOS's lens is fully formed and moving 0.2 s after touch-down (LOLL8185 21.3 s); ours is still a pill at the start position at the same moment.
@@ -48,9 +48,9 @@ GitHub issues group these by area (see the end).
 
 ## C. Tap (pill in transit)
 
-22. **H, S** Transit fringes: iOS's travelling pill shows large rainbow streaks on its top and bottom rims and over the ink; ours peaks at 0.09 of iOS's fringe energy (docs/1 at band 1.1; 0.02 at 0.3).
+22. **H, S** **[done 26 Oct, see fringe-refraction-2026-10-26]** Transit fringes: iOS's travelling pill shows large rainbow streaks on its top and bottom rims and over the ink; ours peaks at 0.09 of iOS's fringe energy (docs/1 at band 1.1; 0.02 at 0.3).
 23. **H, E** Ink smear in transit: iOS stretches the destination's ink upward into "flames" along the top rim and streaks the label at the bottom (docs/1 1.00-1.12 s); ours barely deforms it.
-24. **H, E** Label clipping in transit: ours cuts the label at the pill's bottom rim ("Keypad" shown half height, docs/1 0.95-1.05 s); iOS's label stays whole.
+24. **H, E** **[done 26 Oct, see fringe-refraction-2026-10-26]** Label clipping in transit: ours cuts the label at the pill's bottom rim ("Keypad" shown half height, docs/1 0.95-1.05 s); iOS's label stays whole.
 25. **M, S** Plateau ends early: iOS's pill holds level 53 to ~183 ms after the ink leaves, ours drops from ~120 ms (47 at 150 ms, 42 at 183 ms; #70).
 26. **M, E** Transit shape: iOS's pill bulges into an oval mid-flight (docs/1 0.95 s); ours stays capsule-shaped.
 27. **M, E** Source tab during transit: iOS's leaving ink keeps colour and is mirrored inside the pill's trailing cap; ours shows a partial cut glyph.
@@ -152,9 +152,9 @@ GitHub issues group these by area (see the end).
 
 ## N. Our own inconsistencies found while comparing
 
-93. **H, E** The lens band, the rim mirror and the dispersion are tuned per state (fold vs held vs transit) with separate constants; the transitions between them are visible as a jump in fringe and refraction when formation crosses 0.5.
-94. **M, E** At band 1.1 the transit pill inherits the wider band through `GlassMorph` and clips labels more (items 15, 24).
-95. **M, E** `GlassSelectorRimDispersion` is never applied to taps (tap material takes the lens's dispersion through the formation lerp), so the transit fringe cannot be tuned independently.
+93. **H, E** **[done 26 Oct, see fringe-refraction-2026-10-26]** The lens band, the rim mirror and the dispersion are tuned per state (fold vs held vs transit) with separate constants; the transitions between them are visible as a jump in fringe and refraction when formation crosses 0.5.
+94. **M, E** **[done 26 Oct, see fringe-refraction-2026-10-26]** At band 1.1 the transit pill inherits the wider band through `GlassMorph` and clips labels more (items 15, 24).
+95. **M, E** **[done 26 Oct, see fringe-refraction-2026-10-26]** `GlassSelectorRimDispersion` is never applied to taps (tap material takes the lens's dispersion through the formation lerp), so the transit fringe cannot be tuned independently.
 96. **M, E** Diagnostics: the replay trace (`trace.csv`) does not log transit appearance or held travel, so tap and fringe timing cannot be read from our side.
 97. **L, E** The light preset's lens band was changed together with dark (1.1) without a light score.
 98. **L, E** Replays of IMG_6756/JGEY2190/LOLL8185 use `script3` and docs/2 two different scripts (`v2-script.txt`, `script3.txt`); baselines must be re-rendered per script.

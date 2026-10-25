@@ -91,10 +91,12 @@ Six notes from a check on a phone, each compared with the iOS recordings and cha
 - **Icons on a tap.** iOS's tab icons do not move on a tap (an icon the lens does not cross holds within
   0.1 px) and follow the bar's growth on a hold (14 px out, 4% larger). Calm now does both
   (`itemsFollowBarPress = false`); before, every tap slid the icons 7 px and back.
-- **Tap travel.** A tapped selector travels with the held lens's optics (`tapTransitFold = 0`), so a tap
-  looks like a short throw: a clear lens that bends the ink only at its rim and lands clean.
-- **Two glasses.** The held lens no longer shows the bar's outline inside it as a second capsule: its rim
-  band is 0.3 of the body's own (`GlassStyle.bodyBandScale`), so the bar fills it nearly to the rim.
+- **Tap travel.** A tapped selector stretches the ink it carries into its rim in transit, as iOS's does
+  (since 26 October: a narrow stretch, rim mirror 0.3 and gain 0.15, that clears before landing).
+- **Two glasses.** The held lens's refraction band is the body's own (`GlassStyle.bodyBandScale` 1.1 since
+  26 October; it was 0.3) and its map has no seam, so the bar's edge bends into the rim as a crescent instead of
+  showing as a second capsule. The rim splits colour in proportion to the shift and carries a thin spectral
+  line, both growing with motion ([evidence](https://github.com/shayann07/liquidglass/blob/main/review/atlas/fringe-refraction-2026-10-26/README.md)).
 - **The search button.** It follows a held swipe at 0.2 of the finger's travel (was 0.35).
 - **The lens at the search end.** A held lens there joins the button through a neck
   (`GlassTabBarAccessory.lensFusion`), as iOS's does, instead of stopping short of it.

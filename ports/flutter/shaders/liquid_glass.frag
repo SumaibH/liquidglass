@@ -592,6 +592,12 @@ float heldSourceContinuous(float u) {
     return u + w * (0.3 * u - 0.29);
 }
 
+// EXPERIMENT (#77 / #92): the held material map without the seam at float the band.
+float heldSourceSmooth(float u) {
+    float w = 1.0 - smoothstep(0.25, 0.75, u);
+    return u + w * (0.3 * u - 0.29);
+}
+
 
 // The lens of chrome at rest, at the curved parts of an outline only (FINDINGS 18): the shipping map. A
 // pixel at depth u = d/W inside a rounded end shows the ring 0.55 W (0.33 R) inside, the same ring for the
@@ -946,7 +952,7 @@ vec4 glassMain(vec2 coord) {
         // The fold family, or the held-lens family blended from identity (GlassProfile.Held).
         float heldFamily = step(1.5, uProfile);
         float held = heldFamily * clamp(uHeldLens, 0.0, 1.0);
-        float src = mix(measuredSource(u, uFormation * mix(1.0, corner, clamp(uFoldCorners, 0.0, 1.0)), corner), mix(u, heldMirror(u, heldSource(u), corner), held), heldFamily);
+        float src = mix(measuredSource(u, uFormation * mix(1.0, corner, clamp(uFoldCorners, 0.0, 1.0)), corner), mix(u, heldMirror(u, heldSourceSmooth(u), corner), held), heldFamily);
         // GlassStyle.capFold (uFoldCorners above 1): the rounded ends of a resting bar lens what lies
         // beyond them, as the held lens does, while its straight runs keep the rest offset.
         float capLens = clamp(uFoldCorners - 1.0, 0.0, 1.0) * corner * (1.0 - heldFamily);
@@ -961,6 +967,10 @@ vec4 glassMain(vec2 coord) {
         float mirrorZone = mix(rimZone(u) * clamp(uFormation, 0.0, 1.0) * foldMask,
             (1.0 - smoothstep(0.45, 0.55, u)) * held, heldFamily);
         float delta = uAberration * W * 0.5 * mirrorZone * mat;
+        // The held lens splits in proportion to how far it moves each point (#73): a bright line
+        // pulled 11 px in shows red on its outer side and blue on its inner, ~10 px apart on
+        // IMG_6756 35.5 s. Four uAberration per unit of shift, so the selector's 0.12 is ±0.48.
+        delta = mix(delta, uAberration * 4.0 * abs(shift) * held * mat, heldFamily);
         push = -n * shift;
         // The fold shows red the deeper content; the held lens shows blue the deeper content,
         // so blue's copy of the pulled-in edge lands outermost (FINDINGS 19).
@@ -1213,6 +1223,21 @@ vec4 glassMain(vec2 coord) {
         // Two pixels wide, as the reference's: the outermost one is partly covered.
         float line = smoothstep(3.0, 1.5, depth) * heldAmt * mat;
         col = mix(col, vec3(float(uHeldEdgeTone)), float(0.9 * line));
+    }
+    // The held lens's spectral rim (#73): iOS's lens rim carries a thin rainbow whose hue sweeps
+    // along the outline (green, red, orange, yellow, then green, cyan, blue across a lens; chroma
+    // 40-80 in the outermost 2-4 px, top and bottom, IMG_6756 35.5 / 43.8 s). Authored as a hue
+    // ramp over position, scaled by the split (uAberration) so it grows with motion as the
+    // colour split does.
+    if (heldAmt > 0.0 && uAberration > 0.0) {
+        float rimBand = smoothstep(0.5, 1.5, depth) * (1.0 - smoothstep(3.0, 5.0, depth));
+        float hue = fract(0.35 + 0.55 * p.x / max(halfSize.x, 1.0) + 0.15 * sign(p.y));
+        vec3 spectrum = vec3(clamp(abs(hue * 6.0 - 3.0) - 1.0, 0.0, 1.0),
+                               clamp(2.0 - abs(hue * 6.0 - 2.0), 0.0, 1.0),
+                               clamp(2.0 - abs(hue * 6.0 - 4.0), 0.0, 1.0));
+        float amount = clamp(uAberration * 1.6, 0.0, 0.35) * rimBand * n.y * n.y * heldAmt * mat;
+        vec3 mean = vec3(dot(col, vec3(1.0 / 3.0)));
+        col = mix(col, mean + (spectrum - vec3(0.5)) * float(0.9), float(amount));
     }
 
     // Illumination from within, under the fingertip. A sixth of a stop at the peak: measured

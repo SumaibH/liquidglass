@@ -35,8 +35,9 @@ scope/API/positioning decisions, one Gradle build per worktree).
 
 ### Owner decisions, 24 Oct (act on these first; see NEXT-SESSION "PAUSED 24 October")
 
-- [ ] **#73:** make the rim fringes match iOS by default ("no need for opt ins"); scored on all five recordings.
-- [ ] **#77:** render the lens band at 0.3 / 0.6 / 1.0 / 1.1 beside iOS, adopt the one that looks closest, and record why.
+- [x] **#73 (26 Oct):** fringes by default: split proportional to shift, spectral rim, transit stretch; 0.9-1.4x iOS on four recordings, LOLL8185 0.2-0.6x (follow-up in #94). review/atlas/fringe-refraction-2026-10-26.
+- [x] **#77 (26 Oct):** band 1.1 plus a seamless held map; rim pull +10.8 vs +10.9 px; owner's device check found the seam (not the band) caused the break-up. Same record.
+- [ ] **Audit #92-#104** (review/atlas/ios-audit-2026-10-26): 102 items; work them by severity.
 
 ### Agent work, in this order (GitHub milestone "1.1.0": #70-#73, #77-#82)
 

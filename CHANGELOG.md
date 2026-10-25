@@ -6,6 +6,15 @@ A version heading means that version is published; anything above the newest one
 Flutter: `liquiglass` 1.0.0 is on pub.dev (<https://pub.dev/packages/liquiglass>), uploaded by hand on
 20 October; later tags publish it from the release workflow.
 
+- Tab bar (Calm): the held lens refracts and fringes like iOS's. Its rim band is back to the body's own
+  (1.1, was 0.3) and its map has no seam at half the band, so the bar's edge bends into the rim as a
+  crescent instead of a straight second outline, and content near the rim no longer breaks apart. The
+  colour split follows the shift, a thin spectral rim runs along the outline, and both grow with motion.
+  A tapped selector stretches its ink into the rim in transit again (a narrow stretch, not the full-band
+  mirror). Fringe energy per touch is 0.9-1.4x iOS's on four of five recordings (was 0.01-0.03x)
+  (#73, #77, #92, #94). [Evidence](review/atlas/fringe-refraction-2026-10-26/README.md).
+- An [iOS parity audit](review/atlas/ios-audit-2026-10-26/README.md) lists 102 remaining differences by
+  state, filed as #92-#104.
 - Custom-path fields: a change of size alone is now built off composition, on
   `Dispatchers.Default`, and the panel keeps its previous field until the new one is ready; resizes
   during a build are conflated to the latest and a pending build is dropped when the panel leaves. The

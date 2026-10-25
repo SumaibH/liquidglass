@@ -1684,10 +1684,17 @@ object LiquidGlassDiagnostics {
     /** When true, the panel shader outputs flat magenta times its coverage. */
     var coverageOnly: Boolean = false
 
-    /** Back to the production defaults: no pad override, no coverage-only rendering. */
+    /**
+     * When set, the Calm selector's rim split (still, moving) and transit fold confinement (third value) in place of the production values, for
+     * fitting it by replay against the recordings; null in production.
+     */
+    var selectorFringe: FloatArray? = null
+
+    /** Back to the production defaults: no pad override, no coverage-only rendering, no split override. */
     fun reset() {
         recordPadOverridePx = null
         coverageOnly = false
+        selectorFringe = null
     }
 
     /** Runs [block] with these settings and resets them afterwards, whatever [block] does. */

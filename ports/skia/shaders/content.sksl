@@ -345,6 +345,12 @@ float heldSourceContinuous(float u) {
     return u + w * (0.3 * u - 0.29);
 }
 
+// EXPERIMENT (#77 / #92): the held material map without the seam at half the band.
+float heldSourceSmooth(float u) {
+    float w = 1.0 - smoothstep(0.25, 0.75, u);
+    return u + w * (0.3 * u - 0.29);
+}
+
 
 // The lens of chrome at rest, at the curved parts of an outline only (FINDINGS 18): the shipping map. A
 // pixel at depth u = d/W inside a rounded end shows the ring 0.55 W (0.33 R) inside, the same ring for the

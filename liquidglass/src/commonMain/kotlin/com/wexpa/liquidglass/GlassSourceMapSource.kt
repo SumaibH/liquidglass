@@ -49,6 +49,12 @@ float heldSourceContinuous(float u) {
     return u + w * (0.3 * u - 0.29);
 }
 
+// EXPERIMENT (#77 / #92): the held material map without the seam at half the band.
+float heldSourceSmooth(float u) {
+    float w = 1.0 - smoothstep(0.25, 0.75, u);
+    return u + w * (0.3 * u - 0.29);
+}
+
 $GLASS_REST_SOURCE_SKSL
 
 // Whether a point's nearest bit of outline is a corner arc (1) or a straight run (0), with a

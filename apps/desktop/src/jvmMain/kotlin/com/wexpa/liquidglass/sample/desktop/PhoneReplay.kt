@@ -57,6 +57,9 @@ private fun replay(args: Array<String>) {
     val script = File(args[0])
     val out = File(args[1]).apply { mkdirs() }
     val variant = args.getOrElse(2) { "calm" }
+    // "+fringe=<still>,<moving>": the Calm selector's rim split, for fitting by replay (#73).
+    variant.substringAfter("+fringe=", "").substringBefore('+').split(',').mapNotNull { it.toFloatOrNull() }
+        .takeIf { it.size >= 2 }?.let { @OptIn(com.wexpa.liquidglass.LiquidGlassDiagnosticApi::class) run { com.wexpa.liquidglass.LiquidGlassDiagnostics.selectorFringe = it.toFloatArray() } }
     val events = script.readLines().map { it.trim() }.filter { it.isNotEmpty() && !it.startsWith("#") }
         .map { it.split(Regex("\\s+")) }
     val end = events.first { it[0] == "end" }[1].toDouble()

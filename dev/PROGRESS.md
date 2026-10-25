@@ -6,6 +6,12 @@ Read this first after an interruption. Detailed history lives in the
 
 ## Current state
 
+**26 October refraction and fringes (#73 #77 #92 #94):** audit of 102 differences filed as #92-#104; then
+the held lens: band 1.1, seamless held map (`heldSourceSmooth`), split proportional to the shift, spectral rim,
+selector split 0.08/0.14 (ink 0.3), transit stretch (mirror 0.3, gain 0.15, corners 0.2, fold back on). Rim pull
++10.8 vs iOS +10.9 px (was -2.2); fringe energy 0.9-1.4x iOS on four recordings, LOLL8185 0.2-0.6x. Pixel 7
+checked by screenshot. [Evidence](../review/atlas/fringe-refraction-2026-10-26/README.md).
+
 **24 October #78 web demo preload (cloud session, merged 26 Oct):** `.wasm` downloads start with the
 page where Wasm GC exists; Skia ready 0.34-0.35 s sooner on emulated 4G, same unthrottled; transfer and
 failure states unchanged. Shader compile not measurable here (software GL); brotli is the owner's call.

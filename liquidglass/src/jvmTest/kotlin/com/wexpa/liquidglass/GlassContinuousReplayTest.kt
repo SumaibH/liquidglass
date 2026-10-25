@@ -93,12 +93,14 @@ class GlassContinuousReplayTest {
     }
 
     @Test fun aMovingSelectorMirrorsItsCapsAndAStillHoldKeepsTheHeldMap() {
-        // Calm since 18 October: a tap in transit shows the held lens's own optics, as a throw does
-        // (tapTransitFold 0), and never folds.
+        // Calm since 26 October (#94): a tap in transit folds again, with the narrow stretch (rim
+        // mirror 0.3, gain 0.15) along the runs as well as the caps, as iOS's does (docs/1 0.95-1.12 s).
         val calm = GlassTabBarStyle.Calm()
         val calmTransit = glassSelectorMaterial(calm, 0.05f, 0.9f)
-        assertEquals(GlassProfile.Held, calmTransit.profile); assertEquals(0f, calmTransit.rimMirror)
-        assertEquals(0f, glassSelectorFormation(calm, 0.05f, 0.9f, 0f))
+        assertEquals(GlassProfile.Measured, calmTransit.profile)
+        assertEquals(GlassSelectorRimMirror, calmTransit.rimMirror)
+        assertEquals(GlassSelectorTransitFoldCorners, calmTransit.foldAtCorners)
+        assertEquals(0.9f, glassSelectorFormation(calm, 0.05f, 0.9f, 0f), 1e-6f)
         // A held lens's travel keeps its rim mirror at the caps.
         assertEquals(0.6f, glassSelectorFormation(calm, 1f, 0f, 0.6f), 1e-6f)
         // The fold it replaced stays on CalmRecordedSpace: the folding rim mirror at the caps.

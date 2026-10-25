@@ -1,5 +1,16 @@
 # Resume LiquidGlass / Atlas Studio
 
+## 26 October night: audit, then refraction and fringes landed
+
+The owner asked for a full audit first: `review/atlas/ios-audit-2026-10-26/README.md` (102 items, issues
+#92-#104). Done since: the held lens's refraction and fringes (see
+`review/atlas/fringe-refraction-2026-10-26/README.md`; #73 and #77 closed). Replay knob for tuning without
+editing code: variant `calm+fringe=still,moving,foldCorners,rimMirror,rimGain`. Short script for fast loops:
+`.local/sxs/ref/IMG_6756/short.txt` (35.5 s ↔ frame 114, 43.79 s ↔ frame 377); comparison helpers in the session
+scratchpad were throwaway. Next, in audit order: transit streak colour and the held-drag split (#94, LOLL8185
+0.2-0.6x), rim outline and highlight (#92 items 6, 7), bar growth when held (#93), #70 plateau, timing (#95),
+calibration-chart glass (#97).
+
 ## PAUSED 24 October — owner decisions to act on first
 
 The owner paused here (usage limit). Resume with these, in order:
