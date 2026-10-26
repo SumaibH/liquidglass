@@ -1210,6 +1210,9 @@ float4 glassMain(float2 coord) {
     if (uHeldEdgeTone > 0.0 && heldAmt > 0.0) {
         // Two pixels wide, as the reference's: the outermost one is partly covered.
         float lg_line = smoothstep(3.0, 1.5, depth) * heldAmt * mat;
+        // Top and bottom only (#92): at the sides iOS's outline is the dark step, 14 over a bar of
+        // 48 (IMG_6756 43.8 s, display colours), which the fixed grey here used to paint over.
+        lg_line *= n.y * n.y;
         col = lerp(col, ((float3)(float(uHeldEdgeTone))), float(0.9 * lg_line));
     }
     // The held lens's spectral rim (#73): iOS's lens rim carries a thin rainbow whose hue sweeps

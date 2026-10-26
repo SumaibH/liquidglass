@@ -6,6 +6,9 @@ A version heading means that version is published; anything above the newest one
 Flutter: `liquiglass` 1.0.0 is on pub.dev (<https://pub.dev/packages/liquiglass>), uploaded by hand on
 20 October; later tags publish it from the release workflow.
 
+- Tab bar (Calm): the held lens's outline is a bright line at the top and bottom and a dark step at the
+  sides, and its inner glow falls off within a few pixels, as iOS's does; it drew a grey ring all round and a
+  glow 15 px deep (#92). [Evidence](review/atlas/rim-outline-2026-10-26/README.md).
 - Tab bar (Calm): the held lens refracts and fringes like iOS's. Its rim band is back to the body's own
   (1.1, was 0.3) and its map has no seam at half the band, so the bar's edge bends into the rim as a
   crescent instead of a straight second outline, and content near the rim no longer breaks apart. The

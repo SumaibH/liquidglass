@@ -26,7 +26,7 @@ GitHub issues group these by area (see the end).
 3. **H, E** **[done 26 Oct, see fringe-refraction-2026-10-26]** Rim refraction *shape*: iOS bends the bar's edge into a curve that meets the lens rim at both ends (a crescent following the capsule); ours keeps it a straight horizontal line across the whole lens, at every band tried (IMG_6756 35.5 s, 43.8 s; LOLL8185 24.3 s).
 4. **H, E** **[done 26 Oct, see fringe-refraction-2026-10-26]** With the band at 1.0-1.1, content near the rim (labels, icons) breaks into displaced fragments over content pages ("Contac" + "ts", Pixel 7, 26 Oct); iOS compresses and curls it smoothly along the rim. The band alone cannot be the fix.
 5. **M, E** **[done 26 Oct, see fringe-refraction-2026-10-26]** The dark band inside ours at band 1.1 reads as a flat slab at the bottom; iOS's is a thin curved crescent, thicker at the top than at the bottom (IMG_6756 35.5 s).
-6. **H, E** Rim outline: iOS draws a thin, crisp, dark outline with a brighter inner line; ours is a soft grey ring 2-3x wider and lower in contrast.
+6. **H, E** **[done 26 Oct, see rim-outline-2026-10-26]** Rim outline: iOS draws a thin, crisp, dark outline with a brighter inner line; ours is a soft grey ring 2-3x wider and lower in contrast.
 7. **M, E** Rim specular: iOS's lens catches a bright highlight along its upper-left and lower-right rim; ours has no directional highlight.
 8. **M, S** Bar growth while held: iOS's bar grows 4-13 px taller when a lens is held, so the lens overhangs it less at the bottom; ours does not grow, the lens hangs 1-3 px deeper (refraction record h 13.7 vs 12.3 px).
 9. **M, E** Lens size: on Keypad iOS's held lens is ~350 px wide (IMG_6756 35.5 s), ours ~335 px and its centre sits ~10 px left.

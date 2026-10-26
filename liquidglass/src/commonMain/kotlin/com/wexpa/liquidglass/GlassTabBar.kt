@@ -1674,8 +1674,13 @@ data class GlassTabBarStyle(
                 // and 0.3 gave -2.2; 1.0 gives +9.8 and ~1.1 matches. Side by side with IMG_6756 35.5 /
                 // 43.8 s and LOLL8185 24.3 s, 1.1 reproduces iOS's dark band inside the lens's top and
                 // bottom rims, which 0.3 lacks (review/atlas/refraction-band-2026-10-26).
+                // Its rim (#92, 26 October, IMG_6756 43.8 s in display colours): over the black page the
+                // outline peaks 62-76 and the glow inside falls to 13 within 3 px and 5 by 8 px (ours
+                // 63, 47, 13, 9, 8 ... with the glow at 0.4 over 2 dp; it was 1.5 over 5 dp, still 14 at
+                // 15 px); at the sides the outline is a dark step, 14 over the bar's 48 (ours 21).
                 lens = recorded.lens.copy(tint = Color.Transparent, rawShare = 0.5f, rawBlur = 50.dp,
-                    tintLift = -3f / 255f, softDetail = 1f, bodyBandScale = GlassCalmLensBand),
+                    tintLift = -3f / 255f, softDetail = 1f, bodyBandScale = GlassCalmLensBand,
+                    heldGlow = 0.4f, heldGlowReach = 2.dp),
             )
         }
 
