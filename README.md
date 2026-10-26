@@ -172,6 +172,11 @@ scene that keeps moving under every piece of glass. `./gradlew :desktop:run`.
 The maintainer has one Windows machine and one Android phone. If you have a Mac, a Samsung, Safari, or
 a Linux desktop with a real GPU, a ten-minute check helps a lot: see the
 [`needs-device` issues](https://github.com/shayann07/liquidglass/issues?q=is%3Aopen+label%3Aneeds-device).
+The iOS parity work is tracked in the
+[1.1.0 milestone](https://github.com/shayann07/liquidglass/milestones). Issues labelled
+[`needs-dataset`](https://github.com/shayann07/liquidglass/issues?q=is%3Aopen+label%3Aneeds-dataset) depend on the
+maintainer's private iOS recordings and are assigned to them; the other `parity` issues carry measured targets and,
+where it helps, [short clips](review/atlas/issue-clips-2026-10-26/README.md) to work from.
 Questions and show-and-tell go in [Discussions](https://github.com/shayann07/liquidglass/discussions).
 [Contributing](CONTRIBUTING.md) explains the evidence a change needs.
 

@@ -44,7 +44,7 @@ scope/API/positioning decisions, one Gradle build per worktree).
   - [ ] Second pass (26 Oct afternoon): items 103-129, issues #105-#113 (ink lift, press/release timing, lens over the search button, rim colour, rim highlights, glyphs, transit/landing, search mode, Control Center references).
   - [x] #93 item 9, the held lens's outline: squircle blend .7 toward n 3 (lens-squircle-2026-10-26). Pixel 7 check pending.
 
-### Agent work, in this order (GitHub milestone "1.1.0": #70-#73, #77-#82)
+### Agent work, in this order (GitHub milestone "1.1.0 — iOS 27 parity"; label `needs-dataset` = blocked on the owner's private recordings, assigned to the owner)
 
 No 1.0.1: the owner decided on 20 Oct to ship these together as 1.1.0 rather than release the Flutter
 description fix alone.
