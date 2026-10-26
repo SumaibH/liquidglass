@@ -412,6 +412,11 @@ about v1.0.0) and ours now (`n6`). Checked here against decoded frames.
   - The slow release (#106).
   - The light accent (#110, item 122).
   - The specular crest and outline (#104).
+- **Light mode, real and new (on #104):**
+  - The lower third of our held lens is grey: rows 634-648 read 245-248, while iOS's is 255 down to the rim.
+  - Ours draws a dark-bright-dark line at the bottom rim (240 / 250 / 237); iOS has a single soft shadow below it
+    (250 → 242).
+  - So the "haze" and "double line" claims were half right: they are real, but at the bottom and on ours.
 - **Unverified:** the held lens's height in light. The edges are too faint to threshold reliably; a calibrated
   capture is needed (#126).
 
