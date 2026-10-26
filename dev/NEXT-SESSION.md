@@ -1,5 +1,14 @@
 # Resume LiquidGlass / Atlas Studio
 
+## RESUME HERE (Saturday): verify the Argon answers, then fix
+
+The owner is running 30 Gemini 4 Argon sessions on the private videos (`.local/gemini/ARGON-PROMPTS.md`, zips in
+`.local/gemini/`). Answers are saved as `.local/gemini/answers/NN.txt`. First verify them the usual way: frames, the
+replay `trace.csv`, scene pixels; Argon's numbers have been mostly honest, Flash's were not. File confirmed items with
+measurements. Then fix, in order: #124 (streaks; a regression since 20 Oct), #123 + #120 (tap travel and tap lens),
+#119, #108 (also a neck-colour regression), #95 and #106 timing, #125, #128. Answers 11, 13, 15, 17, 20, 22 and 25-27
+hold measured iOS targets for those fixes.
+
 ## 26 October, late night: second video pass verified
 
 Set 2 (`.local/gemini/set2/`, from `.local/gemini/make2.sh`): 30 Gemini findings, of which 4 are new (#123 tap
