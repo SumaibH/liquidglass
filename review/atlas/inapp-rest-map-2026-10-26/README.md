@@ -15,6 +15,12 @@ far beyond the rim, folded in); the legacy map showed light ones. `GlassStyle.in
 `GlassStyle.toolbar` use it by default now; the tab bar's bar keeps the legacy map (its caps were scored
 against the recordings with their own cap lens).
 
+![iOS (top) and the Pixel 7 (bottom)](pixel7.png)
+
+*Top: iOS 27, COSG3073 276 s. Bottom: Pixel 7, Android 17, release build of this change,
+`CalibrationActivity` (tint 50, dark chrome, light target), screenshot scaled to the image's width. The round
+buttons and the capsule's caps show the dark folded-in ovals on the device too.*
+
 Still different (left for a measured fit, #97): iOS's top run brings the broad stripes in at the very rim
 (depth 2 px shows content from ~36 px deeper), fanned toward the corners; ours shows the fine stripes in
 place there, blurred.
