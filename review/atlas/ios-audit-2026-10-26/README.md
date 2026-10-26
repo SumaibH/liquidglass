@@ -231,6 +231,34 @@ reference). Numbers are display-sRGB luma or RGB unless stated.
      resting pill box and darkness, held lens and bar levels on all five recordings (`levels.py`, n6), the resting
      bar over a black page row by row.
 
+## P. Third pass: beyond the pixels (26 October, evening)
+
+Behaviour iOS ships that a still frame does not show: press lighting, accessibility, haptics, input on desktop and
+web, and load. Pixel numbers as in O; the search-button render is `s6` (IMG_6756 search script at `2138aea`).
+
+130. **M, S** Press lighting is directional: iOS's pressed search button grades from 97 at the top left to 84 at the
+     bottom right (IMG_6756 1.85-2.6 s) and dims 2-3 levels while held still; ours is a flat 96-98 and constant.
+     The pressed size matches within 2 px.
+131. **M, E** System accessibility settings are not read: `LiquidGlassTheme`'s `reduceTransparency` and
+     `increaseContrast` are parameters that default to 0, and nothing reads the platform's settings. iOS's glass
+     follows Reduce Transparency and Increase Contrast by itself.
+132. **M, E** Reduce Motion: `GlassTabBar`'s `motionEnabled` defaults to true and is not tied to the system setting
+     (Android's animator duration scale 0, the desktop's reduce-motion). iOS drops the lens's stretch and travel.
+133. **L, E** No Large Content Viewer equivalent for the tab bar at accessibility text sizes.
+134. **M, E** Haptics: there is no haptic anywhere in the library; iOS ticks a selection haptic as a held lens crosses
+     a tab and on a tap.
+135. **M, E** Pointer hover: no glass control reacts to a hovering pointer on desktop or web (no `hoverable`, in the
+     library or in Material 3); iPadOS's glass lifts under the pointer.
+136. **M, E** Keyboard focus: tabs are focusable through `selectable` but draw no focus indication (`indication = null`),
+     so a keyboard user cannot see which tab has focus; only Material 3's `SearchBar` reacts to focus.
+137. **M, E** No automatic quality fallback: `renderScale` is manual only. On the Pixel 7 a tap misses its 11.1 ms
+     budget on most frames (#100), and nothing lowers the cost by itself; iOS holds its frame rate.
+138. **L, S** Checked and not differences: the screen recordings carry no HDR headroom (peaks 121-188 nits, white
+     glyphs 110-128), so EDR highlights cannot be compared from them; IMG_7049's list keeps full text contrast down
+     to the bar (no bottom scroll-edge fade there); the bar's width stays constant while those lists scroll (no
+     minimise on scroll); our frames are bit-identical while nothing moves; label edges are equally crisp (10-90 %
+     in 1 px). Tilt-driven highlights could not be tested: no recording holds the bar untouched long enough.
+
 ## Grouping into issues
 
 | Issue | Items |
@@ -260,3 +288,8 @@ reference). Numbers are display-sRGB luma or RGB unless stated.
 | Transit and landing appearance (#111) | 123-125 |
 | Search mode (#112) | 126 |
 | Control Center and lock-screen references (#113) | 127, 128 |
+| Pressed glass lights directionally and dims while held (#114) | 130 |
+| Follow the system's accessibility settings (Reduce Transparency, Increase Contrast, Reduce Motion, large text) (#115) | 131, 132, 133 |
+| Haptic feedback for selection changes (#116) | 134 |
+| Desktop and web: pointer hover and keyboard focus on glass controls (#117) | 135, 136 |
+| Lower the glass's cost automatically when frames are missed (#118) | 137 |

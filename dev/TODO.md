@@ -38,6 +38,7 @@ scope/API/positioning decisions, one Gradle build per worktree).
 - [x] **#73 (26 Oct):** fringes by default: split proportional to shift, spectral rim, transit stretch; 0.9-1.4x iOS on four recordings, LOLL8185 0.2-0.6x (follow-up in #94). review/atlas/fringe-refraction-2026-10-26.
 - [x] **#77 (26 Oct):** band 1.1 plus a seamless held map; rim pull +10.8 vs +10.9 px; owner's device check found the seam (not the band) caused the break-up. Same record.
 - [ ] **Audit #92-#104** (review/atlas/ios-audit-2026-10-26): 102 items; work them by severity.
+  - [ ] Third pass (26 Oct evening, beyond the pixels): items 130-138, issues #114-#118 (press lighting, system accessibility settings, haptics, hover/focus on desktop and web, automatic quality fallback).
   - [ ] Second pass (26 Oct afternoon): items 103-129, issues #105-#113 (ink lift, press/release timing, lens over the search button, rim colour, rim highlights, glyphs, transit/landing, search mode, Control Center references).
   - [x] #93 item 9, the held lens's outline: squircle blend .7 toward n 3 (lens-squircle-2026-10-26). Pixel 7 check pending.
 
