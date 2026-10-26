@@ -1,5 +1,14 @@
 # Resume LiquidGlass / Atlas Studio
 
+## 26 October, late night: second video pass verified
+
+Set 2 (`.local/gemini/set2/`, from `.local/gemini/make2.sh`): 30 Gemini findings, of which 4 are new (#123 tap
+travel, #124 comb streaks, #125 search button) and 12 already tracked. Most of the other 14 were wrong when measured;
+one was the replay script and one is unverified (audit section R). Ranked by leverage for fixing: #123 and #120
+together (tap spring speed and tap lens formation, `GlassPoseDynamics.kt:374-381` and `GlassTabBar.kt:2308-2324`),
+then #119 (strain overshoot), #124 (rim sampling, with #108), the landing hold (#95, `GlassPoseDynamics.kt:1106`),
+#106 and #125.
+
 ## 26 October, night: audit passes 2-4 filed (still paused for fixing)
 
 Audit items 103-144 and issues #105-#121 come from three more passes: hidden differences, behaviour beyond the pixels,

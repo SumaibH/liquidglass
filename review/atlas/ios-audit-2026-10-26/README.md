@@ -313,14 +313,80 @@ Wrong:
 - "The ink is not clipped to the lens": at the cited moments our lens had not arrived yet (the lag above). Once it is
   there, the in-lens blue split matches iOS.
 - "Missed inflations, JGEY2190 11-25 s": those are held drags, and ours is formed throughout (formation 1.0).
-- Comb streaks below the labels (docs/1 11-12 s, JGEY2190 34 and 39 s): absent in every frame of those windows (one
-  borderline frame at 10.82 s).
+- Comb streaks below the labels (docs/1 11-12 s, JGEY2190 34 and 39 s): absent in those windows. **Corrected by section
+  R (item 146):** they are real, during tap transits, in windows this sweep did not cover.
 - Lens "10-14 px right" at the search end: it is 27 px left (item 9).
 - "Punch-through" defrosting in IMG_7048 2:37-2:47: the readable text there sits below the bar, not behind the lens.
 
 Noted, out of scope (system UI): Control Center's backdrop blur leaving before its modules on dismissal and the
 expanded flashlight slider's lighter background blur (PUSM9766), the glass keyboard (search mode, #112), and
 UITabBarController committing a slow scrub's selection without switching the page (sample reference 14-23 s).
+
+## R. Video-model pass, second set, verified (26 October, night)
+
+Set 2 (`.local/gemini/set2/`, built by `.local/gemini/make2.sh`) has 23 more iOS-over-ours clips, still rendered at
+current `main`: the search button's presses and pulls (our `s6` render of `search-script.txt`), one- and two-slot
+taps, throws, held presses, the long drag and the scrub, plus 2x zoomed clips. The model reported 30 findings. Each
+was checked here against the replay trace, the finger script and decoded frames, in scene pixels; the model's own
+pixel figures run at about a third of scene scale. Verdicts: 4 new, 12 already tracked (several worse than
+described), 1 replay script, 12 wrong, 1 unverified.
+
+145. **H, S** Tap travel is slow: on a one-slot tap iOS's pill is centred on the target about 70 ms after the inferred
+     touch-down (docs/1 3.463 → 3.53 s) and settled into the pill by 3.70 s. Ours is still between tabs at 3.63 s and
+     arrives about 300 ms after the down (trace: x within 20 px at +270 ms). On two-slot taps iOS takes about 130 ms
+     and ours about 210 ms (JGEY2190 28.045 s). The gap is measured swell-to-arrival, so it does not depend on the
+     inferred touch-down time. This is #70's "pill arrival", worse than described. Code: Calm's `centreOmega = 24`
+     and the tap spine spring (`GlassPoseDynamics.kt:374-381`).
+146. **M, S** Comb streaks during tap transits: green and black vertical combs along our lens's top rim and under the
+     labels while it travels and settles (JGEY2190 4.67-4.82 s and 40.48-40.63 s; docs/1 0.87-1.02 s and 21.30-21.43 s).
+     Green-dominant pixels in rows 470-630: ours in 14-15 frames per tap with peaks of 692-992 px; iOS in 2-9 frames
+     with peaks of 131-403 px. Likely the rim-mirror and transit-stretch sampling (`GlassShaderSource.kt:311-334`)
+     together with the channel crush (item 111). Corrects section Q's "comb streaks wrong".
+147. **M, S** Search press flash: at the moment of contact iOS's magnifier dims from 255 to about 120 for one frame and
+     recovers within about 50 ms, on all seven presses in IMG_6756 0-34 s. Ours stays at 255.
+148. **M, E** Search pull and overlap: on a diagonal pull (IMG_6756 10.5 s) our button leans about 20° along the pull
+     vector with a sheared glyph and a dark offset ghost of its body behind it, where iOS's stays an upright oval
+     (`glassPullDeformation` takes the full 2D angle, `GlassPull.kt:103`). Pressed against the bar (20.3 and 31.0 s),
+     iOS lets the bar's end show through the button's left side with a soft shadow on the Keypad pill; ours draws the
+     button opaque over it (`GlassTabBarAccessory`, `GlassTabBar.kt:1014-1030` and `:2199`).
+
+Already tracked (with the numbers this pass adds):
+- Wide lens on taps and scrubs: 2-slot taps widen to 405-414 px against iOS's about 330 (#119, #120).
+- Landing collapse 50-80 ms early: after a throw iOS keeps the lens to about 17.95 s, while ours is flat by 17.90 s
+  (formation 0.94 → 0.38 within 100 ms). The release `formTarget` tracks speed alone (`GlassPoseDynamics.kt:1106-1116`).
+  Item 36, #95.
+- Taps stay inside the bar (#120).
+- Search release overshoot: 22 px against iOS's 32 (item 46).
+- Heavier search glyph: about 25 % more ink (#110).
+- Bar edges and the black band inside the lens (#108).
+- Side caps crush glyphs (#121).
+- Interior bloom and ink ghosts (#105, #108).
+- Late spring tails (#106).
+- Resting pill contrast (item 40).
+- iOS's bar edge dims toward the right end (99 → 73-92 over x 760-830) while ours stays flat at 98 (#109).
+
+Replay script: the "detents" are the inferred finger, which `gen3.py` parks at exactly 217.0 and 479.0. Our lens
+follows the finger to within 15 px throughout (LOLL8185 23-25.8 s; #122).
+
+Wrong, by measurement:
+- "Inconsistent tap inflation": ours peaks at formation 0.20-0.21 on every one-slot tap and 0.25-0.30 on two-slot taps.
+- "0 px end-cap overhang": the left rims sit at 53-54 against iOS's 52-53 on Calls holds, and thrown lenses
+  overhang 46-51 px.
+- "Seam at x≈315": our bar's edges and pill are identical at rest and pressed.
+- "Single-step release snap": ours springs with a 22 px overshoot and a 7 px rebound, against iOS's 32 and 10.
+- "Search button frozen during a hold": ours settles too, matching iOS's width at 5 px taller.
+- "Stroke-weight pop": the glyph grows 1.63x on ours and 1.76x on iOS.
+- "Icon and label clip mismatch": the different spans come from the lens's rounded cap, on both.
+- "Pre-magnified Keypad": 71 × 69 px on ours against 70 × 68 on iOS at 34.55 s.
+- "Weaker magnification on docs/2": 84-85 px on both.
+- "Flat central plateau": ours shifts the icon about 15 px across a pass, iOS about 7.
+- "No width settle": ours undershoots to 280 px and returns to 291.
+- "Bar and button nudge": the button holds at 959-1068 px on both.
+- "Pitch-black resting button": fill 32 on both.
+- "Cusps on leftward pulls".
+- "3-5 px bar-to-button gap": 24 px on both.
+
+Unverified: the iOS throw squash and tail at docs/2 16.6-16.8 s.
 
 ## Grouping into issues
 
@@ -360,3 +426,6 @@ UITabBarController committing a slow scrub's selection without switching the pag
 | Tap transit should rise into a full glass lens (iOS 27) (#120) | 140 |
 | Lens side caps cut content instead of bending it round (items 15, 16, re-homed from #77) (#121) | 141 |
 | Other section Q items: 142 → #96, 143 → #72, 144 → #113 and #97 | 142-144 |
+| Tap travel takes ~300 ms; iOS's pill arrives in ~70-130 ms (#123) | 145 |
+| Green/black comb streaks along the lens rim during tap transits (#124) | 146 |
+| Search button: press flash, upright pull and see-through overlap (#125) | 147, 148 |
