@@ -420,6 +420,28 @@ about v1.0.0) and ours now (`n6`). Checked here against decoded frames.
 - **Unverified:** the held lens's height in light. The edges are too faint to threshold reliably; a calibrated
   capture is needed (#126).
 
+**Rerun with Gemini 4 Argon (same videos, 17 findings), checked against frames:**
+- **Two real regressions since 20 October:**
+  - The tap comb streaks: 0 green pixels on `p20`, up to 695-992 on `n6` (#124).
+  - Reddish-brown colour at the search-end neck: 74 saturated pixels now, 0 on iOS and on `p20` (#108).
+  - Its other regression item, the wider neck, is intended (sample `lensFusion` 24 dp).
+- **Improvements confirmed with numbers:**
+  - Rim fringes and refraction band (trough depth and fringes now match iOS's).
+  - Blue: ours (7, 150, 255) against iOS's (9, 152, 255).
+  - Resting rim peak: 97 against iOS's 97-99; it was 69 on 20 October.
+  - Thin outline without the old halo.
+  - Squircle shoulders.
+  - Unchanged, as expected: the tap stretch geometry.
+- **New, light mode (#128):**
+  - A pale bridge between bar and search button at rest, where iOS has a clean gap.
+  - A dark rim (196-201 against iOS's 216-217) while the lens collapses on release.
+  - A top-to-bottom gradient in the resting pill (245 → 228, against iOS's roughly even 234-241).
+  - A fainter held outline.
+- **Wrong:** the one-frame "pop" at the lift (no large frame change at 48.30 s).
+- **Replay script:** the "frozen lens while iOS glides" (39.4-39.9 s); the light script follows iOS's ink, which stays on Contacts while iOS's lens moves (#122).
+- **Already tracked:** selected icons' inner glyph colour (sample icons, #99), end overhang at Keypad (#107), icons
+  3-4 px high (#110), light rim hue (#104).
+
 Its suggested fixes (a 125 ms release spring, a 52 px lift, "enable dispersion in light") rest on the wrong readings
 above and are not adopted.
 
@@ -464,3 +486,4 @@ above and are not adopted.
 | Tap travel takes ~300 ms; iOS's pill arrives in ~70-130 ms (#123) | 145 |
 | Green/black comb streaks along the lens rim during tap transits (#124) | 146 |
 | Search button: press flash, upright pull and see-through overlap (#125) | 147, 148 |
+| Light mode: resting neck, dark rim on release, pill gradient, faint outline (#128) | section S |
