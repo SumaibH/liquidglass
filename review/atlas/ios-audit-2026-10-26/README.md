@@ -115,8 +115,8 @@ GitHub issues group these by area (see the end).
 
 ## J. Ink, labels and icons
 
-68. **M, E** Selected ink colour: iOS's is a brighter, more cyan blue (~#1AA3FF); ours a deeper blue (~#3B8EEA).
-69. **M, E** Label font: iOS uses SF Pro semibold with tighter tracking; the sample uses the platform font with wider spacing.
+68. **M, E** **[done 26 Oct: sample accent 0xFF0897FF, renders (8, 151, 255) against iOS (7-8, 151, 255)]** Selected ink colour: iOS's is a brighter, more cyan blue (~#1AA3FF); ours a deeper blue (~#3B8EEA).
+69. **M, E** **[won't fix in the sample: SF Pro cannot be redistributed; apps set their own font]** Label font: iOS uses SF Pro semibold with tighter tracking; the sample uses the platform font with wider spacing.
 70. **M, E** Icons: iOS's Contacts glyph is a filled person in a circle with a cut-out; ours is a different person glyph (sample assets).
 71. **L, E, V** Unselected ink: iOS's white glyphs are slightly brighter.
 72. **L, E** Badge: iOS shows a red count badge on Calls; the sample has none.

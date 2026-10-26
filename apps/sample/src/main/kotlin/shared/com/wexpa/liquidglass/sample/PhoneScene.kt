@@ -48,7 +48,9 @@ data class PhonePalette(
         val Natural = PhonePalette(
             page = Color.Black, primary = Color.White, secondary = Color(0xFF919191),
             divider = Color(0xFF2A2A2A), avatar = Color(0xFF514C61), button = Color(0xFF0F0F0F),
-            accent = Color(0xFF369CFE), ink = Color.White, call = Color(0xFF177F2F),
+            // Selected ink (#99, 26 October): iOS 27 reads (7-8, 151, 255) in display colours on IMG_6756 and
+            // LOLL8185, iOS 26 (docs/1) (34, 151, 254); this was (54, 156, 254).
+            accent = Color(0xFF0897FF), ink = Color.White, call = Color(0xFF177F2F),
             avatarEnd = Color(0xFF342C4A), key = Color(0xFF202020), missed = Color(0xFFF74E53),
         )
         /** iOS's light system colours (label, secondaryLabel, separator, systemBlue/Green/Red, the
