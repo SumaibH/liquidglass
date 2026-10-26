@@ -98,8 +98,8 @@ GitHub issues group these by area (see the end).
 
 55. **H, E** Interior contrast: iOS's buttons show the chart's stripes at medium contrast (white→~200, black→~90); ours flattens them to a narrow grey range (~120-160): too much frost/too little transmission.
 56. **H, E** Edge bending: iOS bends straight stripes into arcs that follow the button's outline near the rim (strong, ~25 px band on 66 pt buttons); ours compresses them into straight lines with little curvature.
-57. **H, E** Circular buttons: iOS shows concentric arcs and a magnified centre stripe inside round buttons; ours shows a near-uniform grey disc with faint lines.
-58. **M, E** Pill caps: iOS's toolbar pill bends the stripes into arcs at both caps; ours keeps them straight to the cap.
+57. **H, E** **[improved 26 Oct: measured rest map default for in-app glass, see inapp-rest-map-2026-10-26]** Circular buttons: iOS shows concentric arcs and a magnified centre stripe inside round buttons; ours shows a near-uniform grey disc with faint lines.
+58. **M, E** **[improved 26 Oct, same]** Pill caps: iOS's toolbar pill bends the stripes into arcs at both caps; ours keeps them straight to the cap.
 59. **M, E** Rim highlight: iOS has a thin bright highlight on the upper rim of each button; ours a soft lighter band.
 60. **M, E** Interior lift: iOS's buttons read brighter overall over the same stripes (stronger lift); ours darker.
 61. **M, E** Bottom band: ours draws a dark band along the bottom of the pill; iOS's bottom edge is a lighter, refracted strip of the content below.

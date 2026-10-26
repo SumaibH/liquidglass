@@ -556,6 +556,11 @@ data class GlassStyle(
         fun inApp(dark: Boolean, tintAmount: Float = GlassMaterial.DEFAULT_TINT_AMOUNT): GlassStyle {
             val a = GlassMaterial.opacity(dark, tintAmount)
             return GlassStyle(
+                // The measured resting-corner map (GlassRestMap.Measured), fitted on the Photos toolbar's
+                // 72 px ends; the pill (66 px) and round buttons (73 px) sit at nearly that radius. Since 26
+                // October (#97): over the calibration chart it gives the caps and round buttons the dark
+                // ovals iOS shows (COSG3073 276 s), where the legacy map showed light ones.
+                restMap = GlassRestMap.Measured,
                 tint = if (dark) Color.Black.copy(alpha = a) else GlassMaterial.lightTint.copy(alpha = a),
                 tintLift = if (dark) GlassMaterial.DARK_LIFT else 0f,
                 fineShare = GlassMaterial.fineShare(tintAmount),

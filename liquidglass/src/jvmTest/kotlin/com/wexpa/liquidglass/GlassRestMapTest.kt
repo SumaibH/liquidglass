@@ -128,7 +128,8 @@ class GlassRestMapTest {
         assertEquals(3.dp, s.blurRadius); assertEquals(5.dp, s.backdropBlur); assertEquals(14.dp, s.refractionBand); assertEquals(9.dp, s.refractionDepth)
         assertEquals(GlassRestMap.Legacy, s.restMap)
         assertEquals(GlassRestMap.Legacy, GlassStyle().restMap)
-        assertEquals(GlassRestMap.Legacy, GlassStyle.inApp(dark = true).restMap)
+        // In-app glass uses the measured map since 26 October (#97), the role it was measured on.
+        assertEquals(GlassRestMap.Measured, GlassStyle.inApp(dark = true).restMap)
         assertEquals(GlassRestMap.Measured, GlassStyle().copy(restMap = GlassRestMap.Measured).restMap)
     }
 

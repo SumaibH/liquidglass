@@ -2006,7 +2006,9 @@ data class GlassTabBarStyle(
          */
         fun Measured(dark: Boolean = true, tintAmount: Float = GlassMaterial.DEFAULT_TINT_AMOUNT): GlassTabBarStyle =
             Dark.copy(
-                bar = GlassStyle.toolbar(dark = dark, tintAmount = tintAmount),
+                // The legacy resting-corner map: the tab bar's caps were scored against the recordings with it
+                // and carry their own cap lens (capFold); toolbar() itself moved to the measured map (#97).
+                bar = GlassStyle.toolbar(dark = dark, tintAmount = tintAmount).copy(restMap = GlassRestMap.Legacy),
                 pill = RestingInsetMeasured,
                 lens = HeldLensMeasured,
                 // iOS 27, from the Phone and App Store tab bars in the screen recording: the

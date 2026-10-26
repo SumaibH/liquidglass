@@ -6,6 +6,9 @@ A version heading means that version is published; anything above the newest one
 Flutter: `liquiglass` 1.0.0 is on pub.dev (<https://pub.dev/packages/liquiglass>), uploaded by hand on
 20 October; later tags publish it from the release workflow.
 
+- In-app glass (`GlassStyle.inApp`, `toolbar`) uses the measured resting-corner map by default: its caps and round
+  buttons fold in what lies beyond them as iOS's do (#97). The tab bar keeps the legacy map.
+  [Evidence](review/atlas/inapp-rest-map-2026-10-26/README.md).
 - Tab bar (Calm, dark): the resting bar's rim line is as bright as iOS's, 98/88/65/45 inward against 99/79/63/45
   (was 70/66/55/44, a halving fitted in the superseded colour space) (#96).
 - Material 3: `DropdownMenu`'s corners are 34 dp, as iOS 27's menu (~100 px at 3x); they were 24 (#102).

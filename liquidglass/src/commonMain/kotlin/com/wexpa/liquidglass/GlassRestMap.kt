@@ -23,7 +23,8 @@ import kotlin.math.roundToLong
  *  - Its shallow region (d < 6 reference px, under the rim) is a constant extension of the first knot and
  *    is unmeasured; the existing displacement fade over the outermost 1.5 px applies there.
  *
- * The default is [Legacy] everywhere. Immutable per style; hosts opt a surface in explicitly.
+ * The default is [Legacy], except [GlassStyle.inApp] and [GlassStyle.toolbar], which use [Measured] since
+ * 26 October (#97): the role it was measured on. Immutable per style.
  */
 enum class GlassRestMap {
     Legacy,
