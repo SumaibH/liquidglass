@@ -328,8 +328,8 @@ Set 2 (`.local/gemini/set2/`, built by `.local/gemini/make2.sh`) has 23 more iOS
 current `main`: the search button's presses and pulls (our `s6` render of `search-script.txt`), one- and two-slot
 taps, throws, held presses, the long drag and the scrub, plus 2x zoomed clips. The model reported 30 findings. Each
 was checked here against the replay trace, the finger script and decoded frames, in scene pixels; the model's own
-pixel figures run at about a third of scene scale. Verdicts: 4 new, 12 already tracked (several worse than
-described), 1 replay script, 12 wrong, 1 unverified.
+pixel figures run at about a third of scene scale. Verdicts: 4 new, 13 already tracked (several worse than
+described), 1 replay script, 12 wrong.
 
 145. **H, S** Tap travel is slow: on a one-slot tap iOS's pill is centred on the target about 70 ms after the inferred
      touch-down (docs/1 3.463 → 3.53 s) and settled into the pill by 3.70 s. Ours is still between tabs at 3.63 s and
@@ -386,7 +386,7 @@ Wrong, by measurement:
 - "Cusps on leftward pulls".
 - "3-5 px bar-to-button gap": 24 px on both.
 
-Unverified: the iOS throw squash and tail at docs/2 16.6-16.8 s.
+Throw squash at docs/2 16.6-16.8 s: reversed. On that throw ours flattens (trace width 401-440 px) and iOS's stays tall; added to #119.
 
 ## Grouping into issues
 
