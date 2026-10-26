@@ -388,6 +388,36 @@ Wrong, by measurement:
 
 Throw squash at docs/2 16.6-16.8 s: reversed. On that throw ours flattens (trace width 401-440 px) and iOS's stays tall; added to #119.
 
+## S. Video-model pass, third set: light mode and our past work (26 October, night)
+
+Set 3 (`.local/gemini/set3/`, built by `.local/gemini/make3.sh`) has light-mode pairs from IMG_7049's held drag (ours
+is `calm-light` of an inferred script, set `l6`), plus three-row verification clips: iOS, ours on 20 October (`p20`,
+about v1.0.0) and ours now (`n6`). Checked here against decoded frames.
+
+- **The one claimed regression is wrong.** The "ghost of the label below the baseline" at IMG_6756 35.3-35.8 s is the
+  descenders of "y" and "p". It is identical on 20 October and now (label rows 590-608, descender rows 611-616), and
+  iOS has the same rows. Nothing got worse.
+- **The improvements it reports** (fringes, neck width, squircle lens, blue, outline, resting rim, transit stretch)
+  agree with the measured changes since 20 October. They are its by-eye judgement, not new measurements.
+- **Light mode, wrong when measured:**
+  - "No refraction or magnification": held icon 85-87 px against iOS's 85.
+  - "Achromatic": rim colour 21/20 against iOS's 21/6.
+  - "Lens stays inside the bar": not supported (see below).
+  - "Milky haze": the lens interior is white 255 on both, and our black glyphs are 0 against iOS's 27, the opposite.
+  - "Stray glass bubble": it is our page's avatar seen through the bar's end.
+  - "No resting magnification": 69-73 px on both.
+- **Light mode, real and already tracked:**
+  - The lens shadow: ours darkens rows 646-660 by 7-16 levels, iOS's darkens rows 660-670 by 8-13. So ours is darker
+    and sits closer to the bar (#104, item 50).
+  - The slow release (#106).
+  - The light accent (#110, item 122).
+  - The specular crest and outline (#104).
+- **Unverified:** the held lens's height in light. The edges are too faint to threshold reliably; a calibrated
+  capture is needed (#126).
+
+Its suggested fixes (a 125 ms release spring, a 52 px lift, "enable dispersion in light") rest on the wrong readings
+above and are not adopted.
+
 ## Grouping into issues
 
 | Issue | Items |
