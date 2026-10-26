@@ -253,3 +253,9 @@ from 12 to 10, so the per-pixel shader is about a tenth of the frame. The other 
 the per-panel layer records, the blur pass on each strip and the render-effect passes, which is
 CPU and driver time rather than fill rate. That is the next thing to profile; the knob that
 exists today is `renderScale`.
+
+## Render scale on a Pixel 7 (26 October)
+
+A tab bar tap on a Pixel 7 at 90 Hz is GPU-bound at full resolution (GPU p50 12-14 ms against an 11.1 ms frame).
+`LiquidGlassTheme(renderScale = 0.75f)` brings it to ~9 ms with no visible change at phone resolution; 0.5 to
+~8 ms. [Measurements and screenshots](https://github.com/shayann07/liquidglass/blob/main/review/atlas/pixel7-render-scale-2026-10-26/README.md).
