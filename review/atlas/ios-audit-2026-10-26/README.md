@@ -40,7 +40,7 @@ GitHub issues group these by area (see the end).
 14. **H, S** **[done 26 Oct, see fringe-refraction-2026-10-26]** Fringes do not grow with speed: iOS's fringe energy rises 5-30x from still to fast; ours stays flat (fringe scorer, all five recordings).
 15. **H, E** Mirror swirl inside a moving lens: iOS mirrors the neighbouring icon into the lens's leading cap as a smooth curl with colour (LOLL8185 26.5 s, docs/2 8.6 s); ours draws a hard-edged blue blob and cuts labels ("Corτacs", "C...s", LOLL8185 22.2 s; docs/2 8.6 s), worse at band 1.1.
 16. **M, E** Labels inside a moving lens: iOS keeps the label legible and bends its ends along the bottom rim; ours clips or squashes it at the bottom rim.
-17. **M, E** Lens formation onset in a drag-from-rest: iOS's lens is fully formed and moving 0.2 s after touch-down (LOLL8185 21.3 s); ours is still a pill at the start position at the same moment.
+17. **M, E** **[likely the same script mismatch as 33; re-check against the recording's own script]** Lens formation onset in a drag-from-rest: iOS's lens is fully formed and moving 0.2 s after touch-down (LOLL8185 21.3 s); ours is still a pill at the start position at the same moment.
 18. **M, S** Drag tracking: selector path vs iOS's ink rms 9.2-31.6 px depending on recording (scoreboard), best time shift -8 ms.
 19. **M, E** Moving lens shape: iOS's lens stretches into a slight oval (taller in the middle) at speed; ours stays a straight-sided capsule.
 20. **L, E** At reversals iOS's lens flattens to about the bar's height; ours keeps more height (refraction record: bimodal readings at fast reversals).
@@ -62,7 +62,7 @@ GitHub issues group these by area (see the end).
 
 ## D. Release, throw, landing
 
-33. **H, E** Throw start: iOS's lens has formed and left the source tab by docs/2 8.56 s; ours is still the resting pill there (later by ~40-60 ms).
+33. **H, E** **[withdrawn 26 Oct: the comparison used a render from a different inferred script; with docs/2's own script our lens is at Contacts at 8.56 s as iOS's is]** Throw start: iOS's lens has formed and left the source tab by docs/2 8.56 s; ours is still the resting pill there (later by ~40-60 ms).
 34. **M, S** Wall landings: rms 6.0 px right / 5.4 px left; the 9.9 s landing passes its rest by 36.5 px vs 41 (scoreboard).
 35. **M, E** Landing overshoot outside the bar: iOS's landing lens protrudes past the bar's end with a dark soft smear beyond it (docs/2 8.68 s, LOLL8185 33.25 s); ours protrudes but with a sharper outline.
 36. **M, E** Pigment return after a throw: iOS's pill is still partly clear at docs/2 8.76 s; ours is already the dark pill.
