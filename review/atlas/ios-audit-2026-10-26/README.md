@@ -163,6 +163,74 @@ GitHub issues group these by area (see the end).
 101. **M, E, V** Pixel 7 light: our held lens also draws a soft grey disc behind the search button area when fused; iOS has a clean gap.
 102. **L, E, V** The sample's search button shows a faint blue glyph ring under the magnifier in dark (content bleed); iOS's is clean.
 
+## O. Second pass: hidden differences (26 October, afternoon)
+
+The owner asked for the hidden mismatches. Compared at 2-4x and measured: fresh renders of all five recordings at
+`2a7c7b0` (set `n6`, the squircle lens included), the light hold (`calm-light`), and five recordings the first pass
+never opened (IMG_7049 light, PUSM9766 Control Center, IMG_6667/MUQJ3680 lock screen, the iOS 27 sample
+reference). Numbers are display-sRGB luma or RGB unless stated.
+
+103. **M, S** Held-lens ink lift: iOS brightens the selected ink under a held lens, (7,151,255) at rest to (26,174,255)
+     (IMG_6756 34.9-36.1 s), (28,176,255) LOLL8185 21.6 s, (38,185,255) JGEY2190 5.0 s, (41,186,255) docs/2; light
+     (0,132,250) to (23,146,255) (IMG_7048 40 s). It decays over 0.3-0.5 s after release. Ours never changes.
+104. **H, S** Still release keeps its glass: after a stationary hold iOS 27's lens is gone 33-65 ms after the lift
+     (IMG_6756, three holds); ours keeps it ~300 ms (`releaseStillHoldSeconds` .18 was authored from docs/2, where
+     iOS takes ~130 ms). The recordings disagree; IMG_6756 is iOS 27.
+105. **M, S** After a still release our bar's top dips 6 px below rest (459 vs 453) and recovers over ~150 ms; iOS's
+     settles 451 → 453 without a dip (IMG_6756, three holds).
+106. **L, E, V** Release rebound: on docs/2's 5.87 s lift iOS's lens drops to the pill, swells once (6.07 s) and
+     settles by 6.13 s; ours collapses once.
+107. **H, S** Still-press formation: iOS's bar starts to swell 103-120 ms after the inferred touch-down, the lens
+     appears 67 ms after that and is formed 117 ms after it. Ours swells at 37-53 ms, the lens appears 184-216 ms
+     after the swell and forms 250-266 ms after it (IMG_6756, four presses). Independent of where the inferred
+     touch-down sits. (Item 77: hold onset was untested.)
+108. **H, E** The held lens overlaps the search button on iOS: its dark outline crosses the button's left side and
+     the notch belongs to the bar's own end, seen magnified through the lens (IMG_6756 35.5 s dark, IMG_7048 38.5 s
+     light). Ours necks the lens itself into the button and draws the button over the lens. Re-reads item 10.
+109. **L, E, V** Where the lens meets the button our button's edge carries a red/orange fringe; iOS shows a faint blue
+     line where the lens crosses it.
+110. **M, S** Spectral band at the refracted bar edge inside a held lens: ours ~9 px with two or three navy rows
+     ((2,3,29), (2,3,41)); iOS ~5 px with one ((2,10,41)) (IMG_6756 47.5 s).
+111. **M, S** Channel crush at the lens rim: just inside our rim the blue channel drops to 0 for 2 px (olive (23,31,0)),
+     at the bottom rim red drops to 0 (cyan (0,29,30)); iOS stays neutral ((27,22,20)). Our dispersion samples the
+     black outside the bar for one channel.
+112. **L, S, V** Outer rim line hue: iOS's is warm at the bottom (orange (90,56,33) then green) and green/violet at the
+     top; ours yellow-green at the top and cyan at the bottom.
+113. **L, S, V** The dark crescent inside iOS's rim grades from 9 at the lens rim to 1 at the bar edge; ours is flat 3-5.
+114. **M, S** Resting bar rim at the caps: iOS's highlight dims round the caps (85-87 at the cap's top and bottom,
+     against 99 on the straight runs); ours stays 97-98 (IMG_6756 34.2 s).
+115. **M, S** Search button rim: iOS peaks at 97 at top and bottom, ours 105; iOS's line is broader in angle (44 vs 39
+     at 30° and 150°) and skewed toward the left; ours is symmetric.
+116. **L, S** A faint lift just inside iOS's rim follows the highlight (34-35 at top and bottom, 32 at the sides);
+     ours is flat 33.
+117. **L, S, V** iOS's Keypad dots vary 117-130 in luma; ours are flat 120.
+118. **M, S** Item layout: our icons sit 3-4 px higher (centre 521 vs 524-525) and labels 2-3 px higher (IMG_6756
+     34.2 s); sizes match within 1-2 px.
+119. **M, S** Search glyph: ours 72 × 72 px with 1486 ink px against iOS's 68 × 68 with 1183 (6 % larger, 26 % heavier).
+120. **L, S** Unselected glyphs in dark: iOS's average 247, ours 251-253 (ours brighter; corrects item 71).
+121. **M, S** Unselected glyphs in light: iOS's are dark grey (icons 29, labels 32-33, search glyph 18); ours pure
+     black (IMG_7048 38.5 s against `calm-light`).
+122. **M, S** Light accent: iOS 27's selected ink at rest is (0,132,250); the light sample renders (0,122,255).
+123. **M, S** Transit pill outline: iOS's travelling pill carries a bright outline (99.5th-percentile grey 109-121 to
+     1.01 s, 105-110 to 1.10 s, docs/1 first tap); ours 104 then 90-91, and the region reads 3-7 levels darker. At
+     rest afterwards ours is the brighter one (98 vs 85-90).
+124. **M, S** Landing lens lift: iOS's thrown lens is milky as it lands (docs/2 8.68 s interior 90 against our 72;
+     8.76 s 53 vs 44).
+125. **M, S** Item 16 holds in throws and in held drags over content: iOS stretches the label down along the bottom
+     rim (blue label pixels to row 622-627, docs/2 8.62-8.76 s); ours stops at 599, cut at the rim (also JGEY2190 16 s).
+126. **H, E** Search mode: tapping iOS's search button grows it (to ~1.15x) and lights it (19 → 60 in 66 ms), the tab
+     bar collapses to one small circle carrying the selected tab's icon, the button becomes a wide search field that
+     rides up with the keyboard, and the close button reverses it (iOS 27 sample reference 38.8-39.5 s). Not modelled.
+127. **M, S** Control Center modules (PUSM9766 39 s, dark, over the calibration chart): round toggles lift a dark
+     blurred backdrop (58-74) to 140-165 and desaturate their centre (chroma 16-50 against 98-118 behind) while a ring
+     inside the rim keeps the colour (chroma 77-90). No preset reproduces this platter. The recording also shows a
+     vertical slider with a frosted white fill, the Focus pill and the media platter: references for item 89.
+128. **L, E** IMG_6667 and MUQJ3680 (lock screen over the chart) show the flashlight button pressed: it grows and
+     lightens. Our round glass buttons have not been compared with it.
+129. **L, S** Measured and matching (no change): resting bar and button geometry (63-600, 921-1106, rows 453-638),
+     resting pill box and darkness, held lens and bar levels on all five recordings (`levels.py`, n6), the resting
+     bar over a black page row by row.
+
 ## Grouping into issues
 
 | Issue | Items |
@@ -183,3 +251,12 @@ GitHub issues group these by area (see the end).
 | Components without references (new) | 89-92 |
 | Internal consistency of the selector material (new) | 93, 95, 97 |
 | Light appearance (new) | 50-54 |
+| Selected ink lifts under the held lens (#105) | 103 |
+| Held-lens press and release timing (#106) | 104-107 |
+| Lens overlaps the search button (#107) | 108, 109 |
+| Held-lens rim colour (#108) | 110-113 |
+| Resting rim highlights (#109) | 114-116 |
+| Glyphs and layout (#110) | 117-122 |
+| Transit and landing appearance (#111) | 123-125 |
+| Search mode (#112) | 126 |
+| Control Center and lock-screen references (#113) | 127, 128 |
