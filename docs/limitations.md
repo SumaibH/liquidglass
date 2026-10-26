@@ -160,13 +160,15 @@ and in [the calibration study](research/ios27-calibration-study.md).
 ## The rest lens is measured at one size, and selected per style
 
 The corner lens of chrome at rest has two source maps, selected by `GlassStyle.restMap`.
-`GlassRestMap.Legacy`, the default, is the map that shipped: the ring 0.55 W inside mapped onto
+`GlassRestMap.Legacy`, the constructor's default (and the tab bar's), is the map that shipped: the ring 0.55 W inside mapped onto
 the outer band. `GlassRestMap.Measured` is the resting-corner table fitted in the closeout on
 190 display-to-source landmark pairs read off the Photos toolbar's 72 px ends (24 pt on the phone, the library's 24 dp design unit by convention) in both
 appearances over both calibration targets; against the same pairs the shipping map is 6-7 px
 off at every depth from 6 to 26 px and the table is within 1 px. It changes only the resting
 corner: the fully formed fold, the straight-run term, the held-lens family, coverage, padding,
 normals, dispersion and lighting are untouched, and formation blends it toward the same fold.
+`GlassStyle.inApp` and `toolbar` use it by default since 26 October: over the calibration chart it
+gives their caps the dark fold iOS shows ([evidence](https://github.com/shayann07/liquidglass/blob/main/review/atlas/inapp-rest-map-2026-10-26/README.md)).
 
 What it does not establish: any other radius. The table is dimensionless in `u = d / W`, so at
 another radius the shader evaluates the same curve scaled by the band — an explicit scale

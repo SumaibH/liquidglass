@@ -506,7 +506,8 @@ coordinate. The page material's own map is unaffected.
 own radius at bind time, so it means the same blur on Android and the desktop; `backdropBlur` is
 the legacy radius and is used when `backdropSigma` is unspecified.
 
-**`restMap`** is `GlassRestMap.Legacy` (default) or `Measured`: which source map the resting
+**`restMap`** is `GlassRestMap.Legacy` (the constructor's default) or `Measured` (the default of
+`GlassStyle.inApp` and `toolbar` since 26 October): which source map the resting
 corner lens of the measured profile uses. `Measured` is the resting-corner table fitted on the
 Photos toolbar's 72 px ends in the closeout; it changes only the resting-corner term and is a scale
 extrapolation at any other radius. Ignored by the legacy profile and by the held family. See
