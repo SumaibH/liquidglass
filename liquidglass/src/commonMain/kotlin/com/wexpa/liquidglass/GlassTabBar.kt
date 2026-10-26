@@ -395,7 +395,12 @@ internal fun GlassTabBar(
         val selectorWidthPx = with(density) { selectorWidth.toPx() }
         val selectorHeightPx = with(density) { selectorHeight.toPx() }
         val selectorRisePx = with(density) { style.lensRise.toPx() } * lift
-        val selectorStyle = glassSelectorMaterial(style, lift, transitAppearance, poseHandle?.heldTravel ?: 0f)
+        // The rim split follows how fast the lens moves (#73/#94): iOS's fringe energy rises 5-30x from a
+        // still lens to one at 400-1500 px/s (3x). heldTravel is filtered for the strain and stayed under
+        // 0.04 through IMG_6756's drag, so the lens's own speed, over 400 dp/s, drives it as well.
+        val fringeSpeed = (abs(if (dragging) liveVelocity else settleVelocity) /
+            with(density) { GlassSelectorFringeSpeed.toPx() }).coerceIn(0f, 1f)
+        val selectorStyle = glassSelectorMaterial(style, lift, transitAppearance, max(poseHandle?.heldTravel ?: 0f, fringeSpeed))
 
         // The V3 body owns its own centre; offsetX follows it so semantics, the press glow and
         // the diagnostics all read one number.
@@ -563,6 +568,8 @@ internal fun GlassTabBar(
                     this[GlassTabBarSemantics.SelectorX] = selectorX
                     this[GlassTabBarSemantics.Held] = held
                     this[GlassTabBarSemantics.Formation] = lift
+                    this[GlassTabBarSemantics.Transit] = transitAppearance
+                    this[GlassTabBarSemantics.HeldTravel] = poseHandle?.heldTravel ?: 0f
                     this[GlassTabBarSemantics.BodyWidth] = poseHandle?.let { it.right - it.left }
                         ?: handle?.body?.let { it.length + 2f * it.radius } ?: selectorWidthPx
                     // The pose body's end asymmetry is its taper, not a radius difference;
@@ -1446,6 +1453,9 @@ internal object GlassTabBarSemantics {
     val BodySkew = SemanticsPropertyKey<Float>("GlassTabBarBodySkew")
     /** How far the body's contour is outside the resting bar, in px; Calm taps may protrude. */
     val Protrusion = SemanticsPropertyKey<Float>("GlassTabBarProtrusion")
+    /** A tap's transit appearance and a held lens's travel, 0 to 1: the drivers of the transit fold and the rim split (#101). */
+    val Transit = SemanticsPropertyKey<Float>("GlassTabBarTransit")
+    val HeldTravel = SemanticsPropertyKey<Float>("GlassTabBarHeldTravel")
 
     /**
      * V3 only: the selector node's rounded left edge in bar px, and the touch point in that
@@ -2269,6 +2279,8 @@ internal const val GlassCalmLensBand = 1.1f
 /** The rim split of a still held lens (#73, 26 October 0.08, was 0.05): with the split proportional to the
  * shift (GlassShaderSource) and the spectral rim, against IMG_6756 35.5 / 43.8 s by eye. Authored. */
 internal const val GlassSelectorRimDispersion = 0.08f
+/** The selector speed at which the held rim split reaches its moving value (#94). Authored. */
+internal val GlassSelectorFringeSpeed = 400.dp
 /** A held lens's rim split at full travel (#94): a long held drag fringed 0.2-0.6x iOS's at the tap value. */
 internal const val GlassSelectorHeldFringeMoving = 0.14f
 /** Smear of a tap's stretched rim in transit, dp; 0 keeps the lens's own (#94). */

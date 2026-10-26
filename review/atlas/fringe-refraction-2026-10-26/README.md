@@ -94,3 +94,12 @@ lens (bimodal, as the 24 October record noted).
 - The tap streaks' colour and the swirl shape are not matched yet (see captions).
 - Light appearance was changed with dark (same band) and not re-scored (#104).
 - Device: one Pixel 7, screenshots only.
+
+## Follow-up, 26 October later: the held split follows speed
+
+The replay trace now logs `transit` and `heldTravel` (#101). It showed `heldTravel` under 0.04 through
+IMG_6756's drag, so a moving held lens never reached its moving split. The split is now driven by the larger of
+`heldTravel` and the selector's own speed over 400 dp/s (`GlassSelectorFringeSpeed`). Integrated fringe per
+touch, ours/iOS: LOLL8185 0.23 → 0.29, IMG_6756 0.94 → 1.15, docs/2 1.39 → 1.84 (peak 0.86 → 1.19). A held-drag
+split of 0.25 brought LOLL8185 to 0.57 but docs/2 to 2.24, so 0.14 stays: iOS's long, slow LOLL8185 drag fringes
+strongly even when slow, which speed cannot explain.

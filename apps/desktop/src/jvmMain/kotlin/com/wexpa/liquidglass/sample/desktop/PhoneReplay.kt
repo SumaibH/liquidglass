@@ -243,7 +243,7 @@ private fun replay(args: Array<String>) {
     Thread.sleep(500)
     println("REPLAY renderer ${layer.renderApi} ${layer.renderInfo.lines().firstOrNull { "Video card" in it } ?: ""}")
     val trace = File(out, "trace.csv").bufferedWriter()
-    trace.write("frame,ms,selectorX,bodyWidth,held,formation,protrusion,dragIndex\n")
+    trace.write("frame,ms,selectorX,bodyWidth,held,formation,protrusion,dragIndex,transit,heldTravel\n")
     var next = 0
     var pressed = false
     val frames = (end * 60 / 1000).toInt()
@@ -283,7 +283,7 @@ private fun replay(args: Array<String>) {
             val c = node?.config?.associate { it.key.name to it.value } ?: emptyMap()
             fun v(name: String) = c["GlassTabBar$name"]
             trace.write("$index,$target,${v("SelectorX")},${v("BodyWidth")},${v("Held")},${v("Formation")}," +
-                "${v("Protrusion")},${v("DragIndex")}\n")
+                "${v("Protrusion")},${v("DragIndex")},${v("Transit")},${v("HeldTravel")}\n")
         }
         if (index % 120 == 0) { trace.flush(); println("REPLAY frame $index/$frames ${(System.nanoTime() - started) / 1_000_000} ms") }
     }
