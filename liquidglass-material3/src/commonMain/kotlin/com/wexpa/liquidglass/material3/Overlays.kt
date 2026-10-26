@@ -277,7 +277,8 @@ fun DropdownMenu(
     onDismissRequest: () -> Unit,
     modifier: Modifier = Modifier,
     offset: DpOffset = DpOffset(0.dp, 4.dp),
-    shape: Shape = RoundedCornerShape(24.dp),
+    // 34 dp (#102, 26 October): iOS 27's menu corner is ~100 px at 3x (COSG3073 279.5 s); was 24.
+    shape: Shape = RoundedCornerShape(34.dp),
     glass: Glass = GlassMaterialDefaults.panel,
     content: @Composable ColumnScope.() -> Unit,
 ) {

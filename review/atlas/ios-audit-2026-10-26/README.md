@@ -146,7 +146,7 @@ GitHub issues group these by area (see the end).
 87. **M, E** No light-mode replay score exists for holds and drags (only rest and the lens shadow were scored).
 88. **M, E** No score for content-page fringes (the fringe scorer excludes page hues).
 89. **M, E** No measured reference for the Material 3 components (slider, switch, sheet, menu, dialog): they are authored to look iOS-like, not compared to recordings.
-90. **M, E** Context menu (COSG3073 ~276 s: Copy/Duplicate/Hide, Set Rating …): iOS's menu platter is a light frosted glass with rounded 34 pt corners; our `GlassDropdownMenu` was not compared to it.
+90. **M, E** **[radius done 26 Oct: 34 dp; material open — COSG3073 279.5 s reads light and strongly saturated, unlike the measured dark `GlassStyle.menu()`; needs the appearance and tint of that capture before changing]** Context menu (COSG3073 ~276 s: Copy/Duplicate/Hide, Set Rating …): iOS's menu platter is a light frosted glass with rounded 34 pt corners; our `GlassDropdownMenu` was not compared to it.
 91. **M, E** Toolbar grouping: iOS groups three toolbar actions into one pill with separate round buttons beside it; we have no toolbar component.
 92. **L, E** Status bar time pill (red recording pill) — out of scope.
 
