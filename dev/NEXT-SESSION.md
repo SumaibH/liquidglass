@@ -1,5 +1,12 @@
 # Resume LiquidGlass / Atlas Studio
 
+## PAUSED 26 October, morning (owner's request; state at 2a7c7b0 + this note)
+
+#93's squircle lens landed (2a7c7b0). Its first CI run was in progress at the pause: check it first. The .NET
+port was not built locally (there is no SDK on this machine), so CI's dotnet jobs are its first build. Then the
+Pixel 7 check of the squircle (it was not connected), then #97 → #94 → #95 → #100 below. Estimate given to the
+owner: ~12-18 h for those, ~20-30 h with the remaining smaller audit items.
+
 ## 26 October, end of the night (state at main HEAD)
 
 Also landed: Calm bar rim at iOS's brightness (#96), in-app glass on the measured resting-corner map
