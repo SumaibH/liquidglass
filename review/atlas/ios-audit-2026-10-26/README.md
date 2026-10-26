@@ -494,19 +494,27 @@ button on landing (#107), label split at the rim (refraction detail), selected b
 - Held lens "pinned while iOS's drifts", "page switches mid-travel", tap delays of 33-240 ms: the
   inferred finger input.
 
-## U. Argon sessions 18-25: iOS-only reference measurements, spot-checked (27 October)
+## U. Argon sessions 17-25: iOS-only reference measurements, spot-checked (27 October)
 
-Sessions 18-25 measured iOS alone (zips G drags, H search, I light, J calibration chart), so they file nothing
-new; their numbers are candidate targets. Spot-checks on decoded frames decide how far to trust them:
+Sessions 17-25 measured iOS alone (zips G drags, H search, I light, J calibration chart), so they file nothing
+new; their numbers are candidate targets. Each was spot-checked on the same reference clip Argon saw, at its own
+frame numbers and clip pixels (`.local/gemini/ref/`), and where useful against the source in scene pixels:
 
-| Session | Claim | Measured | Verdict |
+| Session | Claim (clip px) | Measured | Verdict |
 | :-- | :-- | :-- | :-- |
-| 20 (search) | resting button 83 px at 0.444 scale, glyph 30, fill 32, press fill 89-94 | 186 px, glyph 68, fill 32, held 87.5 | matches |
-| 20 (search) | glyph magnifies 1.30x on press | 65 → 68 px (1.05x); ours 72 throughout (#110 item 119) | wrong |
-| 18 (throws) | docs/2 8.3 s landing: rim reaches x 0, 3 oscillations over 450 ms | rim to x 34 (29 px past the bar's 63), one dip to 198 then a 2 px overshoot, settled in ~200 ms | wrong in size and timing |
+| 17 (drags, targets) | docs/2 13.0 rest bar 42-597; held Keypad lens rows 105-248, 103-250, 103-251 (F012-F035); landing bar left 24, 17, 39, 42, 44 (F044-F056); scrub touch-down bar from 28 (F012) | 42; 105-249, 103-250, 103-251, 103-250; 24, 17, 39, 41, 43; 28 | matches (±1 px) |
+| 18 (drags, timing) | docs/2 8.3 landing: rim reaches x 0 (F023), 3 oscillations over 450 ms | rim reaches 33 (F023); ink centre 157, 142, 160, 161, 161 (F020-F047): one dip, settled by F031 (~130 ms) | wrong in size and timing |
+| 19 (drags, optics) | docs/2 13.0 (440, 180) rest 9.4, held 54.4; (85, 180) 31.4 | 9.4, 51.4, 31.4 | matches |
+| 20 (search, targets) | resting button 83 px, glyph 30, fill 32, press fill 89-94; glyph grows 1.30x on press (F069-F072) | 186 scene px, glyph 29 → 38 clip px (1.31x; source 68 → 86, 1.26x), held fill 87.5 | matches; ours also grows (72 → 89-92, 1.24-1.28x), no issue |
+| 21 (search, timing) | one-frame glyph dim before expansion; release squash -14 px height | the #125 press flash; -33 scene px (-14.7 clip) after the 8.0 s release | matches |
+| 22 (light, targets) | App Store bar rim rows 214 and 339 at x 455 (F178) | 250 at 214-215, 245 at 339 | matches |
+| 23 (light, optics) | (42, 270) left-cap outline RGB(216, 218, 216) (F165) | (253, 255, 253); no outline in x 36-50 | wrong at that point |
+| 24 (chart, optics) | clock numeral row 80, x 85-110: no colour split, bevel (88, 80) 231 / 228 (F550, F830) | max abs(R - B) 0; 231 and 228 | matches |
+| 25 (chart, targets) | lock-screen sheet translation, button centres | not checked | - |
 
-Use these sessions' numbers as targets only after re-measuring the specific value. Sessions 19 and 21-25 are not
-spot-checked yet; session 17 and 26-30 are not answered yet.
+So Argon's iOS-only numbers are right far more often than not (6 of 8 checked; session 20's glyph was first marked
+wrong here by mistake: its times are clip times, source = clip + 0.5 s). Re-measure a value before using it as a
+fix target, as with sessions 18 and 23. Sessions 26-30 are not answered yet.
 
 ## Grouping into issues
 

@@ -15,8 +15,8 @@
 - **Open:** 48 issues (milestone `1.1.0 — iOS 27 parity`), PR #127 (contributor, changes requested).
 - **Saturday:** review every hand-off PR: re-render its branch, measure each claimed number yourself (Flash invented
   numbers before), run the suite, fix, and merge only what measures closer to iOS without breaking what matched.
-  Then verify any remaining Argon sessions (`.local/gemini/sessions/`; 18-25 spot-checked in audit section U: iOS-only
-  targets, re-measure each value before using it; 17 and 26-30 pending).
+  Then verify any remaining Argon sessions (`.local/gemini/sessions/`; 17-25 spot-checked in audit section U: iOS-only
+  targets, 6 of 8 checked sessions accurate, re-measure each value before using it; 26-30 pending).
 
 ## RESUME HERE (Saturday): verify the Argon answers, then fix
 
