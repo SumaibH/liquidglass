@@ -1,5 +1,21 @@
 # Resume LiquidGlass / Atlas Studio
 
+## 26 October, end of the night (state at main HEAD)
+
+Also landed: Calm bar rim at iOS's brightness (#96), in-app glass on the measured resting-corner map
+(#97, Pixel 7 checked), Material 3 menu corners 34 dp (#102), catalogue test timeout 8 min (CI), and
+several audit items measured and withdrawn or corrected (17, 33, 55, 65, 74; #98 closed).
+
+Biggest remaining, in order, each with the measurements already in its issue:
+1. **#93: the held lens's silhouette.** iOS's is a superellipse with n ≈ 3 (a ≈ 180, b ≈ 115 px at 35.5 s),
+   ours a capsule. This explains the straight crescent and the "slight oval". It needs `GlassPoseSource.poseQuery`
+   and the CPU query in `GlassPoseGeometry` changed together, then the agreement test and landing widths.
+2. **#97: the generic glass's rim.** At depth 2 px iOS shows content from ~36 px deeper, fanned at the corners.
+   Measure source against depth on the chart for the toolbar, title pill and buttons, then fit per role.
+3. **#94:** the swirl in the leading cap and the streak blur; LOLL8185's slow-drag fringes (0.29x).
+4. **#95:** tracking and timing (the pill arrives late, the ink switches 33 ms early).
+5. **#100:** a GPU profile of a tap on the Pixel 7 (GPU p50 12-14 ms against 11.1).
+
 ## 26 October, later the same night (state at c90b111)
 
 Landed on main since the refraction/fringe commit: rim outline and short glow (#92, rim-outline-2026-10-26), the
