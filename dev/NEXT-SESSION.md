@@ -1,5 +1,22 @@
 # Resume LiquidGlass / Atlas Studio
 
+## BASELINE (27 Oct, before the Antigravity / Flash hand-off): compare all new work against this
+
+- **Code:** main `a84637c` (no library, port or app source change since `2a7c7b0`). Anything after it on main or
+  in a PR came from the hand-off agents (prompt: `.local/gemini/HANDOFF-PROMPT.md`).
+- **Visual:** the replay renders `n6` (current main) and `p20` (20 Oct) under `.local/sxs/ref/<rec>/`, `s6` (search
+  script, IMG_6756) and `l6` (calm-light, IMG_7049). Re-render a PR branch with `.local/sxs/rrw.sh` into a new set
+  and measure it against `n6` and iOS with the section T scripts; numbers in audit sections Q-T are the targets.
+- **Tests:** `:liquidglass:jvmTest --rerun`: 92 classes, 438 tests, 27 skipped, 409 passed, 2 failed, both
+  `GlassTabBarV3GestureTest` one-minute timeouts (`UncompletedCoroutinesError`) while another Gradle build was running
+  on the machine; rerun of the class 17/18 (`aDeclinedDragReturnsTheSelectorToTheSelectionTheHostHolds` took 67 s
+  against the 60 s limit; its neighbours take 36-50 s). Load-dependent, not a logic failure. CI on `a84637c`: Docs and
+  CodeQL green, CI run cancelled (superseded).
+- **Open:** 48 issues (milestone `1.1.0 — iOS 27 parity`), PR #127 (contributor, changes requested).
+- **Saturday:** review every hand-off PR: re-render its branch, measure each claimed number yourself (Flash invented
+  numbers before), run the suite, fix, and merge only what measures closer to iOS without breaking what matched.
+  Then verify any remaining Argon sessions (`.local/gemini/sessions/`, 17-30).
+
 ## RESUME HERE (Saturday): verify the Argon answers, then fix
 
 The owner is running 30 Gemini 4 Argon sessions on the private videos. Each session is one file in
