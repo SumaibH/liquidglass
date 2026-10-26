@@ -28,9 +28,9 @@ GitHub issues group these by area (see the end).
 5. **M, E** **[done 26 Oct, see fringe-refraction-2026-10-26]** The dark band inside ours at band 1.1 reads as a flat slab at the bottom; iOS's is a thin curved crescent, thicker at the top than at the bottom (IMG_6756 35.5 s).
 6. **H, E** **[done 26 Oct, see rim-outline-2026-10-26]** Rim outline: iOS draws a thin, crisp, dark outline with a brighter inner line; ours is a soft grey ring 2-3x wider and lower in contrast.
 7. **M, E** Rim specular: iOS's lens catches a bright highlight along its upper-left and lower-right rim; ours has no directional highlight.
-8. **M, S** Bar growth while held: iOS's bar grows 4-13 px taller when a lens is held, so the lens overhangs it less at the bottom; ours does not grow, the lens hangs 1-3 px deeper (refraction record h 13.7 vs 12.3 px).
-9. **M, E** Lens size: on Keypad iOS's held lens is ~350 px wide (IMG_6756 35.5 s), ours ~335 px and its centre sits ~10 px left.
-10. **M, E** Fusion with the search button: ours joins the button through a neck when held at the trailing end (sample `lensFusion` 12 dp, from the light IMG_7048); iOS 27 dark (IMG_6756 35.5 s, docs/2 30.0 s, LOLL8185 21.3 s) shows the lens overlapping the button with no neck.
+8. **M, S** **[measured 26 Oct: matches at holds; the IMG_6756 drag gap is the inferred input, see search-neck-2026-10-26]** Bar growth while held: iOS's bar grows 4-13 px taller when a lens is held, so the lens overhangs it less at the bottom; ours does not grow, the lens hangs 1-3 px deeper (refraction record h 13.7 vs 12.3 px).
+9. **M, E** **[measured 26 Oct: within a few px]** Lens size: on Keypad iOS's held lens is ~350 px wide (IMG_6756 35.5 s), ours ~335 px and its centre sits ~10 px left.
+10. **M, E** **[done 26 Oct: iOS does join, with a shallow notch; sample 24 dp]** Fusion with the search button: ours joins the button through a neck when held at the trailing end (sample `lensFusion` 12 dp, from the light IMG_7048); iOS 27 dark (IMG_6756 35.5 s, docs/2 30.0 s, LOLL8185 21.3 s) shows the lens overlapping the button with no neck.
 11. **M, S** Held lens over page content reads 5 levels darker than iOS (docs/2 avatar 61.4 vs 65.3; #72); iOS's lens brightens what it shows.
 12. **L, E** Lens interior on black pages: iOS's inside reads slightly clearer/brighter at the centre with the bar texture visible to the rim; ours is a uniform grey.
 13. **L, E** Ink magnification under the lens: iOS 1.22-1.24, ours 1.20-1.22 (refraction record, icon fit).

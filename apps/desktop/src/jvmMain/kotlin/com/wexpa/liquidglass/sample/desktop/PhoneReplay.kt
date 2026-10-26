@@ -191,7 +191,7 @@ private fun replay(args: Array<String>) {
                 else if (variant.startsWith("whatsapp")) WhatsAppScene(selected, { selected = it },
                     style = WhatsAppGeometry.style(style), card = "+plain" !in variant, light = "light" in variant)
                 else PhoneScene(selected, { selected = it }, palette = palette, style = style,
-                    lensFusion = androidx.compose.ui.unit.Dp(variant.substringAfter("+lfuse=", "").substringBefore('+').toFloatOrNull() ?: 12f),
+                    lensFusion = androidx.compose.ui.unit.Dp(variant.substringAfter("+lfuse=", "").substringBefore('+').toFloatOrNull() ?: 24f),
                     search = if ("+passive" in variant) null else com.wexpa.liquidglass.GlassInteraction.Pullable.copy(
                         pullShape = com.wexpa.liquidglass.GlassPullShape.Free, pullLiftShare = 0.65f).let { base ->
                         // "+search=<follow>,<elongation>,<widthRatio>,<limit>,<liftShare>": a search-button candidate.
