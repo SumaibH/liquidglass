@@ -494,6 +494,20 @@ button on landing (#107), label split at the rim (refraction detail), selected b
 - Held lens "pinned while iOS's drifts", "page switches mid-travel", tap delays of 33-240 ms: the
   inferred finger input.
 
+## U. Argon sessions 18-25: iOS-only reference measurements, spot-checked (27 October)
+
+Sessions 18-25 measured iOS alone (zips G drags, H search, I light, J calibration chart), so they file nothing
+new; their numbers are candidate targets. Spot-checks on decoded frames decide how far to trust them:
+
+| Session | Claim | Measured | Verdict |
+| :-- | :-- | :-- | :-- |
+| 20 (search) | resting button 83 px at 0.444 scale, glyph 30, fill 32, press fill 89-94 | 186 px, glyph 68, fill 32, held 87.5 | matches |
+| 20 (search) | glyph magnifies 1.30x on press | 65 → 68 px (1.05x); ours 72 throughout (#110 item 119) | wrong |
+| 18 (throws) | docs/2 8.3 s landing: rim reaches x 0, 3 oscillations over 450 ms | rim to x 34 (29 px past the bar's 63), one dip to 198 then a 2 px overshoot, settled in ~200 ms | wrong in size and timing |
+
+Use these sessions' numbers as targets only after re-measuring the specific value. Sessions 19 and 21-25 are not
+spot-checked yet; session 17 and 26-30 are not answered yet.
+
 ## Grouping into issues
 
 | Issue | Items |
