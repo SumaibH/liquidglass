@@ -258,7 +258,7 @@ class GlassMaterialCatalogueTest {
         }
     }
 
-    private fun shoot(name: String, content: @Composable () -> Unit) = runDesktopComposeUiTest(780, 1688, testTimeout = 4.minutes) {
+    private fun shoot(name: String, content: @Composable () -> Unit) = runDesktopComposeUiTest(780, 1688, testTimeout = 8.minutes) { // railDark takes ~2 min on a fast desktop; CI runners are slower (26 Oct)
         setContent {
             CompositionLocalProvider(LocalDensity provides Density(2f)) {
                 Box(Modifier.size(390.dp, 844.dp).testTag("page")) { content() }
