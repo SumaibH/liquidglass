@@ -2,12 +2,15 @@
 
 ## RESUME HERE (Saturday): verify the Argon answers, then fix
 
-The owner is running 30 Gemini 4 Argon sessions on the private videos (`.local/gemini/ARGON-PROMPTS.md`, zips in
-`.local/gemini/`). Answers are saved as `.local/gemini/answers/NN.txt`. First verify them the usual way: frames, the
-replay `trace.csv`, scene pixels; Argon's numbers have been mostly honest, Flash's were not. File confirmed items with
-measurements. Then fix, in order: #124 (streaks; a regression since 20 Oct), #123 + #120 (tap travel and tap lens),
-#119, #108 (also a neck-colour regression), #95 and #106 timing, #125, #128. Answers 11, 13, 15, 17, 20, 22 and 25-27
-hold measured iOS targets for those fixes.
+The owner is running 30 Gemini 4 Argon sessions on the private videos. Each session is one file in
+`.local/gemini/sessions/` (zip path, prompt, answer); finished ones are renamed `NN_done.md`. **01-16 were verified on
+27 Oct** (audit section T): 12 items confirmed and filed (#129 new; comments on #93, #94, #106, #120, #124, #125,
+#128, the #94 one a regression since 20 Oct), the rest tracked or wrong. Verify 17-30 the same way: frames, the replay
+`trace.csv`, scene pixels (helpers in `tools/reference-replay/refraction.py`; renders n6, p20, s6, l6 under
+`.local/sxs/ref/<rec>/`). Set 1's search clips have no search gesture in our render; use set 2's s6 clips. Then fix, in
+order: #124 (streaks; regression), #94 throw-landing label (regression), #123 + #120 (tap travel, tap lens, bar
+spread), #119, #108, #95 and #106 timing (incl. the regrowing release bridge), #93 (bar stays fused off the trailing
+tab), #125, #128, #129 (sample glyph cut-outs). Sessions 11, 13, 15, 17, 20, 22 and 25-27 hold measured iOS targets.
 
 ## 26 October, late night: second video pass verified
 

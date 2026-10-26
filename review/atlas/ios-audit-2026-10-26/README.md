@@ -445,6 +445,55 @@ about v1.0.0) and ours now (`n6`). Checked here against decoded frames.
 Its suggested fixes (a 125 ms release spring, a 52 px lift, "enable dispersion in light") rest on the wrong readings
 above and are not adopted.
 
+## T. Video-model passes, fourth round: GPT and Argon sessions 01-16 (27 October)
+
+ChatGPT 6 Pro reviewed set 3 (verify and light clips; 14 findings), and Gemini 4 Argon ran sessions
+01-16 of the 30-session kit (FIND, TIMING, OPTICS, INK, CONSISTENCY, TARGETS and SKEPTIC over sets 1-3,
+the issue clips and the iOS-only tap and hold references). Each candidate was measured on decoded
+frames against our `:desktop:phoneReplay` renders (n6 = main 2a7c7b0, p20 = 20 October, s6 = the search
+script, l6 = `calm-light`), in scene pixels. The TIMING and TARGETS tables (sessions 02, 06, 11, 13-16)
+are reference numbers for the fixes and are checked when each fix is scored, not here.
+
+**Confirmed and filed**
+
+| Finding | iOS | Ours | Issue |
+| :-- | :-- | :-- | :-- |
+| Light: held selected glyph's cut-out | (252, 255, 255) | (0, 57, 120) | #129 (new) |
+| Unselected glyph cut-out at rest (dark) | (41, 41, 41) | (120, 120, 120) | #129 |
+| Held drag off the trailing tab: bar edge and search gap (47.3-47.8 s) | x 59-60, gap 896-920 | x 38, fused | #93 |
+| Bar pulled up by the finger in a held drag | top 460 → 440 | 452 (no y in our script) | #93, input-limited |
+| Search-end bridge during a still release (lit rows at x 909) | 111 → 0 by 36.30 s | 50 → 36 → 68 → 0 at 36.47 s | #106 |
+| Bar spread on a one-slot tap (left edge) | 60 → 42, fused | 63 → 59-61 | #120 |
+| Held search press light (fill luma) | 87.5 → 71 | 97.7 → 88.5 | #125 |
+| Search release squash | 179 × 164, top 485 | 187 × 170, top 475 | #125 |
+| Throw landing label ink, docs/2 8.63-8.66 s (20 Oct: 841, 782) | 1160, 1218 px | 538, 485 px | #94, regression |
+| Light: selected ink after landing on Keypad | 6242-6291 px, to row 617 | 5428-5741 px, to 606-611, regrows to 6528 | #128 |
+| Light: neighbour pull of unselected Contacts | 481.7 / 476.8 | 485.3 / 474.7 | #128 |
+| Held lens colour bands run straight (GPT R1, by eye) | follow the oval | straight strips | #124 |
+
+**Already tracked:** fast scrub sausage (#119), tap onset and travel (#123), tap middle-icon
+magnification and flat tap lens (#120), wall and throw landing overshoot and icon recoil (#95),
+press brightening before formation (#106 item 107), still release two-stage (#106 item 104), search
+rim 105 vs 97 at rest (#109 item 115), release bar dip (#106 item 105), lens overlapping the search
+button on landing (#107), label split at the rim (refraction detail), selected blue (#99), lens shape
+(#93), weaker light fringes (#120).
+
+**Wrong or not from the renderer**
+
+- Set 1's search-button clips (search press, vertical pull, glyph scaling) use the n6 render, which
+  has no search gesture; set 2's s6 clips are the valid ones.
+- "Now worse than 20 October: black trough erases the rim inside the held lens": iOS has the same dark
+  band (row minimum luma 1.0 at 455-456 and 635-636); ours 3.0, 20 October 18.
+- "Rim slices the top Keypad dots on press / drag": selected ink in icon rows is 2278-2789 px now,
+  2402-3194 on 20 October, 2261-2827 on iOS; no loss against iOS.
+- "Our throws overhang the bar's left end 30 px": at the measured landings iOS's lens reaches x 25-40,
+  ours 39-45.
+- "Search button goes dark ~190 ms early after release": fill luma matches from 8.10 s (35.7 vs 35.4).
+- Light "double border inside the lens on Calls": iOS draws the same two lines (x 11-13 and 45-46).
+- Light "frost and magnified page content": our page content differs from iOS's.
+- Held lens "pinned while iOS's drifts", "page switches mid-travel", tap delays of 33-240 ms: the
+  inferred finger input.
+
 ## Grouping into issues
 
 | Issue | Items |
@@ -487,3 +536,4 @@ above and are not adopted.
 | Green/black comb streaks along the lens rim during tap transits (#124) | 146 |
 | Search button: press flash, upright pull and see-through overlap (#125) | 147, 148 |
 | Light mode: resting neck, dark rim on release, pill gradient, faint outline (#128) | section S |
+| Light mode: the held selected glyph's cut-out is navy; iOS's is white (#129) | section T |
