@@ -1,5 +1,16 @@
 # Resume LiquidGlass / Atlas Studio
 
+## 26 October, later the same night (state at c90b111)
+
+Landed on main since the refraction/fringe commit: rim outline and short glow (#92, rim-outline-2026-10-26), the
+held split follows the selector's speed and the replay trace logs `transit`/`heldTravel` (#94 #101), sample neck
+24 dp (#93) and iOS 27 ink blue (#99), Pixel 7 frame-budget measurements and the renderScale 0.75 recommendation
+(#100, pixel7-render-scale-2026-10-26), audit corrections (items 8, 9, 33 withdrawn or explained, 55 corrected),
+ports' selector logic updated for the split rules, and CI's MAUI job pinned to SDK 10.0.402 (the 25 Oct SDK
+broke the locked restore). Measured and left: #70's remaining dip is pill arrival timing (#95); the generic
+glass's rim pulls in blurred, straight content where iOS's is crisp and fanned (#97, needs a measured fit).
+Material 3 `railDark` timed out once on CI (UncompletedCoroutinesError); passes locally and on earlier runs.
+
 ## 26 October night: audit, then refraction and fringes landed
 
 The owner asked for a full audit first: `review/atlas/ios-audit-2026-10-26/README.md` (102 items, issues
