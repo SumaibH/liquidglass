@@ -512,6 +512,11 @@ frame numbers and clip pixels (`.local/gemini/ref/`), and where useful against t
 | 24 (chart, optics) | clock numeral row 80, x 85-110: no colour split, bevel (88, 80) 231 / 228 (F550, F830) | max abs(R - B) 0; 231 and 228 | matches |
 | 25 (chart, targets) | lock-screen sheet translation, button centres | not checked | - |
 
+Session 17 is half answered (3 of 6 clips; the rest needs "continue"). Compared with our render (n6, s6), the
+checked targets already match and must not break: held Keypad lens on docs/2 13.4-13.6 s rows 435-656 (ours
+434-657); search button bottom edge in the upward pull 652, 628, 594 at 3, 5, 7 s (ours 652, 627, 595). The held
+fill is 52 on iOS and 48 on ours (minor), and ours forms ~100 ms later at 13.2 s (#106). No new issues.
+
 So Argon's iOS-only numbers are right far more often than not (6 of 8 checked; session 20's glyph was first marked
 wrong here by mistake: its times are clip times, source = clip + 0.5 s). Re-measure a value before using it as a
 fix target, as with sessions 18 and 23. Sessions 26-30 are not answered yet.
