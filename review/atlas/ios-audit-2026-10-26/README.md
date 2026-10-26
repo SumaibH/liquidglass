@@ -259,13 +259,76 @@ web, and load. Pixel numbers as in O; the search-button render is `s6` (IMG_6756
      minimise on scroll); our frames are bit-identical while nothing moves; label edges are equally crisp (10-90 %
      in 1 px). Tilt-driven highlights could not be tested: no recording holds the bar untouched long enough.
 
+## Q. Video-model pass, verified (26 October, night)
+
+A video-capable model (Gemini 4 Argon) watched iOS-over-ours videos built for it (`.local/gemini/`, private): the five
+recordings in real time and eleven 8x slow-motion gesture clips, with ours rendered by `:desktop:phoneReplay` set
+`n6`. That set comes from `2a7c7b0`, and nothing under `liquidglass/`, `apps/` or `ports/` has changed since, so the
+renders are current `main`. It also watched the raw recordings. Each of its 18 side-by-side findings was checked here
+against decoded frames, the replay's `trace.csv` and the replay script. Verdicts: 3 new (139-140), 7 already tracked (some worse
+than described), 0 already fixed, 4 replay or scene artefacts, 4 wrong.
+
+139. **H, S** Fast scrub flattens the held lens: during docs/2's back-and-forth scrub (18.7-22.0 s) our lens becomes
+     a flat ellipse, about 590 × 103 px at 20.0 s (trace body width 446-627 px from 19.0 to 21.0 s), and squashes
+     the labels. iOS's stays about 370 × 186 px, the bar's full height. The held-travel strain (.6, authored on this
+     scrub at 19.0 s, where iOS is 458 × 145) overshoots and stays on.
+140. **H, S** Tap transit should form a full lens on iOS 27: on every two-slot tap in JGEY2190 (4.62, 28.05, 30.53,
+     33.13 and 34.41 s) iOS's travelling pill rises into a full glass lens that protrudes past the bar, fringes and
+     magnifies the ink. Ours stays a flat dark pill (formation peaks at 0.25-0.28). docs/1, where the tap optics were
+     authored, inflates far less, so the recordings disagree; JGEY2190 is iOS 27. On the same taps our lens trails:
+     its centre is 77 px behind iOS's at 4.70 s.
+141. **M, E** The lens's side caps cut content instead of bending it: as a moving lens passes an icon (LOLL8185
+     21.38-21.50 s), iOS sweeps the icon round the cap (the Keypad dots smear along the right cap, Contacts bends
+     along the left), while ours keeps it unrefracted to a hard vertical ink-stencil line (the dots half blue, half
+     white). This is items 15 and 16, which were grouped under #77; #77 is closed, so they are re-homed here.
+142. **M, S** Bottom band of the bar: rows 620-632 (just below the labels) carry 5-10x iOS's fine page detail
+     (mean |Laplacian| 4.9 vs 0.5-1.0 on docs/1 12 s and docs/2 0.5 and 6.5 s). Items 41 and 86 are worse than described.
+143. **L, S** Held magnification: horizontally ours matches iOS (Keypad dots 70 → 88 px on both, IMG_6756 35-36 s);
+     vertically ours reaches 78 px against 81. Refines item 13; Gemini's "no central magnification" was wrong.
+144. **L, E** Glass text: COSG3073's lock-screen clock digits are glass (each stroke refracts the chart like a tube,
+     ~60-150 s). The library has no glass-text equivalent. COSG3073 is also the clearest edge-bending reference for
+     item 56: a wide capsule dragged across the gratings wraps them into U-shaped bands round both caps (22, 40, 85 s).
+
+Already tracked (with Gemini's added evidence):
+- Search-button press response (#114, item 48).
+- Release and onset timing, and tracking lag or surge (#106, #95; items 18, 75, 76, 104, 107).
+- Milky lens fill (#105, #111; items 11, 12, 124).
+- Side-cap specular (#109; items 7, 114).
+- Wall overshoot on a throw (item 35).
+- Neck cusp colour streaks (#107, #108).
+- The resting pill reading 2-3 levels low on docs/2 and JGEY2190 (item 40). Its geometry matches iOS exactly
+  (284 × 162 at IMG_6756 34.2 s), so "wider" was wrong.
+- The light lens's drop shadow, which Gemini reads as prominent while item 50 says ours is the stronger one: to be
+  measured before changing.
+
+Replay, script or scene, not the library:
+- The search episodes in IMG_6756 0-34 s are not in `script3.txt`; replayed with `search-script.txt`, our button
+  grows to within 2 px of iOS's (`s6`).
+- The finger parks exactly on the tab centres in `gen3.py` scripts (x 479.0 / 217.0 during every dwell, while iOS's
+  ink wanders 464-485 px), hence the "rigid" lens in IMG_6756 43-50 s.
+- The sample switches its page on touch-down (JGEY2190 4.75 s) where iOS switches on completion (5.00 s).
+- Missing Contacts page, badge (item 72) and swipe-home in the sample.
+
+Wrong:
+- "The ink is not clipped to the lens": at the cited moments our lens had not arrived yet (the lag above). Once it is
+  there, the in-lens blue split matches iOS.
+- "Missed inflations, JGEY2190 11-25 s": those are held drags, and ours is formed throughout (formation 1.0).
+- Comb streaks below the labels (docs/1 11-12 s, JGEY2190 34 and 39 s): absent in every frame of those windows (one
+  borderline frame at 10.82 s).
+- Lens "10-14 px right" at the search end: it is 27 px left (item 9).
+- "Punch-through" defrosting in IMG_7048 2:37-2:47: the readable text there sits below the bar, not behind the lens.
+
+Noted, out of scope (system UI): Control Center's backdrop blur leaving before its modules on dismissal and the
+expanded flashlight slider's lighter background blur (PUSM9766), the glass keyboard (search mode, #112), and
+UITabBarController committing a slow scrub's selection without switching the page (sample reference 14-23 s).
+
 ## Grouping into issues
 
 | Issue | Items |
 | :-- | :-- |
 | Held-lens rim optics: shape, outline, highlight, slab (new) | 3, 5, 6, 7, 12, 49, 59 |
 | Rim fringes (#73) | 1, 14, 22, 32, 38, 45, 51 |
-| Refraction strength vs content break-up (#77) | 2, 4, 15, 16, 24, 94 |
+| Refraction strength vs content break-up (#77, closed; 15 and 16 moved to #121) | 2, 4, 15, 16, 24, 94 |
 | Bar growth and lens geometry while held (new) | 8, 9, 10, 19, 20, 54, 101 |
 | Held lens over content (#72) | 11, 13, 86 |
 | Tap transit: smear, shape, plateau, timing (#70 + new) | 23, 25, 26, 27, 28, 29, 30, 31, 73, 74 |
@@ -293,3 +356,7 @@ web, and load. Pixel numbers as in O; the search-button render is `s6` (IMG_6756
 | Haptic feedback for selection changes (#116) | 134 |
 | Desktop and web: pointer hover and keyboard focus on glass controls (#117) | 135, 136 |
 | Lower the glass's cost automatically when frames are missed (#118) | 137 |
+| Fast scrub flattens the held lens to half the bar's height (#119) | 139 |
+| Tap transit should rise into a full glass lens (iOS 27) (#120) | 140 |
+| Lens side caps cut content instead of bending it round (items 15, 16, re-homed from #77) (#121) | 141 |
+| Other section Q items: 142 → #96, 143 → #72, 144 → #113 and #97 | 142-144 |

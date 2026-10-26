@@ -1,5 +1,15 @@
 # Resume LiquidGlass / Atlas Studio
 
+## 26 October, night: audit passes 2-4 filed (still paused for fixing)
+
+Audit items 103-144 and issues #105-#121 come from three more passes: hidden differences, behaviour beyond the pixels,
+and a video-model pass (Gemini 4 Argon on the iOS-over-ours videos in `.local/gemini/`, made by `.local/gemini/make.sh`)
+verified here frame by frame (audit section Q). By severity, the highest new items are: #119 fast scrub flattens the
+lens (590 × 103 px against 370 × 186), #120 iOS 27 taps form a full lens while ours peaks at formation 0.28, #106 press
+and release timing, #107 the lens over the search button, #105 ink lift. Replay-side gaps, which are not library work:
+script3 lacks IMG_6756's search episodes, gen3 parks the finger on exact tab centres, and the sample switches its page
+on touch-down. Next session: pick up from the ordered list below, starting with #119 and #120, which need replays only.
+
 ## PAUSED 26 October, morning (owner's request; state at 2a7c7b0 + this note)
 
 #93's squircle lens landed (2a7c7b0). Its first CI run was in progress at the pause: check it first. The .NET
