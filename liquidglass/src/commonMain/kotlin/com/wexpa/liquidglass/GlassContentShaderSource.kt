@@ -58,6 +58,7 @@ uniform float4  uPoseA;        // the 2x2 pose matrix A, row major
 uniform float4  uPoseAInv;     // its inverse
 uniform float4  uPoseC;        // (cx, cy) reference centre, (bx, by) = k / R
 uniform float4  uPoseD;        // (spine, radius, scaleX, band)
+uniform float4  uPoseE;        // (squircle, exponent, 0, 0): the superellipse blend (#93)
 uniform float   uEndpointAlpha;// 1 emits the ink premultiplied and unmasked, for endpoint composition
 uniform float   uEdgeFold;     // straight-run fold strength, shared with the panel pass
 uniform float   uInkSplit;     // per-channel split for semantic ink; 0 means one sharp sample

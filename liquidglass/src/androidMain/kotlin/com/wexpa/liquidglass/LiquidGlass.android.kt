@@ -170,6 +170,7 @@ internal actual fun createGlassRenderEffect(
     shader.setFloatUniform("uPoseAInv", uniforms.poseAInv[0], uniforms.poseAInv[1], uniforms.poseAInv[2], uniforms.poseAInv[3])
     shader.setFloatUniform("uPoseC", uniforms.poseC[0], uniforms.poseC[1], uniforms.poseC[2], uniforms.poseC[3])
     shader.setFloatUniform("uPoseD", uniforms.poseD[0], uniforms.poseD[1], uniforms.poseD[2], uniforms.poseD[3])
+    shader.setFloatUniform("uPoseE", uniforms.poseE[0], uniforms.poseE[1], uniforms.poseE[2], uniforms.poseE[3])
     shader.setFloatUniform("uEndpointAlpha", uniforms.endpointAlpha)
     shader.setFloatUniform("uEdgeFold", uniforms.edgeFold)
     shader.setFloatUniform("uWideStrip", uniforms.wideStrip)
@@ -275,6 +276,7 @@ internal actual fun createGlassContentRenderEffect(
     shader.setFloatUniform("uPoseAInv", uniforms.poseAInv[0], uniforms.poseAInv[1], uniforms.poseAInv[2], uniforms.poseAInv[3])
     shader.setFloatUniform("uPoseC", uniforms.poseC[0], uniforms.poseC[1], uniforms.poseC[2], uniforms.poseC[3])
     shader.setFloatUniform("uPoseD", uniforms.poseD[0], uniforms.poseD[1], uniforms.poseD[2], uniforms.poseD[3])
+    shader.setFloatUniform("uPoseE", uniforms.poseE[0], uniforms.poseE[1], uniforms.poseE[2], uniforms.poseE[3])
     shader.setFloatUniform("uEndpointAlpha", uniforms.endpointAlpha)
     shader.setFloatUniform("uEdgeFold", uniforms.edgeFold)
     shader.setFloatUniform("uInkSplit", uniforms.inkSplit)
@@ -331,6 +333,7 @@ internal actual fun createGlassEndpointRenderEffect(
     shader.setFloatUniform("uPoseAInv", uniforms.poseAInv[0], uniforms.poseAInv[1], uniforms.poseAInv[2], uniforms.poseAInv[3])
     shader.setFloatUniform("uPoseC", uniforms.poseC[0], uniforms.poseC[1], uniforms.poseC[2], uniforms.poseC[3])
     shader.setFloatUniform("uPoseD", uniforms.poseD[0], uniforms.poseD[1], uniforms.poseD[2], uniforms.poseD[3])
+    shader.setFloatUniform("uPoseE", uniforms.poseE[0], uniforms.poseE[1], uniforms.poseE[2], uniforms.poseE[3])
     return RenderEffect.createRuntimeShaderEffect(shader, "endpoint").asComposeRenderEffect()
 }
 

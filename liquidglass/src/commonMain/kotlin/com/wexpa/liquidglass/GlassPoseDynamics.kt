@@ -340,6 +340,14 @@ internal data class GlassPoseSpec(
     /** Critical recovery rate when tap pigment demand falls; zero follows demand directly. */
     val tapAppearanceFallOmega: Float = 0f,
     /**
+     * How far a formed held lens's outline is a superellipse rather than a capsule, 0 to 1, scaled by
+     * formation so the resting selector stays a capsule (#93). iOS's held lens fits n = 3 with a
+     * continuous top (IMG_6756 35.5 s). Zero preserves every historical silhouette.
+     */
+    val heldSquircle: Float = 0f,
+    /** The superellipse exponent [heldSquircle] blends toward. */
+    val squircleExponent: Float = 3f,
+    /**
      * Opt-in: a lens released from a hold keeps its formation while it is still travelling, in
      * slots per second for the smooth speed term, and subsides with [formOmega] once it slows.
      * Zero keeps the historical release, whose formation target drops to zero at lift-off.
@@ -436,9 +444,14 @@ internal data class GlassPoseSpec(
          * against video2 18.85-19.05 s; the wall-landing scores move from 5.3 / 4.3 to 6.0 / 5.4 px
          * rms right / left, the first two landing width series from 3.1 / 6.7 to 2.8 / 5.2
          * (2026-10-14/15 passes 12-13; pass 12 used .5 and squeeze .52: 427 x 144). Taps are
-         * unchanged. */
+         * unchanged.
+         *
+         * The held lens's outline (#93, 2026-10-26): a squircle blend of .7 toward n = 3, authored
+         * against IMG_6756 35.5 s. The lens's width at each depth below its crown (0-12 px) moves from
+         * 27.5 to 7.1 px rms against iOS (4.5 px below the first 2 px); a full blend (1) gives
+         * 9.2 / 8.9, n = 2.5 or 3.5 are worse. Replays: .local/sxs/sqfit.sh, sqscore.py. */
         val Calm = CalmWallLanding.copy(heldTravelStrain = .6f, heldTravelStrainOmega = 10f,
-            heldReferenceSpeed = 8f)
+            heldReferenceSpeed = 8f, heldSquircle = .7f)
     }
 }
 

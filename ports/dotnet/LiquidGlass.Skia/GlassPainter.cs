@@ -182,7 +182,7 @@ public sealed class GlassPainter : IDisposable
         var v = ClearUniforms(material, node.Width, node.Height, pad, 1);
         Apply(v, calm, options);
         Set(v, "uFormation", calm.Formation);
-        Set(v, "uBodyKind", 2); Set(v, "uPoseA", pose.A); Set(v, "uPoseAInv", pose.AInv); Set(v, "uPoseD", pose.D);
+        Set(v, "uBodyKind", 2); Set(v, "uPoseA", pose.A); Set(v, "uPoseAInv", pose.AInv); Set(v, "uPoseD", pose.D); Set(v, "uPoseE", pose.E ?? [0, 3, 0, 0]);
         Set(v, "uPoseC", pose.C[0] - bar.Width / 2, pose.C[1] - bar.Height / 2, pose.C[2], pose.C[3]);
         // GlassStyle.bodyBandScale: the lens refracts over this share of the body's own band.
         Set(v, "uRefractBand", pose.D[3] * BandScale(calm));
@@ -232,7 +232,7 @@ public sealed class GlassPainter : IDisposable
         var m = ClearUniforms(material, node.Width, node.Height, 2, 1);
         Apply(m, calm, options);
         Set(m, "uFormation", calm.Formation);
-        Set(m, "uBodyKind", 2); Set(m, "uPoseA", pose.A); Set(m, "uPoseAInv", pose.AInv); Set(m, "uPoseD", pose.D);
+        Set(m, "uBodyKind", 2); Set(m, "uPoseA", pose.A); Set(m, "uPoseAInv", pose.AInv); Set(m, "uPoseD", pose.D); Set(m, "uPoseE", pose.E ?? [0, 3, 0, 0]);
         Set(m, "uPoseC", pose.C[0] - bar.Width / 2, pose.C[1] - bar.Height / 2, pose.C[2], pose.C[3]);
         Set(m, "uRefractBand", pose.D[3] * BandScale(calm));
         Set(m, "uRadii", Enumerable.Repeat(Math.Min(node.Width, node.Height) / 2, 4).ToArray());
@@ -323,7 +323,7 @@ public sealed class GlassPainter : IDisposable
         Set(v, "uTint", 1, 1, 1, 0); Set(v, "uProfile", 3); Set(v, "uFormation", 1); Set(v, "uHeldLens", 1);
         Set(v, "uHeldMagnification", 1 - 1 / magnification); Set(v, "uFineShare", 1); Set(v, "uWideScale", .25f);
         Set(v, "uTouch", width / 2, height / 2); Set(v, "uMaterialize", 1);
-        Set(v, "uPoseA", 1, 0, 0, 1); Set(v, "uPoseAInv", 1, 0, 0, 1); Set(v, "uPoseD", 1, 1, 1, 0);
+        Set(v, "uPoseA", 1, 0, 0, 1); Set(v, "uPoseAInv", 1, 0, 0, 1); Set(v, "uPoseD", 1, 1, 1, 0); Set(v, "uPoseE", 0, 3, 0, 0);
         return v;
     }
 

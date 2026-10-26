@@ -170,6 +170,7 @@ internal actual fun createGlassRenderEffect(
     builder.uniform("uPoseAInv", uniforms.poseAInv[0], uniforms.poseAInv[1], uniforms.poseAInv[2], uniforms.poseAInv[3])
     builder.uniform("uPoseC", uniforms.poseC[0], uniforms.poseC[1], uniforms.poseC[2], uniforms.poseC[3])
     builder.uniform("uPoseD", uniforms.poseD[0], uniforms.poseD[1], uniforms.poseD[2], uniforms.poseD[3])
+    builder.uniform("uPoseE", uniforms.poseE[0], uniforms.poseE[1], uniforms.poseE[2], uniforms.poseE[3])
     builder.uniform("uEndpointAlpha", uniforms.endpointAlpha)
     builder.uniform("uEdgeFold", uniforms.edgeFold)
     builder.uniform("uWideStrip", uniforms.wideStrip)
@@ -266,6 +267,7 @@ internal actual fun createGlassContentRenderEffect(
     builder.uniform("uPoseAInv", uniforms.poseAInv[0], uniforms.poseAInv[1], uniforms.poseAInv[2], uniforms.poseAInv[3])
     builder.uniform("uPoseC", uniforms.poseC[0], uniforms.poseC[1], uniforms.poseC[2], uniforms.poseC[3])
     builder.uniform("uPoseD", uniforms.poseD[0], uniforms.poseD[1], uniforms.poseD[2], uniforms.poseD[3])
+    builder.uniform("uPoseE", uniforms.poseE[0], uniforms.poseE[1], uniforms.poseE[2], uniforms.poseE[3])
     builder.uniform("uEndpointAlpha", uniforms.endpointAlpha)
     builder.uniform("uEdgeFold", uniforms.edgeFold)
     builder.uniform("uInkSplit", uniforms.inkSplit)
@@ -325,6 +327,7 @@ internal actual fun createGlassEndpointRenderEffect(
     builder.uniform("uPoseAInv", uniforms.poseAInv[0], uniforms.poseAInv[1], uniforms.poseAInv[2], uniforms.poseAInv[3])
     builder.uniform("uPoseC", uniforms.poseC[0], uniforms.poseC[1], uniforms.poseC[2], uniforms.poseC[3])
     builder.uniform("uPoseD", uniforms.poseD[0], uniforms.poseD[1], uniforms.poseD[2], uniforms.poseD[3])
+    builder.uniform("uPoseE", uniforms.poseE[0], uniforms.poseE[1], uniforms.poseE[2], uniforms.poseE[3])
     return glassEndpointInputFilter(builder, uniforms.inkStrip).asComposeRenderEffect()
 }
 

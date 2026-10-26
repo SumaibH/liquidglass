@@ -74,7 +74,7 @@ export function clearMaterialUniforms(effects, {width, height, pad = 32, magnifi
     uTint: [1,1,1,0], uProfile: 3, uFormation: 1, uHeldLens: 1,
     uHeldMagnification: 1-1/magnification, uFineShare: 1, uWideScale: .25,
     uTouch: [width/2,height/2], uMaterialize: 1,
-    uPoseA: [1,0,0,1], uPoseAInv: [1,0,0,1], uPoseD: [1,1,1,0],
+    uPoseA: [1,0,0,1], uPoseAInv: [1,0,0,1], uPoseD: [1,1,1,0], uPoseE: [0,3,0,0],
   });
   return values;
 }

@@ -51,6 +51,8 @@ public sealed record CalmSelectorSpec
     public double TapAppearanceArea { get; init; } = 0; public double TapAppearanceSpine { get; init; } = 0;
     public double TapAppearanceFallOmega { get; init; } = 0; public double ReleaseFormationSpeed { get; init; } = 0;
     public double ReleaseStillHoldSeconds { get; init; } = 0;
+    /// <summary>The held lens's superellipse blend (#93) at full formation, and its exponent.</summary>
+    public double HeldSquircle { get; init; } = 0; public double SquircleExponent { get; init; } = 3;
 
     /// <summary>GlassPoseSpec.Calm.</summary>
     public static CalmSelectorSpec Calm { get; } = new()
@@ -66,6 +68,7 @@ public sealed record CalmSelectorSpec
         GraspOmega = 120, HeldFormRiseOmega = 50, ReleaseTrailingEdge = true, ReleaseRecoveryOmega = 13,
         ReleaseTrailingInOmega = 9, ReleaseTrailingInZeta = .3, ReleaseTrailingCarry = .1, ReleaseWallGive = .35,
         ReleaseTrailingStiffening = .5, ReleaseStillHoldSeconds = .18, HeldTravelStrain = .6, HeldTravelStrainOmega = 10,
+        HeldSquircle = .7,
     };
 }
 
@@ -117,7 +120,11 @@ public sealed record CalmSelectorBar(double Width, double Height, double Inset, 
 public enum CalmSelectorMode { Rest, TapTransit, PressPending, Held, Released }
 
 /// <summary>Shader pose uniforms: A, A^-1 row-major, (cx, cy, bx, by) bar-local, (spine, radius, scaleX, band).</summary>
-public readonly record struct CalmSelectorPose(float[] A, float[] AInv, float[] C, float[] D);
+public readonly record struct CalmSelectorPose(float[] A, float[] AInv, float[] C, float[] D)
+{
+    /// <summary>uPoseE: (squircle amount, exponent, 0, 0); null draws the capsule.</summary>
+    public float[]? E { get; init; }
+}
 public readonly record struct CalmSelectorExtents(double Left, double Right, double Top, double Bottom)
 {
     public double Width => Right - Left;
@@ -1023,7 +1030,11 @@ public sealed class CalmSelectorController
     public CalmSelectorPose Render(double originX = 0, double originY = 0) => new(
         frame.A.Select(v => (float)v).ToArray(), frame.AInv.Select(v => (float)v).ToArray(),
         [(float)(frame.Cx - originX), (float)(frame.Cy - originY), (float)frame.Bx, (float)frame.By],
-        [(float)frame.Spine, (float)frame.Radius, (float)frame.ScaleX, (float)frame.Band()]);
+        [(float)frame.Spine, (float)frame.Radius, (float)frame.ScaleX, (float)frame.Band()])
+    {
+        // The held lens's superellipse blend (#93), grown with the formation as Compose does.
+        E = [(float)(Spec.HeldSquircle * Formation), (float)Spec.SquircleExponent, 0, 0],
+    };
 }
 
 /// <summary>GlassTabBar's gesture protocol over a <see cref="CalmSelectorController"/>: touch-down aims the

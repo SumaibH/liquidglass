@@ -41,6 +41,7 @@ uniform float4  uPoseA;
 uniform float4  uPoseAInv;
 uniform float4  uPoseC;
 uniform float4  uPoseD;
+uniform float4 uPoseE;
 uniform float   uDistanceScale;
 uniform float   uChannel;      // 0 packs (distance, normal); 1 packs the curvature
 
@@ -73,6 +74,7 @@ half4 main(float2 fragCoord) {
         b.uniform("uPoseAInv", frame.aInv[0], frame.aInv[1], frame.aInv[2], frame.aInv[3])
         b.uniform("uPoseC", frame.cx, frame.cy, frame.bx, frame.by)
         b.uniform("uPoseD", frame.spine, frame.radius, frame.scaleX, frame.band())
+        b.uniform("uPoseE", frame.squircle, frame.squircleExponent, 0f, 0f)
         b.uniform("uDistanceScale", distanceScale)
         b.uniform("uChannel", channel)
         val surface = Surface.makeRasterN32Premul(width, height)
@@ -108,7 +110,16 @@ half4 main(float2 fragCoord) {
     )
 
     @Test
-    fun theSharedPoseShaderAgreesWithTheCpuQuery() {
+    fun theSharedPoseShaderAgreesWithTheCpuQuery() = agreement(squircle = 0f)
+
+    /** The held lens's superellipse blend (uPoseE, #93) must agree CPU against GPU too. */
+    @Test
+    fun theSquircleBlendAgreesWithTheCpuQuery() {
+        agreement(squircle = 1f)
+        agreement(squircle = 0.5f, exponent = 4f)
+    }
+
+    private fun agreement(squircle: Float, exponent: Float = 3f) {
         val reference = GlassReference(a = 44f, r = 26f)
         val distanceScale = 120f
         var worstDistance = 0f
@@ -118,7 +129,7 @@ half4 main(float2 fragCoord) {
         var sampled = 0
         val q = GlassPoseQuery()
         for ((name, pose) in poses()) {
-            val frame = GlassPoseFrame().apply { update(reference, pose) }
+            val frame = GlassPoseFrame().apply { update(reference, pose); this.squircle = squircle; squircleExponent = exponent }
             val pixels = render(frame, distanceScale)
             val curvaturePixels = render(frame, distanceScale, channel = 1f)
             for (py in 3 until height - 3 step 2) {
@@ -143,12 +154,13 @@ half4 main(float2 fragCoord) {
                     if (dd > worstDistance) { worstDistance = dd; worstAt = "$name at ($px,$py)" }
                     val nd = max(abs(gnx - q.normalX), abs(gny - q.normalY))
                     worstNormal = max(worstNormal, nd)
-                    worstCurvature = max(worstCurvature, abs(gk - q.curvature))
+                    // The probe clamps curvature at 0.1 (x10 into one channel); the CPU side is clamped the same.
+                    worstCurvature = max(worstCurvature, abs(gk - q.curvature.coerceIn(0f, 0.1f)))
                 }
             }
         }
         println(
-            "POSE-AGREEMENT sampled=$sampled worstDistance=%.3f px worstNormal=%.4f worstCurvature=%.5f at %s"
+            "POSE-AGREEMENT squircle=$squircle sampled=$sampled worstDistance=%.3f px worstNormal=%.4f worstCurvature=%.5f at %s"
                 .format(worstDistance, worstNormal, worstCurvature, worstAt),
         )
         assertTrue(sampled > 25_000, "only $sampled pixels were in the scored band")

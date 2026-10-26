@@ -79,6 +79,7 @@ namespace LiquidGlass
             ("uPoseAInv", 4),
             ("uPoseC", 4),
             ("uPoseD", 4),
+            ("uPoseE", 4),
             ("uEndpointAlpha", 1),
             ("uEdgeFold", 1),
         };

@@ -1,6 +1,8 @@
 package com.wexpa.liquidglass
 
 import kotlin.math.abs
+import kotlin.math.pow
+import kotlin.math.sign
 import kotlin.math.cosh
 import kotlin.math.exp
 import kotlin.math.max
@@ -182,6 +184,13 @@ internal class GlassPoseFrame {
     var sinTheta: Float = 0f
     /** The rendered half-spine, in px, before accommodation is added to it. */
     var halfSpine: Float = 0f
+    /**
+     * The superellipse blend (#93): 0 is the capsule, 1 the outline `|x/A|^n + |y/B|^n = 1` over the
+     * capsule's own extent (`A` = half-spine + radius, `B` = radius). Set by the controller from its spec
+     * and formation; it never changes the extent, so bounds and hit areas are the capsule's.
+     */
+    var squircle: Float = 0f
+    var squircleExponent: Float = 3f
 
     fun update(reference: GlassReference, pose: GlassPose) {
         this.reference = reference
@@ -380,22 +389,28 @@ internal class GlassPoseFrame {
         // The canonical capsule, in whichever space this candidate declares it in.
         val ex: Float
         val ey: Float
+        val wx: Float
+        val wy: Float
         val halfSpine: Float
         val rad: Float
         if (reference.accommodation == GlassAccommodation.Spine) {
             halfSpine = spine
             rad = radius
+            wx = zx
+            wy = zy
             ex = zx - zx.coerceIn(-halfSpine, halfSpine)
             ey = zy
         } else {
             zToMaterial(zx, zy, scratchQ)
             halfSpine = reference.a
             rad = reference.r
+            wx = scratchQ[0]
+            wy = scratchQ[1]
             ex = scratchQ[0] - scratchQ[0].coerceIn(-halfSpine, halfSpine)
             ey = scratchQ[1]
         }
         val len = sqrt(ex * ex + ey * ey)
-        val d = len - rad
+        var d = len - rad
         // The canonical outward normal. On the spine the perpendicular direction is the normal;
         // at the medial axis it is not unique, and the optical band never reaches there.
         var n0x: Float
@@ -406,6 +421,33 @@ internal class GlassPoseFrame {
         } else {
             n0x = 0f
             n0y = 1f
+        }
+        // The squircle blend, exactly as GlassPoseSource.poseQuery evaluates it.
+        val sq = squircle.coerceIn(0f, 1f)
+        if (sq > 0f && rad > 1e-5f) {
+            val pn = max(squircleExponent, 2f)
+            val aA = halfSpine + rad
+            val bB = rad
+            val ax = abs(wx) / aA
+            val ay = abs(wy) / bB
+            val f = (ax.pow(pn) + ay.pow(pn)).pow(1f / pn)
+            var dS = -bB
+            var nSx = 0f
+            var nSy = 1f
+            if (f > 1e-3f) {
+                val k = f.pow(1f - pn)
+                val gx = sign(wx) * ax.pow(pn - 1f) / aA * k
+                val gy = sign(wy) * ay.pow(pn - 1f) / bB * k
+                val gn = max(sqrt(gx * gx + gy * gy), 1e-6f)
+                dS = (f - 1f) / gn
+                nSx = gx / gn
+                nSy = gy / gn
+            }
+            d += (dS - d) * sq
+            val mx = n0x + (nSx - n0x) * sq
+            val my = n0y + (nSy - n0y) * sq
+            val ml = sqrt(mx * mx + my * my)
+            if (ml > 1e-5f) { n0x = mx / ml; n0y = my / ml } else { n0x = nSx; n0y = nSy }
         }
 
         // J = A * DF_k(z) * (C for candidate A). gradient = J^-T n0.
@@ -596,14 +638,16 @@ internal class GlassPoseRender(
     val c: FloatArray,
     /** `(spine, radius, scaleX, band)`. */
     val d: FloatArray,
+    /** `(squircle, exponent, 0, 0)` (#93). */
+    val e: FloatArray = EMPTY_POSE_E,
 ) {
     override fun equals(other: Any?): Boolean =
         other is GlassPoseRender && a.contentEquals(other.a) && aInv.contentEquals(other.aInv) &&
-            c.contentEquals(other.c) && d.contentEquals(other.d)
+            c.contentEquals(other.c) && d.contentEquals(other.d) && e.contentEquals(other.e)
 
     override fun hashCode(): Int =
-        ((a.contentHashCode() * 31 + aInv.contentHashCode()) * 31 + c.contentHashCode()) * 31 +
-            d.contentHashCode()
+        (((a.contentHashCode() * 31 + aInv.contentHashCode()) * 31 + c.contentHashCode()) * 31 +
+            d.contentHashCode()) * 31 + e.contentHashCode()
 }
 
 /**
@@ -619,4 +663,5 @@ internal fun glassPoseRenderOf(frame: GlassPoseFrame, dx: Float, dy: Float): Gla
         aInv = frame.aInv.copyOf(),
         c = floatArrayOf(frame.cx - dx, frame.cy - dy, frame.bx, frame.by),
         d = floatArrayOf(frame.spine, frame.radius, frame.scaleX, frame.band()),
+        e = floatArrayOf(frame.squircle, frame.squircleExponent, 0f, 0f),
     )

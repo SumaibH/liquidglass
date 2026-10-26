@@ -53,6 +53,7 @@ Map<String, List<double>> glassMaterialUniforms(GlassMaterial m, Size size, doub
   set('uPoseA', [1, 0, 0, 1]);
   set('uPoseAInv', [1, 0, 0, 1]);
   set('uPoseD', [1, 1, 1, 0]);
+  set('uPoseE', [0, 3, 0, 0]);
 
   // inAppMaterialUniforms.
   final t = m.tintAmount / 100;

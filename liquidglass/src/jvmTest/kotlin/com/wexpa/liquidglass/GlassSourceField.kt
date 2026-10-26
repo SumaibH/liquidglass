@@ -192,18 +192,21 @@ internal object GlassSourceField {
                     b.uniform("uPoseAInv", 1f, 0f, 0f, 1f)
                     b.uniform("uPoseC", 0f, 0f, 0f, 0f)
                     b.uniform("uPoseD", 1f, 1f, 1f, 0f)
+                    b.uniform("uPoseE", 0f, 3f, 0f, 0f)
                 // The pose body is off in these fixtures; the uniforms still have to be
                 // set, because a declared uniform left unbound reads whatever was there.
                 b.uniform("uPoseA", 1f, 0f, 0f, 1f)
                 b.uniform("uPoseAInv", 1f, 0f, 0f, 1f)
                 b.uniform("uPoseC", 0f, 0f, 0f, 0f)
                 b.uniform("uPoseD", 1f, 1f, 1f, 0f)
+                    b.uniform("uPoseE", 0f, 3f, 0f, 0f)
             // The pose body is off in these fixtures; the uniforms still have to be
             // set, because a declared uniform left unbound reads whatever was there.
             b.uniform("uPoseA", 1f, 0f, 0f, 1f)
             b.uniform("uPoseAInv", 1f, 0f, 0f, 1f)
             b.uniform("uPoseC", 0f, 0f, 0f, 0f)
             b.uniform("uPoseD", 1f, 1f, 1f, 0f)
+                    b.uniform("uPoseE", 0f, 3f, 0f, 0f)
                 }
                 b.uniform("uEndpointAlpha", 0f)
                 b.uniform("uEdgeFold", edgeFold)

@@ -34,7 +34,7 @@ class GlassEndpointInputBoundsTest {
                         builder.uniform("uBody", 0f, 0f, 0f, 0f)
                         builder.uniform("uBodyY", 0f); builder.uniform("uBodyKind", 0f)
                         builder.uniform("uPoseA", 1f, 0f, 0f, 1f); builder.uniform("uPoseAInv", 1f, 0f, 0f, 1f)
-                        builder.uniform("uPoseC", 0f, 0f, 0f, 0f); builder.uniform("uPoseD", 1f, 1f, 1f, 0f)
+                        builder.uniform("uPoseC", 0f, 0f, 0f, 0f); builder.uniform("uPoseD", 1f, 1f, 1f, 0f); builder.uniform("uPoseE", 0f, 3f, 0f, 0f)
                         glassEndpointInputFilter(builder, h.toFloat()).use { filter ->
                             Paint().use { paint ->
                                 paint.imageFilter = filter

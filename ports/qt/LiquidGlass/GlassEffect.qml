@@ -84,6 +84,7 @@ ShaderEffect {
     property vector4d uPoseAInv
     property vector4d uPoseC
     property vector4d uPoseD
+    property vector4d uPoseE
     property real uEndpointAlpha
     property real uEdgeFold
 
@@ -163,6 +164,7 @@ ShaderEffect {
         v = values.uPoseAInv; if (v) uPoseAInv = Qt.vector4d(v[0], v[1], v[2], v[3])
         v = values.uPoseC; if (v) uPoseC = Qt.vector4d(v[0], v[1], v[2], v[3])
         v = values.uPoseD; if (v) uPoseD = Qt.vector4d(v[0], v[1], v[2], v[3])
+        v = values.uPoseE; if (v) uPoseE = Qt.vector4d(v[0], v[1], v[2], v[3])
         v = values.uEndpointAlpha; if (v) uEndpointAlpha = v[0]
         v = values.uEdgeFold; if (v) uEdgeFold = v[0]
     }

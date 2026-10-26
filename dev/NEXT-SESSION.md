@@ -6,10 +6,11 @@ Also landed: Calm bar rim at iOS's brightness (#96), in-app glass on the measure
 (#97, Pixel 7 checked), Material 3 menu corners 34 dp (#102), catalogue test timeout 8 min (CI), and
 several audit items measured and withdrawn or corrected (17, 33, 55, 65, 74; #98 closed).
 
-Biggest remaining, in order, each with the measurements already in its issue:
-1. **#93: the held lens's silhouette.** iOS's is a superellipse with n ≈ 3 (a ≈ 180, b ≈ 115 px at 35.5 s),
-   ours a capsule. This explains the straight crescent and the "slight oval". It needs `GlassPoseSource.poseQuery`
-   and the CPU query in `GlassPoseGeometry` changed together, then the agreement test and landing widths.
+Biggest remaining, in order (#93 now done), each with the measurements already in its issue:
+1. **#93: done 26 Oct (lens-squircle-2026-10-26).** The pose shader and CPU query blend toward a superellipse
+   (`uPoseE`, `GlassPoseSpec.heldSquircle` .7, n 3, × formation); width profile 27.5 → 7.1 px rms. Ports set
+   `uPoseE`. **Not yet checked on the Pixel 7** (it was not connected; a Huawei was). Replay knob
+   `calm+squircle=amount,exponent`; scripts `.local/sxs/sqfit.sh`, `sqscore.py`.
 2. **#97: the generic glass's rim.** At depth 2 px iOS shows content from ~36 px deeper, fanned at the corners.
    Measure source against depth on the chart for the toolbar, title pill and buttons, then fit per role.
 3. **#94:** the swirl in the leading cap and the streak blur; LOLL8185's slow-drag fringes (0.29x).

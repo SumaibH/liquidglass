@@ -230,6 +230,7 @@ internal object GlassRender {
             b.uniform("uPoseAInv", 1f, 0f, 0f, 1f)
             b.uniform("uPoseC", 0f, 0f, 0f, 0f)
             b.uniform("uPoseD", 1f, 1f, 1f, 0f)
+            b.uniform("uPoseE", 0f, 3f, 0f, 0f)
         }
         b.uniform("uEdgeFold", edgeFold)
         b.uniform("uEndpointAlpha", endpointAlpha)

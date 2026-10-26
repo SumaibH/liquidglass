@@ -41,7 +41,7 @@ class GlassShaderTest {
             "uPad", "uScale", "uFlip", "uCounterLight", "uEdgeLight", "uBevelPeak", "uEdgeShadow", "uCapEdgeShadow", "uOuterContour", "uRimSoft", "uTintAbsorb",
             "uProfile", "uFormation", "uHeldLens", "uHeldMagnification", "uHeldGlow", "uRestMap", "uWideStrip", "uWideScale", "uFineShare", "uWideKernel", "uLift", "uLiftAdapt",
             "uFuse", "uFuseShape",
-            "uBody", "uBodyY", "uBodyKind", "uPoseA", "uPoseAInv", "uPoseC", "uPoseD", "uEndpointAlpha", "uEdgeFold",
+            "uBody", "uBodyY", "uBodyKind", "uPoseA", "uPoseAInv", "uPoseC", "uPoseD", "uPoseE", "uEndpointAlpha", "uEdgeFold",
         )
 
         val missing = setByHost - declared
@@ -76,7 +76,7 @@ class GlassContentShaderTest {
             "uRefractBand", "uRefractDepth", "uIor", "uBevelPower", "uAberration", "uScale",
             "uMaterialize", "uTouch", "uTouchAmt", "uProfile", "uFormation", "uHeldLens", "uHeldMagnification", "uRestMap",
             "uFuse", "uFuseShape",
-            "uBody", "uBodyY", "uBodyKind", "uPoseA", "uPoseAInv", "uPoseC", "uPoseD", "uEndpointAlpha", "uEdgeFold", "uInkSplit", "uHeldInk", "uFoldCorners", "uRimMirror", "uRimMirrorGain",
+            "uBody", "uBodyY", "uBodyKind", "uPoseA", "uPoseAInv", "uPoseC", "uPoseD", "uPoseE", "uEndpointAlpha", "uEdgeFold", "uInkSplit", "uHeldInk", "uFoldCorners", "uRimMirror", "uRimMirrorGain",
         )
         val unset = declared - setByHost - setOf("content", "field")
         assertTrue(unset.isEmpty(), "content shader declares uniforms nothing sets: $unset")

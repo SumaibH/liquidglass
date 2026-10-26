@@ -75,6 +75,7 @@ namespace LiquidGlass
                 ["uPoseA"] = new[] { 1.0, 0, 0, 1 },
                 ["uPoseAInv"] = new[] { 1.0, 0, 0, 1 },
                 ["uPoseD"] = new[] { 1.0, 1, 1, 0 },
+                ["uPoseE"] = new[] { 0.0, 3, 0, 0 },
             };
 
             // inAppMaterialUniforms.

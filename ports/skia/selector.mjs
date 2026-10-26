@@ -35,6 +35,7 @@ const DEFAULT_SPEC = Object.freeze({
   releaseTrailingStiffening: 0,
   tapShortTripRate: 1, tapAppearanceArea: 0, tapAppearanceSpine: 0,
   tapAppearanceFallOmega: 0, releaseFormationSpeed: 0, releaseStillHoldSeconds: 0,
+  heldSquircle: 0, squircleExponent: 3,
 });
 
 /** GlassPoseSpec.Calm: CalmIndependent -> CalmVolume -> CalmEndpoint -> CalmImpact -> CalmFreeLanding -> Calm. */
@@ -51,6 +52,7 @@ export const CALM_SELECTOR_SPEC = Object.freeze({
   graspOmega: 120, heldFormRiseOmega: 50, releaseTrailingEdge: true, releaseRecoveryOmega: 13,
   releaseTrailingInOmega: 9, releaseTrailingInZeta: .3, releaseTrailingCarry: .1, releaseWallGive: .35,
   releaseTrailingStiffening: .5, releaseStillHoldSeconds: .18, heldTravelStrain: .6, heldTravelStrainOmega: 10,
+  heldSquircle: .7,
 });
 
 const MODE = Object.freeze({Rest: 'rest', TapTransit: 'tap', PressPending: 'pending', Held: 'held', Released: 'released'});
@@ -984,7 +986,9 @@ export class CalmSelectorController {
   render(originX = 0, originY = 0) {
     const f = this.frame;
     return {a: [...f.a], aInv: [...f.aInv], c: [f.cx - originX, f.cy - originY, f.bx, f.by],
-      d: [f.spine, f.radius, f.scaleX, f.band()]};
+      d: [f.spine, f.radius, f.scaleX, f.band()],
+      // uPoseE: the held lens's superellipse blend (#93), grown with the formation as Compose does.
+      e: [this.spec.heldSquircle * this.formation, this.spec.squircleExponent, 0, 0]};
   }
 }
 

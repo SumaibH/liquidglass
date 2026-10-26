@@ -83,6 +83,7 @@ layout(std140, binding = 0) uniform buf {
     vec4 uPoseAInv;
     vec4 uPoseC;
     vec4 uPoseD;
+    vec4 uPoseE;
     float uEndpointAlpha;
     float uEdgeFold;
 };
@@ -260,18 +261,46 @@ vec4 poseQuery(vec2 x, vec4 uPoseA, vec4 uPoseAInv, vec4 uPoseC, vec4 uPoseD) {
     // material stretch out of boundary lighting; candidate A evaluates it in q and carries C in
     // the Jacobian below. Both describe the same contour.
     vec2 e;
+    vec2 w;
     float halfSpine;
     if (scaleX == 1.0) {
         halfSpine = spine;
+        w = z;
         e = vec2(z.x - clamp(z.x, -halfSpine, halfSpine), z.y);
     } else {
         vec2 q = vec2(z.x / max(scaleX, 1e-6), z.y);
         halfSpine = spine / max(scaleX, 1e-6);
+        w = q;
         e = vec2(q.x - clamp(q.x, -halfSpine, halfSpine), q.y);
     }
     float len = length(e);
     float d = len - radius;
     vec2 n0 = (len > 1e-5) ? (e / len) : vec2(0.0, 1.0);
+    // The squircle (#93): the held lens's outline is a superellipse |x/A|^n + |y/B|^n = 1 over the
+    // capsule's own extent (A = halfSpine + radius, B = radius), blended in by uPoseE.x; iOS's held lens
+    // fits n = 3 (IMG_6756 35.5 s). The first-order distance (f - 1) / |grad f| is exact on both axes.
+    float sq = clamp(uPoseE.x, 0.0, 1.0);
+    if (sq > 0.0 && radius > 1e-5) {
+        float pn = max(uPoseE.y, 2.0);
+        float A = halfSpine + radius;
+        float B = radius;
+        float ax = abs(w.x) / A;
+        float ay = abs(w.y) / B;
+        float f = pow(pow(ax, pn) + pow(ay, pn), 1.0 / pn);
+        float dS = -B;
+        vec2 nS = vec2(0.0, 1.0);
+        if (f > 1e-3) {
+            float k = pow(f, 1.0 - pn);
+            vec2 gS = vec2(sign(w.x) * pow(ax, pn - 1.0) / A, sign(w.y) * pow(ay, pn - 1.0) / B) * k;
+            float gn = max(length(gS), 1e-6);
+            dS = (f - 1.0) / gn;
+            nS = gS / gn;
+        }
+        d = mix(d, dS, sq);
+        vec2 nm = mix(n0, nS, sq);
+        float nl = length(nm);
+        n0 = (nl > 1e-5) ? (nm / nl) : nS;
+    }
 
     // J = A * DF_k(z) * (C for candidate A);  DF_k(z) = s I + z b^T
     vec2 b = uPoseC.zw;

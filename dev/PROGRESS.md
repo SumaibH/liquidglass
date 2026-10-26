@@ -6,6 +6,11 @@ Read this first after an interruption. Detailed history lives in the
 
 ## Current state
 
+**26 October squircle lens (#93):** the held lens's outline blends .7 toward a superellipse n = 3 in the pose
+shader and the CPU query (`uPoseE`; agreement test at 0, .5, 1); width profile against IMG_6756 35.5 s 27.5 →
+7.1 px rms. Ports regenerated and set `uPoseE`. Pixel 7 not connected, device check pending.
+[Evidence](../review/atlas/lens-squircle-2026-10-26/README.md).
+
 **26 October refraction and fringes (#73 #77 #92 #94):** audit of 102 differences filed as #92-#104; then
 the held lens: band 1.1, seamless held map (`heldSourceSmooth`), split proportional to the shift, spectral rim,
 selector split 0.08/0.14 (ink 0.3), transit stretch (mirror 0.3, gain 0.15, corners 0.2, fold back on). Rim pull

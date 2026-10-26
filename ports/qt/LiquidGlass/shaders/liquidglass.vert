@@ -84,6 +84,7 @@ layout(std140, binding = 0) uniform buf {
     vec4 uPoseAInv;
     vec4 uPoseC;
     vec4 uPoseD;
+    vec4 uPoseE;
     float uEndpointAlpha;
     float uEdgeFold;
 };

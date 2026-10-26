@@ -97,6 +97,10 @@ Six notes from a check on a phone, each compared with the iOS recordings and cha
   26 October; it was 0.3) and its map has no seam, so the bar's edge bends into the rim as a crescent instead of
   showing as a second capsule. The rim splits colour in proportion to the shift and carries a thin spectral
   line, both growing with motion ([evidence](https://github.com/shayann07/liquidglass/blob/main/review/atlas/fringe-refraction-2026-10-26/README.md)).
+- **The lens's outline.** A formed held lens is a squircle, not a capsule: `GlassPoseSpec.heldSquircle`
+  (.7 in Calm since 26 October) blends it toward a superellipse with n = 3 (`squircleExponent`), the shape
+  iOS's lens fits, so its top runs flatter and its shoulders squarer. It grows with the formation, so the
+  resting selector stays a capsule ([evidence](https://github.com/shayann07/liquidglass/blob/main/review/atlas/lens-squircle-2026-10-26/README.md)).
 - **The search button.** It follows a held swipe at 0.2 of the finger's travel (was 0.35).
 - **The lens at the search end.** A held lens there joins the button through a neck
   (`GlassTabBarAccessory.lensFusion`), as iOS's does, instead of stopping short of it.

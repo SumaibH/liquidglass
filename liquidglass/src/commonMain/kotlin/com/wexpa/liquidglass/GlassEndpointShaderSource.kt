@@ -48,6 +48,7 @@ uniform float4  uPoseA;        // the 2x2 pose matrix A, row major
 uniform float4  uPoseAInv;     // its inverse
 uniform float4  uPoseC;        // (cx, cy) reference centre, (bx, by) = k / R
 uniform float4  uPoseD;        // (spine, radius, scaleX, band)
+uniform float4  uPoseE;        // (squircle, exponent, 0, 0): the superellipse blend (#93)
 
 $GLASS_ANALYTIC_NORMAL_SKSL
 

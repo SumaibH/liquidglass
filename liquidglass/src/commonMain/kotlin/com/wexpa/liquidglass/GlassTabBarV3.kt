@@ -386,6 +386,11 @@ internal class GlassPoseHandle(val controller: GlassPoseController) {
         // so the offsets subtracted from `c` are the ones below. Getting the sign of the envelope
         // term wrong puts the body a whole node-width outside the node it is drawn in, where it
         // renders nothing at all and the bar shows through with its own ink.
+        // The held lens's outline (#93): a superellipse as it forms; a resting selector stays a capsule.
+        @OptIn(LiquidGlassDiagnosticApi::class)
+        val squircle = LiquidGlassDiagnostics.lensSquircle
+        controller.frame.squircle = (squircle?.getOrNull(0) ?: controller.spec.heldSquircle) * formation.coerceIn(0f, 1f)
+        controller.frame.squircleExponent = squircle?.getOrNull(1) ?: controller.spec.squircleExponent
         render = glassPoseRenderOf(
             controller.frame,
             dx = nodeLeft().toFloat() + envelopeWidth / 2f - barShiftX,

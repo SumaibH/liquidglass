@@ -112,6 +112,7 @@ uniform float4  uPoseA;        // the 2x2 pose matrix A, row major
 uniform float4  uPoseAInv;     // its inverse
 uniform float4  uPoseC;        // (cx, cy) reference centre, (bx, by) = k / R
 uniform float4  uPoseD;        // (spine, radius, scaleX, band)
+uniform float4  uPoseE;        // (squircle, exponent, 0, 0): the superellipse blend (#93)
 uniform float   uEndpointAlpha;// 1 emits the opaque endpoint B1 instead of B1 premultiplied by coverage
 uniform float   uEdgeFold;     // straight-run fold strength a in f(u) = u + a (1-u)^3; 0 keeps the shallow rest offset
 

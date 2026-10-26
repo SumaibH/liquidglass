@@ -119,6 +119,7 @@ internal object GlassEndpointRender {
             b.uniform("uPoseAInv", 1f, 0f, 0f, 1f)
             b.uniform("uPoseC", 0f, 0f, 0f, 0f)
             b.uniform("uPoseD", 1f, 1f, 1f, 0f)
+            b.uniform("uPoseE", 0f, 3f, 0f, 0f)
         }
 
         // 1. the material, emitting the opaque endpoint B1

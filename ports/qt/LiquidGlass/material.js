@@ -50,6 +50,7 @@ function uniforms(m, width, height, density) {
     v.uPoseA = [1, 0, 0, 1];
     v.uPoseAInv = [1, 0, 0, 1];
     v.uPoseD = [1, 1, 1, 0];
+    v.uPoseE = [0, 3, 0, 0];
 
     // inAppMaterialUniforms.
     var t = tintAmount / 100;

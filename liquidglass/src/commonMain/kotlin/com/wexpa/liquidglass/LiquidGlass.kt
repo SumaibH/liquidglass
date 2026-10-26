@@ -623,6 +623,7 @@ internal fun Modifier.liquidGlassCore(
                         poseAInv = poseBody?.aInv ?: IDENTITY_POSE_A,
                         poseC = poseBody?.c ?: EMPTY_POSE_C,
                         poseD = poseBody?.d ?: EMPTY_POSE_D,
+                        poseE = poseBody?.e ?: EMPTY_POSE_E,
                         endpointAlpha = if (useEndpoint) 1f else 0f,
                         edgeFold = style.edgeFold.coerceIn(0f, 2f),
                         inkSplit = if (style.inkDispersion.isNaN()) style.dispersion else style.inkDispersion,
@@ -1013,6 +1014,8 @@ internal val EMPTY_BODY = FloatArray(4)
 internal val IDENTITY_POSE_A = floatArrayOf(1f, 0f, 0f, 1f)
 internal val EMPTY_POSE_C = FloatArray(4)
 internal val EMPTY_POSE_D = floatArrayOf(1f, 1f, 1f, 0f)
+/** No squircle: the capsule (#93). */
+internal val EMPTY_POSE_E = floatArrayOf(0f, 3f, 0f, 0f)
 
 /**
  * A [share] of a layer added (not blended) on top of what is already drawn: how the measured
@@ -1347,6 +1350,8 @@ internal data class GlassUniforms(
     val poseAInv: FloatArray = IDENTITY_POSE_A,
     val poseC: FloatArray = EMPTY_POSE_C,
     val poseD: FloatArray = EMPTY_POSE_D,
+    /** `(squircle, exponent, 0, 0)`, both dimensionless (#93). */
+    val poseE: FloatArray = EMPTY_POSE_E,
     /** 1 when this pass emits a complete endpoint instead of its coverage-premultiplied share. */
     val endpointAlpha: Float = 0f,
     /** Positive only for packed endpoints: native-pixel offset of the separate ink strip. */
@@ -1461,7 +1466,7 @@ internal data class GlassUniforms(
             restMap == other.restMap &&
             body.contentEquals(other.body) && bodyY == other.bodyY && bodyKind == other.bodyKind &&
             poseA.contentEquals(other.poseA) && poseAInv.contentEquals(other.poseAInv) &&
-            poseC.contentEquals(other.poseC) && poseD.contentEquals(other.poseD) &&
+            poseC.contentEquals(other.poseC) && poseD.contentEquals(other.poseD) && poseE.contentEquals(other.poseE) &&
             endpointAlpha == other.endpointAlpha && inkStrip == other.inkStrip &&
             tintMaskX.contentEquals(other.tintMaskX) && tintMaskY.contentEquals(other.tintMaskY) &&
             edgeFold == other.edgeFold &&
@@ -1691,11 +1696,15 @@ object LiquidGlassDiagnostics {
      */
     var selectorFringe: FloatArray? = null
 
+    /** When set, the held lens's superellipse blend and exponent (#93), for fitting by replay; null in production. */
+    var lensSquircle: FloatArray? = null
+
     /** Back to the production defaults: no pad override, no coverage-only rendering, no split override. */
     fun reset() {
         recordPadOverridePx = null
         coverageOnly = false
         selectorFringe = null
+        lensSquircle = null
     }
 
     /** Runs [block] with these settings and resets them afterwards, whatever [block] does. */

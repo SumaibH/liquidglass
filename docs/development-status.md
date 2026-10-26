@@ -7,6 +7,9 @@ research remains available; this page identifies which later changes supersede i
 
 ## Main after 1.0 (24 October)
 
+- 26 October: the held lens's outline is a squircle (a .7 blend toward n = 3, the exponent iOS's lens fits),
+  not a capsule; its width profile against iOS moves from 27.5 to 7.1 px rms.
+  [Evidence](https://github.com/shayann07/liquidglass/blob/main/review/atlas/lens-squircle-2026-10-26/README.md).
 - 26 October: the held lens's refraction and fringes were rebuilt against the recordings (band 1.1, no seam,
   split proportional to the shift, spectral rim, narrow transit stretch); fringe energy is now 0.9-1.4x iOS's
   on four of five recordings, 0.2-0.6x on the long held drag. [Evidence](https://github.com/shayann07/liquidglass/blob/main/review/atlas/fringe-refraction-2026-10-26/README.md);
