@@ -1685,7 +1685,8 @@ object LiquidGlassDiagnostics {
     var coverageOnly: Boolean = false
 
     /**
-     * When set, the Calm selector's rim split (still, moving) and transit fold confinement (third value) in place of the production values, for
+     * When set, the Calm selector's rim split and transit fold: still, moving, fold corners, rim mirror, rim gain, transit rim softness (dp),
+     * held split at full travel, transit ink share; any prefix, in place of the production values, for
      * fitting it by replay against the recordings; null in production.
      */
     var selectorFringe: FloatArray? = null
