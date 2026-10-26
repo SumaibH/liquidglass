@@ -140,6 +140,11 @@ private fun replay(args: Array<String>) {
         val cf = variant.substringAfter("+capfold=", "").substringBefore('+').split(',').mapNotNull { it.toFloatOrNull() }
         if (cf.isEmpty()) base else base.copy(bar = base.bar.copy(capFold = cf[0]))
     }.let { base ->
+        // "+barrim=<specular>,<bevelPeak>[,<edgeLight>]": the resting bar's rim line (#96).
+        val br = variant.substringAfter("+barrim=", "").substringBefore('+').split(',').mapNotNull { it.toFloatOrNull() }
+        if (br.size < 2) base else base.copy(bar = base.bar.copy(specular = br[0], bevelPeak = br[1],
+            edgeLight = br.getOrElse(2) { base.bar.edgeLight }))
+    }.let { base ->
         // "+capedge=<c>": the bar's extra edge shadow where its outline faces sideways.
         val ce = variant.substringAfter("+capedge=", "").substringBefore('+').toFloatOrNull()
         if (ce == null) base else base.copy(bar = base.bar.copy(capEdgeShadow = ce))

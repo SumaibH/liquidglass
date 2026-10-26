@@ -6,6 +6,8 @@ A version heading means that version is published; anything above the newest one
 Flutter: `liquiglass` 1.0.0 is on pub.dev (<https://pub.dev/packages/liquiglass>), uploaded by hand on
 20 October; later tags publish it from the release workflow.
 
+- Tab bar (Calm, dark): the resting bar's rim line is as bright as iOS's, 98/88/65/45 inward against 99/79/63/45
+  (was 70/66/55/44, a halving fitted in the superseded colour space) (#96).
 - Material 3: `DropdownMenu`'s corners are 34 dp, as iOS 27's menu (~100 px at 3x); they were 24 (#102).
 - Sample: the Phone scene's selected ink is iOS 27's blue, (8, 151, 255) in display colours (was (54, 156, 254)) (#99).
 - Sample: the held lens joins the search button through a 24 dp neck (was 12), the shallow notch iOS shows

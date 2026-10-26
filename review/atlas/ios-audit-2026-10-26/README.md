@@ -71,7 +71,7 @@ GitHub issues group these by area (see the end).
 
 ## E. Resting bar and pill
 
-39. **M, E** Bar outline: iOS's resting bar has a thin bright hairline mostly on the top edge; ours draws an even lighter outline all round.
+39. **M, E** **[corrected and done 26 Oct: iOS lights top and bottom equally, 99/79/63/45; ours now 98/88/65/45 (specular 0.25), levels on all five unchanged]** Bar outline: iOS's resting bar has a thin bright hairline mostly on the top edge; ours draws an even lighter outline all round.
 40. **M, S** Resting pill on docs/2 3 levels darker than iOS (scoreboard).
 41. **M, E** Page text under the bar is slightly more smeared in ours than iOS (scoreboard note).
 42. **M, E, V** Resting pill size: iOS's resting pill on Keypad spans more of the bar height (docs/1 1.25 s, LOLL8185 21.1 s) than ours.
