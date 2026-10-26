@@ -155,7 +155,7 @@ GitHub issues group these by area (see the end).
 93. **H, E** **[done 26 Oct, see fringe-refraction-2026-10-26]** The lens band, the rim mirror and the dispersion are tuned per state (fold vs held vs transit) with separate constants; the transitions between them are visible as a jump in fringe and refraction when formation crosses 0.5.
 94. **M, E** **[done 26 Oct, see fringe-refraction-2026-10-26]** At band 1.1 the transit pill inherits the wider band through `GlassMorph` and clips labels more (items 15, 24).
 95. **M, E** **[done 26 Oct, see fringe-refraction-2026-10-26]** `GlassSelectorRimDispersion` is never applied to taps (tap material takes the lens's dispersion through the formation lerp), so the transit fringe cannot be tuned independently.
-96. **M, E** Diagnostics: the replay trace (`trace.csv`) does not log transit appearance or held travel, so tap and fringe timing cannot be read from our side.
+96. **M, E** **[done 26 Oct: trace.csv logs transit and heldTravel, 4714e22]** Diagnostics: the replay trace (`trace.csv`) does not log transit appearance or held travel, so tap and fringe timing cannot be read from our side.
 97. **L, E** The light preset's lens band was changed together with dark (1.1) without a light score.
 98. **L, E** Replays of IMG_6756/JGEY2190/LOLL8185 use `script3` and docs/2 two different scripts (`v2-script.txt`, `script3.txt`); baselines must be re-rendered per script.
 99. **L, E** `CalibrationActivity` shows no icons on the toolbar panels, so glyph legibility over glass is not compared.
