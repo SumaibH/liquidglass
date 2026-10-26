@@ -121,7 +121,7 @@ GitHub issues group these by area (see the end).
 71. **L, E, V** Unselected ink: iOS's white glyphs are slightly brighter.
 72. **L, E** Badge: iOS shows a red count badge on Calls; the sample has none.
 73. **M, E, V** Ink scale in a hold: iOS's selected item grows smoothly; ours grows with a visible step when formation passes 0.5 (by eye, LOLL8185 21.3 s).
-74. **L, E, V** Ink during transit: iOS keeps the selected ink's colour inside the pill all the way; ours fades it partly to white mid-transit.
+74. **L, E, V** **[withdrawn 26 Oct: measured, no fade to white on either side; instead the destination's ink turns blue ~33 ms early (docs/1 first tap: ours fully blue at 0.933 s, iOS 0.967 s, with a partial frame at 0.90 s) and its grow-and-settle peaks ~70 ms early (0.97 s against 1.03-1.07 s)]** Ink during transit: iOS keeps the selected ink's colour inside the pill all the way; ours fades it partly to white mid-transit.
 
 ## K. Timing and dynamics (scored)
 
