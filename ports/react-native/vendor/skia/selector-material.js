@@ -64,9 +64,15 @@ export function calmSelectorMaterial({dark = true, formation = 0, transit = 0, h
       fold = t > formation ? t * clamp(transitFold, 0, 1) : 0;
     }
     const mirror = {uFoldCorners: DATA.fold.foldCorners, uRimMirror: DATA.fold.rimMirror,
-      uRimMirrorGain: DATA.fold.rimMirrorGain, uAberration: DATA.fold.dispersion, uInkSplit: DATA.fold.dispersion};
-    if (fold > 0) values = {...values, ...mirror, uFoldCorners: DATA.fold.transitFoldCorners, uProfile: DATA.fold.measuredProfile};
-    else if (style.tapOpticsFold > 0 && formation >= .5) values = {...values, ...mirror};
+      uRimMirrorGain: DATA.fold.rimMirrorGain};
+    // The rim split (Compose glassSelectorMaterial, #73): the moving value in transit; a held lens's
+    // split rises from the still value with its travel, and its ink takes a share of it.
+    const moving = DATA.fold.movingDispersion;
+    const split = DATA.fold.dispersion + (DATA.fold.heldMovingDispersion - DATA.fold.dispersion) * clamp(heldTravel, 0, 1);
+    if (fold > 0) values = {...values, ...mirror, uAberration: moving, uInkSplit: moving,
+      uFoldCorners: DATA.fold.transitFoldCorners, uProfile: DATA.fold.measuredProfile};
+    else if (style.tapOpticsFold > 0 && formation >= .5) values = {...values, ...mirror,
+      uAberration: split, uInkSplit: split * DATA.fold.inkSplitShare};
   }
   const uFormation = style.tapOpticsFold > 0 && formation >= .5
     ? clamp(heldTravel * style.tapOpticsFold, 0, 1) : fold;

@@ -357,9 +357,12 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
       - uses: actions/setup-dotnet@a98b56852c35b8e3190ac28c8c2271da59106c68 # v6.0.0
         with:
+          # Pinned: the demo's packages.lock.json records the SDK-bundled Microsoft.NET.ILLink.Tasks 10.0.13;
+          # SDK 10.0.403 (runtime 10.0.14, 25 October) changes it and the locked restore fails. Move this
+          # together with a regenerated lock file.
           dotnet-version: |
             8.0.x
-            10.0.x
+            10.0.402
       - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
           node-version: 22

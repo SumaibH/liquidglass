@@ -90,7 +90,7 @@ class GlassSelectorPortMaterialTest {
                 "\"pillInkFollows\":${style.pill.inkDispersion.isNaN()},\"lensInkFollows\":${style.lens.inkDispersion.isNaN()}," +
                 "\"tapOptics\":${style.tapOptics},\"tapOpticsFold\":${style.tapOpticsFold},\"tapTransitFold\":${if (style.tapTransitFold.isNaN()) style.tapOpticsFold else style.tapTransitFold},\"tapTintFade\":${style.tapTintFade}}")
             for (formation in listOf(0f, .2f, .49f, .5f, .7f, 1f)) for (transit in listOf(0f, .3f, .8f, 1f)) for (travel in listOf(0f, .6f)) {
-                val material = glassSelectorMaterial(style, formation, transit)
+                val material = glassSelectorMaterial(style, formation, transit, travel)
                 val lensFormation = glassSelectorFormation(style, formation, transit, travel)
                 samples += "{\"dark\":$dark,\"formation\":$formation,\"transit\":$transit,\"heldTravel\":$travel," +
                     "\"uFormation\":${lensFormation.coerceIn(0f, 1f)},\"values\":${json(uniforms(material))}}"
@@ -99,7 +99,8 @@ class GlassSelectorPortMaterialTest {
         val fold = GlassStyle().copy(profile = GlassProfile.Measured)
         val text = "{\"dpFields\":${dpFields.joinToString(",", "[", "]") { "\"$it\"" }},\n" +
             "\"fold\":{\"measuredProfile\":${fold.profile.uniform},\"foldCorners\":1.0,\"transitFoldCorners\":$GlassSelectorTransitFoldCorners,\"rimMirror\":$GlassSelectorRimMirror," +
-            "\"rimMirrorGain\":$GlassSelectorRimGain,\"dispersion\":$GlassSelectorRimDispersion},\n" +
+            "\"rimMirrorGain\":$GlassSelectorRimGain,\"dispersion\":$GlassSelectorRimDispersion,\"movingDispersion\":$GlassSelectorRimFringeMoving," +
+            "\"heldMovingDispersion\":$GlassSelectorHeldFringeMoving,\"inkSplitShare\":$GlassSelectorInkSplitShare},\n" +
             "\"styles\":{\n$styles},\n\"samples\":[\n${samples.joinToString(",\n")}]}\n"
         val file = File("../ports/skia/fixtures/selector-material.json")
         if (System.getProperty("liquidglass.exportShaders") == "true") { file.parentFile.mkdirs(); file.writeText(text) }

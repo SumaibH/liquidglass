@@ -112,9 +112,13 @@ public static class CalmSelectorMaterial
             {
                 values["uFoldCorners"] = [fold["foldCorners"]]; values["uRimMirror"] = [fold["rimMirror"]];
                 values["uRimMirrorGain"] = [fold["rimMirrorGain"]];
-                values["uAberration"] = [fold["dispersion"]]; values["uInkSplit"] = [fold["dispersion"]];
+                // The rim split (Compose glassSelectorMaterial, #73): the moving value in transit; a held
+                // lens's split rises from the still value with its travel, its ink taking a share of it.
+                var split = fold["dispersion"] + (fold["heldMovingDispersion"] - fold["dispersion"]) * Math.Clamp(h, 0, 1);
+                values["uAberration"] = [split]; values["uInkSplit"] = [split * fold["inkSplitShare"]];
                 if (folded > 0)
                 {
+                    values["uAberration"] = [fold["movingDispersion"]]; values["uInkSplit"] = [fold["movingDispersion"]];
                     values["uProfile"] = [fold["measuredProfile"]];
                     values["uFoldCorners"] = [fold["transitFoldCorners"]];
                 }
