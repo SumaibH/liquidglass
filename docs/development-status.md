@@ -7,6 +7,8 @@ research remains available; this page identifies which later changes supersede i
 
 ## Main after 1.0 (24 October)
 
+- 26 October: Android XML View interop (`LiquidGlassView`, `LiquidGlassHostView`, `LiveViewBackdrop`, `Modifier.glassHitTarget`): declarative XML glass containers and selective touch pass-through overlays over Android `View` hierarchies, verified on a Samsung Galaxy S24+ (AGSL).
+  [Evidence](https://github.com/shayann07/liquidglass/blob/main/review/atlas/android-xml-interop-2026-10-26/README.md).
 - 26 October: the held lens's outline is a squircle (a .7 blend toward n = 3, the exponent iOS's lens fits),
   not a capsule; its width profile against iOS moves from 27.5 to 7.1 px rms.
   [Evidence](https://github.com/shayann07/liquidglass/blob/main/review/atlas/lens-squircle-2026-10-26/README.md).

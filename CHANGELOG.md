@@ -6,6 +6,8 @@ A version heading means that version is published; anything above the newest one
 Flutter: `liquiglass` 1.0.0 is on pub.dev (<https://pub.dev/packages/liquiglass>), uploaded by hand on
 20 October; later tags publish it from the release workflow.
 
+- Android XML View interop (`LiquidGlassView`, `LiquidGlassHostView`, `LiveViewBackdrop`, `Modifier.glassHitTarget`, and `R.styleable.LiquidGlassView` / `R.styleable.LiquidGlassHostView`): wrap ordinary Android XML views in a refracting glass container directly in XML (`<com.wexpa.liquidglass.LiquidGlassView>`) or float Compose glass controls (`GlassTabBar`, FABs, menus) over existing Android `View` / `ScrollView` / `RecyclerView` hierarchies with selective touch pass-through and scroll-aware live backdrop capture. Verified in `:sample` (`XmlInteropActivity`) on a Samsung Galaxy S24+ (AGSL).
+  [Evidence](review/atlas/android-xml-interop-2026-10-26/README.md).
 - Tab bar (Calm): the held lens's outline is a squircle, not a capsule: it blends .7 of the way toward a
   superellipse with n = 3, the shape iOS's held lens fits, so its top runs flatter and its shoulders squarer. The
   resting selector stays a capsule. The ports draw the same outline (#93).

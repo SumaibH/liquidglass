@@ -28,7 +28,65 @@ Icon(Icons.Default.Edit, null,
 Or keep your Material 3 code and change the imports, `androidx.compose.material3.*` to
 `com.wexpa.liquidglass.material3.*`; `./gradlew liquidGlassAdopt` does it for you.
 
-- **Android 13 and newer:** the full shader (AGSL), checked on a Pixel 7.
+## Android XML and `View` layouts
+
+In an XML or ViewBinding layout (`Fragment`, `Activity`, `ConstraintLayout`, `CoordinatorLayout`,
+`RecyclerView`), use **`LiquidGlassView`** to wrap ordinary Android XML views in a refracting glass
+surface directly in XML, or **`LiquidGlassHostView`** to float interactive Compose glass controls
+(such as `GlassTabBar`, FABs, or menus) over an existing `View` hierarchy with selective touch
+pass-through:
+
+```xml
+<!-- Wrap XML child views in a refracting glass surface -->
+<com.wexpa.liquidglass.LiquidGlassView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/headerGlassCard"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    app:liquidGlassBackdrop="@id/backdropContainer"
+    app:liquidGlassPreset="regular"
+    app:liquidGlassShape="squircle"
+    app:liquidGlassCornerRadius="24dp"
+    app:liquidGlassInteractive="true">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="16dp">
+        <!-- Ordinary TextViews, ImageViews, Buttons -->
+    </LinearLayout>
+</com.wexpa.liquidglass.LiquidGlassView>
+
+<!-- Or host a Compose GlassTabBar / floating controls over an XML layout -->
+<com.wexpa.liquidglass.LiquidGlassHostView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/glassChromeOverlay"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    app:liquidGlassBackdrop="@id/backdropContainer" />
+```
+
+```kotlin
+binding.glassChromeOverlay.setThemedGlassContent { host ->
+    Box(Modifier.fillMaxSize()) {
+        GlassTabBar(
+            itemCount = 4,
+            selectedIndex = selectedTab,
+            onSelected = { selectedTab = it },
+            modifier = Modifier
+                .align(Alignment.BottomCenter)
+                .glassHitTarget("tab_bar", host), // touches outside pass through to XML views below
+        ) { index, isSelected -> /* ... */ }
+    }
+}
+```
+
+> [!NOTE]
+> **Backdrop capture boundaries:** Standalone `LiquidGlassView` sizes directly to its glass surface, so its backdrop is captured within the view's layout bounds. Refraction and blur outside the view's edges blend against the configured `app:liquidGlassBackground` color. For glass controls that optically sample live surrounding pixels from neighbouring sibling views, wrap the screen layout in `LiquidGlassHostView`.
+
+- **Android 13 and newer:** the full shader (AGSL), checked on a Samsung Galaxy S24+ ([Evidence](https://github.com/shayann07/liquidglass/blob/main/review/atlas/android-xml-interop-2026-10-26/README.md)).
 - **Below Android 13:** a tinted fallback with rim lighting, no refraction.
 - **Desktop and web:** the same shader on Skia. [Try it in your browser](../demo.md).
 
