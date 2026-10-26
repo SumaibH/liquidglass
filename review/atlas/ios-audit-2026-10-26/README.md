@@ -109,7 +109,7 @@ GitHub issues group these by area (see the end).
 
 ## I. Lock screen clear lenses (COSG3073 30 s)
 
-65. **H, E** Clear round buttons (flashlight, app shortcut) act as ball lenses: the content inside is magnified and *inverted*; we have no lens that inverts.
+65. **H, E** **[withdrawn 26 Oct: at full resolution (COSG3073 28, 30, 33 s) the content is heavily blurred and upright, not inverted; a frosted button, not a ball lens]** Clear round buttons (flashlight, app shortcut) act as ball lenses: the content inside is magnified and *inverted*; we have no lens that inverts.
 66. **M, E, V** Their rim is a thin dark ring with a white specular dot; ours has no specular point.
 67. **M, E** Wallpaper warping with rainbow at the stripe bends behind them (lock-screen depth effect) — not modelled (likely out of scope; listed for completeness).
 
