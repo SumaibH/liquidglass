@@ -519,7 +519,34 @@ fill is 52 on iOS and 48 on ours (minor), and ours forms ~100 ms later at 13.2 s
 
 So Argon's iOS-only numbers are right far more often than not (6 of 8 checked; session 20's glyph was first marked
 wrong here by mistake: its times are clip times, source = clip + 0.5 s). Re-measure a value before using it as a
-fix target, as with sessions 18 and 23. Sessions 26-30 are not answered yet.
+fix target, as with sessions 18 and 23. Sessions 26-30 and the rest of session 17 are verified in section V.
+
+## V. Video-model passes, fifth round: Argon sessions 26-30 and completed targets (27 October)
+
+Gemini 4 Argon completed the remaining sessions 26-30 (TARGETS 26, 27; CONSISTENCY 28; TIMING 29; OPTICS 30)
+and the second half of session 17, completing the full 30-session Argon kit. Each candidate was measured
+on decoded frames against our `:desktop:phoneReplay` renders (n6 = main 2a7c7b0, p20 = 20 October, s6 = search script,
+l6 = calm-light), in scene pixels. The targets (sessions 26, 27, 28) are reference numbers for future fixes
+and lock-screen / Control Center components.
+
+**Confirmed and filed**
+
+| Finding | iOS | Ours | Issue |
+| :-- | :-- | :-- | :-- |
+| Fast scrub spawns green/cyan optical bridge to search button (gap x 590-625) | pure dark gap (y 35-40: luma 1.0-2.0, RGB [19, 19, 19] to [22, 22, 20]) | green/teal streak (y 188-194: luma 44-68, RGB [44, 78, 63] to [33, 87, 63]) | #119, #107 |
+| Settled selection pill bottom rim chromatic fringes (Calls -> Contacts) | achromatic neutral grey (RGB [69, 71, 71] in F056, [51, 51, 51] in F072) | chromatic fringes at bottom rim (RGB [71, 71, 93] blue, [72, 54, 54] red) | #111 |
+| Search button two-stage press onset (IMG_6756 0-34 s, 7/7 gestures) | F0 glyph dims 255 → 133-142; F+1 radial button expansion +25 px in 133-150 ms | passive / single-phase | #125 |
+| Search button trailing-edge pinning under pull (left & up) | trailing edge pinned at rest (left: x 491, 118 × 93 px; up: y 357-358) | translates symmetrically | #125 |
+| Search button single-frame unlit flash at release onset | single-frame dark dip (fill luma 32.0, 4/7 gestures) before snap rebound | monotonic / no dip | #125 |
+
+**Already tracked:** fast scrub horizontal stroke truncation (-145 px amplitude loss) and turnaround lag (#119, #122), tap onset lag (66.7 ms) and travel duration ~300 ms vs iOS ~70-130 ms (#123), tap middle-icon magnification and flat tap lens (#120), travelling lens vertical deflation during drag (#119, #121), held lens elevated grey in rim moat (Y=7.4-10.5 vs iOS 0.6) (#108), held lens over content avatar brightness gap (Y=107 vs iOS 131) (#72), light mode held lens missing downward-refracted inner bar top outline (#104, #128), held lens vertical overhang 147 px vs 142 px and dimmed bottom specular highlight (#93, #92), refracted inner bar edge opposite motion during still release (#106), tab bar capsule stretching +30-36 px during held press and translating toward drag (#93), tab icons translating outward 10-14 px and magnifying 17%-35% under held lens (#110, #120), end-of-bar throw overshoot 30-37 px and 2-3 spring oscillations (#95), flashlight button release undershoot -10 px and Control Center velocity-dependent overshoot (#113).
+
+**Wrong or not from the renderer**
+
+- Missing elastic horizontal rebound overhang past left bar cap on landing in `124-comb-streaks-x8.mp4`: iOS's 14 px overhang (x 28..42, Y=58-64) at F108-F114 is not an elastic rebound, but a second touch-down/press on Calls present in the recording that was omitted from the replay script (inferred finger input, #122).
+- Light mode "insufficient background blur in bar and lens leaves text readable (std=7.35 vs 0.41)": our sample's page layout places "Avery Westbrook" text directly behind the bar, whereas iOS's recording has white/empty space at those coordinates (different page content).
+- Lateral pre-step (8-14 px) and opposite rebound in first frame of touch-down: thumb contact roll / touch-target snapping in the inferred finger input.
+- Mid-drag vertical deflation and premature 166.7 ms snap to Contacts in `121-side-caps-x8.mp4`: tab-centre parking in the replay script, which snaps the finger directly to the tab center and triggers synthetic velocity-dependent lens flattening.
 
 ## Grouping into issues
 

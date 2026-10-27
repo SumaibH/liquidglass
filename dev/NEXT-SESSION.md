@@ -18,17 +18,14 @@
   Then verify any remaining Argon sessions (`.local/gemini/sessions/`; 17-25 spot-checked in audit section U: iOS-only
   targets, 6 of 8 checked sessions accurate, re-measure each value before using it; 17 half answered, 26-30 pending).
 
-## RESUME HERE (Saturday): verify the Argon answers, then fix
+## RESUME HERE (27 Oct morning): Task A complete (all 30 Argon sessions verified), fix Task B
 
-The owner is running 30 Gemini 4 Argon sessions on the private videos. Each session is one file in
-`.local/gemini/sessions/` (zip path, prompt, answer); finished ones are renamed `NN_done.md`. **01-16 were verified on
-27 Oct** (audit section T): 12 items confirmed and filed (#129 new; comments on #93, #94, #106, #120, #124, #125,
-#128, the #94 one a regression since 20 Oct), the rest tracked or wrong. Verify 17-30 the same way: frames, the replay
-`trace.csv`, scene pixels (helpers in `tools/reference-replay/refraction.py`; renders n6, p20, s6, l6 under
-`.local/sxs/ref/<rec>/`). Set 1's search clips have no search gesture in our render; use set 2's s6 clips. Then fix, in
-order: #124 (streaks; regression), #94 throw-landing label (regression), #123 + #120 (tap travel, tap lens, bar
-spread), #119, #108, #95 and #106 timing (incl. the regrowing release bridge), #93 (bar stays fused off the trailing
-tab), #125, #128, #129 (sample glyph cut-outs). Sessions 11, 13, 15, 17, 20, 22 and 25-27 hold measured iOS targets.
+All 30 Argon sessions are verified on decoded frames against reference replay renders (sessions 01-16 in section T, 17-25 in section U, 26-30 in section V of `review/atlas/ios-audit-2026-10-26/README.md`). Confirmed findings filed to issue checklists via `gh issue` on #119, #111, #125.
+PR #130 is open on branch `fix/124-comb-streaks` addressing issue #124, #108, #94.
+
+**Exact next step on resume**:
+1. Continue Task B fix order: **#123 + #120** (tap travel speed ~300 ms vs iOS ~70–130 ms, tap lens formation, bar spread; branch from `main`).
+2. Then follow the remaining sequence in dev/TODO: #119, #108, #95/#106, #93, #125, #128, #129.
 
 ## 26 October, late night: second video pass verified
 

@@ -6,6 +6,8 @@ Read this first after an interruption. Detailed history lives in the
 
 ## Current state
 
+**27 October video-model pass 5 verified (Argon sessions 17-30):** all 30 sessions in the Argon suite are now fully verified and recorded in audit sections U and V. Confirmed and filed: fast scrub optical bridge across the inter-control gap to the search button (#119, #107; Y=44-68 green streak, iOS pure black), settled dark-mode selection pill bottom rim chromatic fringes (#111), search button two-stage press onset (16.7 ms glyph dimming 255 -> 133-142 preceding 133-150 ms radial expansion), trailing-edge pinning (pinned at x=491 on left pull, y=357 on up pull) and single-frame unlit release flash (#125). Issue checklists updated via `gh issue`.
+
 **26 October squircle lens (#93):** the held lens's outline blends .7 toward a superellipse n = 3 in the pose
 shader and the CPU query (`uPoseE`; agreement test at 0, .5, 1); width profile against IMG_6756 35.5 s 27.5 →
 7.1 px rms. Ports regenerated and set `uPoseE`. Pixel 7 not connected, device check pending.
