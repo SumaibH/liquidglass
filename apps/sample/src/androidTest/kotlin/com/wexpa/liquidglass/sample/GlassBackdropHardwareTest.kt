@@ -508,6 +508,52 @@ class GlassBackdropHardwareTest {
                 rejected = true
             }
             assertTrue("GlassBackdrop must reject wrapper containing a registered consumer", rejected)
+            assertEquals("Rejected wrapper must be removed from backdrop", -1, backdrop.indexOfChild(wrapper))
+        }
+        scenario.close()
+    }
+
+    @Test
+    fun backdropAllowsConsumerOfDifferentBackdrop() {
+        val scenario = ActivityScenario.launch(XmlInteropActivity::class.java)
+        scenario.onActivity { activity ->
+            val backdrop1 = activity.findViewById<GlassBackdrop>(R.id.xmlBackdrop)
+            val backdrop2 = GlassBackdrop(activity)
+            val foreignConsumer = View(activity)
+            val effect = foreignConsumer.glassEffect(backdrop2)
+
+            val wrapper = FrameLayout(activity)
+            wrapper.addView(foreignConsumer)
+
+            // Must NOT throw because foreignConsumer targets backdrop2, not backdrop1
+            backdrop1.addView(wrapper)
+            assertTrue(backdrop1.indexOfChild(wrapper) != -1)
+
+            backdrop1.removeView(wrapper)
+            effect.dispose()
+        }
+        scenario.close()
+    }
+
+    @Test
+    fun effectDisposalPreservesCustomPadding() {
+        val scenario = ActivityScenario.launch(XmlInteropActivity::class.java)
+        scenario.onActivity { activity ->
+            val backdrop = activity.findViewById<GlassBackdrop>(R.id.xmlBackdrop)
+            val testView = View(activity)
+            testView.setPadding(12, 14, 16, 18)
+
+            val effect = testView.glassEffect(backdrop)
+            assertEquals(12, testView.paddingLeft)
+            assertEquals(14, testView.paddingTop)
+            assertEquals(16, testView.paddingRight)
+            assertEquals(18, testView.paddingBottom)
+
+            effect.dispose()
+            assertEquals(12, testView.paddingLeft)
+            assertEquals(14, testView.paddingTop)
+            assertEquals(16, testView.paddingRight)
+            assertEquals(18, testView.paddingBottom)
         }
         scenario.close()
     }

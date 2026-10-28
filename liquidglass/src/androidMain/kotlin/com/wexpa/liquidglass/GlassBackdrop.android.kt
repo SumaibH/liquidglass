@@ -71,6 +71,7 @@ open class GlassBackdrop @JvmOverloads constructor(
     override fun onViewAdded(child: View) {
         super.onViewAdded(child)
         if (containsGlassConsumer(child)) {
+            removeView(child)
             throw IllegalStateException(
                 "LiquidGlass consumer ($child) cannot be added inside its own source backdrop ($this). " +
                     "Consumers must be placed outside their source subtree."
@@ -79,10 +80,25 @@ open class GlassBackdrop @JvmOverloads constructor(
     }
 
     private fun containsGlassConsumer(view: View): Boolean {
-        if (view in nestedGlassViews || isGlassView(view)) return true
+        if (targetsThisBackdrop(view)) return true
         val group = view as? ViewGroup ?: return false
         for (i in 0 until group.childCount) {
             if (containsGlassConsumer(group.getChildAt(i))) return true
+        }
+        return false
+    }
+
+    private fun targetsThisBackdrop(view: View): Boolean {
+        if (view in nestedGlassViews) return true
+        val effect = view.getTag(R.id.liquid_glass_view_effect_tag) as? GlassViewEffect
+        if (effect != null && effect.backdrop === this) return true
+        val host = view as? LiquidGlassHostView
+        if (host != null) {
+            val bd = host.backdropView
+            if (bd === this) return true
+            if (bd == null && (host.backdropViewId == id || host.backdropViewId == View.NO_ID)) {
+                return true
+            }
         }
         return false
     }

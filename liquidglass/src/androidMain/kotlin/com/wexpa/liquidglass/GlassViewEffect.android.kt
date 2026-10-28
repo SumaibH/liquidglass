@@ -86,7 +86,12 @@ class GlassViewEffect internal constructor(
         touchListener = null
 
         if (view.background === drawable) {
+            val pl = view.paddingLeft
+            val pt = view.paddingTop
+            val pr = view.paddingRight
+            val pb = view.paddingBottom
             view.background = previousBackground
+            view.setPadding(pl, pt, pr, pb)
         }
         previousBackground = null
 
@@ -189,7 +194,12 @@ fun View.glassEffect(
 
     if (replaceBackground) {
         effect.previousBackground = background
+        val pl = paddingLeft
+        val pt = paddingTop
+        val pr = paddingRight
+        val pb = paddingBottom
         background = drawable
+        setPadding(pl, pt, pr, pb)
     }
 
     val attachListener = object : View.OnAttachStateChangeListener {
