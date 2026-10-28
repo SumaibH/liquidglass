@@ -557,4 +557,54 @@ class GlassBackdropHardwareTest {
         }
         scenario.close()
     }
+
+    @Test
+    fun backdropRejectsCrossBackdropDependencyCycle() {
+        val scenario = ActivityScenario.launch(XmlInteropActivity::class.java)
+        scenario.onActivity { activity ->
+            val backdropA = activity.findViewById<GlassBackdrop>(R.id.xmlBackdrop)
+            val backdropB = GlassBackdrop(activity)
+
+            // Consumer B targets backdrop B, placed in backdrop A
+            val consumerB = View(activity)
+            consumerB.glassEffect(backdropB)
+            backdropA.addView(consumerB)
+
+            // Attempting to place consumer A (targeting backdrop A) into backdrop B must create a cycle and be rejected
+            val consumerA = View(activity)
+            consumerA.glassEffect(backdropA)
+
+            var cycleRejected = false
+            try {
+                backdropB.addView(consumerA)
+            } catch (e: IllegalStateException) {
+                cycleRejected = true
+            }
+            assertTrue("Cross-backdrop dependency cycle A <-> B must be rejected", cycleRejected)
+            assertEquals("Rejected cyclical consumer must be removed from backdropB", -1, backdropB.indexOfChild(consumerA))
+
+            backdropA.removeView(consumerB)
+        }
+        scenario.close()
+    }
+
+    @Test
+    fun effectPreservesRelativePaddingInRtl() {
+        val scenario = ActivityScenario.launch(XmlInteropActivity::class.java)
+        scenario.onActivity { activity ->
+            val backdrop = activity.findViewById<GlassBackdrop>(R.id.xmlBackdrop)
+            val testView = View(activity)
+            testView.layoutDirection = View.LAYOUT_DIRECTION_RTL
+            testView.setPaddingRelative(20, 10, 40, 30)
+
+            val effect = testView.glassEffect(backdrop)
+            assertEquals(20, testView.paddingStart)
+            assertEquals(40, testView.paddingEnd)
+
+            effect.dispose()
+            assertEquals(20, testView.paddingStart)
+            assertEquals(40, testView.paddingEnd)
+        }
+        scenario.close()
+    }
 }

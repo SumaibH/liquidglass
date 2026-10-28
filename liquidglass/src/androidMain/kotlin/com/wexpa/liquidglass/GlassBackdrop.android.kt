@@ -80,7 +80,7 @@ open class GlassBackdrop @JvmOverloads constructor(
     }
 
     private fun containsGlassConsumer(view: View): Boolean {
-        if (targetsThisBackdrop(view)) return true
+        if (causesCycleWithThis(view)) return true
         val group = view as? ViewGroup ?: return false
         for (i in 0 until group.childCount) {
             if (containsGlassConsumer(group.getChildAt(i))) return true
@@ -88,19 +88,50 @@ open class GlassBackdrop @JvmOverloads constructor(
         return false
     }
 
-    private fun targetsThisBackdrop(view: View): Boolean {
+    private fun causesCycleWithThis(view: View): Boolean {
         if (view in nestedGlassViews) return true
         val effect = view.getTag(R.id.liquid_glass_view_effect_tag) as? GlassViewEffect
-        if (effect != null && effect.backdrop === this) return true
+        if (effect != null) {
+            val target = effect.backdrop
+            if (target === this || target.dependsOn(this)) return true
+        }
         val host = view as? LiquidGlassHostView
         if (host != null) {
-            val bd = host.backdropView
-            if (bd === this) return true
+            val bd = host.backdropView as? GlassBackdrop
+            if (bd === this || bd?.dependsOn(this) == true) return true
             if (bd == null && (host.backdropViewId == id || host.backdropViewId == View.NO_ID)) {
                 return true
             }
         }
         return false
+    }
+
+    internal fun dependsOn(other: GlassBackdrop, visited: MutableSet<GlassBackdrop> = mutableSetOf()): Boolean {
+        if (this === other) return true
+        if (!visited.add(this)) return false
+        val deps = mutableSetOf<GlassBackdrop>()
+        collectReferencedBackdrops(this, deps)
+        for (dep in deps) {
+            if (dep === other || dep.dependsOn(other, visited)) {
+                return true
+            }
+        }
+        return false
+    }
+
+    private fun collectReferencedBackdrops(view: View, result: MutableSet<GlassBackdrop>) {
+        val effect = view.getTag(R.id.liquid_glass_view_effect_tag) as? GlassViewEffect
+        if (effect != null) {
+            result.add(effect.backdrop)
+        }
+        val host = view as? LiquidGlassHostView
+        if (host != null) {
+            (host.backdropView as? GlassBackdrop)?.let { result.add(it) }
+        }
+        val group = view as? ViewGroup ?: return
+        for (i in 0 until group.childCount) {
+            collectReferencedBackdrops(group.getChildAt(i), result)
+        }
     }
 
     override fun drawChild(canvas: Canvas, child: View, drawingTime: Long): Boolean {

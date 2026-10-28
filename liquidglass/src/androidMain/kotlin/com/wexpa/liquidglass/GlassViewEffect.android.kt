@@ -8,6 +8,7 @@ import android.graphics.drawable.Drawable
 import android.os.Build
 import android.view.MotionEvent
 import android.view.View
+import android.view.ViewConfiguration
 import android.view.ViewTreeObserver
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
@@ -86,12 +87,9 @@ class GlassViewEffect internal constructor(
         touchListener = null
 
         if (view.background === drawable) {
-            val pl = view.paddingLeft
-            val pt = view.paddingTop
-            val pr = view.paddingRight
-            val pb = view.paddingBottom
+            val pad = getRawPaddingRelative(view)
             view.background = previousBackground
-            view.setPadding(pl, pt, pr, pb)
+            view.setPaddingRelative(pad[0], pad[1], pad[2], pad[3])
         }
         previousBackground = null
 
@@ -194,12 +192,9 @@ fun View.glassEffect(
 
     if (replaceBackground) {
         effect.previousBackground = background
-        val pl = paddingLeft
-        val pt = paddingTop
-        val pr = paddingRight
-        val pb = paddingBottom
+        val pad = getRawPaddingRelative(this)
         background = drawable
-        setPadding(pl, pt, pr, pb)
+        setPaddingRelative(pad[0], pad[1], pad[2], pad[3])
     }
 
     val attachListener = object : View.OnAttachStateChangeListener {
@@ -271,4 +266,37 @@ fun View.glassEffect(
     }
 
     return effect
+}
+
+private fun getRawPaddingRelative(view: View): IntArray {
+    var start = view.paddingStart
+    var top = view.paddingTop
+    var end = view.paddingEnd
+    var bottom = view.paddingBottom
+
+    if (view.scrollBarStyle == View.SCROLLBARS_INSIDE_INSET) {
+        val scrollBarSize = ViewConfiguration.get(view.context).scaledScrollBarSize
+        if (view.isVerticalScrollBarEnabled) {
+            val isRtl = view.layoutDirection == View.LAYOUT_DIRECTION_RTL
+            val onLeft = view.verticalScrollbarPosition == View.SCROLLBAR_POSITION_LEFT ||
+                (view.verticalScrollbarPosition == View.SCROLLBAR_POSITION_DEFAULT && isRtl)
+            if (onLeft) {
+                if (isRtl) {
+                    end = (end - scrollBarSize).coerceAtLeast(0)
+                } else {
+                    start = (start - scrollBarSize).coerceAtLeast(0)
+                }
+            } else {
+                if (isRtl) {
+                    start = (start - scrollBarSize).coerceAtLeast(0)
+                } else {
+                    end = (end - scrollBarSize).coerceAtLeast(0)
+                }
+            }
+        }
+        if (view.isHorizontalScrollBarEnabled) {
+            bottom = (bottom - scrollBarSize).coerceAtLeast(0)
+        }
+    }
+    return intArrayOf(start, top, end, bottom)
 }
