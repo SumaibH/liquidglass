@@ -30,45 +30,68 @@ Or keep your Material 3 code and change the imports, `androidx.compose.material3
 
 ## Android XML and `View` layouts
 
-In an XML or ViewBinding layout (`Fragment`, `Activity`, `ConstraintLayout`, `CoordinatorLayout`,
-`RecyclerView`), use **`LiquidGlassView`** to wrap ordinary Android XML views in a refracting glass
-surface directly in XML, or **`LiquidGlassHostView`** to float interactive Compose glass controls
-(such as `GlassTabBar`, FABs, or menus) over an existing `View` hierarchy with selective touch
-pass-through:
+The library supports idiomatic Android XML layouts via **`GlassBackdrop`**, **`LiquidGlassView`**, **`LiquidGlassHostView`**, and the **`View.glassEffect`** extension:
+1. **`GlassBackdrop`**: An XML container (`FrameLayout`) that records ordinary non-glass content (`ScrollView`, `RecyclerView`, canvas views) into a shared native `RenderNode` during the standard 6-step draw pipeline.
+2. **`LiquidGlassView`**: A pure XML glass container that wraps Android XML children (`TextView`, `ImageView`, `Button`) and refracts the backdrop using native `RenderNode` and `RuntimeShader` without spinning up internal Compose compositions.
+3. **`View.glassEffect(backdrop, glass, shape)`**: Applies the live glass effect directly behind any native Android `View`.
+4. **`LiquidGlassHostView`**: Floats interactive Compose glass controls (such as `GlassTabBar`, FABs, or menus) over an existing `View` hierarchy with selective touch pass-through (`Modifier.glassHitTarget`).
 
 ```xml
-<!-- Wrap XML child views in a refracting glass surface -->
-<com.wexpa.liquidglass.LiquidGlassView
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/headerGlassCard"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    app:liquidGlassBackdrop="@id/backdropContainer"
-    app:liquidGlassPreset="regular"
-    app:liquidGlassShape="squircle"
-    app:liquidGlassCornerRadius="24dp"
-    app:liquidGlassInteractive="true">
+    android:layout_height="match_parent">
 
-    <LinearLayout
+    <!-- Shared backdrop recording ordinary non-glass content -->
+    <com.wexpa.liquidglass.GlassBackdrop
+        android:id="@+id/backdropContainer"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+            <!-- Normal Android Views, text, cards, and scroll rows -->
+        </ScrollView>
+    </com.wexpa.liquidglass.GlassBackdrop>
+
+    <!-- Wrap XML child views in a refracting glass surface -->
+    <com.wexpa.liquidglass.LiquidGlassView
+        android:id="@+id/headerGlassCard"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="16dp">
-        <!-- Ordinary TextViews, ImageViews, Buttons -->
-    </LinearLayout>
-</com.wexpa.liquidglass.LiquidGlassView>
+        app:liquidGlassBackdrop="@id/backdropContainer"
+        app:liquidGlassPreset="regular"
+        app:liquidGlassShape="squircle"
+        app:liquidGlassCornerRadius="24dp"
+        app:liquidGlassInteractive="true">
 
-<!-- Or host a Compose GlassTabBar / floating controls over an XML layout -->
-<com.wexpa.liquidglass.LiquidGlassHostView
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/glassChromeOverlay"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    app:liquidGlassBackdrop="@id/backdropContainer" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="16dp">
+            <!-- Ordinary TextViews, ImageViews, Buttons -->
+        </LinearLayout>
+    </com.wexpa.liquidglass.LiquidGlassView>
+
+    <!-- Or host a Compose GlassTabBar / floating controls over an XML layout -->
+    <com.wexpa.liquidglass.LiquidGlassHostView
+        android:id="@+id/glassChromeOverlay"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:liquidGlassBackdrop="@id/backdropContainer" />
+</FrameLayout>
 ```
 
 ```kotlin
+// Convenience extension on any native Android View:
+val effect = binding.myNativeCard.glassEffect(
+    backdrop = binding.backdropContainer,
+    glass = Glass.Regular,
+    shape = RoundedCornerShape(16.dp),
+)
+
+// Compose overlay hosting:
 binding.glassChromeOverlay.setThemedGlassContent { host ->
     Box(Modifier.fillMaxSize()) {
         GlassTabBar(
@@ -82,9 +105,6 @@ binding.glassChromeOverlay.setThemedGlassContent { host ->
     }
 }
 ```
-
-> [!NOTE]
-> **Backdrop capture boundaries:** Standalone `LiquidGlassView` sizes directly to its glass surface, so its backdrop is captured within the view's layout bounds. Refraction and blur outside the view's edges blend against the configured `app:liquidGlassBackground` color. For glass controls that optically sample live surrounding pixels from neighbouring sibling views, wrap the screen layout in `LiquidGlassHostView`.
 
 - **Android 13 and newer:** the full shader (AGSL), checked on a Samsung Galaxy S24+ ([Evidence](https://github.com/shayann07/liquidglass/blob/main/review/atlas/android-xml-interop-2026-10-26/README.md)).
 - **Below Android 13:** a tinted fallback with rim lighting, no refraction.

@@ -8,22 +8,30 @@
     android:clipChildren="false"
     android:clipToPadding="false">
 
-    <ScrollView
-        android:id="@+id/xmlBackdropScroll"
+    <!-- Shared GlassBackdrop container recording non-glass content natively on the hardware thread -->
+    <com.wexpa.liquidglass.GlassBackdrop
+        android:id="@+id/xmlBackdrop"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:clipToPadding="false"
-        android:paddingTop="140dp"
-        android:paddingBottom="120dp">
+        android:layout_height="match_parent">
 
-        <LinearLayout
-            android:id="@+id/xmlBackdropContainer"
+        <ScrollView
+            android:id="@+id/xmlBackdropScroll"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:paddingHorizontal="20dp" />
+            android:layout_height="match_parent"
+            android:clipToPadding="false"
+            android:paddingTop="140dp"
+            android:paddingBottom="120dp">
 
-    </ScrollView>
+            <LinearLayout
+                android:id="@+id/xmlBackdropContainer"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:paddingHorizontal="20dp" />
+
+        </ScrollView>
+
+    </com.wexpa.liquidglass.GlassBackdrop>
 
     <!-- Pure XML LiquidGlassView header pill wrapping standard Android TextViews -->
     <com.wexpa.liquidglass.LiquidGlassView
@@ -35,7 +43,7 @@
         android:layout_marginTop="48dp"
         android:clickable="true"
         android:focusable="true"
-        app:liquidGlassBackdrop="@id/xmlBackdropScroll"
+        app:liquidGlassBackdrop="@id/xmlBackdrop"
         app:liquidGlassBackground="#FF0B0E1A"
         app:liquidGlassCornerRadius="26dp"
         app:liquidGlassDark="dark"
@@ -77,7 +85,7 @@
         android:id="@+id/xmlTabBarHost"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:liquidGlassBackdrop="@id/xmlBackdropScroll"
+        app:liquidGlassBackdrop="@id/xmlBackdrop"
         app:liquidGlassBackdropMargin="40dp"
         app:liquidGlassBackground="#FF0B0E1A"
         app:liquidGlassDark="dark" />

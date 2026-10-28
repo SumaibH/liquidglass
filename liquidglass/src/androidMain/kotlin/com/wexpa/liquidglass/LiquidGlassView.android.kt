@@ -4,14 +4,11 @@ import android.content.Context
 import android.content.res.Configuration
 import android.graphics.Canvas
 import android.graphics.Rect
-import android.graphics.drawable.Drawable
+import android.os.Build
 import android.util.AttributeSet
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewConfiguration
-import android.view.ViewGroup
-import android.view.ViewParent
-import android.view.ViewTreeObserver
 import android.widget.FrameLayout
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -36,16 +33,11 @@ import androidx.compose.ui.graphics.nativeCanvas
 import androidx.compose.ui.graphics.rememberGraphicsLayer
 import androidx.compose.ui.layout.boundsInWindow
 import androidx.compose.ui.layout.onGloballyPositioned
-import androidx.compose.ui.layout.positionInWindow
 import androidx.compose.ui.platform.ComposeView
-import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import java.util.WeakHashMap
 import java.util.concurrent.ConcurrentHashMap
-import kotlin.math.max
-import kotlin.math.min
 import kotlin.math.roundToInt
 
 /**
@@ -94,12 +86,6 @@ enum class GlassXmlShape {
     Squircle,
 }
 
-@Volatile
-private var isAnyCaptureActive: Boolean = false
-
-private val targetDrawnAtEpoch = WeakHashMap<View, Int>()
-private var globalPreDrawEpoch = 0
-
 internal class TouchGatedFrameLayout(context: Context) : FrameLayout(context) {
     var blockTouches: Boolean = false
 
@@ -124,8 +110,7 @@ internal class TouchGatedFrameLayout(context: Context) : FrameLayout(context) {
  *    underlying Android `View` hierarchy (`RecyclerView`, `NestedScrollView`, canvas views).
  * 2. **Live Android `View` backdrop**: Resolves `app:liquidGlassBackdrop="@id/..."` (or [backdropView])
  *    and mirrors the live underlying `View` hierarchy into [LiquidGlassTheme]'s recording layer via
- *    [LiveViewBackdrop] while skipping any [LiquidGlassHostView] or [LiquidGlassView] instances and
- *    avoiding `RenderNode` recording recursion on ancestor `ViewGroup`s.
+ *    [LiveViewBackdrop].
  */
 open class LiquidGlassHostView @JvmOverloads constructor(
     context: Context,
@@ -176,14 +161,6 @@ open class LiquidGlassHostView @JvmOverloads constructor(
 
     /**
      * Authored backdrop margin (default `36.dp`) captured around child glass regions inside this [LiquidGlassHostView].
-     *
-     * When child glass elements are placed within this host container, this margin ensures optical refraction
-     * and chromatic dispersion near their outlines have live surrounding backdrop pixels to sample.
-     *
-     * Note: Standalone [LiquidGlassView] instances size directly to the glass surface itself ([captureFullHostBounds] = true).
-     * Their backdrop capture is bounded by the view's layout dimensions; optical refraction sampling outside the view boundary
-     * falls back to the configured [liquidGlassBackground] ground color. To capture surrounding pixels beyond the glass surface
-     * across sibling XML views, wrap the layout in a [LiquidGlassHostView] container.
      */
     var backdropMarginDp: Dp by mutableStateOf(36.dp)
 
@@ -203,9 +180,6 @@ open class LiquidGlassHostView @JvmOverloads constructor(
     var onOutsideTouchWhenIntercepting: (() -> Unit)? = null
 
     private var activeGestureOwnedByCompose: Boolean = false
-
-    @Volatile
-    internal var isCapturingBackdrop: Boolean = false
 
     init {
         clipChildren = false
@@ -262,7 +236,7 @@ open class LiquidGlassHostView @JvmOverloads constructor(
         resolvedBackdropView = null
     }
 
-    protected fun refreshBackdropTarget() {
+    protected open fun refreshBackdropTarget() {
         if (explicitBackdropView != null) {
             resolvedBackdropView = null
             return
@@ -378,7 +352,6 @@ open class LiquidGlassHostView @JvmOverloads constructor(
     protected open fun shouldFilterTouches(): Boolean = true
 
     override fun dispatchTouchEvent(ev: MotionEvent): Boolean {
-        // 0.01f: authored minimum alpha threshold below which the host ignores touch events.
         if (visibility != VISIBLE || alpha <= 0.01f) return false
         if (!onFilterTouchEventForSecurity(ev)) return false
         if (!shouldFilterTouches()) {
@@ -413,21 +386,6 @@ open class LiquidGlassHostView @JvmOverloads constructor(
             }
         }
     }
-
-    override fun invalidate() {
-        if (isCapturingBackdrop || isAnyCaptureActive) return
-        super.invalidate()
-    }
-
-    override fun draw(canvas: Canvas) {
-        if (isCapturingBackdrop || isAnyCaptureActive) return
-        super.draw(canvas)
-    }
-
-    override fun dispatchDraw(canvas: Canvas) {
-        if (isCapturingBackdrop || isAnyCaptureActive) return
-        super.dispatchDraw(canvas)
-    }
 }
 
 @Composable
@@ -443,7 +401,6 @@ internal fun ThemedGlassScaffold(
 ) {
     val state = rememberLiquidGlassState(backgroundColor, 0f, 0f, 0f, 1f)
     val region = remember(state) { GlassRegion(state) }
-    // 20.dp: authored default container merge distance matching LiquidGlassTheme and LocalGlassDefaults.
     val defaults = GlassDefaults(dark = dark, glass = glass, containerSpacing = 20.dp)
 
     CompositionLocalProvider(
@@ -500,18 +457,8 @@ internal fun ThemedGlassScaffold(
  * Pure Android XML glass surface container (`<com.wexpa.liquidglass.LiquidGlassView>`).
  *
  * Wraps ordinary Android XML child views (`LinearLayout`, `ImageView`, `TextView`, etc.) and renders
- * a refracting Liquid Glass surface behind them using XML attributes (`app:liquidGlassBackdrop`,
- * `app:liquidGlassPreset`, `app:liquidGlassShape`, `app:liquidGlassCornerRadius`, `app:liquidGlassCornerPower`,
- * `app:liquidGlassTint`, `app:liquidGlassInteractive`, `app:liquidGlassPullable`, `app:liquidGlassDark`,
- * `app:liquidGlassBackground`) without requiring any Compose code in the Activity or Fragment.
- *
- * ### Backdrop Boundary Contract
- * Because [LiquidGlassView] sizes directly to the glass surface itself ([captureFullHostBounds] = true),
- * its backdrop capture is bounded by the view's layout dimensions. Within these bounds, optical refraction,
- * chromatic dispersion, and blur render against the underlying [backdropView]. Beyond the view's outer
- * boundary, optical sampling falls back to the configured [liquidGlassBackground] ground color.
- * For full surrounding margin sampling across external sibling views, wrap the layout in a [LiquidGlassHostView]
- * container.
+ * a refracting Liquid Glass surface behind them using [GlassNativeRenderer] sampling directly from
+ * [GlassBackdrop] without spinning up internal Compose compositions.
  */
 class LiquidGlassView @JvmOverloads constructor(
     context: Context,
@@ -525,16 +472,10 @@ class LiquidGlassView @JvmOverloads constructor(
     /** Surface shape configured via `app:liquidGlassShape` or code. */
     var xmlShape: GlassXmlShape by mutableStateOf(GlassXmlShape.Capsule)
 
-    /**
-     * Corner radius used when [xmlShape] is [GlassXmlShape.Rounded] or [GlassXmlShape.Squircle].
-     * Authored default is `24.dp`.
-     */
+    /** Corner radius used when [xmlShape] is [GlassXmlShape.Rounded] or [GlassXmlShape.Squircle]. */
     var cornerRadiusDp: Dp by mutableStateOf(24.dp)
 
-    /**
-     * Superellipse exponent used when [xmlShape] is [GlassXmlShape.Squircle].
-     * Inherited default is `4f` ([GlassSquircleShape]'s default `power`).
-     */
+    /** Superellipse exponent used when [xmlShape] is [GlassXmlShape.Squircle]. */
     var cornerPower: Float by mutableFloatStateOf(4f)
 
     /** Optional surface tint color configured via `app:liquidGlassTint` or code. */
@@ -546,24 +487,21 @@ class LiquidGlassView @JvmOverloads constructor(
     /** Whether interactive touch response uses [GlassInteraction.Pullable] (`app:liquidGlassPullable`). */
     var isGlassPullable: Boolean by mutableStateOf(false)
 
-    /**
-     * Magnification factor when [preset] is [GlassXmlPreset.Lens] (`app:liquidGlassLensMagnification`).
-     * Inherited default: `1.4f` (matches [Glass.Lens] default magnification).
-     */
+    /** Magnification factor when [preset] is [GlassXmlPreset.Lens] (`app:liquidGlassLensMagnification`). */
     var lensMagnification: Float by mutableFloatStateOf(1.4f)
 
-    /**
-     * Optional custom [Glass] override; when non-null, overrides [preset], [glassTint], and the
-     * press response built from [isGlassPullable]. Touch forwarding is still controlled by
-     * [isGlassInteractive], so set it to `true` when [customGlass] is interactive.
-     */
+    /** Optional custom [Glass] override. */
     var customGlass: Glass? by mutableStateOf(null)
 
-    /** Optional custom Compose [Shape] override; when non-null, overrides [xmlShape] and [cornerRadiusDp]. */
+    /** Optional custom Compose [Shape] override. */
     var customShape: Shape? by mutableStateOf(null)
+
+    internal var renderer: GlassNativeRenderer? = null
 
     init {
         captureFullHostBounds = true
+        composeContainer.visibility = View.GONE
+
         if (attrs != null) {
             val a = context.obtainStyledAttributes(attrs, R.styleable.LiquidGlassView, defStyleAttr, 0)
             try {
@@ -607,37 +545,48 @@ class LiquidGlassView @JvmOverloads constructor(
             }
         }
 
-        setGlassContent { host ->
-            val dark = resolveIsDark()
-            val bg = resolveBackgroundColor(dark)
-            val resolvedGlass = customGlass ?: buildXmlGlass()
-            val resolvedShape = customShape ?: buildXmlShape()
+        val dark = resolveIsDark()
+        val bg = resolveBackgroundColor(dark)
+        val r = GlassNativeRenderer(
+            targetView = this,
+            backdrop = backdropView as? GlassBackdrop,
+            glass = customGlass ?: buildXmlGlass(),
+            shape = customShape ?: buildXmlShape(),
+            dark = dark,
+            backgroundColor = bg,
+        )
+        renderer = r
+        background = GlassBackgroundDrawable(r)
+    }
 
-            ThemedGlassScaffold(
-                host = host,
-                glass = resolvedGlass,
-                dark = dark,
-                backgroundColor = bg,
-                targetView = backdropView,
-                marginDp = backdropMarginDp,
-                captureFullHostBounds = true,
-            ) {
-                Box(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .glassHitTarget(
-                            id = "xml_liquid_glass_surface",
-                            host = host,
-                            interactive = isGlassInteractive,
-                            captureBackdrop = true,
-                        )
-                        .glassEffect(
-                            glass = resolvedGlass,
-                            shape = resolvedShape,
-                        ),
-                )
-            }
+    override fun onAttachedToWindow() {
+        super.onAttachedToWindow()
+        updateRendererState()
+        (backdropView as? GlassBackdrop)?.registerGlassConsumer(this)
+    }
+
+    override fun onDetachedFromWindow() {
+        super.onDetachedFromWindow()
+        (backdropView as? GlassBackdrop)?.unregisterGlassConsumer(this)
+    }
+
+    override fun refreshBackdropTarget() {
+        super.refreshBackdropTarget()
+        if (renderer != null) {
+            updateRendererState()
         }
+    }
+
+    private fun updateRendererState() {
+        val r = renderer ?: return
+        val dark = resolveIsDark()
+        val bg = resolveBackgroundColor(dark)
+        r.backdrop = backdropView as? GlassBackdrop
+        r.glass = customGlass ?: buildXmlGlass()
+        r.shape = customShape ?: buildXmlShape()
+        r.dark = dark
+        r.backgroundColor = bg
+        invalidate()
     }
 
     private fun buildXmlGlass(): Glass {
@@ -670,45 +619,38 @@ class LiquidGlassView @JvmOverloads constructor(
         GlassXmlShape.Squircle -> GlassSquircleShape(cornerRadiusDp, power = cornerPower)
     }
 
-    override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
-        // Measure XML child views first without letting the internal ComposeView expand wrap_content
-        // dimensions to the parent's full bounds.
-        composeContainer.layoutParams?.let { lp ->
-            lp.width = 0
-            lp.height = 0
-        }
-        super.onMeasure(widthMeasureSpec, heightMeasureSpec)
-        composeContainer.measure(
-            MeasureSpec.makeMeasureSpec(measuredWidth, MeasureSpec.EXACTLY),
-            MeasureSpec.makeMeasureSpec(measuredHeight, MeasureSpec.EXACTLY),
-        )
-    }
-
-    override fun onLayout(changed: Boolean, left: Int, top: Int, right: Int, bottom: Int) {
-        super.onLayout(changed, left, top, right, bottom)
-        // Always span the full outer bounds of LiquidGlassView regardless of container padding.
-        composeContainer.layout(0, 0, right - left, bottom - top)
-    }
-
     override fun shouldFilterTouches(): Boolean = false
 
+    override fun onTouchEvent(event: MotionEvent): Boolean {
+        if (!isGlassInteractive) return super.onTouchEvent(event)
+        val r = renderer ?: return super.onTouchEvent(event)
+        when (event.actionMasked) {
+            MotionEvent.ACTION_DOWN -> {
+                r.touchX = event.x
+                r.touchY = event.y
+                r.touchAmount = 1f
+                invalidate()
+                return true
+            }
+            MotionEvent.ACTION_MOVE -> {
+                r.touchX = event.x
+                r.touchY = event.y
+                invalidate()
+                return true
+            }
+            MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> {
+                r.touchAmount = 0f
+                invalidate()
+                return true
+            }
+        }
+        return super.onTouchEvent(event)
+    }
+
     override fun dispatchTouchEvent(ev: MotionEvent): Boolean {
-        // 0.01f: authored minimum alpha threshold below which the host ignores touch events.
         if (visibility != VISIBLE || alpha <= 0.01f) return false
         if (!onFilterTouchEventForSecurity(ev)) return false
-
-        composeContainer.blockTouches = true
-        val handled = try {
-            super.dispatchTouchEvent(ev)
-        } finally {
-            composeContainer.blockTouches = false
-        }
-
-        if (isGlassInteractive) {
-            composeView.dispatchTouchEvent(ev)
-        }
-
-        return handled || isGlassInteractive
+        return super.dispatchTouchEvent(ev)
     }
 }
 
@@ -765,10 +707,7 @@ fun Modifier.glassHitTarget(
 
 /**
  * Mirrors the live pixel output of an underlying Android [targetView] into the active
- * [LiquidGlassTheme] backdrop layer, clipped to the union of active glass regions plus an
- * authored [marginDp] (`36.dp` by default) so optical refraction, chromatic dispersion, and the
- * wide blur kernel have surrounding live backdrop pixels to sample without re-rendering the rest
- * of the screen.
+ * [LiquidGlassTheme] backdrop layer using [GlassBackdrop.sourceNode].
  */
 @Composable
 internal fun LiveViewBackdrop(
@@ -778,352 +717,30 @@ internal fun LiveViewBackdrop(
     captureFullHostBounds: Boolean = false,
 ) {
     if (targetView == null) return
-    var frameTick by remember { mutableIntStateOf(0) }
-    val density = LocalDensity.current
-    val marginPx = with(density) { marginDp.toPx() }.roundToInt()
     val targetLoc = remember { IntArray(2) }
     val composeLoc = remember { IntArray(2) }
-    val hostLoc = remember { IntArray(2) }
-    var justDrewHost by remember { mutableStateOf(false) }
-
-    DisposableEffect(targetView, host) {
-        val vto = targetView.viewTreeObserver
-        var pendingInvalidate = false
-        var targetBackgroundDirty = false
-        var installedBg: Drawable? = null
-        var installedWrapper: TargetBackgroundCallbackWrapper? = null
-
-        val wrapCallback: () -> Unit = {
-            val bg = targetView.background
-            if (bg != null && bg !== installedBg) {
-                val wrapper = TargetBackgroundCallbackWrapper(bg.callback) {
-                    targetBackgroundDirty = true
-                }
-                bg.callback = wrapper
-                installedBg = bg
-                installedWrapper = wrapper // Strong ref; Drawable holds callbacks weakly
-            }
-        }
-        wrapCallback()
-
-        val frameRunnable = Runnable {
-            pendingInvalidate = false
-            if (!host.isCapturingBackdrop && host.isShown) {
-                frameTick++
-            }
-        }
-        val preDrawListener = ViewTreeObserver.OnPreDrawListener {
-            globalPreDrawEpoch++
-            val lastDrawnEpoch = targetDrawnAtEpoch[targetView] ?: -1
-
-            // Detect if background was replaced on targetView (even with same size/padding)
-            val currentBg = targetView.background
-            if (currentBg !== installedBg) {
-                if (currentBg == null) {
-                    // View.setBackground(null) already cleared the old drawable's callback.
-                    installedBg = null
-                    installedWrapper = null
-                } else {
-                    wrapCallback()
-                }
-                targetBackgroundDirty = true
-            }
-
-            val bgDirty = targetBackgroundDirty
-            targetBackgroundDirty = false
-
-            val targetIsDirty = isTargetDirty(targetView, host)
-            val realChange = targetIsDirty || targetView.isLayoutRequested || bgDirty
-            val suppressCapture = (lastDrawnEpoch == globalPreDrawEpoch || justDrewHost) && !realChange
-            justDrewHost = false
-
-            if (!host.isCapturingBackdrop && !pendingInvalidate && host.isShown) {
-                if (realChange && !suppressCapture) {
-                    pendingInvalidate = true
-                    host.postOnAnimation(frameRunnable)
-                }
-            }
-            true
-        }
-        val scrollListener = ViewTreeObserver.OnScrollChangedListener {
-            if (!host.isCapturingBackdrop && !pendingInvalidate && host.isShown) {
-                pendingInvalidate = true
-                host.postOnAnimation(frameRunnable)
-            }
-        }
-        val layoutListener = View.OnLayoutChangeListener { _, _, _, _, _, _, _, _, _ ->
-            wrapCallback()
-            if (!host.isCapturingBackdrop && !pendingInvalidate && host.isShown) {
-                pendingInvalidate = true
-                host.postOnAnimation(frameRunnable)
-            }
-        }
-        if (vto.isAlive) {
-            vto.addOnPreDrawListener(preDrawListener)
-            vto.addOnScrollChangedListener(scrollListener)
-        }
-        targetView.addOnLayoutChangeListener(layoutListener)
-        onDispose {
-            host.removeCallbacks(frameRunnable)
-            targetView.removeOnLayoutChangeListener(layoutListener)
-            val bg = installedBg
-            val wrapper = installedWrapper
-            if (bg != null && wrapper != null) {
-                bg.callback = unlinkBackgroundWrapper(bg.callback, wrapper)
-            }
-            installedBg = null
-            installedWrapper = null
-            val currentVto = targetView.viewTreeObserver
-            if (currentVto.isAlive) {
-                currentVto.removeOnPreDrawListener(preDrawListener)
-                currentVto.removeOnScrollChangedListener(scrollListener)
-            }
-        }
-    }
 
     Box(
         modifier = Modifier
             .fillMaxSize()
             .drawBehind {
-                // Read state subscriptions first so early returns keep the draw scope subscribed.
-                val tick = frameTick
-                val rectsVersion = host.backdropRectsVersion
-                if (tick < 0 || rectsVersion < 0) return@drawBehind
-                if (host.isCapturingBackdrop || !targetView.isShown) return@drawBehind
-                val rects = host.currentBackdropRects()
-                if (!captureFullHostBounds && rects.isEmpty()) return@drawBehind
+                val bd = targetView as? GlassBackdrop
+                val sourceNode = bd?.sourceNode
+                if (sourceNode != null && drawContext.canvas.nativeCanvas.isHardwareAccelerated && Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                    targetView.getLocationInWindow(targetLoc)
+                    host.composeView.getLocationInWindow(composeLoc)
+                    val dx = (targetLoc[0] - composeLoc[0]).toFloat()
+                    val dy = (targetLoc[1] - composeLoc[1]).toFloat()
 
-                targetView.getLocationInWindow(targetLoc)
-                host.composeView.getLocationInWindow(composeLoc)
-                host.getLocationInWindow(hostLoc)
-
-                val hostWidth = size.width.roundToInt()
-                val hostHeight = size.height.roundToInt()
-                if (hostWidth <= 0 || hostHeight <= 0) return@drawBehind
-
-                val composeOffsetX = composeLoc[0] - hostLoc[0]
-                val composeOffsetY = composeLoc[1] - hostLoc[1]
-
-                val clipLeft: Int
-                val clipTop: Int
-                val clipRight: Int
-                val clipBottom: Int
-
-                if (captureFullHostBounds) {
-                    clipLeft = 0
-                    clipTop = 0
-                    clipRight = hostWidth
-                    clipBottom = hostHeight
-                } else {
-                    var minL = Int.MAX_VALUE
-                    var minT = Int.MAX_VALUE
-                    var maxR = Int.MIN_VALUE
-                    var maxB = Int.MIN_VALUE
-                    for (r in rects) {
-                        minL = min(minL, r.left)
-                        minT = min(minT, r.top)
-                        maxR = max(maxR, r.right)
-                        maxB = max(maxB, r.bottom)
+                    val nativeCanvas = drawContext.canvas.nativeCanvas
+                    val saveCount = nativeCanvas.save()
+                    try {
+                        nativeCanvas.translate(dx, dy)
+                        nativeCanvas.drawRenderNode(sourceNode)
+                    } finally {
+                        nativeCanvas.restoreToCount(saveCount)
                     }
-                    if (minL >= maxR || minT >= maxB) return@drawBehind
-                    clipLeft = max(0, minL - composeOffsetX - marginPx)
-                    clipTop = max(0, minT - composeOffsetY - marginPx)
-                    clipRight = min(hostWidth, maxR - composeOffsetX + marginPx)
-                    clipBottom = min(hostHeight, maxB - composeOffsetY + marginPx)
-                }
-
-                val dx = (targetLoc[0] - composeLoc[0]).toFloat()
-                val dy = (targetLoc[1] - composeLoc[1]).toFloat()
-
-                val nativeCanvas = drawContext.canvas.nativeCanvas
-                val saveCount = nativeCanvas.save()
-                host.isCapturingBackdrop = true
-                try {
-                    nativeCanvas.clipRect(clipLeft, clipTop, clipRight, clipBottom)
-                    nativeCanvas.translate(dx, dy)
-                    drawBackdropTree(targetView, host, nativeCanvas)
-                } finally {
-                    host.isCapturingBackdrop = false
-                    nativeCanvas.restoreToCount(saveCount)
-                    justDrewHost = true
-                    targetDrawnAtEpoch[targetView] = globalPreDrawEpoch + 1
                 }
             },
     )
-}
-
-private fun buildAncestorPath(host: View, target: View): Set<View> {
-    val path = HashSet<View>()
-    var curr: ViewParent? = host.parent
-    while (curr != null) {
-        if (curr is View) {
-            path.add(curr)
-            if (curr === target) break
-        }
-        curr = curr.parent
-    }
-    return path
-}
-
-/**
- * Traverses and draws [view] into [canvas] for [host]'s backdrop without mutating view visibility
- * and without re-entering already-recording RenderNodes of intermediate ancestors.
- */
-private fun drawBackdropNode(
-    view: View,
-    ancestorPath: Set<View>,
-    canvas: Canvas,
-) {
-    // 0.005f: authored minimum alpha threshold below which backdrop views are skipped.
-    if (view is LiquidGlassHostView || view.visibility != View.VISIBLE || view.alpha <= 0.005f) {
-        return
-    }
-
-    val sx = view.scrollX.toFloat()
-    val sy = view.scrollY.toFloat()
-    val save = canvas.save()
-    canvas.translate(-sx, -sy)
-    if (view !in ancestorPath) {
-        // Safe to draw directly: this branch does not contain the currently recording host or its ancestors,
-        // and any nested LiquidGlassHostView instances will self-suppress via isAnyCaptureActive.
-        view.draw(canvas)
-        canvas.restoreToCount(save)
-        return
-    }
-
-    // View is an ancestor currently recording on the outer frame.
-    // We MUST NOT call view.draw(canvas) or dispatchDraw(canvas), which would re-enter
-    // the already-recording RenderNode of intermediate containers.
-    // Instead, draw its background, then safely traverse its children.
-    // Background stays fixed relative to the view bounds, as in View.drawBackground.
-    view.background?.let { bg ->
-        canvas.translate(sx, sy)
-        bg.draw(canvas)
-        canvas.translate(-sx, -sy)
-    }
-
-    if (view is ViewGroup) {
-        val count = view.childCount
-        for (i in 0 until count) {
-            val child = view.getChildAt(i) ?: continue
-            if (child is LiquidGlassHostView || child.visibility != View.VISIBLE || child.alpha <= 0.005f) {
-                continue
-            }
-            val saveChild = canvas.save()
-            canvas.translate(child.left.toFloat(), child.top.toFloat())
-            if (!child.matrix.isIdentity) {
-                canvas.concat(child.matrix)
-            }
-            if (view.clipChildren) {
-                canvas.clipRect(0, 0, child.width, child.height)
-            }
-            if (child.alpha < 1f) {
-                canvas.saveLayerAlpha(
-                    0f,
-                    0f,
-                    child.width.toFloat(),
-                    child.height.toFloat(),
-                    (child.alpha * 255).roundToInt(),
-                )
-            }
-            drawBackdropNode(child, ancestorPath, canvas)
-            canvas.restoreToCount(saveChild)
-        }
-    }
-
-    view.foreground?.let { fg ->
-        canvas.translate(sx, sy)
-        fg.draw(canvas)
-        canvas.translate(-sx, -sy)
-    }
-
-    canvas.restoreToCount(save)
-}
-
-/**
- * Draws [targetView] into [canvas] for [host]'s backdrop while skipping any [LiquidGlassHostView]
- * instances and avoiding re-entry into recording ancestor RenderNodes.
- */
-private fun drawBackdropTree(
-    targetView: View,
-    host: LiquidGlassHostView,
-    canvas: Canvas,
-) {
-    val save = canvas.save()
-    val wasCapturing = isAnyCaptureActive
-    isAnyCaptureActive = true
-    val ancestorPath = buildAncestorPath(host, targetView)
-    try {
-        canvas.clipRect(0, 0, targetView.width, targetView.height)
-        drawBackdropNode(targetView, ancestorPath, canvas)
-    } finally {
-        isAnyCaptureActive = wasCapturing
-        canvas.restoreToCount(save)
-    }
-}
-
-private fun hasRealTargetChange(target: View, host: View): Boolean {
-    return target.isLayoutRequested || isTargetDirty(target, host)
-}
-
-private fun isTargetDirty(target: View, host: View): Boolean {
-    if (target === host || target is LiquidGlassHostView) return false
-    if (!target.isDirty) return false
-    if (target !is ViewGroup) return true
-
-    var hasDirtyNonGlassChild = false
-    var hasAnyDirtyChild = false
-
-    for (i in 0 until target.childCount) {
-        val child = target.getChildAt(i)
-        if (child.isDirty) {
-            hasAnyDirtyChild = true
-            if (child !== host && child !is LiquidGlassHostView) {
-                if (isTargetDirty(child, host)) {
-                    hasDirtyNonGlassChild = true
-                    break
-                }
-            }
-        }
-    }
-
-    if (hasDirtyNonGlassChild) return true
-    // If target itself is dirty and NO children are dirty, the ViewGroup itself was invalidated directly (background, onDraw)
-    if (!hasAnyDirtyChild) return true
-    // If only glass hosts were dirty, the invalidation came from our own glass overlays
-    return false
-}
-
-private class TargetBackgroundCallbackWrapper(
-    var delegate: Drawable.Callback?,
-    private val onInvalidate: () -> Unit,
-) : Drawable.Callback {
-    override fun invalidateDrawable(who: Drawable) {
-        onInvalidate()
-        delegate?.invalidateDrawable(who)
-    }
-
-    override fun scheduleDrawable(who: Drawable, what: Runnable, `when`: Long) {
-        delegate?.scheduleDrawable(who, what, `when`)
-    }
-
-    override fun unscheduleDrawable(who: Drawable, what: Runnable) {
-        delegate?.unscheduleDrawable(who, what)
-    }
-}
-
-private fun unlinkBackgroundWrapper(
-    head: Drawable.Callback?,
-    target: TargetBackgroundCallbackWrapper,
-): Drawable.Callback? {
-    if (head === target) return target.delegate
-    var current = head
-    while (current is TargetBackgroundCallbackWrapper) {
-        if (current.delegate === target) {
-            current.delegate = target.delegate
-            break
-        }
-        current = current.delegate
-    }
-    return head
 }

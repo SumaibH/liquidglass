@@ -850,6 +850,21 @@ only need the colour, set `GlassStyle.fallbackSurface` and ignore this.
 Available on Android (`androidMain`) for XML, ViewBinding, and hybrid `View`/Compose hierarchies:
 
 ```kotlin
+open class GlassBackdrop @JvmOverloads constructor(
+    context: Context,
+    attrs: AttributeSet? = null,
+    defStyleAttr: Int = 0,
+) : FrameLayout
+
+fun View.glassEffect(
+    backdrop: GlassBackdrop,
+    glass: Glass = Glass.Regular,
+    shape: Shape = CapsuleShape,
+    dark: Boolean? = null,
+    backgroundColor: Color? = null,
+    replaceBackground: Boolean = true,
+): GlassViewEffect
+
 open class LiquidGlassHostView @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,
