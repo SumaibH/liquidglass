@@ -141,6 +141,7 @@ open class LiquidGlassHostView @JvmOverloads constructor(
     var backdropViewId: Int = View.NO_ID
         set(value) {
             val old = field
+            val oldResolved = resolvedBackdropView
             field = value
             try {
                 if (isAttachedToWindow || parent != null) {
@@ -148,6 +149,7 @@ open class LiquidGlassHostView @JvmOverloads constructor(
                 }
             } catch (t: Throwable) {
                 field = old
+                resolvedBackdropView = oldResolved
                 throw t
             }
         }
@@ -160,6 +162,7 @@ open class LiquidGlassHostView @JvmOverloads constructor(
         get() = explicitBackdropView ?: resolvedBackdropView
         set(value) {
             val old = explicitBackdropView
+            val oldResolved = resolvedBackdropView
             explicitBackdropView = value
             try {
                 if (isAttachedToWindow || parent != null) {
@@ -167,6 +170,7 @@ open class LiquidGlassHostView @JvmOverloads constructor(
                 }
             } catch (t: Throwable) {
                 explicitBackdropView = old
+                resolvedBackdropView = oldResolved
                 throw t
             }
         }

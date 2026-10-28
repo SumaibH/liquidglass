@@ -611,9 +611,15 @@ class GlassBackdropHardwareTest {
     @Test
     fun backdropRejectsCrossBackdropDependencyCycleOnBindingPath() {
         val scenario = ActivityScenario.launch(XmlInteropActivity::class.java)
+        var decorView: View? = null
         scenario.onActivity { activity ->
+            decorView = activity.window.decorView
             val backdropA = activity.findViewById<GlassBackdrop>(R.id.xmlBackdrop)
-            val backdropB = GlassBackdrop(activity)
+            val contentRoot = activity.findViewById<ViewGroup>(android.R.id.content)
+            val backdropB = GlassBackdrop(activity).apply { id = View.generateViewId() }
+            val backdropC = GlassBackdrop(activity).apply { id = View.generateViewId() }
+            contentRoot.addView(backdropB)
+            contentRoot.addView(backdropC)
 
             // Consumer B targets backdrop B, placed in backdrop A (so A depends on B)
             val consumerB = View(activity)
@@ -634,10 +640,11 @@ class GlassBackdropHardwareTest {
             assertTrue("Binding glassEffect that creates cycle with ancestor backdrop must be rejected", cycleRejected)
 
             // Also test LiquidGlassHostView inside backdrop B targeting backdrop A
-            val backdropC = GlassBackdrop(activity)
             val hostA = LiquidGlassHostView(activity)
             hostA.backdropView = backdropC
             backdropB.addView(hostA)
+
+            // 1. Failed retarget via backdropView must throw and restore previous resolved/explicit backdrop
             var hostCycleRejected = false
             try {
                 hostA.backdropView = backdropA
@@ -645,10 +652,32 @@ class GlassBackdropHardwareTest {
                 hostCycleRejected = true
             }
             assertTrue("Setting backdropView on host that creates cycle with ancestor backdrop must be rejected", hostCycleRejected)
-            backdropB.removeView(hostA)
+            assertEquals("Failed retarget via backdropView must restore previous backdrop", backdropC, hostA.backdropView)
 
+            // 2. Failed retarget via backdropViewId must throw and restore previous backdrop
+            hostA.backdropViewId = backdropC.id
+            hostA.backdropView = null
+            assertEquals(backdropC, hostA.backdropView)
+
+            var idCycleRejected = false
+            try {
+                hostA.backdropViewId = backdropA.id
+            } catch (e: IllegalStateException) {
+                idCycleRejected = true
+            }
+            assertTrue("Setting backdropViewId on host that creates cycle with ancestor backdrop must be rejected", idCycleRejected)
+            assertEquals("Failed retarget via backdropViewId must restore previous id", backdropC.id, hostA.backdropViewId)
+            assertEquals("Failed retarget via backdropViewId must restore previous resolved backdrop", backdropC, hostA.backdropView)
+
+            backdropB.removeView(hostA)
+            backdropB.removeView(consumerA)
             backdropA.removeView(consumerB)
+            contentRoot.removeView(backdropB)
+            contentRoot.removeView(backdropC)
         }
+
+        // Verify the next attached hardware frame renders cleanly after failed retargets
+        waitForDraw(decorView!!)
         scenario.close()
     }
 
