@@ -25,6 +25,7 @@ class GlassViewEffect internal constructor(
     internal var isDisposed = false
         private set
 
+    internal var previousBackground: android.graphics.drawable.Drawable? = null
     internal var attachListener: View.OnAttachStateChangeListener? = null
     internal var preDrawListener: ViewTreeObserver.OnPreDrawListener? = null
     internal var touchListener: View.OnTouchListener? = null
@@ -85,8 +86,9 @@ class GlassViewEffect internal constructor(
         touchListener = null
 
         if (view.background === drawable) {
-            view.background = null
+            view.background = previousBackground
         }
+        previousBackground = null
 
         backdrop.unregisterGlassConsumer(view)
 
@@ -186,6 +188,7 @@ fun View.glassEffect(
     setTag(R.id.liquid_glass_view_effect_tag, effect)
 
     if (replaceBackground) {
+        effect.previousBackground = background
         background = drawable
     }
 

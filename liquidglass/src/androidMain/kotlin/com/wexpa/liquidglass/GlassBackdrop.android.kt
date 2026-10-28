@@ -6,6 +6,7 @@ import android.graphics.RenderNode
 import android.os.Build
 import android.util.AttributeSet
 import android.view.View
+import android.view.ViewGroup
 import android.widget.FrameLayout
 import java.util.Collections
 import java.util.WeakHashMap
@@ -69,12 +70,21 @@ open class GlassBackdrop @JvmOverloads constructor(
 
     override fun onViewAdded(child: View) {
         super.onViewAdded(child)
-        if (child in nestedGlassViews || isGlassView(child)) {
+        if (containsGlassConsumer(child)) {
             throw IllegalStateException(
                 "LiquidGlass consumer ($child) cannot be added inside its own source backdrop ($this). " +
                     "Consumers must be placed outside their source subtree."
             )
         }
+    }
+
+    private fun containsGlassConsumer(view: View): Boolean {
+        if (view in nestedGlassViews || isGlassView(view)) return true
+        val group = view as? ViewGroup ?: return false
+        for (i in 0 until group.childCount) {
+            if (containsGlassConsumer(group.getChildAt(i))) return true
+        }
+        return false
     }
 
     override fun drawChild(canvas: Canvas, child: View, drawingTime: Long): Boolean {

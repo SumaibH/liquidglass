@@ -471,4 +471,44 @@ class GlassBackdropHardwareTest {
 
         scenario.close()
     }
+
+    @Test
+    fun effectDisposalRestoresOriginalBackground() {
+        val scenario = ActivityScenario.launch(XmlInteropActivity::class.java)
+        scenario.onActivity { activity ->
+            val backdrop = activity.findViewById<GlassBackdrop>(R.id.xmlBackdrop)
+            val testView = View(activity)
+            val originalBg = android.graphics.drawable.ColorDrawable(android.graphics.Color.RED)
+            testView.background = originalBg
+
+            val effect = testView.glassEffect(backdrop)
+            assertEquals(effect.drawable, testView.background)
+
+            effect.dispose()
+            assertEquals(originalBg, testView.background)
+        }
+        scenario.close()
+    }
+
+    @Test
+    fun backdropRejectsNestedConsumerInsideWrapperViewGroup() {
+        val scenario = ActivityScenario.launch(XmlInteropActivity::class.java)
+        scenario.onActivity { activity ->
+            val backdrop = activity.findViewById<GlassBackdrop>(R.id.xmlBackdrop)
+            val wrapper = FrameLayout(activity)
+            val child = View(activity)
+
+            backdrop.registerGlassConsumer(child)
+            wrapper.addView(child)
+
+            var rejected = false
+            try {
+                backdrop.addView(wrapper)
+            } catch (e: IllegalStateException) {
+                rejected = true
+            }
+            assertTrue("GlassBackdrop must reject wrapper containing a registered consumer", rejected)
+        }
+        scenario.close()
+    }
 }
