@@ -19,7 +19,9 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
+import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -264,12 +266,38 @@ open class LiquidGlassHostView @JvmOverloads constructor(
         }
     }
 
+    private val lastHostMatrix = android.graphics.Matrix()
+    private val currentHostMatrix = android.graphics.Matrix()
+    internal val transformEpoch = mutableLongStateOf(0L)
+    private val hostPreDrawListener = android.view.ViewTreeObserver.OnPreDrawListener {
+        val target = backdropView
+        if (target != null && android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.Q) {
+            currentHostMatrix.reset()
+            target.transformMatrixToGlobal(currentHostMatrix)
+            composeView.transformMatrixToLocal(currentHostMatrix)
+            if (currentHostMatrix != lastHostMatrix) {
+                lastHostMatrix.set(currentHostMatrix)
+                transformEpoch.longValue++
+                composeView.invalidate()
+            }
+        }
+        true
+    }
+
     override fun onAttachedToWindow() {
         super.onAttachedToWindow()
         refreshBackdropTarget()
+        val vto = viewTreeObserver
+        if (vto.isAlive) {
+            vto.addOnPreDrawListener(hostPreDrawListener)
+        }
     }
 
     override fun onDetachedFromWindow() {
+        val vto = viewTreeObserver
+        if (vto.isAlive) {
+            vto.removeOnPreDrawListener(hostPreDrawListener)
+        }
         super.onDetachedFromWindow()
         resolvedBackdropView = null
     }
@@ -459,7 +487,8 @@ internal fun ThemedGlassScaffold(
                 .onGloballyPositioned { region.root = it },
             propagateMinConstraints = true,
         ) {
-            val backdropLayer = rememberGraphicsLayer()
+            val epoch = host.transformEpoch.longValue
+            val backdropLayer = key(epoch) { rememberGraphicsLayer() }
             Box(
                 modifier = Modifier
                     .matchParentSize()
@@ -473,6 +502,8 @@ internal fun ThemedGlassScaffold(
                         }
                     }
                     .drawWithContent {
+                        @Suppress("UNUSED_VARIABLE")
+                        val e = epoch
                         backdropLayer.record {
                             this@drawWithContent.drawContent()
                         }
@@ -566,15 +597,6 @@ class LiquidGlassView @JvmOverloads constructor(
             }
         }
 
-    /** Whether interactive touch response uses [GlassInteraction.Pullable] (`app:liquidGlassPullable`). */
-    var isGlassPullable: Boolean = false
-        set(value) {
-            if (field != value) {
-                field = value
-                updateRendererState()
-            }
-        }
-
     /** Magnification factor when [preset] is [GlassXmlPreset.Lens] (`app:liquidGlassLensMagnification`). */
     var lensMagnification: Float = 1.4f
         set(value) {
@@ -602,7 +624,8 @@ class LiquidGlassView @JvmOverloads constructor(
             }
         }
 
-    internal var renderer: GlassNativeRenderer? = null
+    var renderer: GlassNativeRenderer? = null
+        internal set
 
     private val lastTransformMatrix = android.graphics.Matrix()
     private val currentTransformMatrix = android.graphics.Matrix()
@@ -660,7 +683,6 @@ class LiquidGlassView @JvmOverloads constructor(
                     glassTint = Color(a.getColor(R.styleable.LiquidGlassView_liquidGlassTint, 0))
                 }
                 isGlassInteractive = a.getBoolean(R.styleable.LiquidGlassView_liquidGlassInteractive, false)
-                isGlassPullable = a.getBoolean(R.styleable.LiquidGlassView_liquidGlassPullable, false)
                 lensMagnification = a.getFloat(R.styleable.LiquidGlassView_liquidGlassLensMagnification, 1.4f)
             } finally {
                 a.recycle()
@@ -686,6 +708,8 @@ class LiquidGlassView @JvmOverloads constructor(
         updateRendererState()
     }
 
+    private var registeredBackdrop: GlassBackdrop? = null
+
     override fun onAttachedToWindow() {
         super.onAttachedToWindow()
         val bd = backdropView
@@ -693,7 +717,9 @@ class LiquidGlassView @JvmOverloads constructor(
             checkNoCycleWithAncestors(this, bd)
         }
         updateRendererState()
-        (bd as? GlassBackdrop)?.registerGlassConsumer(this)
+        val target = bd as? GlassBackdrop
+        target?.registerGlassConsumer(this)
+        registeredBackdrop = target
 
         val vto = viewTreeObserver
         if (vto.isAlive) {
@@ -702,8 +728,9 @@ class LiquidGlassView @JvmOverloads constructor(
     }
 
     override fun onDetachedFromWindow() {
+        registeredBackdrop?.unregisterGlassConsumer(this)
+        registeredBackdrop = null
         super.onDetachedFromWindow()
-        (backdropView as? GlassBackdrop)?.unregisterGlassConsumer(this)
         val vto = viewTreeObserver
         if (vto.isAlive) {
             vto.removeOnPreDrawListener(preDrawListener)
@@ -715,6 +742,12 @@ class LiquidGlassView @JvmOverloads constructor(
         val bd = backdropView
         if (bd is GlassBackdrop) {
             checkNoCycleWithAncestors(this, bd)
+        }
+        val newTarget = bd as? GlassBackdrop
+        if (isAttachedToWindow && registeredBackdrop !== newTarget) {
+            registeredBackdrop?.unregisterGlassConsumer(this)
+            newTarget?.registerGlassConsumer(this)
+            registeredBackdrop = newTarget
         }
         if (renderer != null) {
             updateRendererState()
@@ -745,12 +778,7 @@ class LiquidGlassView @JvmOverloads constructor(
         }
         val tinted = if (glassTint != null) base.tint(glassTint) else base
         return if (isGlassInteractive) {
-            val response = if (isGlassPullable) {
-                GlassInteraction.Pullable.copy(pullShape = GlassPullShape.Free)
-            } else {
-                GlassInteraction.Calm
-            }
-            tinted.interactive(enabled = true, response = response)
+            tinted.interactive(enabled = true, response = GlassInteraction.Calm)
         } else {
             tinted
         }
@@ -861,25 +889,26 @@ internal fun LiveViewBackdrop(
     captureFullHostBounds: Boolean = false,
 ) {
     if (targetView == null) return
-    val targetLoc = remember { IntArray(2) }
-    val composeLoc = remember { IntArray(2) }
+    val epoch = host.transformEpoch.longValue
+    val matrix = remember(epoch) { android.graphics.Matrix() }
 
     Box(
         modifier = Modifier
             .fillMaxSize()
             .drawBehind {
+                @Suppress("UNUSED_VARIABLE")
+                val e = epoch
                 val bd = targetView as? GlassBackdrop
                 val sourceNode = bd?.sourceNode
                 if (sourceNode != null && drawContext.canvas.nativeCanvas.isHardwareAccelerated && Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                    targetView.getLocationInWindow(targetLoc)
-                    host.composeView.getLocationInWindow(composeLoc)
-                    val dx = (targetLoc[0] - composeLoc[0]).toFloat()
-                    val dy = (targetLoc[1] - composeLoc[1]).toFloat()
+                    matrix.reset()
+                    targetView.transformMatrixToGlobal(matrix)
+                    host.composeView.transformMatrixToLocal(matrix)
 
                     val nativeCanvas = drawContext.canvas.nativeCanvas
                     val saveCount = nativeCanvas.save()
                     try {
-                        nativeCanvas.translate(dx, dy)
+                        nativeCanvas.concat(matrix)
                         nativeCanvas.drawRenderNode(sourceNode)
                     } finally {
                         nativeCanvas.restoreToCount(saveCount)

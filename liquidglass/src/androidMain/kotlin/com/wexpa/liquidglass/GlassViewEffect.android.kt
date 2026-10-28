@@ -29,7 +29,8 @@ class GlassViewEffect internal constructor(
     internal var previousBackground: android.graphics.drawable.Drawable? = null
     internal var attachListener: View.OnAttachStateChangeListener? = null
     internal var preDrawListener: ViewTreeObserver.OnPreDrawListener? = null
-    internal var touchListener: View.OnTouchListener? = null
+    var touchListener: View.OnTouchListener? = null
+        internal set
 
     private val lastMatrix = android.graphics.Matrix()
     private val currentMatrix = android.graphics.Matrix()
@@ -84,7 +85,9 @@ class GlassViewEffect internal constructor(
         }
         preDrawListener = null
 
+        (touchListener as? GlassTouchListener)?.clear()
         touchListener = null
+        view.setOnTouchListener(null)
 
         if (view.background === drawable) {
             val pad = getRawPadding(view)
@@ -235,27 +238,7 @@ fun View.glassEffect(
 
     // Finding 9: Wire shared interaction state while preserving native gesture dispatch
     if (glass.isInteractive) {
-        val touchListener = View.OnTouchListener { v, event ->
-            if (effect.isDisposed) return@OnTouchListener false
-            when (event.actionMasked) {
-                MotionEvent.ACTION_DOWN -> {
-                    renderer.touchX = event.x
-                    renderer.touchY = event.y
-                    renderer.touchAmount = 1f
-                    v.invalidate()
-                }
-                MotionEvent.ACTION_MOVE -> {
-                    renderer.touchX = event.x
-                    renderer.touchY = event.y
-                    v.invalidate()
-                }
-                MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> {
-                    renderer.touchAmount = 0f
-                    v.invalidate()
-                }
-            }
-            false // Preserve native click and touch delivery
-        }
+        val touchListener = GlassTouchListener(effect, renderer)
         effect.touchListener = touchListener
         setOnTouchListener(touchListener)
     }
@@ -338,5 +321,42 @@ private fun getRawPadding(view: View): SavedPadding {
             }
         }
         return SavedPadding(isRelative = false, a = left, top = top, b = right, bottom = bottom)
+    }
+}
+
+private class GlassTouchListener(
+    effect: GlassViewEffect,
+    renderer: GlassNativeRenderer,
+) : View.OnTouchListener {
+    private var effectRef: java.lang.ref.WeakReference<GlassViewEffect>? = java.lang.ref.WeakReference(effect)
+    private var rendererRef: java.lang.ref.WeakReference<GlassNativeRenderer>? = java.lang.ref.WeakReference(renderer)
+
+    fun clear() {
+        effectRef = null
+        rendererRef = null
+    }
+
+    override fun onTouch(v: View, event: MotionEvent): Boolean {
+        val effect = effectRef?.get() ?: return false
+        val r = rendererRef?.get() ?: return false
+        if (effect.isDisposed) return false
+        when (event.actionMasked) {
+            MotionEvent.ACTION_DOWN -> {
+                r.touchX = event.x
+                r.touchY = event.y
+                r.touchAmount = 1f
+                v.invalidate()
+            }
+            MotionEvent.ACTION_MOVE -> {
+                r.touchX = event.x
+                r.touchY = event.y
+                v.invalidate()
+            }
+            MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> {
+                r.touchAmount = 0f
+                v.invalidate()
+            }
+        }
+        return false // Preserve native click and touch delivery
     }
 }

@@ -63,6 +63,8 @@ open class GlassBackdrop @JvmOverloads constructor(
         nestedGlassViews.remove(glassView)
     }
 
+    fun isRegisteredConsumer(glassView: View): Boolean = nestedGlassViews.contains(glassView)
+
     override fun onViewAdded(child: View) {
         super.onViewAdded(child)
         if (containsGlassConsumer(child)) {
@@ -203,6 +205,11 @@ internal fun isDescendantOf(view: View, ancestor: View): Boolean {
 }
 
 internal fun checkNoCycleWithAncestors(consumer: View, target: GlassBackdrop) {
+    if (consumer === target) {
+        throw IllegalStateException(
+            "LiquidGlass backdrop ($target) cannot be its own consumer."
+        )
+    }
     if (isDescendantOf(consumer, target)) {
         throw IllegalStateException(
             "LiquidGlass consumer ($consumer) cannot be placed inside its own source backdrop ($target) and cannot target an ancestor GlassBackdrop ($target). " +

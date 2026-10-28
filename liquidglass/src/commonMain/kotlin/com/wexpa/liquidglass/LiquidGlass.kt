@@ -1243,6 +1243,7 @@ internal fun buildGlassPanelUniforms(
     interaction: GlassInteraction? = if (glass.isInteractive) glass.interaction else null,
     contrast: Float = 0f,
     layoutDirection: LayoutDirection = LayoutDirection.Ltr,
+    pathField: GlassPathField? = null,
 ): GlassUniforms {
     val style = glass.style(dark) ?: return GlassUniforms(
         width = size.width,
@@ -1364,6 +1365,7 @@ internal fun buildGlassPanelUniforms(
         heldEdgeRecoveryPx = with(density) { style.heldEdgeRecovery.toPx() },
         press = press,
         materialize = ambientAlpha,
+        pathField = pathField,
         tintField = tintField,
         interaction = interaction,
     )

@@ -28,7 +28,6 @@
     <attr name="liquidGlassCornerPower" format="float" />
     <attr name="liquidGlassTint" format="color" />
     <attr name="liquidGlassInteractive" format="boolean" />
-    <attr name="liquidGlassPullable" format="boolean" />
     <attr name="liquidGlassLensMagnification" format="float" />
 
     <declare-styleable name="GlassBackdrop">
@@ -52,7 +51,6 @@
         <attr name="liquidGlassCornerPower" />
         <attr name="liquidGlassTint" />
         <attr name="liquidGlassInteractive" />
-        <attr name="liquidGlassPullable" />
         <attr name="liquidGlassLensMagnification" />
     </declare-styleable>
 </resources>

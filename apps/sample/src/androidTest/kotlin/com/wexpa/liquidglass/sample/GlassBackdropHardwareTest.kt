@@ -15,10 +15,14 @@ import android.view.ViewGroup
 import android.view.ViewTreeObserver
 import android.widget.FrameLayout
 import android.widget.TextView
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.ui.Modifier
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Outline
+import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
@@ -73,11 +77,12 @@ class GlassBackdropHardwareTest {
 
     private fun captureWindow(activity: Activity): Bitmap {
         val decor = activity.window.decorView
+        assertTrue("Window must be hardware accelerated", decor.isHardwareAccelerated)
         val width = decor.width.coerceAtLeast(1)
         val height = decor.height.coerceAtLeast(1)
         val bmp = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
         val latch = CountDownLatch(1)
-        var copySuccess = false
+        var copyResult = -1
 
         activity.runOnUiThread {
             try {
@@ -85,9 +90,7 @@ class GlassBackdropHardwareTest {
                     activity.window,
                     bmp,
                     { result ->
-                        if (result == PixelCopy.SUCCESS) {
-                            copySuccess = true
-                        }
+                        copyResult = result
                         latch.countDown()
                     },
                     Handler(Looper.getMainLooper()),
@@ -97,21 +100,16 @@ class GlassBackdropHardwareTest {
             }
         }
 
-        latch.await(3, TimeUnit.SECONDS)
-
-        if (copySuccess) {
-            return bmp
-        }
-
-        // Software fallback if PixelCopy is not ready
-        val drawLatch = CountDownLatch(1)
-        activity.runOnUiThread {
-            val c = android.graphics.Canvas(bmp)
-            decor.draw(c)
-            drawLatch.countDown()
-        }
-        assertTrue("Timed out waiting for software draw", drawLatch.await(2, TimeUnit.SECONDS))
+        assertTrue("Timed out waiting for PixelCopy", latch.await(3, TimeUnit.SECONDS))
+        assertEquals("PixelCopy must succeed with SUCCESS (code 0)", PixelCopy.SUCCESS, copyResult)
         return bmp
+    }
+
+    private fun safeClose(scenario: ActivityScenario<*>) {
+        try {
+            safeClose(scenario)
+        } catch (_: Throwable) {
+        }
     }
 
     @Test
@@ -167,7 +165,7 @@ class GlassBackdropHardwareTest {
             red > 0 || green > 0 || blue > 0,
         )
 
-        scenario.close()
+        safeClose(scenario)
     }
 
     @Test
@@ -221,7 +219,7 @@ class GlassBackdropHardwareTest {
                 )
             }
         }
-        scenario.close()
+        safeClose(scenario)
     }
 
     @Test
@@ -323,16 +321,32 @@ class GlassBackdropHardwareTest {
         scenario.onActivity {
             root.removeView(glassContainer)
         }
-        scenario.close()
+        safeClose(scenario)
     }
 
     @Test
     fun runtimePropertyMutationUpdatesRendererWithoutDetaching() {
         val scenario = ActivityScenario.launch(XmlInteropActivity::class.java)
+        var activityRef: Activity? = null
+        var headerCardRef: LiquidGlassView? = null
         scenario.onActivity { activity ->
-            val headerCard = activity.findViewById<LiquidGlassView>(R.id.xmlHeaderCard)
+            activityRef = activity
+            headerCardRef = activity.findViewById(R.id.xmlHeaderCard)
+        }
+        val activity = activityRef!!
+        val headerCard = headerCardRef!!
 
-            // Finding 6: Public properties update renderer state immediately
+        waitForDraw(activity.window.decorView)
+        val beforeBitmap = captureWindow(activity)
+        val location = IntArray(2)
+        scenario.onActivity {
+            headerCard.getLocationInWindow(location)
+        }
+        val cardX = location[0] + headerCard.width / 2
+        val cardY = location[1] + headerCard.height / 2
+        val pixelBefore = beforeBitmap.getPixel(cardX, cardY)
+
+        scenario.onActivity {
             headerCard.preset = GlassXmlPreset.Clear
             assertEquals(GlassXmlPreset.Clear, headerCard.preset)
 
@@ -341,27 +355,74 @@ class GlassBackdropHardwareTest {
 
             headerCard.glassTint = Color.Magenta
             assertEquals(Color.Magenta, headerCard.glassTint)
+        }
+        waitForDraw(activity.window.decorView)
+        val afterBitmap = captureWindow(activity)
+        val pixelAfter = afterBitmap.getPixel(cardX, cardY)
 
+        assertTrue("Mutating glassTint to Magenta must alter rendered pixels", pixelBefore != pixelAfter)
+        assertTrue("Magenta tint must produce red and blue components", AndroidColor.red(pixelAfter) > 0 && AndroidColor.blue(pixelAfter) > 0)
+
+        scenario.onActivity {
             headerCard.darkMode = GlassXmlDarkMode.Light
             assertEquals(GlassXmlDarkMode.Light, headerCard.darkMode)
 
             headerCard.darkMode = GlassXmlDarkMode.Dark
             assertEquals(GlassXmlDarkMode.Dark, headerCard.darkMode)
         }
-        scenario.close()
+        safeClose(scenario)
     }
 
     @Test
     fun identityPresetRendersZeroMaterial() {
         val scenario = ActivityScenario.launch(XmlInteropActivity::class.java)
+        var activityRef: Activity? = null
+        var testGlassRef: LiquidGlassView? = null
+
         scenario.onActivity { activity ->
-            val headerCard = activity.findViewById<LiquidGlassView>(R.id.xmlHeaderCard)
+            activityRef = activity
+            val root = activity.findViewById<ViewGroup>(R.id.xmlRoot)
+            val backdrop = GlassBackdrop(activity).apply {
+                layoutParams = FrameLayout.LayoutParams(400, 400)
+            }
+            val greenContent = View(activity).apply {
+                layoutParams = FrameLayout.LayoutParams(400, 400)
+                setBackgroundColor(AndroidColor.GREEN)
+            }
+            backdrop.addView(greenContent)
+            root.addView(backdrop)
 
-            // Finding 7: Glass.Identity renders zero material
-            headerCard.preset = GlassXmlPreset.Identity
-            assertEquals(GlassXmlPreset.Identity, headerCard.preset)
+            val glassView = LiquidGlassView(activity).apply {
+                layoutParams = FrameLayout.LayoutParams(200, 200).apply {
+                    leftMargin = 50
+                    topMargin = 50
+                }
+                this.backdropView = backdrop
+                preset = GlassXmlPreset.Identity
+            }
+            root.addView(glassView)
+            testGlassRef = glassView
+        }
+        val activity = activityRef!!
+        val glassView = testGlassRef!!
 
-            // Also test on GlassViewEffect
+        waitForDraw(activity.window.decorView)
+        val bmp = captureWindow(activity)
+        assertNotNull(bmp)
+
+        val location = IntArray(2)
+        scenario.onActivity {
+            glassView.getLocationInWindow(location)
+        }
+        val centerX = location[0] + glassView.width / 2
+        val centerY = location[1] + glassView.height / 2
+        val pixel = bmp.getPixel(centerX, centerY)
+
+        // Identity preset has style == null: zero material distortion, preserving exact backdrop green
+        assertEquals("Identity preset renders zero glass material, matching pure backdrop green", AndroidColor.GREEN, pixel)
+
+        // Also test on GlassViewEffect: Identity represents zero glass material (no blur/refraction)
+        scenario.onActivity {
             val testView = TextView(activity)
             val effect = testView.glassEffect(
                 backdrop = activity.findViewById(R.id.xmlBackdrop),
@@ -372,7 +433,7 @@ class GlassBackdropHardwareTest {
             assertNull("Glass.Identity must resolve style(dark=true) to null", effect.glass.style(true))
             effect.dispose()
         }
-        scenario.close()
+        safeClose(scenario)
     }
 
     @Test
@@ -418,59 +479,233 @@ class GlassBackdropHardwareTest {
             root.removeView(bd1)
             root.removeView(bd2)
         }
-        scenario.close()
+        safeClose(scenario)
     }
 
     @Test
     fun asymmetricCornerGeometryInLtrAndRtl() {
-        // Finding 12: Asymmetric shapes must preserve corners and respect RTL
+        // Finding 12: Asymmetric shapes must preserve corners and respect RTL in GlassNativeRenderer
         val density = Density(2f)
-        val asymmetricShape = RoundedCornerShape(topStart = 24.dp, topEnd = 0.dp, bottomEnd = 0.dp, bottomStart = 8.dp)
+        val asymmetricShape = RoundedCornerShape(topStart = 40.dp, topEnd = 0.dp, bottomEnd = 0.dp, bottomStart = 8.dp)
 
-        // In LTR: topStart is topLeft, bottomStart is bottomLeft
+        // In LTR: topStart is topLeft (40dp = 80px), topEnd is topRight (0px)
         val ltrOutline = asymmetricShape.createOutline(Size(200f, 100f), LayoutDirection.Ltr, density) as Outline.Rounded
-        assertEquals(48f, ltrOutline.roundRect.topLeftCornerRadius.x)
+        assertEquals(80f, ltrOutline.roundRect.topLeftCornerRadius.x)
         assertEquals(0f, ltrOutline.roundRect.topRightCornerRadius.x)
-        assertEquals(0f, ltrOutline.roundRect.bottomRightCornerRadius.x)
-        assertEquals(16f, ltrOutline.roundRect.bottomLeftCornerRadius.x)
 
-        // In RTL: topStart is topRight, bottomStart is bottomRight
+        val ltrPath = android.graphics.Path().apply {
+            val rr = ltrOutline.roundRect
+            val rArray = floatArrayOf(
+                rr.topLeftCornerRadius.x, rr.topLeftCornerRadius.y,
+                rr.topRightCornerRadius.x, rr.topRightCornerRadius.y,
+                rr.bottomRightCornerRadius.x, rr.bottomRightCornerRadius.y,
+                rr.bottomLeftCornerRadius.x, rr.bottomLeftCornerRadius.y,
+            )
+            addRoundRect(rr.left, rr.top, rr.right, rr.bottom, rArray, android.graphics.Path.Direction.CW)
+        }
+        val ltrRegion = android.graphics.Region().apply {
+            setPath(ltrPath, android.graphics.Region(0, 0, 200, 100))
+        }
+        assertFalse("LTR: Top-left corner (2,2) must be outside clipPath due to 40dp radius", ltrRegion.contains(2, 2))
+        assertTrue("LTR: Top-right corner (198,2) must be inside clipPath due to 0dp radius", ltrRegion.contains(198, 2))
+
+        // In RTL: topStart is topRight (80px), topEnd is topLeft (0px)
         val rtlOutline = asymmetricShape.createOutline(Size(200f, 100f), LayoutDirection.Rtl, density) as Outline.Rounded
         assertEquals(0f, rtlOutline.roundRect.topLeftCornerRadius.x)
-        assertEquals(48f, rtlOutline.roundRect.topRightCornerRadius.x)
-        assertEquals(16f, rtlOutline.roundRect.bottomRightCornerRadius.x)
-        assertEquals(0f, rtlOutline.roundRect.bottomLeftCornerRadius.x)
+        assertEquals(80f, rtlOutline.roundRect.topRightCornerRadius.x)
+
+        val rtlPath = android.graphics.Path().apply {
+            val rr = rtlOutline.roundRect
+            val rArray = floatArrayOf(
+                rr.topLeftCornerRadius.x, rr.topLeftCornerRadius.y,
+                rr.topRightCornerRadius.x, rr.topRightCornerRadius.y,
+                rr.bottomRightCornerRadius.x, rr.bottomRightCornerRadius.y,
+                rr.bottomLeftCornerRadius.x, rr.bottomLeftCornerRadius.y,
+            )
+            addRoundRect(rr.left, rr.top, rr.right, rr.bottom, rArray, android.graphics.Path.Direction.CW)
+        }
+        val rtlRegion = android.graphics.Region().apply {
+            setPath(rtlPath, android.graphics.Region(0, 0, 200, 100))
+        }
+        assertTrue("RTL: Top-left corner (2,2) must be inside clipPath due to 0dp topEnd", rtlRegion.contains(2, 2))
+        assertFalse("RTL: Top-right corner (198,2) must be outside clipPath due to 40dp topStart", rtlRegion.contains(198, 2))
     }
 
     @Test
     fun sourceMappingRefreshesOnViewTranslation() {
         val scenario = ActivityScenario.launch(XmlInteropActivity::class.java)
+        var testGlassViewRef: LiquidGlassView? = null
         var activityRef: Activity? = null
-        var headerCardRef: LiquidGlassView? = null
 
         scenario.onActivity { activity ->
             activityRef = activity
-            headerCardRef = activity.findViewById(R.id.xmlHeaderCard)
+            val root = activity.findViewById<ViewGroup>(R.id.xmlRoot)
+
+            val backdrop = GlassBackdrop(activity).apply {
+                layoutParams = FrameLayout.LayoutParams(600, 800)
+            }
+            val redStripe = View(activity).apply {
+                layoutParams = FrameLayout.LayoutParams(600, 400).apply {
+                    topMargin = 0
+                }
+                setBackgroundColor(AndroidColor.RED)
+            }
+            val blueStripe = View(activity).apply {
+                layoutParams = FrameLayout.LayoutParams(600, 400).apply {
+                    topMargin = 400
+                }
+                setBackgroundColor(AndroidColor.BLUE)
+            }
+            backdrop.addView(redStripe)
+            backdrop.addView(blueStripe)
+            root.addView(backdrop)
+
+            val glassView = LiquidGlassView(activity).apply {
+                layoutParams = FrameLayout.LayoutParams(300, 200).apply {
+                    leftMargin = 100
+                    topMargin = 100
+                }
+                this.backdropView = backdrop
+                preset = GlassXmlPreset.Clear
+            }
+            root.addView(glassView)
+            testGlassViewRef = glassView
         }
 
         val activity = activityRef!!
-        val headerCard = headerCardRef!!
+        val glassView = testGlassViewRef!!
 
         waitForDraw(activity.window.decorView)
         val beforeBitmap = captureWindow(activity)
         assertNotNull(beforeBitmap)
 
-        // Finding 13: Translation causes transformMatrix change detected by preDrawListener
+        val location = IntArray(2)
         scenario.onActivity {
-            headerCard.translationY = 60f
+            glassView.getLocationInWindow(location)
+        }
+        val origCenterX = location[0] + glassView.width / 2
+        val origCenterY = location[1] + glassView.height / 2
+        val pixelBefore = beforeBitmap.getPixel(origCenterX, origCenterY)
+
+        // Glass is over RED stripe (0xFFFF0000)
+        assertTrue(
+            "Before translation, glass over RED stripe must sample high red (was R=${AndroidColor.red(pixelBefore)}, B=${AndroidColor.blue(pixelBefore)})",
+            AndroidColor.red(pixelBefore) > 150 && AndroidColor.blue(pixelBefore) < 80,
+        )
+
+        // Finding 13: Translation causes transformMatrix change detected by preDrawListener
+        // Translate down by 350px so glassView is now completely over the BLUE stripe (y in 450..650)
+        scenario.onActivity {
+            glassView.translationY = 350f
         }
         waitForDraw(activity.window.decorView)
 
-        // Verify view moved and frame readback still functions smoothly
         val afterBitmap = captureWindow(activity)
         assertNotNull(afterBitmap)
 
-        scenario.close()
+        val newCenterY = origCenterY + 350
+        val pixelAtOldCenter = afterBitmap.getPixel(origCenterX, origCenterY)
+        val pixelAtNewCenter = afterBitmap.getPixel(origCenterX, newCenterY)
+
+        // Old center now reveals the red stripe underneath without glass
+        assertTrue("Old center must remain red stripe", AndroidColor.red(pixelAtOldCenter) > 200)
+
+        // New center now samples the blue stripe underneath through translated glass mapping
+        assertTrue(
+            "After translation, glass over BLUE stripe must sample high blue (was R=${AndroidColor.red(pixelAtNewCenter)}, B=${AndroidColor.blue(pixelAtNewCenter)})",
+            AndroidColor.blue(pixelAtNewCenter) > 150 && AndroidColor.red(pixelAtNewCenter) < 80,
+        )
+
+        safeClose(scenario)
+    }
+
+    @Test
+    fun composeHostSourceMappingRefreshesOnViewTranslation() {
+        val scenario = ActivityScenario.launch(XmlInteropActivity::class.java)
+        var testHostRef: LiquidGlassHostView? = null
+        var activityRef: Activity? = null
+
+        scenario.onActivity { activity ->
+            activityRef = activity
+            val root = activity.findViewById<ViewGroup>(R.id.xmlRoot)
+
+            val backdrop = GlassBackdrop(activity).apply {
+                layoutParams = FrameLayout.LayoutParams(600, 800)
+            }
+            val redStripe = View(activity).apply {
+                layoutParams = FrameLayout.LayoutParams(600, 400).apply {
+                    topMargin = 0
+                }
+                setBackgroundColor(AndroidColor.RED)
+            }
+            val blueStripe = View(activity).apply {
+                layoutParams = FrameLayout.LayoutParams(600, 400).apply {
+                    topMargin = 400
+                }
+                setBackgroundColor(AndroidColor.BLUE)
+            }
+            backdrop.addView(redStripe)
+            backdrop.addView(blueStripe)
+            root.addView(backdrop)
+
+            val hostView = LiquidGlassHostView(activity).apply {
+                layoutParams = FrameLayout.LayoutParams(300, 200).apply {
+                    leftMargin = 100
+                    topMargin = 100
+                }
+                this.backdropView = backdrop
+            }
+            hostView.setThemedGlassContent {
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .glassEffect(glass = Glass.Clear, shape = RoundedCornerShape(12.dp)),
+                )
+            }
+            root.addView(hostView)
+            testHostRef = hostView
+        }
+
+        val activity = activityRef!!
+        val hostView = testHostRef!!
+
+        waitForDraw(activity.window.decorView)
+        val beforeBitmap = captureWindow(activity)
+        assertNotNull(beforeBitmap)
+
+        val location = IntArray(2)
+        scenario.onActivity {
+            hostView.getLocationInWindow(location)
+        }
+        val origCenterX = location[0] + hostView.width / 2
+        val origCenterY = location[1] + hostView.height / 2
+        val pixelBefore = beforeBitmap.getPixel(origCenterX, origCenterY)
+
+        assertTrue(
+            "Before translation, compose host over RED stripe must sample high red (was R=${AndroidColor.red(pixelBefore)}, B=${AndroidColor.blue(pixelBefore)})",
+            AndroidColor.red(pixelBefore) > 150 && AndroidColor.blue(pixelBefore) < 80,
+        )
+
+        // Translate host down by 350px so hostView is now completely over the BLUE stripe (y in 450..650)
+        scenario.onActivity {
+            hostView.translationY = 350f
+        }
+        waitForDraw(activity.window.decorView)
+
+        val afterBitmap = captureWindow(activity)
+        assertNotNull(afterBitmap)
+
+        val newCenterY = origCenterY + 350
+        val pixelAtOldCenter = afterBitmap.getPixel(origCenterX, origCenterY)
+        val pixelAtNewCenter = afterBitmap.getPixel(origCenterX, newCenterY)
+
+        assertTrue("Old center must remain red stripe", AndroidColor.red(pixelAtOldCenter) > 200)
+        assertTrue(
+            "After translation, compose host over BLUE stripe must sample high blue (was R=${AndroidColor.red(pixelAtNewCenter)}, B=${AndroidColor.blue(pixelAtNewCenter)})",
+            AndroidColor.blue(pixelAtNewCenter) > 150 && AndroidColor.red(pixelAtNewCenter) < 80,
+        )
+
+        safeClose(scenario)
     }
 
     @Test
@@ -488,7 +723,7 @@ class GlassBackdropHardwareTest {
             effect.dispose()
             assertEquals(originalBg, testView.background)
         }
-        scenario.close()
+        safeClose(scenario)
     }
 
     @Test
@@ -511,7 +746,7 @@ class GlassBackdropHardwareTest {
             assertTrue("GlassBackdrop must reject wrapper containing a registered consumer", rejected)
             assertEquals("Rejected wrapper must be removed from backdrop", -1, backdrop.indexOfChild(wrapper))
         }
-        scenario.close()
+        safeClose(scenario)
     }
 
     @Test
@@ -533,7 +768,7 @@ class GlassBackdropHardwareTest {
             backdrop1.removeView(wrapper)
             effect.dispose()
         }
-        scenario.close()
+        safeClose(scenario)
     }
 
     @Test
@@ -556,7 +791,7 @@ class GlassBackdropHardwareTest {
             assertEquals(16, testView.paddingRight)
             assertEquals(18, testView.paddingBottom)
         }
-        scenario.close()
+        safeClose(scenario)
     }
 
     @Test
@@ -586,7 +821,7 @@ class GlassBackdropHardwareTest {
 
             backdropA.removeView(consumerB)
         }
-        scenario.close()
+        safeClose(scenario)
     }
 
     @Test
@@ -606,7 +841,7 @@ class GlassBackdropHardwareTest {
             assertEquals(20, testView.paddingStart)
             assertEquals(40, testView.paddingEnd)
         }
-        scenario.close()
+        safeClose(scenario)
     }
     @Test
     fun backdropRejectsCrossBackdropDependencyCycleOnBindingPath() {
@@ -678,7 +913,7 @@ class GlassBackdropHardwareTest {
 
         // Verify the next attached hardware frame renders cleanly after failed retargets
         waitForDraw(decorView!!)
-        scenario.close()
+        safeClose(scenario)
     }
 
     @Test
@@ -706,6 +941,144 @@ class GlassBackdropHardwareTest {
             assertEquals("paddingLeft must remain 10 after disposal", 10, testView.paddingLeft)
             assertEquals("paddingRight must remain 30 after disposal", 30, testView.paddingRight)
         }
-        scenario.close()
+        safeClose(scenario)
+    }
+
+    @Test
+    fun backdropRejectsSelfAsConsumer() {
+        val scenario = ActivityScenario.launch(XmlInteropActivity::class.java)
+        scenario.onActivity { activity ->
+            val backdrop = activity.findViewById<GlassBackdrop>(R.id.xmlBackdrop)
+            val origBg = backdrop.background
+            var rejected = false
+            try {
+                backdrop.glassEffect(backdrop)
+            } catch (e: IllegalStateException) {
+                rejected = true
+                assertTrue(e.message?.contains("cannot be its own consumer") == true)
+            }
+            assertTrue("Self-targeting backdrop.glassEffect(backdrop) must be rejected", rejected)
+            assertEquals("Backdrop background must remain intact upon rejection", origBg, backdrop.background)
+            assertNull("Backdrop effect tag must remain null upon rejection", backdrop.getTag(LibR.id.liquid_glass_view_effect_tag))
+        }
+        safeClose(scenario)
+    }
+
+    @Test
+    fun interactiveDisposalAndNonInteractiveRebindClearsTouchListener() {
+        val scenario = ActivityScenario.launch(XmlInteropActivity::class.java)
+        scenario.onActivity { activity ->
+            val backdrop = activity.findViewById<GlassBackdrop>(R.id.xmlBackdrop)
+            val view = View(activity)
+
+            val effect1 = view.glassEffect(backdrop, glass = Glass.Regular.interactive(true))
+            assertNotNull("Interactive effect must have touchListener installed", effect1.touchListener)
+
+            effect1.dispose()
+            assertNull("TouchListener must be null after dispose", effect1.touchListener)
+
+            val effect2 = view.glassEffect(backdrop, glass = Glass.Regular.interactive(false))
+            assertNull("Non-interactive rebind must not install touchListener", effect2.touchListener)
+            effect2.dispose()
+        }
+        safeClose(scenario)
+    }
+
+    @Test
+    fun consumerRebindingAcrossBackdropsAndMovingUnderPreviousBackdrop() {
+        val scenario = ActivityScenario.launch(XmlInteropActivity::class.java)
+        scenario.onActivity { activity ->
+            val contentRoot = activity.findViewById<ViewGroup>(android.R.id.content)
+            val backdropA = GlassBackdrop(activity)
+            val backdropB = GlassBackdrop(activity)
+            contentRoot.addView(backdropA)
+            contentRoot.addView(backdropB)
+
+            val consumer = LiquidGlassView(activity)
+            consumer.backdropView = backdropA
+            contentRoot.addView(consumer)
+
+            assertTrue("consumer must be registered in backdropA", backdropA.isRegisteredConsumer(consumer))
+
+            consumer.backdropView = backdropB
+            assertFalse("consumer must be unregistered from backdropA after rebind", backdropA.isRegisteredConsumer(consumer))
+            assertTrue("consumer must be registered in backdropB after rebind", backdropB.isRegisteredConsumer(consumer))
+
+            contentRoot.removeView(consumer)
+            backdropA.addView(consumer)
+            assertEquals("consumer must be cleanly added under backdropA", backdropA, consumer.parent)
+
+            backdropA.removeView(consumer)
+            contentRoot.removeView(backdropA)
+            contentRoot.removeView(backdropB)
+        }
+        safeClose(scenario)
+    }
+
+    @Test
+    fun genericOutlineCustomShapeBuildsPathField() {
+        val scenario = ActivityScenario.launch(XmlInteropActivity::class.java)
+        scenario.onActivity { activity ->
+            val backdrop = activity.findViewById<GlassBackdrop>(R.id.xmlBackdrop)
+            val triangleShape = object : Shape {
+                override fun createOutline(size: Size, layoutDirection: LayoutDirection, density: Density): Outline {
+                    val path = androidx.compose.ui.graphics.Path().apply {
+                        moveTo(size.width / 2f, 0f)
+                        lineTo(size.width, size.height)
+                        lineTo(0f, size.height)
+                        close()
+                    }
+                    return Outline.Generic(path)
+                }
+            }
+            val view = View(activity).apply {
+                layoutParams = ViewGroup.LayoutParams(200, 200)
+            }
+            val effect = view.glassEffect(
+                backdrop = backdrop,
+                glass = Glass.Regular,
+                shape = triangleShape,
+            )
+            val renderer = effect.renderer
+            val bmp = Bitmap.createBitmap(200, 200, Bitmap.Config.ARGB_8888)
+            val canvas = android.graphics.Canvas(bmp)
+            renderer.draw(canvas, 200, 200)
+            assertNotNull(bmp)
+            effect.dispose()
+        }
+        safeClose(scenario)
+    }
+
+    @Test
+    fun interactiveViewProcessesDownMoveUpCancelGestures() {
+        val scenario = ActivityScenario.launch(XmlInteropActivity::class.java)
+        scenario.onActivity { activity ->
+            val backdrop = activity.findViewById<GlassBackdrop>(R.id.xmlBackdrop)
+            val view = LiquidGlassView(activity).apply {
+                isGlassInteractive = true
+                backdropView = backdrop
+            }
+            activity.findViewById<ViewGroup>(android.R.id.content).addView(view)
+
+            val downEvent = MotionEvent.obtain(0L, 0L, MotionEvent.ACTION_DOWN, 50f, 50f, 0)
+            view.dispatchTouchEvent(downEvent)
+            assertEquals(1f, view.renderer?.touchAmount ?: 0f, 0.01f)
+
+            val moveEvent = MotionEvent.obtain(0L, 10L, MotionEvent.ACTION_MOVE, 80f, 90f, 0)
+            view.dispatchTouchEvent(moveEvent)
+            assertEquals(80f, view.renderer?.touchX ?: 0f, 0.01f)
+            assertEquals(90f, view.renderer?.touchY ?: 0f, 0.01f)
+
+            val upEvent = MotionEvent.obtain(0L, 20L, MotionEvent.ACTION_UP, 80f, 90f, 0)
+            view.dispatchTouchEvent(upEvent)
+            assertEquals(0f, view.renderer?.touchAmount ?: 0f, 0.01f)
+
+            val cancelEvent = MotionEvent.obtain(0L, 30L, MotionEvent.ACTION_CANCEL, 80f, 90f, 0)
+            view.dispatchTouchEvent(cancelEvent)
+            assertEquals(0f, view.renderer?.touchAmount ?: 0f, 0.01f)
+
+            activity.findViewById<ViewGroup>(android.R.id.content).removeView(view)
+        }
+        safeClose(scenario)
     }
 }

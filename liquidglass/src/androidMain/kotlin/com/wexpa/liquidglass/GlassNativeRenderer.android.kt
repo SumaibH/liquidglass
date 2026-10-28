@@ -58,6 +58,8 @@ class GlassNativeRenderer(
         null
     }
     private val drawScope = CanvasDrawScope()
+    private var cachedPathField: GlassPathField? = null
+    private var cachedPathFieldKey: Any? = null
 
     fun draw(canvas: Canvas, width: Int, height: Int) {
         if (width <= 0 || height <= 0) return
@@ -175,7 +177,7 @@ class GlassNativeRenderer(
                     } finally {
                         wn.endRecording()
                     }
-                    wn.setRenderEffect(RenderEffect.createBlurEffect(wideKernelPx * wideScale, wideKernelPx * wideScale, Shader.TileMode.CLAMP))
+                    wn.setRenderEffect(createAndroidWideKernelEffect(wideKernelPx * wideScale))
 
                     recordingCanvas.save()
                     recordingCanvas.translate(0f, paddedHeight.toFloat())
@@ -184,6 +186,28 @@ class GlassNativeRenderer(
                 }
             } finally {
                 node.endRecording()
+            }
+
+            val sourceRect = android.graphics.RectF(0f, 0f, bd.width.toFloat(), bd.height.toFloat())
+            matrix.mapRect(sourceRect)
+
+            val pathField = if (composeOutline is Outline.Generic && Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                val band = with(density) { if (style.refractionBand.isSpecified) style.refractionBand.toPx() else 0f }
+                val key = listOf(shape, paddedWidth, paddedHeight, pad, band, layoutDirection, density.density)
+                if (cachedPathFieldKey == key && cachedPathField != null) {
+                    cachedPathField
+                } else {
+                    val composePath = androidx.compose.ui.graphics.Path().apply {
+                        fillType = composeOutline.path.fillType
+                        addPath(composeOutline.path)
+                    }
+                    val field = buildPathField(composePath, paddedWidth, paddedHeight, pad, band)
+                    cachedPathField = field
+                    cachedPathFieldKey = key
+                    field
+                }
+            } else {
+                null
             }
 
             // Apply shader / blur effect
@@ -196,9 +220,9 @@ class GlassNativeRenderer(
                     glass = glass,
                     dark = dark,
                     background = backgroundColor,
-                    deltaX = 0f,
-                    deltaY = 0f,
-                    sourceSize = Size(bd.width.toFloat(), bd.height.toFloat()),
+                    deltaX = -sourceRect.left,
+                    deltaY = -sourceRect.top,
+                    sourceSize = Size(sourceRect.width(), sourceRect.height()),
                     tiltX = 0f,
                     tiltY = 0f,
                     ambientAlpha = 1f,
@@ -208,6 +232,7 @@ class GlassNativeRenderer(
                     interaction = if (glass.isInteractive) glass.interaction else null,
                     contrast = 0f,
                     layoutDirection = layoutDirection,
+                    pathField = pathField,
                 ).copy(
                     wideStrip = if (useWide) paddedHeight.toFloat() else 0f,
                     wideScale = wideScale,

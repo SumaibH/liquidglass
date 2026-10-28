@@ -55,6 +55,7 @@ public class com/wexpa/liquidglass/GlassBackdrop : android/widget/FrameLayout {
 	public fun draw (Landroid/graphics/Canvas;)V
 	protected fun drawChild (Landroid/graphics/Canvas;Landroid/view/View;J)Z
 	public final fun getSourceNode ()Landroid/graphics/RenderNode;
+	public final fun isRegisteredConsumer (Landroid/view/View;)Z
 	public fun onViewAdded (Landroid/view/View;)V
 	public final fun registerGlassConsumer (Landroid/view/View;)V
 	public final fun unregisterGlassConsumer (Landroid/view/View;)V
@@ -682,6 +683,7 @@ public final class com/wexpa/liquidglass/GlassViewEffect {
 	public final fun getGlass ()Lcom/wexpa/liquidglass/Glass;
 	public final fun getRenderer ()Lcom/wexpa/liquidglass/GlassNativeRenderer;
 	public final fun getShape ()Landroidx/compose/ui/graphics/Shape;
+	public final fun getTouchListener ()Landroid/view/View$OnTouchListener;
 	public final fun getView ()Landroid/view/View;
 	public final fun setBackgroundColor-8_81llA (J)V
 	public final fun setDark (Z)V
@@ -798,16 +800,15 @@ public final class com/wexpa/liquidglass/LiquidGlassView : com/wexpa/liquidglass
 	public final fun getGlassTint-QN2ZGVo ()Landroidx/compose/ui/graphics/Color;
 	public final fun getLensMagnification ()F
 	public final fun getPreset ()Lcom/wexpa/liquidglass/GlassXmlPreset;
+	public final fun getRenderer ()Lcom/wexpa/liquidglass/GlassNativeRenderer;
 	public final fun getXmlShape ()Lcom/wexpa/liquidglass/GlassXmlShape;
 	public final fun isGlassInteractive ()Z
-	public final fun isGlassPullable ()Z
 	public fun onTouchEvent (Landroid/view/MotionEvent;)Z
 	public final fun setCornerPower (F)V
 	public final fun setCornerRadiusDp-0680j_4 (F)V
 	public final fun setCustomGlass (Lcom/wexpa/liquidglass/Glass;)V
 	public final fun setCustomShape (Landroidx/compose/ui/graphics/Shape;)V
 	public final fun setGlassInteractive (Z)V
-	public final fun setGlassPullable (Z)V
 	public final fun setGlassTint-Y2TPw74 (Landroidx/compose/ui/graphics/Color;)V
 	public final fun setLensMagnification (F)V
 	public final fun setPreset (Lcom/wexpa/liquidglass/GlassXmlPreset;)V
