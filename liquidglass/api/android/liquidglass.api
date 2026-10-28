@@ -51,9 +51,11 @@ public class com/wexpa/liquidglass/GlassBackdrop : android/widget/FrameLayout {
 	public fun <init> (Landroid/content/Context;Landroid/util/AttributeSet;)V
 	public fun <init> (Landroid/content/Context;Landroid/util/AttributeSet;I)V
 	public synthetic fun <init> (Landroid/content/Context;Landroid/util/AttributeSet;IILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	protected fun dispatchDraw (Landroid/graphics/Canvas;)V
 	public fun draw (Landroid/graphics/Canvas;)V
 	protected fun drawChild (Landroid/graphics/Canvas;Landroid/view/View;J)Z
 	public final fun getSourceNode ()Landroid/graphics/RenderNode;
+	public fun onViewAdded (Landroid/view/View;)V
 	public final fun registerGlassConsumer (Landroid/view/View;)V
 	public final fun unregisterGlassConsumer (Landroid/view/View;)V
 }
@@ -672,6 +674,8 @@ public final class com/wexpa/liquidglass/GlassTabBarStyle$Companion {
 
 public final class com/wexpa/liquidglass/GlassViewEffect {
 	public static final field $stable I
+	public final fun dispose ()V
+	public final fun getBackdrop ()Lcom/wexpa/liquidglass/GlassBackdrop;
 	public final fun getBackgroundColor-0d7_KjU ()J
 	public final fun getDark ()Z
 	public final fun getDrawable ()Lcom/wexpa/liquidglass/GlassBackgroundDrawable;
@@ -748,6 +752,7 @@ public class com/wexpa/liquidglass/LiquidGlassHostView : android/widget/FrameLay
 	public final fun getInterceptAllTouches ()Z
 	public final fun getOnOutsideTouchWhenIntercepting ()Lkotlin/jvm/functions/Function0;
 	public final fun isPointInsideGlass (FF)Z
+	protected fun onAppearanceChanged ()V
 	protected fun onAttachedToWindow ()V
 	protected fun onDetachedFromWindow ()V
 	protected fun refreshBackdropTarget ()V

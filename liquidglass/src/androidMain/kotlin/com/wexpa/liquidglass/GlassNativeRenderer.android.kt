@@ -13,6 +13,9 @@ import androidx.compose.ui.graphics.Outline
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.asAndroidPath
 import androidx.compose.ui.graphics.drawscope.CanvasDrawScope
+import androidx.compose.ui.graphics.isSpecified
+import androidx.compose.ui.unit.isSpecified
+import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.LayoutDirection
 
@@ -41,6 +44,12 @@ class GlassNativeRenderer(
         null
     }
 
+    private var wideNode: RenderNode? = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+        RenderNode("LiquidGlassWideStrip")
+    } else {
+        null
+    }
+
     private val viewLocation = IntArray(2)
     private val backdropLocation = IntArray(2)
     private val androidOutline = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
@@ -50,43 +59,82 @@ class GlassNativeRenderer(
     }
     private val drawScope = CanvasDrawScope()
 
-    private var lastWidth = -1
-    private var lastHeight = -1
-    private var lastDx = Float.NaN
-    private var lastDy = Float.NaN
-    private var lastBackdropNode: RenderNode? = null
-
     fun draw(canvas: Canvas, width: Int, height: Int) {
         if (width <= 0 || height <= 0) return
+
+        // Finding 7: Glass.Identity deliberately represents no material. Short-circuit immediately.
+        if (glass.isIdentity || glass.style(dark) == null) {
+            return
+        }
+
         val node = glassNode
         val bd = backdrop
         val sourceNode = bd?.sourceNode
         val density = Density(targetView.context.resources.displayMetrics.density)
+        val layoutDirection = if (targetView.layoutDirection == View.LAYOUT_DIRECTION_RTL) {
+            LayoutDirection.Rtl
+        } else {
+            LayoutDirection.Ltr
+        }
+
+        // Setup outline & clipping preserving full asymmetric corner geometry and RTL
+        val composeOutline = shape.createOutline(
+            Size(width.toFloat(), height.toFloat()),
+            layoutDirection,
+            density,
+        )
+        val clipPath = android.graphics.Path()
+        when (composeOutline) {
+            is Outline.Rectangle -> {
+                clipPath.addRect(0f, 0f, width.toFloat(), height.toFloat(), android.graphics.Path.Direction.CW)
+            }
+            is Outline.Rounded -> {
+                val rr = composeOutline.roundRect
+                val rArray = floatArrayOf(
+                    rr.topLeftCornerRadius.x, rr.topLeftCornerRadius.y,
+                    rr.topRightCornerRadius.x, rr.topRightCornerRadius.y,
+                    rr.bottomRightCornerRadius.x, rr.bottomRightCornerRadius.y,
+                    rr.bottomLeftCornerRadius.x, rr.bottomLeftCornerRadius.y,
+                )
+                clipPath.addRoundRect(rr.left, rr.top, rr.right, rr.bottom, rArray, android.graphics.Path.Direction.CW)
+            }
+            is Outline.Generic -> {
+                clipPath.set(composeOutline.path.asAndroidPath())
+            }
+        }
 
         if (node != null && sourceNode != null && canvas.isHardwareAccelerated && Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            targetView.getLocationInWindow(viewLocation)
-            bd.getLocationInWindow(backdropLocation)
-            val dx = (backdropLocation[0] - viewLocation[0]).toFloat()
-            val dy = (backdropLocation[1] - viewLocation[1]).toFloat()
+            val style = glass.style(dark) ?: return
+            val radii = shape.glassRadii(Size(width.toFloat(), height.toFloat()), layoutDirection, density)
+            val bandPx = style.bandPx(radii, Size(width.toFloat(), height.toFloat()), density)
+            val pad = style.recordPad(radii, Size(width.toFloat(), height.toFloat()), null, density, 1f, bandPx)
+            val paddedWidth = kotlin.math.ceil(width + pad * 2f).toInt().coerceAtLeast(1)
+            val paddedHeight = kotlin.math.ceil(height + pad * 2f).toInt().coerceAtLeast(1)
 
-            node.setPosition(0, 0, width, height)
+            // Wide-kernel blur strip setup
+            val wideKernelPx = if (style.wideKernel.isSpecified) with(density) { style.wideKernel.toPx() } else 0f
+            val useWide = style.profile != GlassProfile.Legacy && wideKernelPx >= 1f && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S
+            val wideScale = 0.25f
+            val stripWidth = if (useWide) kotlin.math.ceil(paddedWidth * wideScale).toInt().coerceAtLeast(1) else 0
+            val stripHeight = if (useWide) kotlin.math.ceil(paddedHeight * wideScale).toInt().coerceAtLeast(1) else 0
+            val totalNodeWidth = paddedWidth
+            val totalNodeHeight = paddedHeight + stripHeight
 
-            // Setup outline & clipping
-            val composeOutline = shape.createOutline(
-                Size(width.toFloat(), height.toFloat()),
-                LayoutDirection.Ltr,
-                density,
-            )
+            val matrix = android.graphics.Matrix()
+            bd.transformMatrixToGlobal(matrix)
+            targetView.transformMatrixToLocal(matrix)
+
             val outline = androidOutline
             if (outline != null) {
-                when (composeOutline) {
-                    is Outline.Rectangle -> {
-                        outline.setRect(0, 0, width, height)
-                        node.setOutline(outline)
-                        node.setClipToOutline(true)
-                    }
-                    is Outline.Rounded -> {
-                        val rr = composeOutline.roundRect
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                    outline.setPath(clipPath)
+                    node.setOutline(outline)
+                    node.setClipToOutline(true)
+                } else if (composeOutline is Outline.Rounded) {
+                    val rr = composeOutline.roundRect
+                    if (rr.topLeftCornerRadius.x == rr.topRightCornerRadius.x &&
+                        rr.topLeftCornerRadius.x == rr.bottomLeftCornerRadius.x &&
+                        rr.topLeftCornerRadius.x == rr.bottomRightCornerRadius.x) {
                         outline.setRoundRect(
                             rr.left.toInt(),
                             rr.top.toInt(),
@@ -97,33 +145,43 @@ class GlassNativeRenderer(
                         node.setOutline(outline)
                         node.setClipToOutline(true)
                     }
-                    is Outline.Generic -> {
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-                            outline.setPath(composeOutline.path.asAndroidPath())
-                            node.setOutline(outline)
-                            node.setClipToOutline(true)
-                        } else {
-                            node.setClipToOutline(false)
-                        }
-                    }
                 }
             }
 
-            // Re-record glassNode if geometry or source changed
-            val needsRecord = width != lastWidth || height != lastHeight || dx != lastDx || dy != lastDy || sourceNode !== lastBackdropNode
-            if (needsRecord) {
-                val recordingCanvas = node.beginRecording(width, height)
-                try {
-                    recordingCanvas.translate(dx, dy)
-                    recordingCanvas.drawRenderNode(sourceNode)
-                } finally {
-                    node.endRecording()
+            node.setPosition(0, 0, totalNodeWidth, totalNodeHeight)
+            val recordingCanvas = node.beginRecording(totalNodeWidth, totalNodeHeight)
+            try {
+                val bgArgb = (if (backgroundColor.isSpecified) backgroundColor else if (dark) Color.Black else Color.White).toArgb()
+                recordingCanvas.drawColor(bgArgb)
+
+                recordingCanvas.save()
+                recordingCanvas.translate(pad, pad)
+                recordingCanvas.concat(matrix)
+                recordingCanvas.drawRenderNode(sourceNode)
+                recordingCanvas.restore()
+
+                if (useWide) {
+                    val wn = wideNode ?: RenderNode("LiquidGlassWideStrip").also { wideNode = it }
+                    wn.setPosition(0, 0, stripWidth, stripHeight)
+                    val wideCanvas = wn.beginRecording(stripWidth, stripHeight)
+                    try {
+                        wideCanvas.drawColor(bgArgb)
+                        wideCanvas.scale(wideScale, wideScale)
+                        wideCanvas.translate(pad, pad)
+                        wideCanvas.concat(matrix)
+                        wideCanvas.drawRenderNode(sourceNode)
+                    } finally {
+                        wn.endRecording()
+                    }
+                    wn.setRenderEffect(RenderEffect.createBlurEffect(wideKernelPx * wideScale, wideKernelPx * wideScale, Shader.TileMode.CLAMP))
+
+                    recordingCanvas.save()
+                    recordingCanvas.translate(0f, paddedHeight.toFloat())
+                    recordingCanvas.drawRenderNode(wn)
+                    recordingCanvas.restore()
                 }
-                lastWidth = width
-                lastHeight = height
-                lastDx = dx
-                lastDy = dy
-                lastBackdropNode = sourceNode
+            } finally {
+                node.endRecording()
             }
 
             // Apply shader / blur effect
@@ -138,17 +196,24 @@ class GlassNativeRenderer(
                     background = backgroundColor,
                     deltaX = 0f,
                     deltaY = 0f,
+                    sourceSize = Size(bd.width.toFloat(), bd.height.toFloat()),
                     tiltX = 0f,
                     tiltY = 0f,
                     ambientAlpha = 1f,
                     pressAlpha = touchAmount,
                     press = press,
                     tintField = null,
+                    interaction = if (glass.isInteractive) glass.interaction else null,
+                    contrast = 0f,
+                    layoutDirection = layoutDirection,
+                ).copy(
+                    wideStrip = if (useWide) paddedHeight.toFloat() else 0f,
+                    wideScale = wideScale,
                 )
                 val effect = createAndroidGlassRenderEffect(uniforms)
                 node.setRenderEffect(effect)
             } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-                val blurPx = glass.style(dark)?.blurRadius?.value?.let { it * density.density } ?: 0f
+                val blurPx = style.blurRadius.value * density.density
                 val blurEffect = if (blurPx > 0f) {
                     RenderEffect.createBlurEffect(blurPx, blurPx, Shader.TileMode.CLAMP)
                 } else {
@@ -157,28 +222,49 @@ class GlassNativeRenderer(
                 node.setRenderEffect(blurEffect)
             }
 
-            canvas.drawRenderNode(node)
+            // Draw to canvas with matching -pad translation and outline clip
+            val saveCount = canvas.save()
+            try {
+                canvas.clipPath(clipPath)
+                canvas.translate(-pad, -pad)
+                canvas.drawRenderNode(node)
+            } finally {
+                canvas.restoreToCount(saveCount)
+            }
 
-            // On API 31-32 without RuntimeShader, draw lit rim / tint stroke on top
-            if (Build.VERSION.SDK_INT in Build.VERSION_CODES.S until Build.VERSION_CODES.TIRAMISU) {
-                drawFallbackOverlay(canvas, width, height, density)
+            // Finding 10: Render fallback on API 29, 30, 31, and 32 (all versions below Android 13 Tiramisu)
+            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
+                drawFallbackOverlay(canvas, width, height, density, layoutDirection)
             }
             return
         }
 
-        // Software canvas or API < 31 fallback
-        drawFallbackOverlay(canvas, width, height, density)
+        // Software canvas or API < 29 fallback
+        val saveCount = canvas.save()
+        try {
+            canvas.clipPath(clipPath)
+            drawFallbackOverlay(canvas, width, height, density, layoutDirection)
+        } finally {
+            canvas.restoreToCount(saveCount)
+        }
     }
 
-    private fun drawFallbackOverlay(canvas: Canvas, width: Int, height: Int, density: Density) {
-        val style = glass.style(dark) ?: GlassStyle.Regular
+    private fun drawFallbackOverlay(
+        canvas: Canvas,
+        width: Int,
+        height: Int,
+        density: Density,
+        layoutDirection: LayoutDirection = LayoutDirection.Ltr,
+    ) {
+        if (glass.isIdentity) return
+        val style = glass.style(dark) ?: return
         val light = glass.light(dark)
-        val radii = shape.glassRadii(Size(width.toFloat(), height.toFloat()), LayoutDirection.Ltr, density)
+        val radii = shape.glassRadii(Size(width.toFloat(), height.toFloat()), layoutDirection, density)
         val bevelPx = with(density) { style.bevel.toPx() }
 
         drawScope.draw(
             density = density,
-            layoutDirection = LayoutDirection.Ltr,
+            layoutDirection = layoutDirection,
             canvas = ComposeCanvas(canvas),
             size = Size(width.toFloat(), height.toFloat()),
         ) {

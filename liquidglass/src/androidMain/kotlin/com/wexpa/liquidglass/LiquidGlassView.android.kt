@@ -167,11 +167,31 @@ open class LiquidGlassHostView @JvmOverloads constructor(
     /** When true, captures the full bounds of this host view instead of clipping to registered [glassHitTarget] rects. */
     var captureFullHostBounds: Boolean by mutableStateOf(false)
 
-    /** Appearance mode configured via `app:liquidGlassDark` or code. */
-    var darkMode: GlassXmlDarkMode by mutableStateOf(GlassXmlDarkMode.Auto)
+    private var _darkMode by mutableStateOf(GlassXmlDarkMode.Auto)
 
-    /** Optional opaque ground color configured via `app:liquidGlassBackground` or code. */
-    var glassBackgroundColor: Color? by mutableStateOf(null)
+    /** Appearance mode configured via `app:liquidGlassDark` or code. */
+    var darkMode: GlassXmlDarkMode
+        get() = _darkMode
+        set(value) {
+            if (_darkMode != value) {
+                _darkMode = value
+                onAppearanceChanged()
+            }
+        }
+
+    private var _glassBackgroundColor by mutableStateOf<Color?>(null)
+
+    /** Optional opaque ground color configured via pp:liquidGlassBackground or code. */
+    var glassBackgroundColor: Color?
+        get() = _glassBackgroundColor
+        set(value) {
+            if (_glassBackgroundColor != value) {
+                _glassBackgroundColor = value
+                onAppearanceChanged()
+            }
+        }
+
+    protected open fun onAppearanceChanged() {}
 
     /** When true (e.g. a floating glass menu is expanded), all touches are routed to Compose. */
     var interceptAllTouches: Boolean = false
@@ -239,12 +259,24 @@ open class LiquidGlassHostView @JvmOverloads constructor(
     protected open fun refreshBackdropTarget() {
         if (explicitBackdropView != null) {
             resolvedBackdropView = null
-            return
-        }
-        resolvedBackdropView = if (backdropViewId != View.NO_ID) {
-            findBackdropById(backdropViewId)
         } else {
-            parent as? View
+            resolvedBackdropView = if (backdropViewId != View.NO_ID) {
+                findBackdropById(backdropViewId)
+            } else {
+                parent as? View
+            }
+        }
+        val target = backdropView
+        if (target != null) {
+            if (target is GlassBackdrop && isDescendantOf(this, target)) {
+                throw IllegalStateException(
+                    "LiquidGlass consumer ($this) cannot target an ancestor GlassBackdrop ($target). " +
+                        "Consumers must be placed outside their source subtree."
+                )
+            }
+            if (target !is GlassBackdrop) {
+                android.util.Log.w("LiquidGlass", "Target backdrop view ($target) is not a GlassBackdrop")
+            }
         }
     }
 
@@ -467,36 +499,112 @@ class LiquidGlassView @JvmOverloads constructor(
 ) : LiquidGlassHostView(context, attrs, defStyleAttr) {
 
     /** Material preset configured via `app:liquidGlassPreset` or code. */
-    var preset: GlassXmlPreset by mutableStateOf(GlassXmlPreset.Regular)
+    var preset: GlassXmlPreset = GlassXmlPreset.Regular
+        set(value) {
+            if (field != value) {
+                field = value
+                updateRendererState()
+            }
+        }
 
     /** Surface shape configured via `app:liquidGlassShape` or code. */
-    var xmlShape: GlassXmlShape by mutableStateOf(GlassXmlShape.Capsule)
+    var xmlShape: GlassXmlShape = GlassXmlShape.Capsule
+        set(value) {
+            if (field != value) {
+                field = value
+                updateRendererState()
+            }
+        }
 
     /** Corner radius used when [xmlShape] is [GlassXmlShape.Rounded] or [GlassXmlShape.Squircle]. */
-    var cornerRadiusDp: Dp by mutableStateOf(24.dp)
+    var cornerRadiusDp: Dp = 24.dp
+        set(value) {
+            if (field != value) {
+                field = value
+                updateRendererState()
+            }
+        }
 
     /** Superellipse exponent used when [xmlShape] is [GlassXmlShape.Squircle]. */
-    var cornerPower: Float by mutableFloatStateOf(4f)
+    var cornerPower: Float = 4f
+        set(value) {
+            if (field != value) {
+                field = value
+                updateRendererState()
+            }
+        }
 
     /** Optional surface tint color configured via `app:liquidGlassTint` or code. */
-    var glassTint: Color? by mutableStateOf(null)
+    var glassTint: Color? = null
+        set(value) {
+            if (field != value) {
+                field = value
+                updateRendererState()
+            }
+        }
 
     /** Whether touch interaction (press glow and lift) is enabled (`app:liquidGlassInteractive`). */
-    var isGlassInteractive: Boolean by mutableStateOf(false)
+    var isGlassInteractive: Boolean = false
+        set(value) {
+            if (field != value) {
+                field = value
+                updateRendererState()
+            }
+        }
 
     /** Whether interactive touch response uses [GlassInteraction.Pullable] (`app:liquidGlassPullable`). */
-    var isGlassPullable: Boolean by mutableStateOf(false)
+    var isGlassPullable: Boolean = false
+        set(value) {
+            if (field != value) {
+                field = value
+                updateRendererState()
+            }
+        }
 
     /** Magnification factor when [preset] is [GlassXmlPreset.Lens] (`app:liquidGlassLensMagnification`). */
-    var lensMagnification: Float by mutableFloatStateOf(1.4f)
+    var lensMagnification: Float = 1.4f
+        set(value) {
+            if (field != value) {
+                field = value
+                updateRendererState()
+            }
+        }
 
     /** Optional custom [Glass] override. */
-    var customGlass: Glass? by mutableStateOf(null)
+    var customGlass: Glass? = null
+        set(value) {
+            if (field != value) {
+                field = value
+                updateRendererState()
+            }
+        }
 
     /** Optional custom Compose [Shape] override. */
-    var customShape: Shape? by mutableStateOf(null)
+    var customShape: Shape? = null
+        set(value) {
+            if (field != value) {
+                field = value
+                updateRendererState()
+            }
+        }
 
     internal var renderer: GlassNativeRenderer? = null
+
+    private val lastTransformMatrix = android.graphics.Matrix()
+    private val currentTransformMatrix = android.graphics.Matrix()
+    private val preDrawListener = android.view.ViewTreeObserver.OnPreDrawListener {
+        val bd = backdropView as? GlassBackdrop
+        if (bd != null && Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            currentTransformMatrix.reset()
+            bd.transformMatrixToGlobal(currentTransformMatrix)
+            transformMatrixToLocal(currentTransformMatrix)
+            if (currentTransformMatrix != lastTransformMatrix) {
+                lastTransformMatrix.set(currentTransformMatrix)
+                invalidate()
+            }
+        }
+        true
+    }
 
     init {
         captureFullHostBounds = true
@@ -559,19 +667,47 @@ class LiquidGlassView @JvmOverloads constructor(
         background = GlassBackgroundDrawable(r)
     }
 
+    override fun onAppearanceChanged() {
+        super.onAppearanceChanged()
+        updateRendererState()
+    }
+
     override fun onAttachedToWindow() {
         super.onAttachedToWindow()
+        val bd = backdropView
+        if (bd is GlassBackdrop && isDescendantOf(this, bd)) {
+            throw IllegalStateException(
+                "LiquidGlassView ($this) cannot target an ancestor GlassBackdrop ($bd). " +
+                    "Consumers must be placed outside their source subtree."
+            )
+        }
         updateRendererState()
-        (backdropView as? GlassBackdrop)?.registerGlassConsumer(this)
+        (bd as? GlassBackdrop)?.registerGlassConsumer(this)
+
+        val vto = viewTreeObserver
+        if (vto.isAlive) {
+            vto.addOnPreDrawListener(preDrawListener)
+        }
     }
 
     override fun onDetachedFromWindow() {
         super.onDetachedFromWindow()
         (backdropView as? GlassBackdrop)?.unregisterGlassConsumer(this)
+        val vto = viewTreeObserver
+        if (vto.isAlive) {
+            vto.removeOnPreDrawListener(preDrawListener)
+        }
     }
 
     override fun refreshBackdropTarget() {
         super.refreshBackdropTarget()
+        val bd = backdropView
+        if (bd is GlassBackdrop && isDescendantOf(this, bd)) {
+            throw IllegalStateException(
+                "LiquidGlassView ($this) cannot target an ancestor GlassBackdrop ($bd). " +
+                    "Consumers must be placed outside their source subtree."
+            )
+        }
         if (renderer != null) {
             updateRendererState()
         }
@@ -623,28 +759,28 @@ class LiquidGlassView @JvmOverloads constructor(
 
     override fun onTouchEvent(event: MotionEvent): Boolean {
         if (!isGlassInteractive) return super.onTouchEvent(event)
-        val r = renderer ?: return super.onTouchEvent(event)
-        when (event.actionMasked) {
-            MotionEvent.ACTION_DOWN -> {
-                r.touchX = event.x
-                r.touchY = event.y
-                r.touchAmount = 1f
-                invalidate()
-                return true
-            }
-            MotionEvent.ACTION_MOVE -> {
-                r.touchX = event.x
-                r.touchY = event.y
-                invalidate()
-                return true
-            }
-            MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> {
-                r.touchAmount = 0f
-                invalidate()
-                return true
+        val r = renderer
+        if (r != null) {
+            when (event.actionMasked) {
+                MotionEvent.ACTION_DOWN -> {
+                    r.touchX = event.x
+                    r.touchY = event.y
+                    r.touchAmount = 1f
+                    invalidate()
+                }
+                MotionEvent.ACTION_MOVE -> {
+                    r.touchX = event.x
+                    r.touchY = event.y
+                    invalidate()
+                }
+                MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> {
+                    r.touchAmount = 0f
+                    invalidate()
+                }
             }
         }
-        return super.onTouchEvent(event)
+        val handled = super.onTouchEvent(event)
+        return handled || isGlassInteractive
     }
 
     override fun dispatchTouchEvent(ev: MotionEvent): Boolean {
