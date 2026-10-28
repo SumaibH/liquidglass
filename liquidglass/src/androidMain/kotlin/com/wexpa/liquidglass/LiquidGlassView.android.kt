@@ -160,11 +160,13 @@ open class LiquidGlassHostView @JvmOverloads constructor(
         }
 
     /**
-     * Authored backdrop margin (default `36.dp`) captured around child glass regions inside this [LiquidGlassHostView].
+     * Deprecated no-op. The live backdrop renders directly from the [GlassBackdrop.sourceNode] and ignores this margin.
      */
+    @Deprecated("No effect. The live backdrop renders directly from GlassBackdrop.sourceNode.")
     var backdropMarginDp: Dp by mutableStateOf(36.dp)
 
-    /** When true, captures the full bounds of this host view instead of clipping to registered [glassHitTarget] rects. */
+    /** Deprecated no-op. The live backdrop renders directly from the full [GlassBackdrop.sourceNode]. */
+    @Deprecated("No effect. The live backdrop renders directly from GlassBackdrop.sourceNode.")
     var captureFullHostBounds: Boolean by mutableStateOf(false)
 
     private var _darkMode by mutableStateOf(GlassXmlDarkMode.Auto)

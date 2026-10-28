@@ -67,7 +67,7 @@ class GlassBackdropHardwareTest {
             }
             view.invalidate()
         }
-        latch.await(3, TimeUnit.SECONDS)
+        assertTrue("Timed out waiting for frame commit", latch.await(3, TimeUnit.SECONDS))
     }
 
     private fun captureWindow(activity: Activity): Bitmap {
@@ -109,7 +109,7 @@ class GlassBackdropHardwareTest {
             decor.draw(c)
             drawLatch.countDown()
         }
-        drawLatch.await(2, TimeUnit.SECONDS)
+        assertTrue("Timed out waiting for software draw", drawLatch.await(2, TimeUnit.SECONDS))
         return bmp
     }
 
@@ -300,7 +300,12 @@ class GlassBackdropHardwareTest {
 
         // Test MotionEvent dispatch
         containerClicked.set(false)
+        val clickLatch = CountDownLatch(1)
         scenario.onActivity {
+            glassContainer.setOnClickListener {
+                containerClicked.set(true)
+                clickLatch.countDown()
+            }
             val now = SystemClock.uptimeMillis()
             val down = MotionEvent.obtain(now, now, MotionEvent.ACTION_DOWN, 10f, 10f, 0)
             val up = MotionEvent.obtain(now, now + 150, MotionEvent.ACTION_UP, 10f, 10f, 0)
@@ -311,10 +316,8 @@ class GlassBackdropHardwareTest {
             up.recycle()
         }
 
-        // Wait for posted PerformClick to drain from the main message queue
-        Thread.sleep(300)
-
-        assertTrue("MotionEvent DOWN/UP sequence must trigger container OnClickListener", containerClicked.get())
+        assertTrue("MotionEvent DOWN/UP sequence must trigger container OnClickListener", clickLatch.await(2, TimeUnit.SECONDS))
+        assertTrue("Container clicked must be true", containerClicked.get())
 
         scenario.onActivity {
             root.removeView(glassContainer)
@@ -453,6 +456,8 @@ class GlassBackdropHardwareTest {
         val headerCard = headerCardRef!!
 
         waitForDraw(activity.window.decorView)
+        val beforeBitmap = captureWindow(activity)
+        assertNotNull(beforeBitmap)
 
         // Finding 13: Translation causes transformMatrix change detected by preDrawListener
         scenario.onActivity {
@@ -461,8 +466,8 @@ class GlassBackdropHardwareTest {
         waitForDraw(activity.window.decorView)
 
         // Verify view moved and frame readback still functions smoothly
-        val bitmap = captureWindow(activity)
-        assertNotNull(bitmap)
+        val afterBitmap = captureWindow(activity)
+        assertNotNull(afterBitmap)
 
         scenario.close()
     }

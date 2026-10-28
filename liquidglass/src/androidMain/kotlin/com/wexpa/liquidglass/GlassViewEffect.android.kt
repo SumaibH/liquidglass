@@ -84,6 +84,10 @@ class GlassViewEffect internal constructor(
 
         touchListener = null
 
+        if (view.background === drawable) {
+            view.background = null
+        }
+
         backdrop.unregisterGlassConsumer(view)
 
         if (view.getTag(R.id.liquid_glass_view_effect_tag) === this) {
@@ -142,6 +146,10 @@ class GlassBackgroundDrawable(
  * @param dark Whether to force dark appearance, light appearance, or null to follow system dark mode.
  * @param backgroundColor Optional ground color behind the glass.
  * @param replaceBackground When true (default), sets the generated [GlassBackgroundDrawable] as the view's background.
+ *
+ * Note: If [glass] is interactive ([Glass.isInteractive]), this function installs a [View.OnTouchListener]
+ * on the view to drive interaction state while returning false to preserve click dispatch. This takes
+ * ownership of the view's [View.setOnTouchListener] slot.
  */
 fun View.glassEffect(
     backdrop: GlassBackdrop,

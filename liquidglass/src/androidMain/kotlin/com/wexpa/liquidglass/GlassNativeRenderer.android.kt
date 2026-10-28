@@ -125,9 +125,11 @@ class GlassNativeRenderer(
             targetView.transformMatrixToLocal(matrix)
 
             val outline = androidOutline
+            node.setClipToOutline(false)
             if (outline != null) {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-                    outline.setPath(clipPath)
+                    val nodePath = android.graphics.Path(clipPath).apply { offset(pad, pad) }
+                    outline.setPath(nodePath)
                     node.setOutline(outline)
                     node.setClipToOutline(true)
                 } else if (composeOutline is Outline.Rounded) {
@@ -136,10 +138,10 @@ class GlassNativeRenderer(
                         rr.topLeftCornerRadius.x == rr.bottomLeftCornerRadius.x &&
                         rr.topLeftCornerRadius.x == rr.bottomRightCornerRadius.x) {
                         outline.setRoundRect(
-                            rr.left.toInt(),
-                            rr.top.toInt(),
-                            rr.right.toInt(),
-                            rr.bottom.toInt(),
+                            (rr.left + pad).toInt(),
+                            (rr.top + pad).toInt(),
+                            (rr.right + pad).toInt(),
+                            (rr.bottom + pad).toInt(),
                             rr.topLeftCornerRadius.x,
                         )
                         node.setOutline(outline)
