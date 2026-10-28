@@ -140,9 +140,15 @@ open class LiquidGlassHostView @JvmOverloads constructor(
     /** Resource ID of the Android [View] to refract as the backdrop (`app:liquidGlassBackdrop`). */
     var backdropViewId: Int = View.NO_ID
         set(value) {
+            val old = field
             field = value
-            if (isAttachedToWindow) {
-                refreshBackdropTarget()
+            try {
+                if (isAttachedToWindow || parent != null) {
+                    refreshBackdropTarget()
+                }
+            } catch (t: Throwable) {
+                field = old
+                throw t
             }
         }
 
@@ -153,9 +159,15 @@ open class LiquidGlassHostView @JvmOverloads constructor(
     var backdropView: View?
         get() = explicitBackdropView ?: resolvedBackdropView
         set(value) {
+            val old = explicitBackdropView
             explicitBackdropView = value
-            if (isAttachedToWindow) {
-                refreshBackdropTarget()
+            try {
+                if (isAttachedToWindow || parent != null) {
+                    refreshBackdropTarget()
+                }
+            } catch (t: Throwable) {
+                explicitBackdropView = old
+                throw t
             }
         }
 
@@ -270,13 +282,9 @@ open class LiquidGlassHostView @JvmOverloads constructor(
         }
         val target = backdropView
         if (target != null) {
-            if (target is GlassBackdrop && isDescendantOf(this, target)) {
-                throw IllegalStateException(
-                    "LiquidGlass consumer ($this) cannot target an ancestor GlassBackdrop ($target). " +
-                        "Consumers must be placed outside their source subtree."
-                )
-            }
-            if (target !is GlassBackdrop) {
+            if (target is GlassBackdrop) {
+                checkNoCycleWithAncestors(this, target)
+            } else {
                 android.util.Log.w("LiquidGlass", "Target backdrop view ($target) is not a GlassBackdrop")
             }
         }
@@ -677,11 +685,8 @@ class LiquidGlassView @JvmOverloads constructor(
     override fun onAttachedToWindow() {
         super.onAttachedToWindow()
         val bd = backdropView
-        if (bd is GlassBackdrop && isDescendantOf(this, bd)) {
-            throw IllegalStateException(
-                "LiquidGlassView ($this) cannot target an ancestor GlassBackdrop ($bd). " +
-                    "Consumers must be placed outside their source subtree."
-            )
+        if (bd is GlassBackdrop) {
+            checkNoCycleWithAncestors(this, bd)
         }
         updateRendererState()
         (bd as? GlassBackdrop)?.registerGlassConsumer(this)
@@ -704,11 +709,8 @@ class LiquidGlassView @JvmOverloads constructor(
     override fun refreshBackdropTarget() {
         super.refreshBackdropTarget()
         val bd = backdropView
-        if (bd is GlassBackdrop && isDescendantOf(this, bd)) {
-            throw IllegalStateException(
-                "LiquidGlassView ($this) cannot target an ancestor GlassBackdrop ($bd). " +
-                    "Consumers must be placed outside their source subtree."
-            )
+        if (bd is GlassBackdrop) {
+            checkNoCycleWithAncestors(this, bd)
         }
         if (renderer != null) {
             updateRendererState()

@@ -87,9 +87,9 @@ class GlassViewEffect internal constructor(
         touchListener = null
 
         if (view.background === drawable) {
-            val pad = getRawPaddingRelative(view)
+            val pad = getRawPadding(view)
             view.background = previousBackground
-            view.setPaddingRelative(pad[0], pad[1], pad[2], pad[3])
+            pad.applyTo(view)
         }
         previousBackground = null
 
@@ -164,10 +164,7 @@ fun View.glassEffect(
     backgroundColor: Color? = null,
     replaceBackground: Boolean = true,
 ): GlassViewEffect {
-    require(!isDescendantOf(this, backdrop)) {
-        "LiquidGlass consumer ($this) cannot target an ancestor GlassBackdrop ($backdrop). " +
-            "Consumers must be placed outside their source subtree."
-    }
+    checkNoCycleWithAncestors(this, backdrop)
 
     // Finding 11: Release previous attachment when glassEffect is reapplied
     (getTag(R.id.liquid_glass_view_effect_tag) as? GlassViewEffect)?.dispose()
@@ -192,16 +189,14 @@ fun View.glassEffect(
 
     if (replaceBackground) {
         effect.previousBackground = background
-        val pad = getRawPaddingRelative(this)
+        val pad = getRawPadding(this)
         background = drawable
-        setPaddingRelative(pad[0], pad[1], pad[2], pad[3])
+        pad.applyTo(this)
     }
 
     val attachListener = object : View.OnAttachStateChangeListener {
         override fun onViewAttachedToWindow(v: View) {
-            require(!isDescendantOf(v, backdrop)) {
-                "LiquidGlass consumer ($v) cannot be placed inside its own source backdrop ($backdrop)."
-            }
+            checkNoCycleWithAncestors(v, backdrop)
             backdrop.registerGlassConsumer(v)
             val vto = v.viewTreeObserver
             effect.preDrawListener?.let { l ->
@@ -268,35 +263,80 @@ fun View.glassEffect(
     return effect
 }
 
-private fun getRawPaddingRelative(view: View): IntArray {
-    var start = view.paddingStart
-    var top = view.paddingTop
-    var end = view.paddingEnd
-    var bottom = view.paddingBottom
-
-    if (view.scrollBarStyle == View.SCROLLBARS_INSIDE_INSET) {
-        val scrollBarSize = ViewConfiguration.get(view.context).scaledScrollBarSize
-        if (view.isVerticalScrollBarEnabled) {
-            val isRtl = view.layoutDirection == View.LAYOUT_DIRECTION_RTL
-            val onLeft = view.verticalScrollbarPosition == View.SCROLLBAR_POSITION_LEFT ||
-                (view.verticalScrollbarPosition == View.SCROLLBAR_POSITION_DEFAULT && isRtl)
-            if (onLeft) {
-                if (isRtl) {
-                    end = (end - scrollBarSize).coerceAtLeast(0)
-                } else {
-                    start = (start - scrollBarSize).coerceAtLeast(0)
-                }
-            } else {
-                if (isRtl) {
-                    start = (start - scrollBarSize).coerceAtLeast(0)
-                } else {
-                    end = (end - scrollBarSize).coerceAtLeast(0)
-                }
-            }
-        }
-        if (view.isHorizontalScrollBarEnabled) {
-            bottom = (bottom - scrollBarSize).coerceAtLeast(0)
+private class SavedPadding(
+    val isRelative: Boolean,
+    val a: Int,
+    val top: Int,
+    val b: Int,
+    val bottom: Int,
+) {
+    fun applyTo(view: View) {
+        if (isRelative) {
+            view.setPaddingRelative(a, top, b, bottom)
+        } else {
+            view.setPadding(a, top, b, bottom)
         }
     }
-    return intArrayOf(start, top, end, bottom)
+}
+
+private fun getRawPadding(view: View): SavedPadding {
+    val isRelative = view.isPaddingRelative
+    val scrollBarSize = if (view.scrollBarStyle == View.SCROLLBARS_INSIDE_INSET) {
+        ViewConfiguration.get(view.context).scaledScrollBarSize
+    } else {
+        0
+    }
+    val isRtl = view.layoutDirection == View.LAYOUT_DIRECTION_RTL
+
+    if (isRelative) {
+        var start = view.paddingStart
+        val top = view.paddingTop
+        var end = view.paddingEnd
+        var bottom = view.paddingBottom
+
+        if (scrollBarSize > 0) {
+            val onLeft = view.verticalScrollbarPosition == View.SCROLLBAR_POSITION_LEFT ||
+                (view.verticalScrollbarPosition == View.SCROLLBAR_POSITION_DEFAULT && isRtl)
+            if (view.isVerticalScrollBarEnabled) {
+                if (onLeft) {
+                    if (isRtl) {
+                        end = (end - scrollBarSize).coerceAtLeast(0)
+                    } else {
+                        start = (start - scrollBarSize).coerceAtLeast(0)
+                    }
+                } else {
+                    if (isRtl) {
+                        start = (start - scrollBarSize).coerceAtLeast(0)
+                    } else {
+                        end = (end - scrollBarSize).coerceAtLeast(0)
+                    }
+                }
+            }
+            if (view.isHorizontalScrollBarEnabled) {
+                bottom = (bottom - scrollBarSize).coerceAtLeast(0)
+            }
+        }
+        return SavedPadding(isRelative = true, a = start, top = top, b = end, bottom = bottom)
+    } else {
+        var left = view.paddingLeft
+        val top = view.paddingTop
+        var right = view.paddingRight
+        var bottom = view.paddingBottom
+
+        if (scrollBarSize > 0) {
+            val onLeft = view.verticalScrollbarPosition == View.SCROLLBAR_POSITION_LEFT ||
+                (view.verticalScrollbarPosition == View.SCROLLBAR_POSITION_DEFAULT && isRtl)
+            if (view.isVerticalScrollBarEnabled) {
+                if (onLeft) {
+                    left = (left - scrollBarSize).coerceAtLeast(0)
+                } else {
+                    right = (right - scrollBarSize).coerceAtLeast(0)
+                }
+            }
+            if (view.isHorizontalScrollBarEnabled) {
+                bottom = (bottom - scrollBarSize).coerceAtLeast(0)
+            }
+        }
+        return SavedPadding(isRelative = false, a = left, top = top, b = right, bottom = bottom)
+    }
 }

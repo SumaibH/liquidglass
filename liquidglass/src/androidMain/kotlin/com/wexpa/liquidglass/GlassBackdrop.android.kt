@@ -55,12 +55,7 @@ open class GlassBackdrop @JvmOverloads constructor(
         private set
 
     fun registerGlassConsumer(glassView: View) {
-        if (isDescendantOf(glassView, this)) {
-            throw IllegalStateException(
-                "LiquidGlass consumer ($glassView) cannot be placed inside its own source backdrop ($this). " +
-                    "Consumers must be placed outside their source subtree."
-            )
-        }
+        checkNoCycleWithAncestors(glassView, this)
         nestedGlassViews.add(glassView)
     }
 
@@ -205,4 +200,22 @@ internal fun isDescendantOf(view: View, ancestor: View): Boolean {
         p = (p as? View)?.parent
     }
     return false
+}
+
+internal fun checkNoCycleWithAncestors(consumer: View, target: GlassBackdrop) {
+    if (isDescendantOf(consumer, target)) {
+        throw IllegalStateException(
+            "LiquidGlass consumer ($consumer) cannot be placed inside its own source backdrop ($target) and cannot target an ancestor GlassBackdrop ($target). " +
+                "Consumers must be placed outside their source subtree."
+        )
+    }
+    var p = consumer.parent
+    while (p != null) {
+        if (p is GlassBackdrop && (p === target || target.dependsOn(p))) {
+            throw IllegalStateException(
+                "LiquidGlass consumer ($consumer) cannot target a backdrop ($target) that depends on ancestor ($p)."
+            )
+        }
+        p = (p as? View)?.parent
+    }
 }

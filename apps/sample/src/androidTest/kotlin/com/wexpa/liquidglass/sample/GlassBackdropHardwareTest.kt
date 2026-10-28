@@ -30,6 +30,7 @@ import com.wexpa.liquidglass.Glass
 import com.wexpa.liquidglass.GlassBackdrop
 import com.wexpa.liquidglass.GlassXmlDarkMode
 import com.wexpa.liquidglass.GlassXmlPreset
+import com.wexpa.liquidglass.LiquidGlassHostView
 import com.wexpa.liquidglass.LiquidGlassView
 import com.wexpa.liquidglass.glassEffect
 import com.wexpa.liquidglass.R as LibR
@@ -604,6 +605,77 @@ class GlassBackdropHardwareTest {
             effect.dispose()
             assertEquals(20, testView.paddingStart)
             assertEquals(40, testView.paddingEnd)
+        }
+        scenario.close()
+    }
+    @Test
+    fun backdropRejectsCrossBackdropDependencyCycleOnBindingPath() {
+        val scenario = ActivityScenario.launch(XmlInteropActivity::class.java)
+        scenario.onActivity { activity ->
+            val backdropA = activity.findViewById<GlassBackdrop>(R.id.xmlBackdrop)
+            val backdropB = GlassBackdrop(activity)
+
+            // Consumer B targets backdrop B, placed in backdrop A (so A depends on B)
+            val consumerB = View(activity)
+            consumerB.glassEffect(backdropB)
+            backdropA.addView(consumerB)
+
+            // View is already inside backdrop B
+            val consumerA = View(activity)
+            backdropB.addView(consumerA)
+
+            // Binding consumerA to backdrop A creates cycle (B -> A -> B) and must throw
+            var cycleRejected = false
+            try {
+                consumerA.glassEffect(backdropA)
+            } catch (e: IllegalStateException) {
+                cycleRejected = true
+            }
+            assertTrue("Binding glassEffect that creates cycle with ancestor backdrop must be rejected", cycleRejected)
+
+            // Also test LiquidGlassHostView inside backdrop B targeting backdrop A
+            val backdropC = GlassBackdrop(activity)
+            val hostA = LiquidGlassHostView(activity)
+            hostA.backdropView = backdropC
+            backdropB.addView(hostA)
+            var hostCycleRejected = false
+            try {
+                hostA.backdropView = backdropA
+            } catch (e: IllegalStateException) {
+                hostCycleRejected = true
+            }
+            assertTrue("Setting backdropView on host that creates cycle with ancestor backdrop must be rejected", hostCycleRejected)
+            backdropB.removeView(hostA)
+
+            backdropA.removeView(consumerB)
+        }
+        scenario.close()
+    }
+
+    @Test
+    fun effectPreservesAbsolutePaddingWhenSwitchingToRtl() {
+        val scenario = ActivityScenario.launch(XmlInteropActivity::class.java)
+        scenario.onActivity { activity ->
+            val backdrop = activity.findViewById<GlassBackdrop>(R.id.xmlBackdrop)
+            val testView = View(activity)
+            // Set asymmetric absolute padding: left=10, top=20, right=30, bottom=40
+            testView.setPadding(10, 20, 30, 40)
+            assertFalse("Initial padding should not be relative", testView.isPaddingRelative)
+
+            val effect = testView.glassEffect(backdrop)
+            assertFalse("isPaddingRelative must remain false after effect installation", testView.isPaddingRelative)
+            assertEquals(10, testView.paddingLeft)
+            assertEquals(30, testView.paddingRight)
+
+            // Switch to RTL: physical left and right padding must NOT swap
+            testView.layoutDirection = View.LAYOUT_DIRECTION_RTL
+            assertEquals("paddingLeft must remain 10 in RTL for absolute padding", 10, testView.paddingLeft)
+            assertEquals("paddingRight must remain 30 in RTL for absolute padding", 30, testView.paddingRight)
+
+            effect.dispose()
+            assertFalse("isPaddingRelative must remain false after disposal", testView.isPaddingRelative)
+            assertEquals("paddingLeft must remain 10 after disposal", 10, testView.paddingLeft)
+            assertEquals("paddingRight must remain 30 after disposal", 30, testView.paddingRight)
         }
         scenario.close()
     }
