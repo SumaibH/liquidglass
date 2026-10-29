@@ -1,10 +1,12 @@
-# Android XML View Interop — Physical Device Verification
+# Android XML View Interop — Physical Device & Reference Emulator Verification
 
 ## Scope
 
 Verifies `LiquidGlassView`, `LiquidGlassHostView`, `LiveViewBackdrop`, `View.glassEffect`, and `Modifier.glassHitTarget`
-on a physical Android device running the AGSL shader path over an Android `ScrollView` and `LinearLayout`
+on a physical Android device and reference emulator running the AGSL shader path over an Android `ScrollView` and `LinearLayout`
 view hierarchy (`XmlInteropActivity` in `:sample`).
+
+Source Commit SHA: [`6d7b8533bfef9463ceb1d2c7fa60f52b3c0d4fd2`](https://github.com/shayann07/liquidglass/commit/6d7b8533bfef9463ceb1d2c7fa60f52b3c0d4fd2)
 
 ## Environment & Method
 
@@ -22,10 +24,16 @@ view hierarchy (`XmlInteropActivity` in `:sample`).
 
 ## Hardware Instrumentation Test Results
 
+The instrumentation suite consists of **34 tests** partitioned precisely by verification type:
+- **10 Hardware Window PixelCopy Tests**: execute `captureWindow(activity)` using `PixelCopy.request` on hardware-accelerated windows and assert exact RGBA pixel values (optical refraction, compositing alpha blending, patterned source refraction, runtime dark/tint mutations, touch glow rendering).
+- **24 Lifecycle, Touch, & State Invariant Tests**: verify effect disposal, clickability ownership restoration, touch listener preservation, gesture state tracking, cycle rejection, re-binding across multiple backdrops, and multi-cycle padding stability.
+
 ### 1. Physical Device: Samsung Galaxy S24+ (`SM-S926U`, API 36)
 
 ```bash
-adb -s adb-RZCX727QWCX-JoEwpS._adb-tls-connect._tcp shell am instrument -w -r   -e class com.wexpa.liquidglass.sample.GlassBackdropHardwareTest   com.wexpa.liquidglass.sample.test/androidx.test.runner.AndroidJUnitRunner
+adb -s adb-RZCX727QWCX-JoEwpS._adb-tls-connect._tcp shell am instrument -w -r \
+  -e class com.wexpa.liquidglass.sample.GlassBackdropHardwareTest \
+  com.wexpa.liquidglass.sample.test/androidx.test.runner.AndroidJUnitRunner
 ```
 
 ```
@@ -33,20 +41,22 @@ Time: 22.757
 
 OK (31 tests)
 ```
-Pass Rate: **100% (31 of 31 tests passed)** under strict hardware `PixelCopy.SUCCESS` assertions on physical device surface.
+Pass Rate: **100%** on physical hardware surface.
 
-### 2. Emulator Qualification: Pixel 10 Pro XL (`emulator-5554`, API 37)
+### 2. Reference Emulator Qualification: Pixel 10 Pro XL (`emulator-5554`, API 37)
 
 ```bash
-adb -s emulator-5554 shell am instrument -w -r   -e class com.wexpa.liquidglass.sample.GlassBackdropHardwareTest   com.wexpa.liquidglass.sample.test/androidx.test.runner.AndroidJUnitRunner
+adb -s emulator-5554 shell am instrument -w -r \
+  -e class com.wexpa.liquidglass.sample.GlassBackdropHardwareTest \
+  com.wexpa.liquidglass.sample.test/androidx.test.runner.AndroidJUnitRunner
 ```
 
 ```
-Time: 285.65
+Time: 457.442
 
-OK (31 tests)
+OK (34 tests)
 ```
-Pass Rate: **100% (31 of 31 tests passed)** under strict hardware `PixelCopy.SUCCESS` assertions on emulator surface.
+Pass Rate: **100% (34 of 34 tests passed)** on reference emulator surface.
 
 ## What This Proves
 
@@ -57,7 +67,11 @@ Pass Rate: **100% (31 of 31 tests passed)** under strict hardware `PixelCopy.SUC
 1. **`LiquidGlassView` (`wrap_content` XML container)**: Wraps ordinary Android XML child views (`LinearLayout` and `TextView`s) inside a rounded `Glass.Regular.interactive()` surface configured via XML attributes (`app:liquidGlassBackdrop`, `app:liquidGlassPreset="regular"`, `app:liquidGlassShape="rounded"`, `app:liquidGlassCornerRadius="26dp"`, `app:liquidGlassInteractive="true"`), sizing to its XML children without expanding `wrap_content` to the parent frame.
 2. **`LiquidGlassHostView` + `Modifier.glassHitTarget`**: Hosts a Compose `GlassTabBar` over an Android XML layout while passing touches outside the registered `glassHitTarget` bounds through to the underlying `ScrollView`.
 3. **Scroll-aware `LiveViewBackdrop` & Dirty Propagation**: Captures scrolled `View` viewports (`scrollX` / `scrollY`) and ancestor `ViewGroup` hierarchies. When content inside `GlassBackdrop` draws/updates, registered glass consumers are automatically invalidated to avoid stale imagery.
-4. **Hardware Lifecycle & Touch Parity**:
+4. **Drawable Alpha Compositing**: `GlassBackgroundDrawable.setAlpha()` applies `alphaMultiplier` to native hardware compositing (`node.setAlpha(alphaMultiplier)` on API 29+ and `canvas.saveLayerAlpha` on software/fallback) rather than corrupting shader materialization (`uMaterialize`), verified at alpha 255, 128, and 0 over an opaque barrier.
+5. **Clickability Ownership Restoration**: `View.glassEffect()` tracks whether clickability was effect-installed via `effectOwnedClickable`, restoring `view.isClickable = false` upon disposal and mutation to non-interactive without clearing caller-owned click listeners.
+6. **Pressed State Invariant**: Disabling interaction while a touch is actively held clears the renderer's touch state (`touchAmount = 0`, `touchX = -1e5`, `touchY = -1e5`), ensuring subsequent events do not leave a stale pressed glow upon re-enabling interaction.
+7. **Patterned Source Generic Outline Refraction**: `genericOutlineCustomShapeBuildsPathField` tests a generic triangle outline over a two-color patterned backdrop (red left half, green right half) with an opaque blue underlay, verifying clipping along the sloping edges and dominant refraction of both pattern colors inside the outline.
+8. **Hardware Lifecycle & Touch Parity**:
    - Preserves unowned application touch listeners on disposal.
    - Non-clickable views with interactive glass track gestures reliably without locking into a permanent pressed glow state.
    - Re-applying `glassEffect` preserves exact configured padding across multiple rebinds.
@@ -65,7 +79,7 @@ Pass Rate: **100% (31 of 31 tests passed)** under strict hardware `PixelCopy.SUC
    - Custom triangle generic outlines and asymmetric corner geometry render with correct clipping/refraction on physical hardware.
    - Guards against zero-radius blur crashes in `RenderEffect.createBlurEffect`.
    - Reusable scratch graphics allocations eliminate on-draw GC churn.
-   - Deterministic `try-finally` scenario teardown guarantees clean lifecycle execution across all 31 hardware tests.
+   - Deterministic `try-finally` scenario teardown guarantees clean lifecycle execution across all 34 hardware tests.
 
 ## What This Does Not Prove
 
