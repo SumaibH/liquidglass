@@ -77,6 +77,12 @@ class GlassNativeRenderer(
         cachedPathFieldKey = null
     }
 
+    internal fun resetInteraction() {
+        touchX = -1e5f
+        touchY = -1e5f
+        touchAmount = 0f
+    }
+
     fun draw(canvas: Canvas, width: Int, height: Int) {
         if (width <= 0 || height <= 0 || alphaMultiplier <= 0.001f) return
 
@@ -146,6 +152,7 @@ class GlassNativeRenderer(
 
             val outline = androidOutline
             node.setClipToOutline(false)
+            node.setAlpha(alphaMultiplier)
             if (outline != null) {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
                     val nodePath = scratchNodePath ?: android.graphics.Path()
@@ -247,8 +254,8 @@ class GlassNativeRenderer(
                     sourceSize = Size(sourceRect.width(), sourceRect.height()),
                     tiltX = 0f,
                     tiltY = 0f,
-                    ambientAlpha = alphaMultiplier,
-                    pressAlpha = touchAmount * alphaMultiplier,
+                    ambientAlpha = 1f,
+                    pressAlpha = touchAmount,
                     press = press,
                     tintField = null,
                     interaction = if (glass.isInteractive) glass.interaction else null,
@@ -283,13 +290,28 @@ class GlassNativeRenderer(
 
             // Finding 10: Render fallback on API 29, 30, 31, and 32 (all versions below Android 13 Tiramisu)
             if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
-                drawFallbackOverlay(canvas, width, height, density, layoutDirection)
+                val alphaInt = (alphaMultiplier * 255f).toInt().coerceIn(0, 255)
+                val saveFallback = if (alphaMultiplier < 0.999f) {
+                    canvas.saveLayerAlpha(0f, 0f, width.toFloat(), height.toFloat(), alphaInt)
+                } else {
+                    canvas.save()
+                }
+                try {
+                    drawFallbackOverlay(canvas, width, height, density, layoutDirection)
+                } finally {
+                    canvas.restoreToCount(saveFallback)
+                }
             }
             return
         }
 
         // Software canvas or API < 29 fallback
-        val saveCount = canvas.save()
+        val alphaInt = (alphaMultiplier * 255f).toInt().coerceIn(0, 255)
+        val saveCount = if (alphaMultiplier < 0.999f) {
+            canvas.saveLayerAlpha(0f, 0f, width.toFloat(), height.toFloat(), alphaInt)
+        } else {
+            canvas.save()
+        }
         try {
             canvas.clipPath(clipPath)
             drawFallbackOverlay(canvas, width, height, density, layoutDirection)

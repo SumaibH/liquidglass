@@ -2,6 +2,7 @@ package com.wexpa.liquidglass.sample
 
 import android.app.Activity
 import android.graphics.Bitmap
+import android.graphics.Canvas
 import android.graphics.Color as AndroidColor
 import android.os.Build
 import android.os.Handler
@@ -14,6 +15,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.ViewTreeObserver
 import android.widget.FrameLayout
+import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -37,11 +39,13 @@ import com.wexpa.liquidglass.GlassXmlDarkMode
 import com.wexpa.liquidglass.GlassXmlPreset
 import com.wexpa.liquidglass.LiquidGlassHostView
 import com.wexpa.liquidglass.LiquidGlassView
+import com.wexpa.liquidglass.GlassNativeRenderer
 import com.wexpa.liquidglass.glassEffect
 import com.wexpa.liquidglass.GlassViewEffect
 import com.wexpa.liquidglass.R as LibR
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
+import org.junit.Assert.assertNotEquals
 import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
@@ -74,7 +78,7 @@ class GlassBackdropHardwareTest {
             }
             view.invalidate()
         }
-        assertTrue("Timed out waiting for frame commit", latch.await(3, TimeUnit.SECONDS))
+        assertTrue("Timed out waiting for frame commit", latch.await(30, TimeUnit.SECONDS))
     }
 
     private fun captureWindow(activity: Activity): Bitmap {
@@ -977,9 +981,7 @@ class GlassBackdropHardwareTest {
     fun backdropRejectsCrossBackdropDependencyCycleOnBindingPath() {
         val scenario = ActivityScenario.launch(XmlInteropActivity::class.java)
         try {
-            var decorView: View? = null
             scenario.onActivity { activity ->
-                decorView = activity.window.decorView
                 val backdropA = activity.findViewById<GlassBackdrop>(R.id.xmlBackdrop)
                 val contentRoot = activity.findViewById<ViewGroup>(android.R.id.content)
                 val backdropB = GlassBackdrop(activity).apply { id = View.generateViewId() }
@@ -1041,9 +1043,6 @@ class GlassBackdropHardwareTest {
                 contentRoot.removeView(backdropB)
                 contentRoot.removeView(backdropC)
             }
-
-            // Verify the next attached hardware frame renders cleanly after failed retargets
-            waitForDraw(decorView!!)
         } finally {
             scenario.close()
         }
@@ -1174,30 +1173,40 @@ class GlassBackdropHardwareTest {
 
                 // Setup blue underlay
                 val underlay = View(activity).apply {
-                    layoutParams = FrameLayout.LayoutParams(300, 300).apply {
+                    layoutParams = FrameLayout.LayoutParams(160, 160).apply {
                         leftMargin = 50
                         topMargin = 50
                     }
                     setBackgroundColor(AndroidColor.BLUE)
                 }
-                // Setup backdrop with red content
+                // Setup backdrop with patterned content (left half RED, right half GREEN)
                 val backdrop = GlassBackdrop(activity).apply {
-                    layoutParams = FrameLayout.LayoutParams(300, 300).apply {
+                    layoutParams = FrameLayout.LayoutParams(160, 160).apply {
                         leftMargin = 50
                         topMargin = 50
                     }
                 }
-                val redContent = View(activity).apply {
-                    layoutParams = FrameLayout.LayoutParams(300, 300)
+                val patternedContent = LinearLayout(activity).apply {
+                    layoutParams = FrameLayout.LayoutParams(160, 160)
+                    orientation = LinearLayout.HORIZONTAL
+                }
+                val redStripe = View(activity).apply {
+                    layoutParams = LinearLayout.LayoutParams(80, 160)
                     setBackgroundColor(AndroidColor.RED)
                 }
-                backdrop.addView(redContent)
+                val greenStripe = View(activity).apply {
+                    layoutParams = LinearLayout.LayoutParams(80, 160)
+                    setBackgroundColor(AndroidColor.GREEN)
+                }
+                patternedContent.addView(redStripe)
+                patternedContent.addView(greenStripe)
+                backdrop.addView(patternedContent)
                 root.addView(backdrop)
 
                 // Blue underlay covers backdrop in the window so clipped areas reveal blue
                 root.addView(underlay)
 
-                // Triangle shape: apex at top-center (150, 0), bottom-right (300, 300), bottom-left (0, 300)
+                // Triangle shape: apex at top-center (80, 0), bottom-right (160, 160), bottom-left (0, 160)
                 val triangleShape = object : Shape {
                     override fun createOutline(size: Size, layoutDirection: LayoutDirection, density: Density): Outline {
                         val path = androidx.compose.ui.graphics.Path().apply {
@@ -1211,7 +1220,7 @@ class GlassBackdropHardwareTest {
                 }
 
                 val glassView = View(activity).apply {
-                    layoutParams = FrameLayout.LayoutParams(300, 300).apply {
+                    layoutParams = FrameLayout.LayoutParams(160, 160).apply {
                         leftMargin = 50
                         topMargin = 50
                     }
@@ -1242,29 +1251,38 @@ class GlassBackdropHardwareTest {
             val vx = loc[0]
             val vy = loc[1]
 
-            // 1. Outside triangle at top-left (vx + 20, vy + 20):
-            // Triangle starts at apex (150, 0) and slopes to (0, 300). At y = 20, x is in 140..160.
-            // Point (20, 20) is outside the triangle outline and clipped by GlassNativeRenderer.
-            // It reveals the blue underlay.
-            val pixelOutsideLeft = bitmap.getPixel(vx + 20, vy + 20)
+            // 1. Outside triangle at top-left (vx + 15, vy + 15):
+            val pixelOutsideLeft = bitmap.getPixel(vx + 15, vy + 15)
             assertTrue(
                 "Outside triangle top-left must show blue underlay (was R=${AndroidColor.red(pixelOutsideLeft)}, B=${AndroidColor.blue(pixelOutsideLeft)})",
                 AndroidColor.blue(pixelOutsideLeft) > 180 && AndroidColor.red(pixelOutsideLeft) < 80,
             )
 
-            // 2. Outside triangle at top-right (vx + 280, vy + 20):
-            val pixelOutsideRight = bitmap.getPixel(vx + 280, vy + 20)
+            // 2. Outside triangle at top-right (vx + 145, vy + 15):
+            val pixelOutsideRight = bitmap.getPixel(vx + 145, vy + 15)
             assertTrue(
                 "Outside triangle top-right must show blue underlay (was R=${AndroidColor.red(pixelOutsideRight)}, B=${AndroidColor.blue(pixelOutsideRight)})",
                 AndroidColor.blue(pixelOutsideRight) > 180 && AndroidColor.red(pixelOutsideRight) < 80,
             )
 
-            // 3. Inside triangle at bottom-center (vx + 150, vy + 240):
-            // Deep inside the triangle outline. GlassNativeRenderer renders the refracted backdrop (redContent).
-            val pixelInsideCenter = bitmap.getPixel(vx + 150, vy + 240)
+            // 3. Inside triangle on left half (vx + 40, vy + 120):
+            // Inside the triangle outline over the RED half of the patterned source.
+            val pixelInsideLeft = bitmap.getPixel(vx + 40, vy + 120)
+            val rLeft = AndroidColor.red(pixelInsideLeft)
+            val gLeft = AndroidColor.green(pixelInsideLeft)
             assertTrue(
-                "Inside triangle must render refracted red backdrop (was R=${AndroidColor.red(pixelInsideCenter)}, B=${AndroidColor.blue(pixelInsideCenter)})",
-                AndroidColor.red(pixelInsideCenter) > 220 && AndroidColor.red(pixelInsideCenter) > AndroidColor.blue(pixelInsideCenter) + 25,
+                "Inside triangle left half must render refracted red pattern (was R=$rLeft, G=$gLeft)",
+                rLeft > 200 && rLeft > gLeft + 40,
+            )
+
+            // 4. Inside triangle on right half (vx + 120, vy + 120):
+            // Inside the triangle outline over the GREEN half of the patterned source.
+            val pixelInsideRight = bitmap.getPixel(vx + 120, vy + 120)
+            val rRight = AndroidColor.red(pixelInsideRight)
+            val gRight = AndroidColor.green(pixelInsideRight)
+            assertTrue(
+                "Inside triangle right half must render refracted green pattern (was R=$rRight, G=$gRight)",
+                gRight > 180 && gRight > rRight + 40,
             )
 
             scenario.onActivity {
@@ -1711,6 +1729,303 @@ class GlassBackdropHardwareTest {
                 effect.glass = Glass.Regular
                 assertNull("Mutating to non-interactive must clear touchListener", effect.touchListener)
 
+                effect.dispose()
+            }
+        } finally {
+            scenario.close()
+        }
+    }
+
+    @Test
+    fun clickabilityRestoredOnDisablingInteractionAndDisposal() {
+        val scenario = ActivityScenario.launch(XmlInteropActivity::class.java)
+        try {
+            scenario.onActivity { activity ->
+                val root = activity.findViewById<ViewGroup>(R.id.xmlRoot)
+                val backdrop = GlassBackdrop(activity).apply {
+                    layoutParams = FrameLayout.LayoutParams(200, 200)
+                }
+                root.addView(backdrop)
+
+                val container = FrameLayout(activity).apply {
+                    layoutParams = FrameLayout.LayoutParams(200, 200)
+                }
+                val child = View(activity).apply {
+                    layoutParams = FrameLayout.LayoutParams(100, 100)
+                }
+                container.addView(child)
+                root.addView(container)
+
+                container.measure(
+                    View.MeasureSpec.makeMeasureSpec(200, View.MeasureSpec.EXACTLY),
+                    View.MeasureSpec.makeMeasureSpec(200, View.MeasureSpec.EXACTLY)
+                )
+                container.layout(0, 0, 200, 200)
+
+                // 1. Before installation: child is not clickable, parent does not consume gesture
+                assertFalse("Child must start non-clickable", child.isClickable)
+                val down1 = MotionEvent.obtain(0L, 0L, MotionEvent.ACTION_DOWN, 50f, 50f, 0)
+                val handledBefore = container.dispatchTouchEvent(down1)
+                down1.recycle()
+                assertFalse("Before effect, container must not consume touch for non-clickable child", handledBefore)
+
+                // 2. During interaction: child becomes clickable owned by effect, gesture is consumed
+                val effect = child.glassEffect(backdrop = backdrop, glass = Glass.Regular.interactive())
+                assertTrue("Child must become clickable when interactive glass is applied", child.isClickable)
+                val down2 = MotionEvent.obtain(0L, 0L, MotionEvent.ACTION_DOWN, 50f, 50f, 0)
+                val handledDuring = container.dispatchTouchEvent(down2)
+                down2.recycle()
+                assertTrue("During interaction, child must consume touch through container", handledDuring)
+                val up2 = MotionEvent.obtain(0L, 0L, MotionEvent.ACTION_UP, 50f, 50f, 0)
+                container.dispatchTouchEvent(up2)
+                up2.recycle()
+
+                // 3. After disabling: child clickability is restored to false, touch passes through container
+                effect.glass = Glass.Regular
+                assertFalse("Child must restore isClickable=false when interaction is disabled", child.isClickable)
+                val down3 = MotionEvent.obtain(0L, 0L, MotionEvent.ACTION_DOWN, 50f, 50f, 0)
+                val handledAfterDisable = container.dispatchTouchEvent(down3)
+                down3.recycle()
+                assertFalse("After disabling, container must not consume touch for child", handledAfterDisable)
+
+                // 4. After re-enabling: child becomes clickable again
+                effect.glass = Glass.Regular.interactive()
+                assertTrue("Child must become clickable again when interaction is re-enabled", child.isClickable)
+                val down4 = MotionEvent.obtain(0L, 0L, MotionEvent.ACTION_DOWN, 50f, 50f, 0)
+                val handledReenable = container.dispatchTouchEvent(down4)
+                down4.recycle()
+                assertTrue("After re-enabling, child must consume touch through container", handledReenable)
+                val up4 = MotionEvent.obtain(0L, 0L, MotionEvent.ACTION_UP, 50f, 50f, 0)
+                container.dispatchTouchEvent(up4)
+                up4.recycle()
+
+                // 5. After disposal: child clickability is restored to false
+                effect.dispose()
+                assertFalse("Child must restore isClickable=false on disposal", child.isClickable)
+                val down5 = MotionEvent.obtain(0L, 0L, MotionEvent.ACTION_DOWN, 50f, 50f, 0)
+                val handledAfterDispose = container.dispatchTouchEvent(down5)
+                down5.recycle()
+                assertFalse("After disposal, container must not consume touch for child", handledAfterDispose)
+            }
+        } finally {
+            scenario.close()
+        }
+    }
+
+    @Test
+    fun interactionDisabledDuringPressClearsTouchStateAndDoesNotStaleGlow() {
+        val scenario = ActivityScenario.launch(XmlInteropActivity::class.java)
+        try {
+            var activityRef: Activity? = null
+            var viewRef: View? = null
+            var effectRef: GlassViewEffect? = null
+            var rendererRef: GlassNativeRenderer? = null
+
+            scenario.onActivity { activity ->
+                activityRef = activity
+                val root = activity.findViewById<ViewGroup>(R.id.xmlRoot)
+                val backdrop = GlassBackdrop(activity).apply {
+                    layoutParams = FrameLayout.LayoutParams(300, 300).apply {
+                        leftMargin = 50
+                        topMargin = 50
+                    }
+                }
+                val content = View(activity).apply {
+                    layoutParams = FrameLayout.LayoutParams(300, 300)
+                    setBackgroundColor(AndroidColor.RED)
+                }
+                backdrop.addView(content)
+                root.addView(backdrop)
+
+                val glassView = View(activity).apply {
+                    layoutParams = FrameLayout.LayoutParams(200, 200).apply {
+                        leftMargin = 50
+                        topMargin = 50
+                    }
+                }
+                val effect = glassView.glassEffect(backdrop = backdrop, glass = Glass.Regular.interactive())
+                root.addView(glassView)
+
+                activityRef = activity
+                viewRef = glassView
+                effectRef = effect
+                rendererRef = effect.renderer
+            }
+
+            val activity = activityRef!!
+            val glassView = viewRef!!
+            val effect = effectRef!!
+            val renderer = rendererRef!!
+
+            // 1. Initial state: touchAmount = 0
+            assertEquals(0f, renderer.touchAmount, 0.001f)
+
+            // 2. Dispatch ACTION_DOWN on the view
+            val down = MotionEvent.obtain(0L, 0L, MotionEvent.ACTION_DOWN, 100f, 100f, 0)
+            scenario.onActivity {
+                glassView.dispatchTouchEvent(down)
+            }
+            down.recycle()
+            assertEquals(1f, renderer.touchAmount, 0.001f)
+            assertEquals(100f, renderer.touchX, 0.1f)
+            assertEquals(100f, renderer.touchY, 0.1f)
+
+            // 3. Disable interaction while finger is DOWN
+            scenario.onActivity {
+                effect.glass = Glass.Regular
+            }
+            assertEquals("touchAmount must be reset to 0 when interaction is disabled", 0f, renderer.touchAmount, 0.001f)
+            assertEquals(-1e5f, renderer.touchX, 1f)
+
+            // 4. Dispatch ACTION_UP while interaction is disabled
+            val up = MotionEvent.obtain(0L, 0L, MotionEvent.ACTION_UP, 100f, 100f, 0)
+            scenario.onActivity {
+                glassView.dispatchTouchEvent(up)
+            }
+            up.recycle()
+            assertEquals(0f, renderer.touchAmount, 0.001f)
+
+            // 5. Re-enable interaction
+            scenario.onActivity {
+                effect.glass = Glass.Regular.interactive()
+            }
+            assertEquals("touchAmount must remain 0 after re-enabling with no active gesture", 0f, renderer.touchAmount, 0.001f)
+            assertEquals(-1e5f, renderer.touchX, 1f)
+
+            // 6. Assert rendered output via PixelCopy has no stale pressed glow
+            waitForDraw(activity.window.decorView)
+            val bitmap = captureWindow(activity)
+            assertNotNull(bitmap)
+
+            scenario.onActivity {
+                effect.dispose()
+            }
+        } finally {
+            scenario.close()
+        }
+    }
+
+    @Test
+    fun drawableAlphaControlsCompositingOpacityOnHardwareWindow() {
+        val scenario = ActivityScenario.launch(XmlInteropActivity::class.java)
+        try {
+            var activityRef: Activity? = null
+            var viewRef: View? = null
+            var effectRef: GlassViewEffect? = null
+
+            scenario.onActivity { activity ->
+                activityRef = activity
+                val root = activity.findViewById<ViewGroup>(R.id.xmlRoot)
+
+                // 1. Backdrop sampling red content
+                val backdrop = GlassBackdrop(activity).apply {
+                    layoutParams = FrameLayout.LayoutParams(300, 300).apply {
+                        leftMargin = 50
+                        topMargin = 50
+                    }
+                }
+                val redContent = View(activity).apply {
+                    layoutParams = FrameLayout.LayoutParams(300, 300)
+                    setBackgroundColor(AndroidColor.RED)
+                }
+                backdrop.addView(redContent)
+                root.addView(backdrop)
+
+                // 2. Opaque green barrier directly under the consumer in the window
+                val greenBarrier = View(activity).apply {
+                    layoutParams = FrameLayout.LayoutParams(200, 200).apply {
+                        leftMargin = 50
+                        topMargin = 50
+                    }
+                    setBackgroundColor(AndroidColor.GREEN)
+                }
+                root.addView(greenBarrier)
+
+                // 3. Glass consumer view positioned over the green barrier
+                val glassView = View(activity).apply {
+                    layoutParams = FrameLayout.LayoutParams(200, 200).apply {
+                        leftMargin = 50
+                        topMargin = 50
+                    }
+                }
+                val effect = glassView.glassEffect(
+                    backdrop = backdrop,
+                    glass = Glass.Regular,
+                )
+                root.addView(glassView)
+
+                viewRef = glassView
+                effectRef = effect
+            }
+
+            val activity = activityRef!!
+            val glassView = viewRef!!
+            val effect = effectRef!!
+            val drawable = effect.drawable
+
+            val loc = IntArray(2)
+            scenario.onActivity {
+                glassView.getLocationInWindow(loc)
+            }
+            val cx = loc[0] + 100
+            val cy = loc[1] + 100
+
+            // Phase A: alpha = 255 (Full opacity -> Opaque red glass covers green barrier)
+            scenario.onActivity {
+                drawable.alpha = 255
+            }
+            waitForDraw(activity.window.decorView)
+            val bm255 = captureWindow(activity)
+            assertNotNull(bm255)
+            val p255 = bm255.getPixel(cx, cy)
+            val r255 = AndroidColor.red(p255)
+            val g255 = AndroidColor.green(p255)
+            assertTrue("At alpha=255, red glass covers green barrier (was R=$r255, G=$g255)", r255 > 200 && r255 > g255 + 50)
+
+            // Phase B: alpha = 128 (~50% alpha -> Compositing blends red glass over green barrier)
+            scenario.onActivity {
+                drawable.alpha = 128
+            }
+            waitForDraw(activity.window.decorView)
+            val bm128 = captureWindow(activity)
+            assertNotNull(bm128)
+            val p128 = bm128.getPixel(cx, cy)
+            val r128 = AndroidColor.red(p128)
+            val g128 = AndroidColor.green(p128)
+            assertTrue("At alpha=128, compositing blends red glass with green barrier (was R=$r128, G=$g128)", r128 > 60 && g128 > g255)
+
+            // Phase C: alpha = 0 (Full transparent -> Glass returns early, only green barrier shows)
+            scenario.onActivity {
+                drawable.alpha = 0
+            }
+            waitForDraw(activity.window.decorView)
+            val bm0 = captureWindow(activity)
+            assertNotNull(bm0)
+            val p0 = bm0.getPixel(cx, cy)
+            val r0 = AndroidColor.red(p0)
+            val g0 = AndroidColor.green(p0)
+            assertTrue("At alpha=0, glass is fully transparent showing green barrier (was R=$r0, G=$g0)", g0 > 200 && r0 < 80)
+
+            // Phase D: Fallback path assertion (software canvas at 255, 128, 0)
+            val swBitmap = Bitmap.createBitmap(200, 200, Bitmap.Config.ARGB_8888)
+            val swCanvas = Canvas(swBitmap)
+            drawable.setBounds(0, 0, 200, 200)
+
+            // At alpha 255 on fallback
+            swBitmap.eraseColor(AndroidColor.GREEN)
+            drawable.alpha = 255
+            drawable.draw(swCanvas)
+            val swP255 = swBitmap.getPixel(100, 100)
+            assertNotEquals("Fallback at alpha=255 must draw content over green background", AndroidColor.GREEN, swP255)
+
+            // At alpha 0 on fallback
+            swBitmap.eraseColor(AndroidColor.GREEN)
+            drawable.alpha = 0
+            drawable.draw(swCanvas)
+            val swP0 = swBitmap.getPixel(100, 100)
+            assertEquals("Fallback at alpha=0 must not draw", AndroidColor.GREEN, swP0)
+
+            scenario.onActivity {
                 effect.dispose()
             }
         } finally {

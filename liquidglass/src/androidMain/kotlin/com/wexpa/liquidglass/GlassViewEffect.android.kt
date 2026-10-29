@@ -29,6 +29,7 @@ class GlassViewEffect internal constructor(
     internal var previousBackground: android.graphics.drawable.Drawable? = null
     internal var attachListener: View.OnAttachStateChangeListener? = null
     internal var preDrawListener: ViewTreeObserver.OnPreDrawListener? = null
+    internal var effectOwnedClickable: Boolean = false
     var touchListener: View.OnTouchListener? = null
         internal set
 
@@ -43,13 +44,22 @@ class GlassViewEffect internal constructor(
             val wasInteractive = renderer.glass.isInteractive
             renderer.glass = value
             if (value.isInteractive && !wasInteractive) {
-                view.isClickable = true
+                if (!view.isClickable) {
+                    view.isClickable = true
+                    effectOwnedClickable = true
+                }
+                renderer.resetInteraction()
                 val tl = GlassTouchListener(this, renderer)
                 touchListener = tl
                 view.setOnTouchListener(tl)
             } else if (!value.isInteractive && wasInteractive) {
+                if (effectOwnedClickable) {
+                    view.isClickable = false
+                    effectOwnedClickable = false
+                }
                 (touchListener as? GlassTouchListener)?.clear()
                 touchListener = null
+                renderer.resetInteraction()
             }
             view.invalidate()
         }
@@ -97,8 +107,13 @@ class GlassViewEffect internal constructor(
         }
         preDrawListener = null
 
+        if (effectOwnedClickable) {
+            view.isClickable = false
+            effectOwnedClickable = false
+        }
         (touchListener as? GlassTouchListener)?.clear()
         touchListener = null
+        renderer.resetInteraction()
 
         if (view.background === drawable) {
             val pad = getRawPadding(view)
@@ -239,6 +254,7 @@ fun View.glassEffect(
 
         override fun onViewDetachedFromWindow(v: View) {
             backdrop.unregisterGlassConsumer(v)
+            renderer.resetInteraction()
             val vto = v.viewTreeObserver
             effect.preDrawListener?.let { l ->
                 if (vto.isAlive) vto.removeOnPreDrawListener(l)
@@ -268,7 +284,10 @@ fun View.glassEffect(
 
     // Finding 9: Wire shared interaction state while preserving native gesture dispatch
     if (glass.isInteractive) {
-        isClickable = true
+        if (!isClickable) {
+            isClickable = true
+            effect.effectOwnedClickable = true
+        }
         val touchListener = GlassTouchListener(effect, renderer)
         effect.touchListener = touchListener
         setOnTouchListener(touchListener)
@@ -342,7 +361,7 @@ private class GlassTouchListener(
                 v.invalidate()
             }
             MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> {
-                r.touchAmount = 0f
+                r.resetInteraction()
                 v.invalidate()
             }
         }
