@@ -42,6 +42,10 @@ android {
         versionName = providers.gradleProperty("VERSION_NAME").get()
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
+    // Optional isolated qualification install; leaves the developer's existing sample intact.
+    if (providers.gradleProperty("sample.qualification").orNull == "true") {
+        buildTypes.getByName("debug").applicationIdSuffix = ".qualification"
+    }
     packaging {
         resources {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"

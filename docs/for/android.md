@@ -112,3 +112,9 @@ binding.glassChromeOverlay.setThemedGlassContent { host ->
 
 Next: [Getting started](../getting-started.md) · [Material 3, in glass](../material3.md) ·
 [The tab bar](../tab-bar.md) · [Limitations](../limitations.md)
+
+
+<!-- XML interop takeover, 2026-10-29 -->
+Android View interop correction: interactive effects preserve application clickability, and drawable opacity fades the complete native/fallback output once. Independently checked on physical S24+ API 36 and focused API 28/32 emulators; shared JVM rendering and original calibration-target regressions pass. Qualification is local; see `review/atlas/android-xml-takeover-2026-10-29/README.md` for provenance and limits.
+
+The completed motion regression compares 4,194 frames from full docs2 and IMG_6756 Search scripts against freshly rendered merge-base output: all frames and motion traces match exactly. The physical Android suite now passes 37 tests, including scrolling, child invalidation and detach/reattach across all three consumer paths. The existing Search brightness gap from iOS remains a shared-material limitation.

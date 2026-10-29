@@ -1723,7 +1723,7 @@ class GlassBackdropHardwareTest {
                 // Mutate to interactive
                 effect.glass = Glass.Regular.interactive(true)
                 assertNotNull("Mutating to interactive must install touchListener", effect.touchListener)
-                assertTrue("Mutating to interactive must configure isClickable", testView.isClickable)
+                assertFalse("Glass must not change application clickability", testView.isClickable)
 
                 // Mutate back to non-interactive
                 effect.glass = Glass.Regular
@@ -1771,7 +1771,7 @@ class GlassBackdropHardwareTest {
 
                 // 2. During interaction: child becomes clickable owned by effect, gesture is consumed
                 val effect = child.glassEffect(backdrop = backdrop, glass = Glass.Regular.interactive())
-                assertTrue("Child must become clickable when interactive glass is applied", child.isClickable)
+                assertFalse("Interactive glass must preserve application clickability", child.isClickable)
                 val down2 = MotionEvent.obtain(0L, 0L, MotionEvent.ACTION_DOWN, 50f, 50f, 0)
                 val handledDuring = container.dispatchTouchEvent(down2)
                 down2.recycle()
@@ -1790,7 +1790,7 @@ class GlassBackdropHardwareTest {
 
                 // 4. After re-enabling: child becomes clickable again
                 effect.glass = Glass.Regular.interactive()
-                assertTrue("Child must become clickable again when interaction is re-enabled", child.isClickable)
+                assertFalse("Re-enabling glass must preserve application clickability", child.isClickable)
                 val down4 = MotionEvent.obtain(0L, 0L, MotionEvent.ACTION_DOWN, 50f, 50f, 0)
                 val handledReenable = container.dispatchTouchEvent(down4)
                 down4.recycle()
@@ -1857,6 +1857,14 @@ class GlassBackdropHardwareTest {
             val effect = effectRef!!
             val renderer = rendererRef!!
 
+            waitForDraw(activity.window.decorView)
+            val unpressed = captureWindow(activity)
+            val sampleLocation = IntArray(2)
+            scenario.onActivity { glassView.getLocationInWindow(sampleLocation) }
+            val sampleX = sampleLocation[0] + glassView.width / 2
+            val sampleY = sampleLocation[1] + glassView.height / 2
+            val unpressedPixel = unpressed.getPixel(sampleX, sampleY)
+
             // 1. Initial state: touchAmount = 0
             assertEquals(0f, renderer.touchAmount, 0.001f)
 
@@ -1892,10 +1900,11 @@ class GlassBackdropHardwareTest {
             assertEquals("touchAmount must remain 0 after re-enabling with no active gesture", 0f, renderer.touchAmount, 0.001f)
             assertEquals(-1e5f, renderer.touchX, 1f)
 
-            // 6. Assert rendered output via PixelCopy has no stale pressed glow
+            // Compare the restored material to its pre-gesture output, not bitmap existence.
             waitForDraw(activity.window.decorView)
             val bitmap = captureWindow(activity)
-            assertNotNull(bitmap)
+            assertEquals("Re-enabled material must match the unpressed frame", unpressedPixel,
+                bitmap.getPixel(sampleX, sampleY))
 
             scenario.onActivity {
                 effect.dispose()
@@ -1980,7 +1989,7 @@ class GlassBackdropHardwareTest {
             val p255 = bm255.getPixel(cx, cy)
             val r255 = AndroidColor.red(p255)
             val g255 = AndroidColor.green(p255)
-            assertTrue("At alpha=255, red glass covers green barrier (was R=$r255, G=$g255)", r255 > 200 && r255 > g255 + 50)
+            assertNotEquals("Opaque material must cover the green underlay", AndroidColor.GREEN, p255)
 
             // Phase B: alpha = 128 (~50% alpha -> Compositing blends red glass over green barrier)
             scenario.onActivity {
@@ -1992,7 +2001,14 @@ class GlassBackdropHardwareTest {
             val p128 = bm128.getPixel(cx, cy)
             val r128 = AndroidColor.red(p128)
             val g128 = AndroidColor.green(p128)
-            assertTrue("At alpha=128, compositing blends red glass with green barrier (was R=$r128, G=$g128)", r128 > 60 && g128 > g255)
+            for (shift in listOf(0, 8, 16)) {
+                val full = (p255 shr shift) and 255
+                val under = (AndroidColor.GREEN shr shift) and 255
+                val expected = (full * 128 + under * 127) / 255
+                val actual = (p128 shr shift) and 255
+                assertTrue("Hardware half alpha must composite once: $actual vs $expected",
+                    kotlin.math.abs(actual - expected) <= 3)
+            }
 
             // Phase C: alpha = 0 (Full transparent -> Glass returns early, only green barrier shows)
             scenario.onActivity {
@@ -2018,6 +2034,19 @@ class GlassBackdropHardwareTest {
             val swP255 = swBitmap.getPixel(100, 100)
             assertNotEquals("Fallback at alpha=255 must draw content over green background", AndroidColor.GREEN, swP255)
 
+            swBitmap.eraseColor(AndroidColor.GREEN)
+            drawable.alpha = 128
+            drawable.draw(swCanvas)
+            val swHalf = swBitmap.getPixel(100, 100)
+            for (shift in listOf(0, 8, 16)) {
+                val full = (swP255 shr shift) and 255
+                val under = (AndroidColor.GREEN shr shift) and 255
+                val expected = (full * 128 + under * 127) / 255
+                val actual = (swHalf shr shift) and 255
+                assertTrue("Fallback half alpha must composite once: $actual vs $expected",
+                    kotlin.math.abs(actual - expected) <= 2)
+            }
+
             // At alpha 0 on fallback
             swBitmap.eraseColor(AndroidColor.GREEN)
             drawable.alpha = 0
@@ -2032,4 +2061,193 @@ class GlassBackdropHardwareTest {
             scenario.close()
         }
     }
+
+    @Test
+    fun applicationClickInstalledAfterGlassSurvivesDisableAndDispose() {
+        val clickCount = java.util.concurrent.atomic.AtomicInteger()
+        ActivityScenario.launch(XmlInteropActivity::class.java).use { scenario ->
+            scenario.onActivity { activity ->
+                val source = activity.findViewById<GlassBackdrop>(R.id.xmlBackdrop)
+                val parent = FrameLayout(activity)
+                val child = View(activity)
+                parent.addView(child, FrameLayout.LayoutParams(100, 100))
+                activity.findViewById<ViewGroup>(R.id.xmlRoot).addView(parent,
+                    FrameLayout.LayoutParams(100, 100))
+                parent.measure(View.MeasureSpec.makeMeasureSpec(100, View.MeasureSpec.EXACTLY),
+                    View.MeasureSpec.makeMeasureSpec(100, View.MeasureSpec.EXACTLY))
+                parent.layout(0, 0, 100, 100)
+                val effect = child.glassEffect(source, Glass.Regular.interactive())
+                child.setOnClickListener { clickCount.incrementAndGet() }
+                fun tap() {
+                    val now = SystemClock.uptimeMillis()
+                    for (action in listOf(MotionEvent.ACTION_DOWN, MotionEvent.ACTION_UP)) {
+                        val event = MotionEvent.obtain(now, now, action, 50f, 50f, 0)
+                        parent.dispatchTouchEvent(event)
+                        event.recycle()
+                    }
+                }
+                effect.glass = Glass.Regular
+                assertTrue(child.isClickable)
+                tap()
+                effect.dispose()
+                assertTrue(child.isClickable)
+                tap()
+            }
+            InstrumentationRegistry.getInstrumentation().waitForIdleSync()
+            assertEquals(2, clickCount.get())
+        }
+    }
+    @Test
+    fun nativeAndComposeRegularMatchOnStripedBackdrop() {
+        ActivityScenario.launch(XmlInteropActivity::class.java).use { scenario ->
+            lateinit var activity: Activity
+            lateinit var native: View
+            lateinit var host: LiquidGlassHostView
+            scenario.onActivity { a ->
+                activity = a
+                val root = a.findViewById<ViewGroup>(R.id.xmlRoot)
+                val source = GlassBackdrop(a)
+                source.addView(object : View(a) {
+                    private val paint = android.graphics.Paint()
+                    override fun onDraw(canvas: Canvas) {
+                        for (x in 0 until width step 16) {
+                            paint.color = if ((x / 16) % 2 == 0) AndroidColor.rgb(35, 70, 110)
+                                else AndroidColor.rgb(210, 160, 90)
+                            canvas.drawRect(x.toFloat(), 0f, (x + 16).toFloat(), height.toFloat(), paint)
+                        }
+                    }
+                }, FrameLayout.LayoutParams(600, 600))
+                root.addView(source, FrameLayout.LayoutParams(600, 600))
+                root.addView(View(a).apply { setBackgroundColor(AndroidColor.GREEN) },
+                    FrameLayout.LayoutParams(600, 600))
+                native = View(a)
+                native.glassEffect(source, Glass.Regular, RoundedCornerShape(24.dp), dark = false,
+                    backgroundColor = Color.White)
+                root.addView(native, FrameLayout.LayoutParams(300, 200).apply {
+                    leftMargin = 100; topMargin = 100
+                })
+                host = LiquidGlassHostView(a).apply {
+                    backdropView = source
+                    darkMode = GlassXmlDarkMode.Light
+                    glassBackgroundColor = Color.White
+                    visibility = View.INVISIBLE
+                }
+                host.setThemedGlassContent {
+                    Box(Modifier.fillMaxSize().glassEffect(Glass.Regular, RoundedCornerShape(24.dp)))
+                }
+                root.addView(host, FrameLayout.LayoutParams(300, 200).apply {
+                    leftMargin = 100; topMargin = 100
+                })
+            }
+            waitForDraw(activity.window.decorView)
+            val nativePixels = captureWindow(activity)
+            val loc = IntArray(2)
+            scenario.onActivity {
+                native.getLocationInWindow(loc)
+                native.visibility = View.INVISIBLE
+                host.visibility = View.VISIBLE
+            }
+            InstrumentationRegistry.getInstrumentation().waitForIdleSync()
+            waitForDraw(activity.window.decorView)
+            val composePixels = captureWindow(activity)
+            var error = 0L
+            var count = 0
+            // Interior comparison avoids exterior contact shadow, which is a separate layer in Compose.
+            for (y in 70 until 130) for (x in 70 until 230) {
+                val n = nativePixels.getPixel(loc[0] + x, loc[1] + y)
+                val c = composePixels.getPixel(loc[0] + x, loc[1] + y)
+                for (shift in listOf(0, 8, 16)) {
+                    error += kotlin.math.abs(((n shr shift) and 255) - ((c shr shift) and 255))
+                    count++
+                }
+            }
+            val meanError = error.toDouble() / count
+            for ((name, bitmap) in listOf("native" to nativePixels, "compose" to composePixels)) {
+                java.io.File(activity.getExternalFilesDir(null), "parity-$name.png").outputStream().use {
+                    bitmap.compress(Bitmap.CompressFormat.PNG, 100, it)
+                }
+            }
+            InstrumentationRegistry.getInstrumentation().sendStatus(0, android.os.Bundle().apply {
+                putString("stream", "Native/Compose Regular interior RGB MAE=$meanError; samples=$count\n")
+            })
+            assertTrue("Native/Compose Regular interior RGB MAE=$meanError (8-bit), expected <= 3", meanError <= 3.0)
+        }
+    }
+
+    @Test
+    fun scrollingSourceRefreshesAllThreeStationaryConsumers() {
+        ActivityScenario.launch(XmlInteropActivity::class.java).use { scenario ->
+            lateinit var activity: Activity
+            lateinit var scroll: android.widget.ScrollView
+            val consumers = mutableListOf<View>()
+            scenario.onActivity { a ->
+                activity = a
+                val root = a.findViewById<ViewGroup>(R.id.xmlRoot)
+                val source = GlassBackdrop(a)
+                scroll = android.widget.ScrollView(a)
+                val stripes = LinearLayout(a).apply { orientation = LinearLayout.VERTICAL }
+                for (color in listOf(AndroidColor.RED, AndroidColor.BLUE)) {
+                    stripes.addView(View(a).apply { setBackgroundColor(color) },
+                        LinearLayout.LayoutParams(900, 600))
+                }
+                scroll.addView(stripes)
+                source.addView(scroll, FrameLayout.LayoutParams(900, 400))
+                root.addView(source, FrameLayout.LayoutParams(900, 400))
+                root.addView(View(a).apply { setBackgroundColor(AndroidColor.GREEN) },
+                    FrameLayout.LayoutParams(900, 400))
+                consumers += View(a).apply { glassEffect(source, Glass.Clear) }
+                consumers += LiquidGlassView(a).apply {
+                    backdropView = source; preset = GlassXmlPreset.Clear
+                }
+                consumers += LiquidGlassHostView(a).apply {
+                    backdropView = source
+                    setThemedGlassContent { Box(Modifier.fillMaxSize().glassEffect(Glass.Clear)) }
+                }
+                consumers.forEachIndexed { index, v ->
+                    root.addView(v, FrameLayout.LayoutParams(200, 100).apply {
+                        leftMargin = 30 + index * 250; topMargin = 100
+                    })
+                }
+            }
+            fun assertSourceColor(blue: Boolean) {
+                InstrumentationRegistry.getInstrumentation().waitForIdleSync()
+                waitForDraw(activity.window.decorView)
+                val bitmap = captureWindow(activity)
+                scenario.onActivity {
+                    consumers.forEachIndexed { index, v ->
+                        val loc = IntArray(2); v.getLocationInWindow(loc)
+                        val pixel = bitmap.getPixel(loc[0] + v.width / 2, loc[1] + v.height / 2)
+                        val wanted = if (blue) AndroidColor.blue(pixel) else AndroidColor.red(pixel)
+                        val unwanted = if (blue) AndroidColor.red(pixel) else AndroidColor.blue(pixel)
+                        assertTrue("Consumer $index must show ${if (blue) "blue" else "red"} source, pixel=$pixel",
+                            wanted > 150 && unwanted < 80 && AndroidColor.green(pixel) < 80)
+                    }
+                }
+            }
+            assertSourceColor(false)
+            scenario.onActivity { scroll.scrollTo(0, 650) }
+            assertSourceColor(true)
+            scenario.onActivity { scroll.scrollTo(0, 0) }
+            assertSourceColor(false)
+            // Child-only invalidation must refresh stationary consumers without moving the source.
+            scenario.onActivity {
+                (scroll.getChildAt(0) as ViewGroup).getChildAt(0).setBackgroundColor(AndroidColor.BLUE)
+            }
+            assertSourceColor(true)
+            scenario.onActivity {
+                consumers.forEach { v ->
+                    val parent = v.parent as ViewGroup
+                    val params = v.layoutParams
+                    parent.removeView(v)
+                    parent.addView(v, params)
+                }
+            }
+            assertSourceColor(true)
+            scenario.onActivity {
+                (scroll.getChildAt(0) as ViewGroup).getChildAt(0).setBackgroundColor(AndroidColor.RED)
+            }
+            assertSourceColor(false)
+        }
+    }
+
 }

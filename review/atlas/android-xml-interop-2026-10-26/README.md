@@ -1,3 +1,5 @@
+> Historical contributor evidence. The physical run and screenshot belong to `cc6a7e0` (31 tests); the later 34-test run was reported on the emulator at `6d7b853`. Neither qualifies the subsequent takeover changes. Claims below are retained as contributor reports, not independent acceptance.
+
 # Android XML View Interop — Physical Device & Reference Emulator Verification
 
 ## Scope

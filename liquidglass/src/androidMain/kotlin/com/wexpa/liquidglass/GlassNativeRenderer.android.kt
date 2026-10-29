@@ -152,7 +152,7 @@ class GlassNativeRenderer(
 
             val outline = androidOutline
             node.setClipToOutline(false)
-            node.setAlpha(alphaMultiplier)
+            node.setAlpha(1f)
             if (outline != null) {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
                     val nodePath = scratchNodePath ?: android.graphics.Path()
@@ -278,29 +278,27 @@ class GlassNativeRenderer(
                 node.setRenderEffect(blurEffect)
             }
 
-            // Draw to canvas with matching -pad translation and outline clip
-            val saveCount = canvas.save()
+            // Fade the complete drawable once, including the legacy fallback overlay.
+            val saveCount = if (alphaMultiplier < 0.999f) {
+                canvas.saveLayerAlpha(0f, 0f, width.toFloat(), height.toFloat(),
+                    (alphaMultiplier * 255f).toInt().coerceIn(0, 255))
+            } else {
+                canvas.save()
+            }
             try {
                 canvas.clipPath(clipPath)
-                canvas.translate(-pad, -pad)
-                canvas.drawRenderNode(node)
+                val sourceSave = canvas.save()
+                try {
+                    canvas.translate(-pad, -pad)
+                    canvas.drawRenderNode(node)
+                } finally {
+                    canvas.restoreToCount(sourceSave)
+                }
+                if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
+                    drawFallbackOverlay(canvas, width, height, density, layoutDirection)
+                }
             } finally {
                 canvas.restoreToCount(saveCount)
-            }
-
-            // Finding 10: Render fallback on API 29, 30, 31, and 32 (all versions below Android 13 Tiramisu)
-            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
-                val alphaInt = (alphaMultiplier * 255f).toInt().coerceIn(0, 255)
-                val saveFallback = if (alphaMultiplier < 0.999f) {
-                    canvas.saveLayerAlpha(0f, 0f, width.toFloat(), height.toFloat(), alphaInt)
-                } else {
-                    canvas.save()
-                }
-                try {
-                    drawFallbackOverlay(canvas, width, height, density, layoutDirection)
-                } finally {
-                    canvas.restoreToCount(saveFallback)
-                }
             }
             return
         }

@@ -8,7 +8,6 @@ import android.graphics.drawable.Drawable
 import android.os.Build
 import android.view.MotionEvent
 import android.view.View
-import android.view.ViewConfiguration
 import android.view.ViewTreeObserver
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
@@ -29,7 +28,6 @@ class GlassViewEffect internal constructor(
     internal var previousBackground: android.graphics.drawable.Drawable? = null
     internal var attachListener: View.OnAttachStateChangeListener? = null
     internal var preDrawListener: ViewTreeObserver.OnPreDrawListener? = null
-    internal var effectOwnedClickable: Boolean = false
     var touchListener: View.OnTouchListener? = null
         internal set
 
@@ -44,19 +42,11 @@ class GlassViewEffect internal constructor(
             val wasInteractive = renderer.glass.isInteractive
             renderer.glass = value
             if (value.isInteractive && !wasInteractive) {
-                if (!view.isClickable) {
-                    view.isClickable = true
-                    effectOwnedClickable = true
-                }
                 renderer.resetInteraction()
                 val tl = GlassTouchListener(this, renderer)
                 touchListener = tl
                 view.setOnTouchListener(tl)
             } else if (!value.isInteractive && wasInteractive) {
-                if (effectOwnedClickable) {
-                    view.isClickable = false
-                    effectOwnedClickable = false
-                }
                 (touchListener as? GlassTouchListener)?.clear()
                 touchListener = null
                 renderer.resetInteraction()
@@ -107,10 +97,6 @@ class GlassViewEffect internal constructor(
         }
         preDrawListener = null
 
-        if (effectOwnedClickable) {
-            view.isClickable = false
-            effectOwnedClickable = false
-        }
         (touchListener as? GlassTouchListener)?.clear()
         touchListener = null
         renderer.resetInteraction()
@@ -201,8 +187,10 @@ class GlassBackgroundDrawable(
  * @param replaceBackground When true (default), sets the generated [GlassBackgroundDrawable] as the view's background.
  *
  * Note: If [glass] is interactive ([Glass.isInteractive]), this function installs a [View.OnTouchListener]
- * on the view to drive interaction state while returning false to preserve click dispatch. This takes
- * ownership of the view's [View.setOnTouchListener] slot.
+ * on the view to drive interaction state. Clickable/long-clickable views retain native dispatch;
+ * decorative views consume the gesture through the listener without changing their clickability.
+ * This takes ownership of the view's [View.setOnTouchListener] slot. Disposal makes that listener
+ * inert without clearing a replacement installed by the application.
  */
 fun View.glassEffect(
     backdrop: GlassBackdrop,
@@ -284,10 +272,6 @@ fun View.glassEffect(
 
     // Finding 9: Wire shared interaction state while preserving native gesture dispatch
     if (glass.isInteractive) {
-        if (!isClickable) {
-            isClickable = true
-            effect.effectOwnedClickable = true
-        }
         val touchListener = GlassTouchListener(effect, renderer)
         effect.touchListener = touchListener
         setOnTouchListener(touchListener)
