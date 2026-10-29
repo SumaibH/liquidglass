@@ -1,0 +1,22 @@
+{
+  "target": "Samsung Galaxy S24+",
+  "model": "SM-S926U",
+  "branch": "feat/android-xml-view-interop",
+  "commit": "af48c89209c987955ca04b414c572bd3a0776db8",
+  "physicalSerial": "adb-RZCX727QWCX-JoEwpS._adb-tls-connect._tcp",
+  "apkSha256": "2421dab188a5728d6252ce742e206ad15adb75e0f005502d9dc7197431fabedf",
+  "installedPackage": "com.wexpa.liquidglass.sample",
+  "testPackage": "com.wexpa.liquidglass.sample.test",
+  "fingerprint": "samsung/e2qsqw/e2q:16/BP2A.250605.031.A3/S926USQS4CYL1:user/release-keys",
+  "androidVersion": "16",
+  "apiLevel": 36,
+  "resolution": "1440x3120",
+  "density": 560,
+  "topResumedActivity": "com.wexpa.liquidglass.sample/.XmlInteropActivity",
+  "testExecutionTimeSeconds": 17.099,
+  "testCount": 24,
+  "testsPassed": 24,
+  "testsFailed": 0,
+  "instrumentationCode": -1,
+  "pixelCopyRequirement": "PixelCopy.SUCCESS strict assertion verified across all 24 tests"
+}
