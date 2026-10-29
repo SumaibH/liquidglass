@@ -144,16 +144,17 @@ open class GlassBackdrop @JvmOverloads constructor(
                 node.setPosition(0, 0, w, h)
                 val recordingCanvas = node.beginRecording(w, h)
                 isRecordingBackdrop = true
-                currentRecordingBackdrop = this
                 try {
                     super.draw(recordingCanvas)
                 } finally {
-                    currentRecordingBackdrop = null
                     isRecordingBackdrop = false
                     node.endRecording()
                 }
                 canvas.drawRenderNode(node)
+                notifyConsumersOfBackdropUpdate()
                 return
+            } else {
+                node.discardDisplayList()
             }
         }
         super.draw(canvas)
@@ -170,28 +171,36 @@ open class GlassBackdrop @JvmOverloads constructor(
                 node.setPosition(0, 0, w, h)
                 val recordingCanvas = node.beginRecording(w, h)
                 isRecordingBackdrop = true
-                currentRecordingBackdrop = this
                 try {
                     super.dispatchDraw(recordingCanvas)
                 } finally {
-                    currentRecordingBackdrop = null
                     isRecordingBackdrop = false
                     node.endRecording()
                 }
                 canvas.drawRenderNode(node)
+                notifyConsumersOfBackdropUpdate()
                 return
+            } else {
+                node.discardDisplayList()
             }
         }
         super.dispatchDraw(canvas)
     }
 
-    companion object {
-        @Volatile
-        internal var currentRecordingBackdrop: GlassBackdrop? = null
-
-        internal fun isGlassView(view: View): Boolean {
-            return view is LiquidGlassView || view is LiquidGlassHostView || view.getTag(R.id.liquid_glass_view_effect_tag) != null
+    private fun notifyConsumersOfBackdropUpdate() {
+        for (consumer in nestedGlassViews) {
+            consumer.invalidate()
         }
+    }
+
+    override fun onDetachedFromWindow() {
+        super.onDetachedFromWindow()
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            sourceNode?.discardDisplayList()
+        }
+    }
+
+    companion object {
     }
 }
 
@@ -208,6 +217,11 @@ internal fun checkNoCycleWithAncestors(consumer: View, target: GlassBackdrop) {
     if (consumer === target) {
         throw IllegalStateException(
             "LiquidGlass backdrop ($target) cannot be its own consumer."
+        )
+    }
+    if (isDescendantOf(target, consumer)) {
+        throw IllegalStateException(
+            "LiquidGlass backdrop ($target) cannot be a descendant of its consumer ($consumer)."
         )
     }
     if (isDescendantOf(consumer, target)) {

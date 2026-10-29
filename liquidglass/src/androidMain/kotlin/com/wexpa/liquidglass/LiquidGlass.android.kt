@@ -214,6 +214,7 @@ internal actual fun platformBlurRadiusForSigma(sigma: Float): Float =
 internal fun createAndroidWideKernelEffect(sigmaPx: Float): RenderEffect? {
     if (Build.VERSION.SDK_INT < Build.VERSION_CODES.S) return null
     val radius = platformBlurRadiusForSigma(sigmaPx)
+    if (radius <= 0f) return null
     return RenderEffect.createBlurEffect(radius, radius, Shader.TileMode.CLAMP)
 }
 

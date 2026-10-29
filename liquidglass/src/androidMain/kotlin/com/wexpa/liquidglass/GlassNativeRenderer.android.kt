@@ -61,8 +61,24 @@ class GlassNativeRenderer(
     private var cachedPathField: GlassPathField? = null
     private var cachedPathFieldKey: Any? = null
 
+    internal var alphaMultiplier: Float = 1f
+
+    private val scratchClipPath = android.graphics.Path()
+    private val scratchMatrix = android.graphics.Matrix()
+    private val scratchSourceRect = android.graphics.RectF()
+    private val scratchNodePath = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) android.graphics.Path() else null
+
+    internal fun discard() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            glassNode?.discardDisplayList()
+            wideNode?.discardDisplayList()
+        }
+        cachedPathField = null
+        cachedPathFieldKey = null
+    }
+
     fun draw(canvas: Canvas, width: Int, height: Int) {
-        if (width <= 0 || height <= 0) return
+        if (width <= 0 || height <= 0 || alphaMultiplier <= 0.001f) return
 
         // Finding 7: Glass.Identity deliberately represents no material. Short-circuit immediately.
         if (glass.isIdentity || glass.style(dark) == null) {
@@ -85,7 +101,8 @@ class GlassNativeRenderer(
             layoutDirection,
             density,
         )
-        val clipPath = android.graphics.Path()
+        val clipPath = scratchClipPath
+        clipPath.reset()
         when (composeOutline) {
             is Outline.Rectangle -> {
                 clipPath.addRect(0f, 0f, width.toFloat(), height.toFloat(), android.graphics.Path.Direction.CW)
@@ -122,7 +139,8 @@ class GlassNativeRenderer(
             val totalNodeWidth = paddedWidth
             val totalNodeHeight = paddedHeight + stripHeight
 
-            val matrix = android.graphics.Matrix()
+            val matrix = scratchMatrix
+            matrix.reset()
             bd.transformMatrixToGlobal(matrix)
             targetView.transformMatrixToLocal(matrix)
 
@@ -130,7 +148,9 @@ class GlassNativeRenderer(
             node.setClipToOutline(false)
             if (outline != null) {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-                    val nodePath = android.graphics.Path(clipPath).apply { offset(pad, pad) }
+                    val nodePath = scratchNodePath ?: android.graphics.Path()
+                    nodePath.set(clipPath)
+                    nodePath.offset(pad, pad)
                     outline.setPath(nodePath)
                     node.setOutline(outline)
                     node.setClipToOutline(true)
@@ -177,7 +197,8 @@ class GlassNativeRenderer(
                     } finally {
                         wn.endRecording()
                     }
-                    wn.setRenderEffect(createAndroidWideKernelEffect(wideKernelPx * wideScale))
+                    val wideEffect = createAndroidWideKernelEffect(wideKernelPx * wideScale)
+                    wn.setRenderEffect(wideEffect)
 
                     recordingCanvas.save()
                     recordingCanvas.translate(0f, paddedHeight.toFloat())
@@ -188,7 +209,8 @@ class GlassNativeRenderer(
                 node.endRecording()
             }
 
-            val sourceRect = android.graphics.RectF(0f, 0f, bd.width.toFloat(), bd.height.toFloat())
+            val sourceRect = scratchSourceRect
+            sourceRect.set(0f, 0f, bd.width.toFloat(), bd.height.toFloat())
             matrix.mapRect(sourceRect)
 
             val pathField = if (composeOutline is Outline.Generic && Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
@@ -225,8 +247,8 @@ class GlassNativeRenderer(
                     sourceSize = Size(sourceRect.width(), sourceRect.height()),
                     tiltX = 0f,
                     tiltY = 0f,
-                    ambientAlpha = 1f,
-                    pressAlpha = touchAmount,
+                    ambientAlpha = alphaMultiplier,
+                    pressAlpha = touchAmount * alphaMultiplier,
                     press = press,
                     tintField = null,
                     interaction = if (glass.isInteractive) glass.interaction else null,

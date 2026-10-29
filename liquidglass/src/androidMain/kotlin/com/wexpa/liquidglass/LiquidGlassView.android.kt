@@ -89,15 +89,13 @@ enum class GlassXmlShape {
 }
 
 internal class TouchGatedFrameLayout(context: Context) : FrameLayout(context) {
-    var blockTouches: Boolean = false
-
     init {
         clipChildren = false
         clipToPadding = false
     }
 
     override fun dispatchTouchEvent(ev: MotionEvent): Boolean =
-        !blockTouches && super.dispatchTouchEvent(ev)
+        super.dispatchTouchEvent(ev)
 }
 
 /**
@@ -271,7 +269,7 @@ open class LiquidGlassHostView @JvmOverloads constructor(
     internal val transformEpoch = mutableLongStateOf(0L)
     private val hostPreDrawListener = android.view.ViewTreeObserver.OnPreDrawListener {
         val target = backdropView
-        if (target != null && android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.Q) {
+        if (composeContainer.visibility != View.GONE && target != null && target.isAttachedToWindow && composeView.isAttachedToWindow && android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.Q) {
             currentHostMatrix.reset()
             target.transformMatrixToGlobal(currentHostMatrix)
             composeView.transformMatrixToLocal(currentHostMatrix)
@@ -350,6 +348,7 @@ open class LiquidGlassHostView @JvmOverloads constructor(
      * to have both wired automatically from XML attributes.
      */
     fun setGlassContent(content: @Composable (LiquidGlassHostView) -> Unit) {
+        composeContainer.visibility = View.VISIBLE
         composeView.setContent {
             content(this)
         }
@@ -363,6 +362,7 @@ open class LiquidGlassHostView @JvmOverloads constructor(
         glass: Glass = Glass.Regular,
         content: @Composable (LiquidGlassHostView) -> Unit,
     ) {
+        composeContainer.visibility = View.VISIBLE
         composeView.setContent {
             val dark = resolveIsDark()
             val bg = resolveBackgroundColor(dark)
@@ -629,14 +629,26 @@ class LiquidGlassView @JvmOverloads constructor(
 
     private val lastTransformMatrix = android.graphics.Matrix()
     private val currentTransformMatrix = android.graphics.Matrix()
+    private var lastBackdropWidth: Int = -1
+    private var lastBackdropHeight: Int = -1
     private val preDrawListener = android.view.ViewTreeObserver.OnPreDrawListener {
         val bd = backdropView as? GlassBackdrop
-        if (bd != null && Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+        if (bd != null && bd.isAttachedToWindow && isAttachedToWindow && Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            val bw = bd.width
+            val bh = bd.height
+            val sizeChanged = bw != lastBackdropWidth || bh != lastBackdropHeight
+            if (sizeChanged) {
+                lastBackdropWidth = bw
+                lastBackdropHeight = bh
+            }
             currentTransformMatrix.reset()
             bd.transformMatrixToGlobal(currentTransformMatrix)
             transformMatrixToLocal(currentTransformMatrix)
-            if (currentTransformMatrix != lastTransformMatrix) {
+            val matrixChanged = currentTransformMatrix != lastTransformMatrix
+            if (matrixChanged) {
                 lastTransformMatrix.set(currentTransformMatrix)
+            }
+            if (sizeChanged || matrixChanged) {
                 invalidate()
             }
         }
@@ -730,6 +742,7 @@ class LiquidGlassView @JvmOverloads constructor(
     override fun onDetachedFromWindow() {
         registeredBackdrop?.unregisterGlassConsumer(this)
         registeredBackdrop = null
+        renderer?.discard()
         super.onDetachedFromWindow()
         val vto = viewTreeObserver
         if (vto.isAlive) {

@@ -34,11 +34,23 @@ class GlassViewEffect internal constructor(
 
     private val lastMatrix = android.graphics.Matrix()
     private val currentMatrix = android.graphics.Matrix()
+    private var lastBackdropWidth: Int = -1
+    private var lastBackdropHeight: Int = -1
 
     var glass: Glass
         get() = renderer.glass
         set(value) {
+            val wasInteractive = renderer.glass.isInteractive
             renderer.glass = value
+            if (value.isInteractive && !wasInteractive) {
+                view.isClickable = true
+                val tl = GlassTouchListener(this, renderer)
+                touchListener = tl
+                view.setOnTouchListener(tl)
+            } else if (!value.isInteractive && wasInteractive) {
+                (touchListener as? GlassTouchListener)?.clear()
+                touchListener = null
+            }
             view.invalidate()
         }
 
@@ -96,6 +108,7 @@ class GlassViewEffect internal constructor(
         previousBackground = null
 
         backdrop.unregisterGlassConsumer(view)
+        renderer.discard()
 
         if (view.getTag(R.id.liquid_glass_view_effect_tag) === this) {
             view.setTag(R.id.liquid_glass_view_effect_tag, null)
@@ -103,12 +116,23 @@ class GlassViewEffect internal constructor(
     }
 
     internal fun checkGeometryChanged(): Boolean {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+        val bd = backdrop
+        if (bd.isAttachedToWindow && view.isAttachedToWindow && Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            val bw = bd.width
+            val bh = bd.height
+            val sizeChanged = bw != lastBackdropWidth || bh != lastBackdropHeight
+            if (sizeChanged) {
+                lastBackdropWidth = bw
+                lastBackdropHeight = bh
+            }
             currentMatrix.reset()
-            backdrop.transformMatrixToGlobal(currentMatrix)
+            bd.transformMatrixToGlobal(currentMatrix)
             view.transformMatrixToLocal(currentMatrix)
-            if (currentMatrix != lastMatrix) {
+            val matrixChanged = currentMatrix != lastMatrix
+            if (matrixChanged) {
                 lastMatrix.set(currentMatrix)
+            }
+            if (sizeChanged || matrixChanged) {
                 return true
             }
         }
@@ -122,15 +146,22 @@ class GlassViewEffect internal constructor(
 class GlassBackgroundDrawable(
     val renderer: GlassNativeRenderer,
 ) : Drawable() {
+    private var alphaValue: Int = 255
 
     override fun draw(canvas: Canvas) {
         val b = bounds
+        renderer.alphaMultiplier = alphaValue / 255f
         renderer.draw(canvas, b.width(), b.height())
     }
 
     override fun setAlpha(alpha: Int) {
-        // Alpha handled by material/renderer
+        if (alphaValue != alpha) {
+            alphaValue = alpha.coerceIn(0, 255)
+            invalidateSelf()
+        }
     }
+
+    override fun getAlpha(): Int = alphaValue
 
     override fun setColorFilter(colorFilter: ColorFilter?) {
         // Color filter handled by material/renderer
@@ -237,6 +268,7 @@ fun View.glassEffect(
 
     // Finding 9: Wire shared interaction state while preserving native gesture dispatch
     if (glass.isInteractive) {
+        isClickable = true
         val touchListener = GlassTouchListener(effect, renderer)
         effect.touchListener = touchListener
         setOnTouchListener(touchListener)
@@ -262,64 +294,22 @@ private class SavedPadding(
 }
 
 private fun getRawPadding(view: View): SavedPadding {
-    val isRelative = view.isPaddingRelative
-    val scrollBarSize = if (view.scrollBarStyle == View.SCROLLBARS_INSIDE_INSET) {
-        ViewConfiguration.get(view.context).scaledScrollBarSize
+    return if (view.isPaddingRelative) {
+        SavedPadding(
+            isRelative = true,
+            a = view.paddingStart,
+            top = view.paddingTop,
+            b = view.paddingEnd,
+            bottom = view.paddingBottom,
+        )
     } else {
-        0
-    }
-    val isRtl = view.layoutDirection == View.LAYOUT_DIRECTION_RTL
-
-    if (isRelative) {
-        var start = view.paddingStart
-        val top = view.paddingTop
-        var end = view.paddingEnd
-        var bottom = view.paddingBottom
-
-        if (scrollBarSize > 0) {
-            val onLeft = view.verticalScrollbarPosition == View.SCROLLBAR_POSITION_LEFT ||
-                (view.verticalScrollbarPosition == View.SCROLLBAR_POSITION_DEFAULT && isRtl)
-            if (view.isVerticalScrollBarEnabled) {
-                if (onLeft) {
-                    if (isRtl) {
-                        end = (end - scrollBarSize).coerceAtLeast(0)
-                    } else {
-                        start = (start - scrollBarSize).coerceAtLeast(0)
-                    }
-                } else {
-                    if (isRtl) {
-                        start = (start - scrollBarSize).coerceAtLeast(0)
-                    } else {
-                        end = (end - scrollBarSize).coerceAtLeast(0)
-                    }
-                }
-            }
-            if (view.isHorizontalScrollBarEnabled) {
-                bottom = (bottom - scrollBarSize).coerceAtLeast(0)
-            }
-        }
-        return SavedPadding(isRelative = true, a = start, top = top, b = end, bottom = bottom)
-    } else {
-        var left = view.paddingLeft
-        val top = view.paddingTop
-        var right = view.paddingRight
-        var bottom = view.paddingBottom
-
-        if (scrollBarSize > 0) {
-            val onLeft = view.verticalScrollbarPosition == View.SCROLLBAR_POSITION_LEFT ||
-                (view.verticalScrollbarPosition == View.SCROLLBAR_POSITION_DEFAULT && isRtl)
-            if (view.isVerticalScrollBarEnabled) {
-                if (onLeft) {
-                    left = (left - scrollBarSize).coerceAtLeast(0)
-                } else {
-                    right = (right - scrollBarSize).coerceAtLeast(0)
-                }
-            }
-            if (view.isHorizontalScrollBarEnabled) {
-                bottom = (bottom - scrollBarSize).coerceAtLeast(0)
-            }
-        }
-        return SavedPadding(isRelative = false, a = left, top = top, b = right, bottom = bottom)
+        SavedPadding(
+            isRelative = false,
+            a = view.paddingLeft,
+            top = view.paddingTop,
+            b = view.paddingRight,
+            bottom = view.paddingBottom,
+        )
     }
 }
 
@@ -356,6 +346,8 @@ private class GlassTouchListener(
                 v.invalidate()
             }
         }
-        return false // Preserve native click and touch delivery
+        // On non-clickable views, consume the gesture so Android does not drop subsequent MOVE/UP/CANCEL events.
+        // On clickable/long-clickable views, return false so the native click listeners receive the gesture.
+        return !v.isClickable && !v.isLongClickable
     }
 }

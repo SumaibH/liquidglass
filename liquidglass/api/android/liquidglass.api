@@ -56,6 +56,7 @@ public class com/wexpa/liquidglass/GlassBackdrop : android/widget/FrameLayout {
 	protected fun drawChild (Landroid/graphics/Canvas;Landroid/view/View;J)Z
 	public final fun getSourceNode ()Landroid/graphics/RenderNode;
 	public final fun isRegisteredConsumer (Landroid/view/View;)Z
+	protected fun onDetachedFromWindow ()V
 	public fun onViewAdded (Landroid/view/View;)V
 	public final fun registerGlassConsumer (Landroid/view/View;)V
 	public final fun unregisterGlassConsumer (Landroid/view/View;)V
@@ -68,6 +69,7 @@ public final class com/wexpa/liquidglass/GlassBackgroundDrawable : android/graph
 	public static final field $stable I
 	public fun <init> (Lcom/wexpa/liquidglass/GlassNativeRenderer;)V
 	public fun draw (Landroid/graphics/Canvas;)V
+	public fun getAlpha ()I
 	public fun getOpacity ()I
 	public final fun getRenderer ()Lcom/wexpa/liquidglass/GlassNativeRenderer;
 	public fun setAlpha (I)V
