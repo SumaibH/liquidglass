@@ -87,7 +87,6 @@ class GlassViewEffect internal constructor(
 
         (touchListener as? GlassTouchListener)?.clear()
         touchListener = null
-        view.setOnTouchListener(null)
 
         if (view.background === drawable) {
             val pad = getRawPadding(view)

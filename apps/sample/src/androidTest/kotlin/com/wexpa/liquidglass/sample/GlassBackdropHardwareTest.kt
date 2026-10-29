@@ -37,6 +37,7 @@ import com.wexpa.liquidglass.GlassXmlPreset
 import com.wexpa.liquidglass.LiquidGlassHostView
 import com.wexpa.liquidglass.LiquidGlassView
 import com.wexpa.liquidglass.glassEffect
+import com.wexpa.liquidglass.GlassViewEffect
 import com.wexpa.liquidglass.R as LibR
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
@@ -106,10 +107,7 @@ class GlassBackdropHardwareTest {
     }
 
     private fun safeClose(scenario: ActivityScenario<*>) {
-        try {
-            safeClose(scenario)
-        } catch (_: Throwable) {
-        }
+        scenario.close()
     }
 
     @Test
@@ -484,51 +482,118 @@ class GlassBackdropHardwareTest {
 
     @Test
     fun asymmetricCornerGeometryInLtrAndRtl() {
-        // Finding 12: Asymmetric shapes must preserve corners and respect RTL in GlassNativeRenderer
-        val density = Density(2f)
-        val asymmetricShape = RoundedCornerShape(topStart = 40.dp, topEnd = 0.dp, bottomEnd = 0.dp, bottomStart = 8.dp)
+        val scenario = ActivityScenario.launch(XmlInteropActivity::class.java)
+        var activityRef: Activity? = null
+        var viewRef: View? = null
+        var effectRef: GlassViewEffect? = null
 
-        // In LTR: topStart is topLeft (40dp = 80px), topEnd is topRight (0px)
-        val ltrOutline = asymmetricShape.createOutline(Size(200f, 100f), LayoutDirection.Ltr, density) as Outline.Rounded
-        assertEquals(80f, ltrOutline.roundRect.topLeftCornerRadius.x)
-        assertEquals(0f, ltrOutline.roundRect.topRightCornerRadius.x)
+        scenario.onActivity { activity ->
+            activityRef = activity
+            val root = activity.findViewById<ViewGroup>(R.id.xmlRoot)
 
-        val ltrPath = android.graphics.Path().apply {
-            val rr = ltrOutline.roundRect
-            val rArray = floatArrayOf(
-                rr.topLeftCornerRadius.x, rr.topLeftCornerRadius.y,
-                rr.topRightCornerRadius.x, rr.topRightCornerRadius.y,
-                rr.bottomRightCornerRadius.x, rr.bottomRightCornerRadius.y,
-                rr.bottomLeftCornerRadius.x, rr.bottomLeftCornerRadius.y,
+            // Setup blue underlay
+            val underlay = View(activity).apply {
+                layoutParams = FrameLayout.LayoutParams(300, 200).apply {
+                    leftMargin = 50
+                    topMargin = 50
+                }
+                setBackgroundColor(AndroidColor.BLUE)
+            }
+            // Setup backdrop with red content
+            val backdrop = GlassBackdrop(activity).apply {
+                layoutParams = FrameLayout.LayoutParams(300, 200).apply {
+                    leftMargin = 50
+                    topMargin = 50
+                }
+            }
+            val redContent = View(activity).apply {
+                layoutParams = FrameLayout.LayoutParams(300, 200)
+                setBackgroundColor(AndroidColor.RED)
+            }
+            backdrop.addView(redContent)
+            root.addView(backdrop)
+
+            // Blue underlay covers backdrop in the window so clipped areas reveal blue
+            root.addView(underlay)
+
+            // Asymmetric shape: topStart=50.dp, topEnd=0.dp, bottomEnd=0.dp, bottomStart=0.dp
+            val asymmetricShape = RoundedCornerShape(topStart = 50.dp, topEnd = 0.dp, bottomEnd = 0.dp, bottomStart = 0.dp)
+
+            val glassView = View(activity).apply {
+                layoutParams = FrameLayout.LayoutParams(300, 200).apply {
+                    leftMargin = 50
+                    topMargin = 50
+                }
+                layoutDirection = View.LAYOUT_DIRECTION_LTR
+            }
+            val effect = glassView.glassEffect(
+                backdrop = backdrop,
+                glass = Glass.Regular,
+                shape = asymmetricShape,
             )
-            addRoundRect(rr.left, rr.top, rr.right, rr.bottom, rArray, android.graphics.Path.Direction.CW)
-        }
-        val ltrRegion = android.graphics.Region().apply {
-            setPath(ltrPath, android.graphics.Region(0, 0, 200, 100))
-        }
-        assertFalse("LTR: Top-left corner (2,2) must be outside clipPath due to 40dp radius", ltrRegion.contains(2, 2))
-        assertTrue("LTR: Top-right corner (198,2) must be inside clipPath due to 0dp radius", ltrRegion.contains(198, 2))
+            root.addView(glassView)
 
-        // In RTL: topStart is topRight (80px), topEnd is topLeft (0px)
-        val rtlOutline = asymmetricShape.createOutline(Size(200f, 100f), LayoutDirection.Rtl, density) as Outline.Rounded
-        assertEquals(0f, rtlOutline.roundRect.topLeftCornerRadius.x)
-        assertEquals(80f, rtlOutline.roundRect.topRightCornerRadius.x)
+            viewRef = glassView
+            effectRef = effect
+        }
 
-        val rtlPath = android.graphics.Path().apply {
-            val rr = rtlOutline.roundRect
-            val rArray = floatArrayOf(
-                rr.topLeftCornerRadius.x, rr.topLeftCornerRadius.y,
-                rr.topRightCornerRadius.x, rr.topRightCornerRadius.y,
-                rr.bottomRightCornerRadius.x, rr.bottomRightCornerRadius.y,
-                rr.bottomLeftCornerRadius.x, rr.bottomLeftCornerRadius.y,
-            )
-            addRoundRect(rr.left, rr.top, rr.right, rr.bottom, rArray, android.graphics.Path.Direction.CW)
+        val activity = activityRef!!
+        val glassView = viewRef!!
+        val effect = effectRef!!
+
+        // In LTR: topStart is Top-Left (50dp ~ 100-150px curve). Top-Right is 0dp (sharp corner).
+        waitForDraw(activity.window.decorView)
+        val ltrBitmap = captureWindow(activity)
+        assertNotNull(ltrBitmap)
+
+        val loc = IntArray(2)
+        scenario.onActivity {
+            glassView.getLocationInWindow(loc)
         }
-        val rtlRegion = android.graphics.Region().apply {
-            setPath(rtlPath, android.graphics.Region(0, 0, 200, 100))
+        val vx = loc[0]
+        val vy = loc[1]
+
+        // Top-left corner (vx + 5, vy + 5) is clipped by 50dp curve -> reveals blue underlay
+        val ltrTopLeft = ltrBitmap.getPixel(vx + 5, vy + 5)
+        assertTrue(
+            "LTR: Top-left corner inside 50dp curve must reveal blue underlay (was R=${AndroidColor.red(ltrTopLeft)}, B=${AndroidColor.blue(ltrTopLeft)})",
+            AndroidColor.blue(ltrTopLeft) > 180 && AndroidColor.red(ltrTopLeft) < 80,
+        )
+
+        // Top-right corner (vx + 295, vy + 5) has 0dp curve -> rendered red glass
+        val ltrTopRight = ltrBitmap.getPixel(vx + 295, vy + 5)
+        assertTrue(
+            "LTR: Top-right corner (0dp radius) must render red glass (was R=${AndroidColor.red(ltrTopRight)}, B=${AndroidColor.blue(ltrTopRight)})",
+            AndroidColor.red(ltrTopRight) > 220 && AndroidColor.red(ltrTopRight) > AndroidColor.blue(ltrTopRight) + 25,
+        )
+
+        // Switch to RTL: topStart becomes Top-Right (50dp curve). Top-Left becomes 0dp (sharp corner).
+        scenario.onActivity {
+            glassView.layoutDirection = View.LAYOUT_DIRECTION_RTL
+            glassView.invalidate()
         }
-        assertTrue("RTL: Top-left corner (2,2) must be inside clipPath due to 0dp topEnd", rtlRegion.contains(2, 2))
-        assertFalse("RTL: Top-right corner (198,2) must be outside clipPath due to 40dp topStart", rtlRegion.contains(198, 2))
+        waitForDraw(activity.window.decorView)
+        val rtlBitmap = captureWindow(activity)
+        assertNotNull(rtlBitmap)
+
+        // In RTL: Top-left corner (vx + 5, vy + 5) has 0dp curve -> rendered red glass
+        val rtlTopLeft = rtlBitmap.getPixel(vx + 5, vy + 5)
+        assertTrue(
+            "RTL: Top-left corner (0dp radius) must render red glass (was R=${AndroidColor.red(rtlTopLeft)}, B=${AndroidColor.blue(rtlTopLeft)})",
+            AndroidColor.red(rtlTopLeft) > 220 && AndroidColor.red(rtlTopLeft) > AndroidColor.blue(rtlTopLeft) + 25,
+        )
+
+        // In RTL: Top-right corner (vx + 295, vy + 5) has 50dp curve -> clipped, reveals blue underlay
+        val rtlTopRight = rtlBitmap.getPixel(vx + 295, vy + 5)
+        assertTrue(
+            "RTL: Top-right corner inside 50dp curve must reveal blue underlay (was R=${AndroidColor.red(rtlTopRight)}, B=${AndroidColor.blue(rtlTopRight)})",
+            AndroidColor.blue(rtlTopRight) > 180 && AndroidColor.red(rtlTopRight) < 80,
+        )
+
+        scenario.onActivity {
+            effect.dispose()
+        }
+        safeClose(scenario)
     }
 
     @Test
@@ -560,6 +625,13 @@ class GlassBackdropHardwareTest {
             backdrop.addView(blueStripe)
             root.addView(backdrop)
 
+            // Opaque green barrier covering backdrop ensures test fails if glass rendering is absent
+            val barrier = View(activity).apply {
+                layoutParams = FrameLayout.LayoutParams(600, 800)
+                setBackgroundColor(AndroidColor.GREEN)
+            }
+            root.addView(barrier)
+
             val glassView = LiquidGlassView(activity).apply {
                 layoutParams = FrameLayout.LayoutParams(300, 200).apply {
                     leftMargin = 100
@@ -587,10 +659,10 @@ class GlassBackdropHardwareTest {
         val origCenterY = location[1] + glassView.height / 2
         val pixelBefore = beforeBitmap.getPixel(origCenterX, origCenterY)
 
-        // Glass is over RED stripe (0xFFFF0000)
+        // Glass samples RED stripe (0xFFFF0000) from backdrop over green barrier
         assertTrue(
-            "Before translation, glass over RED stripe must sample high red (was R=${AndroidColor.red(pixelBefore)}, B=${AndroidColor.blue(pixelBefore)})",
-            AndroidColor.red(pixelBefore) > 150 && AndroidColor.blue(pixelBefore) < 80,
+            "Before translation, glass over RED stripe must sample high red and low green (was R=${AndroidColor.red(pixelBefore)}, G=${AndroidColor.green(pixelBefore)}, B=${AndroidColor.blue(pixelBefore)})",
+            AndroidColor.red(pixelBefore) > 150 && AndroidColor.blue(pixelBefore) < 80 && AndroidColor.green(pixelBefore) < 80,
         )
 
         // Finding 13: Translation causes transformMatrix change detected by preDrawListener
@@ -607,13 +679,16 @@ class GlassBackdropHardwareTest {
         val pixelAtOldCenter = afterBitmap.getPixel(origCenterX, origCenterY)
         val pixelAtNewCenter = afterBitmap.getPixel(origCenterX, newCenterY)
 
-        // Old center now reveals the red stripe underneath without glass
-        assertTrue("Old center must remain red stripe", AndroidColor.red(pixelAtOldCenter) > 200)
+        // Old center now reveals the green barrier underneath without glass
+        assertTrue(
+            "Old center must reveal green barrier without glass (was R=${AndroidColor.red(pixelAtOldCenter)}, G=${AndroidColor.green(pixelAtOldCenter)}, B=${AndroidColor.blue(pixelAtOldCenter)})",
+            AndroidColor.green(pixelAtOldCenter) > 200 && AndroidColor.red(pixelAtOldCenter) < 80 && AndroidColor.blue(pixelAtOldCenter) < 80,
+        )
 
         // New center now samples the blue stripe underneath through translated glass mapping
         assertTrue(
-            "After translation, glass over BLUE stripe must sample high blue (was R=${AndroidColor.red(pixelAtNewCenter)}, B=${AndroidColor.blue(pixelAtNewCenter)})",
-            AndroidColor.blue(pixelAtNewCenter) > 150 && AndroidColor.red(pixelAtNewCenter) < 80,
+            "After translation, glass over BLUE stripe must sample high blue and low green (was R=${AndroidColor.red(pixelAtNewCenter)}, G=${AndroidColor.green(pixelAtNewCenter)}, B=${AndroidColor.blue(pixelAtNewCenter)})",
+            AndroidColor.blue(pixelAtNewCenter) > 150 && AndroidColor.red(pixelAtNewCenter) < 80 && AndroidColor.green(pixelAtNewCenter) < 80,
         )
 
         safeClose(scenario)
@@ -647,6 +722,13 @@ class GlassBackdropHardwareTest {
             backdrop.addView(redStripe)
             backdrop.addView(blueStripe)
             root.addView(backdrop)
+
+            // Opaque green barrier covering backdrop ensures test fails if Compose glass rendering is absent
+            val barrier = View(activity).apply {
+                layoutParams = FrameLayout.LayoutParams(600, 800)
+                setBackgroundColor(AndroidColor.GREEN)
+            }
+            root.addView(barrier)
 
             val hostView = LiquidGlassHostView(activity).apply {
                 layoutParams = FrameLayout.LayoutParams(300, 200).apply {
@@ -682,8 +764,8 @@ class GlassBackdropHardwareTest {
         val pixelBefore = beforeBitmap.getPixel(origCenterX, origCenterY)
 
         assertTrue(
-            "Before translation, compose host over RED stripe must sample high red (was R=${AndroidColor.red(pixelBefore)}, B=${AndroidColor.blue(pixelBefore)})",
-            AndroidColor.red(pixelBefore) > 150 && AndroidColor.blue(pixelBefore) < 80,
+            "Before translation, compose host over RED stripe must sample high red and low green (was R=${AndroidColor.red(pixelBefore)}, G=${AndroidColor.green(pixelBefore)}, B=${AndroidColor.blue(pixelBefore)})",
+            AndroidColor.red(pixelBefore) > 150 && AndroidColor.blue(pixelBefore) < 80 && AndroidColor.green(pixelBefore) < 80,
         )
 
         // Translate host down by 350px so hostView is now completely over the BLUE stripe (y in 450..650)
@@ -699,10 +781,14 @@ class GlassBackdropHardwareTest {
         val pixelAtOldCenter = afterBitmap.getPixel(origCenterX, origCenterY)
         val pixelAtNewCenter = afterBitmap.getPixel(origCenterX, newCenterY)
 
-        assertTrue("Old center must remain red stripe", AndroidColor.red(pixelAtOldCenter) > 200)
+        // Old center now reveals the green barrier underneath without glass
         assertTrue(
-            "After translation, compose host over BLUE stripe must sample high blue (was R=${AndroidColor.red(pixelAtNewCenter)}, B=${AndroidColor.blue(pixelAtNewCenter)})",
-            AndroidColor.blue(pixelAtNewCenter) > 150 && AndroidColor.red(pixelAtNewCenter) < 80,
+            "Old center must reveal green barrier without Compose glass (was R=${AndroidColor.red(pixelAtOldCenter)}, G=${AndroidColor.green(pixelAtOldCenter)}, B=${AndroidColor.blue(pixelAtOldCenter)})",
+            AndroidColor.green(pixelAtOldCenter) > 200 && AndroidColor.red(pixelAtOldCenter) < 80 && AndroidColor.blue(pixelAtOldCenter) < 80,
+        )
+        assertTrue(
+            "After translation, compose host over BLUE stripe must sample high blue and low green (was R=${AndroidColor.red(pixelAtNewCenter)}, G=${AndroidColor.green(pixelAtNewCenter)}, B=${AndroidColor.blue(pixelAtNewCenter)})",
+            AndroidColor.blue(pixelAtNewCenter) > 150 && AndroidColor.red(pixelAtNewCenter) < 80 && AndroidColor.green(pixelAtNewCenter) < 80,
         )
 
         safeClose(scenario)
@@ -1018,8 +1104,40 @@ class GlassBackdropHardwareTest {
     @Test
     fun genericOutlineCustomShapeBuildsPathField() {
         val scenario = ActivityScenario.launch(XmlInteropActivity::class.java)
+        var activityRef: Activity? = null
+        var viewRef: View? = null
+        var effectRef: GlassViewEffect? = null
+
         scenario.onActivity { activity ->
-            val backdrop = activity.findViewById<GlassBackdrop>(R.id.xmlBackdrop)
+            activityRef = activity
+            val root = activity.findViewById<ViewGroup>(R.id.xmlRoot)
+
+            // Setup blue underlay
+            val underlay = View(activity).apply {
+                layoutParams = FrameLayout.LayoutParams(300, 300).apply {
+                    leftMargin = 50
+                    topMargin = 50
+                }
+                setBackgroundColor(AndroidColor.BLUE)
+            }
+            // Setup backdrop with red content
+            val backdrop = GlassBackdrop(activity).apply {
+                layoutParams = FrameLayout.LayoutParams(300, 300).apply {
+                    leftMargin = 50
+                    topMargin = 50
+                }
+            }
+            val redContent = View(activity).apply {
+                layoutParams = FrameLayout.LayoutParams(300, 300)
+                setBackgroundColor(AndroidColor.RED)
+            }
+            backdrop.addView(redContent)
+            root.addView(backdrop)
+
+            // Blue underlay covers backdrop in the window so clipped areas reveal blue
+            root.addView(underlay)
+
+            // Triangle shape: apex at top-center (150, 0), bottom-right (300, 300), bottom-left (0, 300)
             val triangleShape = object : Shape {
                 override fun createOutline(size: Size, layoutDirection: LayoutDirection, density: Density): Outline {
                     val path = androidx.compose.ui.graphics.Path().apply {
@@ -1031,19 +1149,65 @@ class GlassBackdropHardwareTest {
                     return Outline.Generic(path)
                 }
             }
-            val view = View(activity).apply {
-                layoutParams = ViewGroup.LayoutParams(200, 200)
+
+            val glassView = View(activity).apply {
+                layoutParams = FrameLayout.LayoutParams(300, 300).apply {
+                    leftMargin = 50
+                    topMargin = 50
+                }
             }
-            val effect = view.glassEffect(
+            val effect = glassView.glassEffect(
                 backdrop = backdrop,
                 glass = Glass.Regular,
                 shape = triangleShape,
             )
-            val renderer = effect.renderer
-            val bmp = Bitmap.createBitmap(200, 200, Bitmap.Config.ARGB_8888)
-            val canvas = android.graphics.Canvas(bmp)
-            renderer.draw(canvas, 200, 200)
-            assertNotNull(bmp)
+            root.addView(glassView)
+
+            viewRef = glassView
+            effectRef = effect
+        }
+
+        val activity = activityRef!!
+        val glassView = viewRef!!
+        val effect = effectRef!!
+
+        waitForDraw(activity.window.decorView)
+        val bitmap = captureWindow(activity)
+        assertNotNull(bitmap)
+
+        val loc = IntArray(2)
+        scenario.onActivity {
+            glassView.getLocationInWindow(loc)
+        }
+        val vx = loc[0]
+        val vy = loc[1]
+
+        // 1. Outside triangle at top-left (vx + 20, vy + 20):
+        // Triangle starts at apex (150, 0) and slopes to (0, 300). At y = 20, x is in 140..160.
+        // Point (20, 20) is outside the triangle outline and clipped by GlassNativeRenderer.
+        // It reveals the blue underlay.
+        val pixelOutsideLeft = bitmap.getPixel(vx + 20, vy + 20)
+        assertTrue(
+            "Outside triangle top-left must show blue underlay (was R=${AndroidColor.red(pixelOutsideLeft)}, B=${AndroidColor.blue(pixelOutsideLeft)})",
+            AndroidColor.blue(pixelOutsideLeft) > 180 && AndroidColor.red(pixelOutsideLeft) < 80,
+        )
+
+        // 2. Outside triangle at top-right (vx + 280, vy + 20):
+        val pixelOutsideRight = bitmap.getPixel(vx + 280, vy + 20)
+        assertTrue(
+            "Outside triangle top-right must show blue underlay (was R=${AndroidColor.red(pixelOutsideRight)}, B=${AndroidColor.blue(pixelOutsideRight)})",
+            AndroidColor.blue(pixelOutsideRight) > 180 && AndroidColor.red(pixelOutsideRight) < 80,
+        )
+
+        // 3. Inside triangle at bottom-center (vx + 150, vy + 240):
+        // Deep inside the triangle outline. GlassNativeRenderer renders the refracted backdrop (redContent).
+        val pixelInsideCenter = bitmap.getPixel(vx + 150, vy + 240)
+        assertTrue(
+            "Inside triangle must render refracted red backdrop (was R=${AndroidColor.red(pixelInsideCenter)}, B=${AndroidColor.blue(pixelInsideCenter)})",
+            AndroidColor.red(pixelInsideCenter) > 220 && AndroidColor.red(pixelInsideCenter) > AndroidColor.blue(pixelInsideCenter) + 25,
+        )
+
+        scenario.onActivity {
             effect.dispose()
         }
         safeClose(scenario)
@@ -1078,6 +1242,70 @@ class GlassBackdropHardwareTest {
             assertEquals(0f, view.renderer?.touchAmount ?: 0f, 0.01f)
 
             activity.findViewById<ViewGroup>(android.R.id.content).removeView(view)
+        }
+        safeClose(scenario)
+    }
+    @Test
+    fun unownedApplicationTouchListenerPreservedOnEffectDispose() {
+        val scenario = ActivityScenario.launch(XmlInteropActivity::class.java)
+        scenario.onActivity { activity ->
+            val backdrop = activity.findViewById<GlassBackdrop>(R.id.xmlBackdrop)
+            val view = View(activity)
+            var appTouchCount = 0
+            view.setOnTouchListener { _, _ ->
+                appTouchCount++
+                true
+            }
+
+            // Apply default non-interactive glass effect
+            val effect1 = view.glassEffect(backdrop, glass = Glass.Regular)
+            assertNull("Non-interactive glass must not install a touchListener", effect1.touchListener)
+
+            // Dispose effect1: application's touch listener must remain intact
+            effect1.dispose()
+
+            val down1 = MotionEvent.obtain(0L, 0L, MotionEvent.ACTION_DOWN, 10f, 10f, 0)
+            view.dispatchTouchEvent(down1)
+            assertEquals("Application touch listener must receive event after non-interactive dispose", 1, appTouchCount)
+
+            // Reapply glass effect: application's touch listener must still remain intact
+            val effect2 = view.glassEffect(backdrop, glass = Glass.Regular)
+            val down2 = MotionEvent.obtain(0L, 10L, MotionEvent.ACTION_DOWN, 10f, 10f, 0)
+            view.dispatchTouchEvent(down2)
+            assertEquals("Application touch listener must receive event after rebind", 2, appTouchCount)
+
+            effect2.dispose()
+            val down3 = MotionEvent.obtain(0L, 20L, MotionEvent.ACTION_DOWN, 10f, 10f, 0)
+            view.dispatchTouchEvent(down3)
+            assertEquals("Application touch listener must receive event after second dispose", 3, appTouchCount)
+        }
+        safeClose(scenario)
+    }
+
+    @Test
+    fun applicationReplacementTouchListenerPreservedOnInteractiveEffectDispose() {
+        val scenario = ActivityScenario.launch(XmlInteropActivity::class.java)
+        scenario.onActivity { activity ->
+            val backdrop = activity.findViewById<GlassBackdrop>(R.id.xmlBackdrop)
+            val view = View(activity)
+
+            // Apply interactive glass effect
+            val effect = view.glassEffect(backdrop, glass = Glass.Regular.interactive(true))
+            assertNotNull("Interactive glass must install touchListener", effect.touchListener)
+
+            // Application installs a replacement listener over interactive view
+            var replacementTouchCount = 0
+            view.setOnTouchListener { _, _ ->
+                replacementTouchCount++
+                true
+            }
+
+            // Dispose interactive effect: replacement listener must NOT be cleared by dispose()
+            effect.dispose()
+
+            val down = MotionEvent.obtain(0L, 0L, MotionEvent.ACTION_DOWN, 10f, 10f, 0)
+            view.dispatchTouchEvent(down)
+            assertEquals("Replacement application touch listener must receive event after interactive dispose", 1, replacementTouchCount)
         }
         safeClose(scenario)
     }
